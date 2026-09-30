@@ -104,7 +104,10 @@ async function rotear(req: Request, rota: string) {
       method: "POST",
       body: JSON.stringify({ p: { chave: `${eu.user_id}:${chave}`, usuario_id: eu.user_id, orcamento: entrada, resultado } }),
     });
-    return { ...resultado, ...reg };
+    const nota = reg.repetido
+      ? "Envio repetido: este orçamento TESTE já estava registrado com estes avisos. Nada foi duplicado ou aprovado."
+      : "Orçamento TESTE registrado com os avisos do CFO (histórico não pode ser alterado). Nada foi aprovado.";
+    return { ...resultado, ...reg, nota };
   }
   throw new HttpError(404, "rota inexistente");
 }

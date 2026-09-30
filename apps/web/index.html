@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="referrer" content="no-referrer">
+  <title>VEOS - VOICE</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/css/tokens.css">
+  <link rel="stylesheet" href="/css/base.css">
+  <link rel="stylesheet" href="/css/layout.css">
+  <link rel="stylesheet" href="/css/components.css">
+  <link rel="stylesheet" href="/css/views.css">
+  <link rel="stylesheet" href="/css/motion.css">
+  <script type="module" src="/js/main.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
+
+  <div class="app">
+    <aside class="sidebar" id="sidebar" aria-label="Navegação principal">
+      <a class="brand" href="#/visao">
+        <svg class="brand-mark" viewBox="0 0 36 36" aria-hidden="true">
+          <circle cx="18" cy="18" r="16.5" fill="none" stroke="#c9a54c" stroke-opacity=".55"/>
+          <circle cx="18" cy="18" r="10" fill="none" stroke="#6ec8d4" stroke-opacity=".45" stroke-dasharray="3 3"/>
+          <circle cx="18" cy="18" r="3.2" fill="#c9a54c"/>
+          <circle cx="18" cy="1.5" r="2" fill="#0a0b0d" stroke="#c9a54c" stroke-width="1.4"/>
+        </svg>
+        <span>
+          <span class="brand-name">VOICE</span>
+          <span class="brand-sub">VEOS online</span>
+        </span>
+      </a>
+
+      <nav class="nav" id="nav" aria-label="Salas"></nav>
+
+      <div class="sidebar-foot" id="sidebar-status" aria-live="polite">
+        <span class="pill"><span class="dot"></span>Carregando…</span>
+      </div>
+    </aside>
+
+    <div class="backdrop" id="backdrop" hidden></div>
+
+    <div class="main">
+      <header class="topbar">
+        <button class="btn btn-ghost btn-icon menu-toggle" id="menu-toggle" type="button"
+                aria-controls="sidebar" aria-expanded="false" aria-label="Abrir menu">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h10" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg>
+        </button>
+        <div class="topbar-title">
+          <strong id="view-title">VEOS</strong>
+          <span id="view-sub">VOICE Ambientes Inteligentes</span>
+        </div>
+        <div class="topbar-spacer"></div>
+        <span class="pill tone-warn"><span class="dot"></span>Somente dados TESTE</span>
+      </header>
+
+      <main class="content" id="conteudo" tabindex="-1">
+        <noscript><p class="notice notice-risk">O portal precisa de JavaScript habilitado.</p></noscript>
+        <div id="view" aria-live="off"></div>
+      </main>
+    </div>
+  </div>
+</body>
+</html>

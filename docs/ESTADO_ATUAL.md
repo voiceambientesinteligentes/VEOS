@@ -26,7 +26,10 @@ classificação do item 30. **Não está 100%.**
 ## Online (Supabase, projeto `veos`, plano Free, us-east-1)
 - Função `vigia`: `https://vkrwxvnfstvriibjwuvw.supabase.co/functions/v1/vigia` (POST, exige chave). **425/425 casos iguais ao Python** chamando a função publicada (mediana 117 ms, p95 174 ms); sem chave → 401.
 - Banco: migração `20260930120000_base_setores_vigia` aplicada. Tabelas setores, diretores, orcamentos, avisos, eventos; 7 setores + 7 diretores; **RLS ativo em todas**, a chave pública não lê (listas vazias) nem grava (401); `db lint` sem erros.
-- Ainda não: o vigia online não grava orçamentos/avisos no banco; sem login de usuários; portal não publicado.
+- Função `api` (login + cadastro em `membros`): `/me`, `/setores`, `/orcamentos` (GET e POST). POST grava orçamento + avisos + evento numa transação, idempotente. **E2E online: 15/15** (`tests/online/e2e_api.mjs`).
+- Login: Supabase Auth por link mágico; cadastro público **desligado**; membro real: Fernando (direção). Usuário TESTE automatizado (papel vendas) só para testes.
+- Portal online (`apps/web` → `dist/` via `scripts/build-web.mjs`): login, visão geral, avisos do CFO, histórico. Testado servido localmente contra o Supabase real, com a mesma CSP da Netlify (desktop e celular, 0 erros JS).
+- Ainda não: portal **publicado** na Netlify (aguarda o Fernando criar o site `veos-voice`); login por link mágico real não testado (depende do e-mail).
 
 ## GitHub
 - `origin` = https://github.com/voiceambientesinteligentes/VEOS (branch `main`), **público** por decisão do Fernando. Push verificado: commit remoto = local.

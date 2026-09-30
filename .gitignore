@@ -18,3 +18,4 @@ node_modules/
 # Acervo canonico e evidencias ficam no VOICE_360, fora deste repositorio
 04 - PADROES/
 *Politica de Saude Financeira*.md
+dist/

@@ -142,7 +142,7 @@ export function renderVigia(box, ctx) {
   });
   clear(box).append(
     panel(
-      { title: "Avisos do CFO (vigia)", subtitle: "Sistema vivo: ao salvar um orçamento, o CFO confere soma, custos, margem, alçada e ticket pela Política V1. Nada é gravado ou aprovado.", actions: testTag() },
+      { title: "Avisos do CFO (vigia)", subtitle: ctx.subtitulo || "Sistema vivo: ao salvar um orçamento, o CFO confere soma, custos, margem, alçada e ticket pela Política V1. Nada é gravado ou aprovado.", actions: testTag() },
       form,
       out,
     ),

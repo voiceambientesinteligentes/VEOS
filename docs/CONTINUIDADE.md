@@ -29,8 +29,13 @@ Atualize este arquivo ao fim de cada sessão: última ação, resultado e próxi
 - Vigia portado para TypeScript (`supabase/functions/_shared/regras`), paridade 425/425 local e **online**.
 - Migração inicial aplicada com RLS; projeto ligado (`supabase link`).
 
+**Feito (online, ~11:40)**
+- Auth: cadastro público desligado (atenção: `auth.email.enable_signup=false` desliga o LOGIN por e-mail; o bloqueio de cadastro é `[auth] enable_signup=false`).
+- Função `api` + migração `membros`/`registrar_orcamento`; E2E 15/15; Fernando cadastrado (direção).
+- Portal online em `apps/web`, build `node scripts/build-web.mjs`, teste local `node scripts/serve-web.mjs` (porta 8878).
+
 **Aguardando o Fernando**
-0. Nada bloqueante agora. Decisões pendentes: P-3 (orçamento de IA) e P-5 (siglas).
+0. Criar o site na Netlify a partir do GitHub VEOS com o nome `veos-voice`; depois testar o login pelo link do e-mail. Decisões pendentes: P-3 (orçamento de IA) e P-5 (siglas).
 1. Apagar a pasta `VOICE_360\.obsidian` (cópia já arquivada) ou aprovar a remoção.
 2. (Recomendado) Tornar o repositório privado.
 3. Decisões P-1 (hospedagem), P-3 (orçamento de IA) e P-5 (siglas) em [DECISOES.md](DECISOES.md).
