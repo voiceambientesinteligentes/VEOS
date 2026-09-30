@@ -22,7 +22,7 @@ Formato: data · decisão · quem · origem. Propostas ficam separadas até o Fe
 
 | # | Proposta | Recomendação |
 |---|---|---|
-| P-1 | Hospedagem: Cloudflare (Workers + D1 + R2) × Vercel | **Cloudflare**. Vercel Hobby proíbe uso comercial; Vercel Pro é pago. |
+| P-1 | Hospedagem **sem cartão** (a Cloudflare pediu cartão no cadastro, 30/09). Verificado em 30/09: Firebase Spark não exige cartão, mas **Cloud Functions exigem o plano Blaze** (docs oficiais), então não há código no servidor (sem MCP nem vigia online). Vercel Hobby proíbe uso comercial. | **Supabase Free** (Postgres, login, arquivos, Edge Functions para API/MCP/vigia; pausa após 1 semana sem uso, contornável com um ping agendado) + **Netlify Free** para o portal (conta já existe para o site; 300 créditos/mês). Aguardando confirmação. |
 | P-2 | Endereço: subdomínio `veos.<domínio da VOICE>`; o site atual continua na Netlify | subdomínio |
 | P-3 | Orçamento mensal para IA no servidor (respostas na voz dos diretores com o PC desligado) | definir um teto; o vigia funciona sem IA |
 | P-4 | Item 30: REFERENCIA ou PADRAO | análise da fonte em andamento (etapa E) |
