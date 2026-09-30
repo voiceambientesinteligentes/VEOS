@@ -51,6 +51,8 @@ classificação do item 30. **Não está 100%.**
 ## Ferramentas do CFO e Zoho (30/09)
 - **Negociação ao Vivo** e **Calculadora de Preços** (`apps/web/js/domain/precificacao.js`): Política V1 (MC com provisão 2%, faixas 35/30/25, alçada sec.9, ticket como meta) + Simples Nacional (LC 123, RBT12, Fator R). Testes: `tests/web/precificacao.test.mjs` (aceite 20.000 − 10% → 18.000; comissão 10% → 1.800; paridade com `cfo.ts`).
 - **Zoho somente leitura**: segredos `ZOHO_CLIENT_ID/SECRET` no Supabase; OAuth pela função pública `zoho` (`/zoho/retorno`, state de uso único, servidores Zoho em lista fechada); refresh token na tabela `integracoes` (RLS sem policies). Rotas `api/zoho/*`: status, conectar/desconectar (direção), rbt12, orçamentos (+ itens com preço de compra), etapas do CRM. Tela **Integrações** e importação de orçamento na Negociação.
+- **Salvar como proposta** (Negociação → registro `proposta` do Comercial): faixa de margem, faixa de desconto e aprovação preenchidas pelo cálculo; as regras COM_MARGEM_EXIGE_DIRECAO, COM_EXCECAO_SEM_JUSTIFICATIVA e COM_DESCONTO_SEM_APROVACAO reagem sozinhas.
+- Catálogos: **Frente de trabalho** (Direção, 3 regras), **Contato** e categoria de pendência (Secretaria), 7 modelos de WhatsApp do painel legado (Comercial e Finanças). Totais: 38 tipos de registro, 91 regras, 64 modelos.
 - Falta: a direção clicar em **Conectar Zoho** (login no Zoho); depois validar RBT12 e orçamentos reais.
 
 ## GitHub

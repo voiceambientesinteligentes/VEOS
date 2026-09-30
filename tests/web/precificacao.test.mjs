@@ -98,3 +98,21 @@ test("paridade com o motor do servidor (cfo.ts): margem, faixa e alcada", () => 
     assert.deepEqual(alcadaDesconto(desc, js.pct).nivel, cfo.alcadaDesconto(desc, ts.pct).nivel, `rl=${rl} custos=${custos} desc=${desc.num}`);
   }
 });
+
+test("salvar como proposta: campos que as regras vivas do Comercial vigiam", async () => {
+  const { paraProposta } = await import("../../apps/web/js/domain/precificacao.js");
+  const base = { custos: [{ tipo: "servico", total: R(20000) }], impostos: { produto: pct(400n), servico: pct(600n) } };
+  const ok = paraProposta(negociacao({ tabela: R(120000), desconto: { modo: "pct", valor: 150n }, ...base }), { cliente: "Cliente TESTE", referencia: "EST-1", condicao: "30/70" });
+  assert.equal(ok.estado, "rascunho");
+  assert.equal(ok.valor, "118200.00");
+  assert.equal(ok.dados.faixa_desconto, "ate_2_autonomia");
+  assert.equal(ok.dados.faixa_margem, "VERDE");
+  assert.equal(ok.dados.aprovacao_direcao, "nao_necessaria");
+  const dir = paraProposta(negociacao({ tabela: R(30000), desconto: { modo: "pct", valor: 1000n }, ...base }), { cliente: "X TESTE", referencia: "EST-2", condicao: "à vista" });
+  assert.equal(dir.estado, "aguardando_direcao");
+  assert.equal(dir.dados.faixa_desconto, "acima_5_analise_integral");
+  assert.equal(dir.dados.aprovacao_direcao, "pendente");
+  assert.ok(["ATENCAO", "NAO_APROVADO"].includes(dir.dados.faixa_margem));
+  assert.throws(() => paraProposta(negociacao({ tabela: R(1000), custos: [], impostos: base.impostos }), { cliente: "a", referencia: "b", condicao: "c" }), /não resolvida/);
+  assert.throws(() => paraProposta(negociacao({ tabela: R(120000), ...base }), { cliente: "a", referencia: "", condicao: "c" }), /referência/);
+});

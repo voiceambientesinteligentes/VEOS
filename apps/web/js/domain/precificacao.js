@@ -171,3 +171,33 @@ export function calculadora({ materiais = 0n, horas = 0n, valorHora = 0n, rateio
   }
   return { maoDeObra, fixo, custo, preco, impostoRs, ...m, pctH: centesimos(m.pct), lucro: m.mc, markupH: arred(preco * 100n, custo), pendencias: [] };
 }
+
+const fixo2 = (c) => `${c < 0n ? "-" : ""}${(c < 0n ? -c : c) / 100n}.${String((c < 0n ? -c : c) % 100n).padStart(2, "0")}`;
+const FAIXA_PROPOSTA = { VERDE: "VERDE", ACEITAVEL: "ACEITAVEL", ATENCAO: "ATENCAO", "NAO APROVADO": "NAO_APROVADO" };
+
+/**
+ * Converte o resultado da Negociacao ao Vivo num registro "proposta" do Comercial (vendas),
+ * com os campos que as regras vivas vigiam (faixa de margem, faixa de desconto, aprovacao).
+ * Falha se a margem nao estiver resolvida: nunca grava proposta com margem inventada.
+ */
+export function paraProposta(r, { cliente, referencia, condicao, versao = 1 }) {
+  if (r.faixa === "NAO RESOLVIDO" || r.pctH === null) throw new PrecoError("margem não resolvida: preencha custos e impostos antes de salvar");
+  if (!cliente?.trim()) throw new PrecoError("informe o cliente");
+  if (!referencia?.trim()) throw new PrecoError("informe a referência da oportunidade (ex.: número do orçamento)");
+  if (!condicao?.trim()) throw new PrecoError("informe a condição de pagamento");
+  const d = r.descPctH;
+  const faixaDesconto = d === 0n ? "sem_desconto" : d <= 200n ? "ate_2_autonomia" : d <= 500n ? "acima_2_ate_5_direcao" : "acima_5_analise_integral";
+  const precisaDirecao = !["FLUXO NORMAL", "AUTONOMIA COMERCIAL"].includes(r.alcada.nivel);
+  return {
+    setor: "vendas", tipo: "proposta",
+    titulo: `Proposta ${cliente.trim()}`.slice(0, 200),
+    estado: precisaDirecao ? "aguardando_direcao" : "rascunho",
+    valor: fixo2(r.liquido),
+    dados: {
+      oportunidade_ref: referencia.trim(), versao: String(versao), valor_bruto: fixo2(r.tabela),
+      desconto_percentual: fixo2(d), faixa_desconto: faixaDesconto,
+      margem_contribuicao_percentual: fixo2(r.pctH), faixa_margem: FAIXA_PROPOSTA[r.faixa],
+      aprovacao_direcao: precisaDirecao ? "pendente" : "nao_necessaria", condicao_pagamento: condicao.trim(),
+    },
+  };
+}

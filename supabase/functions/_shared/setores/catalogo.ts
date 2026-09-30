@@ -526,6 +526,67 @@ export const CATALOGO = [
       "obrigatorio": false
      }
     ]
+   },
+   {
+    "tipo": "frente",
+    "nome": "Frente de trabalho",
+    "descricao": "Iniciativa em andamento da empresa (projeto interno, parceria, estrutura) com próxima ação, progresso e prazo. Visão do painel de frentes.",
+    "responsavel": "assessor_estrategia",
+    "estados": [
+     "pendente",
+     "planejada",
+     "em_andamento",
+     "concluida",
+     "cancelada"
+    ],
+    "estado_inicial": "pendente",
+    "estados_finais": [
+     "concluida",
+     "cancelada"
+    ],
+    "campos": [
+     {
+      "id": "categoria",
+      "rotulo": "Categoria",
+      "tipo": "texto",
+      "obrigatorio": true
+     },
+     {
+      "id": "prioridade",
+      "rotulo": "Prioridade",
+      "tipo": "opcao",
+      "opcoes": [
+       "Alta",
+       "Média",
+       "Baixa"
+      ],
+      "obrigatorio": true
+     },
+     {
+      "id": "descricao",
+      "rotulo": "Descrição",
+      "tipo": "texto_longo",
+      "obrigatorio": true
+     },
+     {
+      "id": "proxima_acao",
+      "rotulo": "Próxima ação",
+      "tipo": "texto_longo",
+      "obrigatorio": false
+     },
+     {
+      "id": "progresso",
+      "rotulo": "Progresso (%)",
+      "tipo": "numero",
+      "obrigatorio": false
+     },
+     {
+      "id": "dono",
+      "rotulo": "Dono da frente (pessoa)",
+      "tipo": "texto",
+      "obrigatorio": false
+     }
+    ]
    }
   ],
   "rotinas": [
@@ -955,6 +1016,83 @@ export const CATALOGO = [
      }
     ],
     "fonte": "PROPOSTA — padrão de mercado (ABNT NBR ISO 31000, monitoramento e análise crítica)"
+   },
+   {
+    "id": "DIR_FRENTE_SEM_PROXIMA_ACAO",
+    "titulo": "Frente sem próxima ação",
+    "severidade": "MEDIO",
+    "status": "PROPOSTA",
+    "gatilho": {
+     "tipo": "faltando",
+     "registro": "frente",
+     "campo": "proxima_acao",
+     "filtros": []
+    },
+    "mensagem": "A frente '{{titulo}}' não tem próxima ação definida. Frente sem próximo passo concreto tende a parar.",
+    "acoes": [
+     {
+      "tipo": "tarefa",
+      "titulo": "Definir a próxima ação de '{{titulo}}'",
+      "papel": "assessor_estrategia",
+      "prazo_dias": 1
+     }
+    ],
+    "fonte": "PROPOSTA — GTD (David Allen): todo projeto precisa de uma próxima ação física definida"
+   },
+   {
+    "id": "DIR_FRENTE_PRAZO",
+    "titulo": "Frente vencendo ou vencida",
+    "severidade": "ALTO",
+    "status": "PROPOSTA",
+    "gatilho": {
+     "tipo": "vencido",
+     "registro": "frente",
+     "campo": "prazo",
+     "filtros": [],
+     "antecedencia_dias": 3
+    },
+    "mensagem": "A frente '{{titulo}}' vence em {{dias}} dia(s) ou já venceu e não está concluída.",
+    "acoes": [
+     {
+      "tipo": "tarefa",
+      "titulo": "Revisar prazo e plano de '{{titulo}}' com a CEO",
+      "papel": "assessor_estrategia",
+      "prazo_dias": 0
+     },
+     {
+      "tipo": "notificar",
+      "para": "CEO"
+     }
+    ],
+    "fonte": "PROPOSTA — campos do painel legado VOICE Gerenciamento de Frentes, adequados ao VEOS"
+   },
+   {
+    "id": "DIR_FRENTE_PARADA",
+    "titulo": "Frente em andamento parada",
+    "severidade": "MEDIO",
+    "status": "PROPOSTA",
+    "gatilho": {
+     "tipo": "parado",
+     "registro": "frente",
+     "filtros": [
+      {
+       "campo": "estado",
+       "igual": "em_andamento"
+      }
+     ],
+     "dias": 14,
+     "data_campo": "atualizado_em"
+    },
+    "mensagem": "A frente '{{titulo}}' está em andamento, mas sem atualização há {{dias}} dias.",
+    "acoes": [
+     {
+      "tipo": "tarefa",
+      "titulo": "Atualizar progresso e próxima ação de '{{titulo}}'",
+      "papel": "assessor_estrategia",
+      "prazo_dias": 2
+     }
+    ],
+    "fonte": "PROPOSTA — cadência quinzenal de revisão de iniciativas (EOS/Traction: Rocks)"
    }
   ],
   "modelos": [
@@ -2240,6 +2378,12 @@ export const CATALOGO = [
     "tipo": "documento",
     "assunto": "Reserva de caixa abaixo do mínimo desejado",
     "corpo": "Para: Direção Geral\n\nNo fechamento '{{titulo}}', a reserva financeira ficou abaixo de 3 meses de custos fixos médios (Política V1 sec.12). Faltam {{total}}.\n\nOpções para recomposição (PROPOSTA, a decidir pela direção):\n1. Destinar parte da margem dos próximos recebimentos à reserva;\n2. Revisar custos fixos não essenciais;\n3. Reforçar a cobrança dos vencidos;\n4. Rever condições de recebimento de novos projetos conforme a referência 50/40/10 (Política V1 sec.10).\n\n{{responsavel}}"
+   },
+   {
+    "id": "whatsapp_lembrete_boleto",
+    "tipo": "whatsapp",
+    "assunto": "Lembrete de vencimento",
+    "corpo": "Olá, {{cliente}}! Passando para lembrar que a parcela {{parcela}} do seu projeto, no valor de {{valor}}, vence em {{vencimento}}. Se já pagou, desconsidere esta mensagem. Qualquer dúvida, estou à disposição."
    }
   ],
   "documentos": [
@@ -3630,6 +3774,42 @@ export const CATALOGO = [
     "tipo": "documento",
     "assunto": "Passagem de projeto ganho — {{titulo}}",
     "corpo": "Cliente: {{cliente_nome}}\nArquiteto/parceiro: {{parceiro_indicador}}\nFase da obra: {{fase_obra}}\nEscopo vendido: {{escopo_sistemas}}\nProposta aceita (versão, valor, margem): \nCondição de recebimento (referência 50% / 40% / 10%, Política sec.10): \nContatos da obra e do arquiteto: \nCompromissos assumidos com o cliente (prazos, acabamentos, marcas): \nRiscos conhecidos: \nResponsável comercial: {{responsavel}}"
+   },
+   {
+    "id": "whatsapp_pos_fechamento",
+    "tipo": "whatsapp",
+    "assunto": "Pós-fechamento: dados para o contrato",
+    "corpo": "Olá, {{cliente}}! Que alegria seguir com a VOICE no seu projeto. Para prepararmos o contrato, pode me enviar:\n\n• Nome completo ou razão social\n• CPF ou CNPJ\n• Endereço do cliente\n• Endereço da obra\n• E-mail para receber o contrato\n\nQualquer dúvida, estou por aqui. Obrigado!"
+   },
+   {
+    "id": "whatsapp_planta_baixa",
+    "tipo": "whatsapp",
+    "assunto": "Pedido de planta baixa",
+    "corpo": "Olá, {{cliente}}! Para desenharmos a automação sob medida, precisamos da planta baixa do imóvel (PDF ou DWG) e, se houver, do projeto de interiores e do luminotécnico. Se preferir, falamos direto com o seu arquiteto. Pode nos enviar por aqui?"
+   },
+   {
+    "id": "whatsapp_followup_orcamento",
+    "tipo": "whatsapp",
+    "assunto": "Acompanhamento do orçamento",
+    "corpo": "Olá, {{cliente}}! Tudo bem? Passando para saber se conseguiu avaliar a proposta {{referencia}} que enviamos. Posso esclarecer algum ponto ou ajustar algo no escopo? Fico à disposição."
+   },
+   {
+    "id": "whatsapp_agendamento_visita",
+    "tipo": "whatsapp",
+    "assunto": "Agendamento de visita técnica",
+    "corpo": "Olá, {{cliente}}! Gostaríamos de agendar uma visita técnica para conhecer o espaço e entender como você quer viver a casa. Qual destes horários fica melhor: {{opcao_1}} ou {{opcao_2}}? A visita leva cerca de 1 hora."
+   },
+   {
+    "id": "whatsapp_boas_vindas",
+    "tipo": "whatsapp",
+    "assunto": "Boas-vindas ao cliente",
+    "corpo": "Olá, {{cliente}}! Seja muito bem-vindo(a) à VOICE Ambientes Inteligentes. A partir de agora, {{responsavel}} acompanha o seu projeto e manda as atualizações de cada fase. Estamos felizes em fazer parte da sua casa."
+   },
+   {
+    "id": "whatsapp_envio_contrato",
+    "tipo": "whatsapp",
+    "assunto": "Envio do contrato",
+    "corpo": "Olá, {{cliente}}! Enviamos o contrato do seu projeto para o e-mail {{email}}. Confira com calma; se estiver tudo certo, é só assinar e nos retornar. Se tiver qualquer dúvida sobre escopo, prazos ou pagamento, me chame por aqui."
    }
   ],
   "documentos": [
@@ -10432,6 +10612,20 @@ export const CATALOGO = [
     ],
     "campos": [
      {
+      "id": "categoria",
+      "rotulo": "Categoria",
+      "tipo": "opcao",
+      "opcoes": [
+       "Follow-up",
+       "Cobrança",
+       "Contrato",
+       "Agendamento",
+       "Documentos",
+       "Outros"
+      ],
+      "obrigatorio": false
+     },
+     {
       "id": "origem_ref",
       "rotulo": "Origem (reunião ou ordem)",
       "tipo": "texto",
@@ -10611,6 +10805,65 @@ export const CATALOGO = [
       "id": "data_validade",
       "rotulo": "Validade ou fim da temporalidade",
       "tipo": "data",
+      "obrigatorio": false
+     }
+    ]
+   },
+   {
+    "tipo": "contato",
+    "nome": "Contato",
+    "descricao": "Agenda de contatos da VOICE: clientes, arquitetos e parceiros, fornecedores e equipe. Base para WhatsApp e e-mail.",
+    "responsavel": "assistente_direcao",
+    "estados": [
+     "ativo",
+     "inativo"
+    ],
+    "estado_inicial": "ativo",
+    "estados_finais": [
+     "inativo"
+    ],
+    "campos": [
+     {
+      "id": "telefone",
+      "rotulo": "Telefone / WhatsApp",
+      "tipo": "telefone",
+      "obrigatorio": true
+     },
+     {
+      "id": "email",
+      "rotulo": "E-mail",
+      "tipo": "email",
+      "obrigatorio": false
+     },
+     {
+      "id": "empresa",
+      "rotulo": "Empresa / escritório",
+      "tipo": "texto",
+      "obrigatorio": false
+     },
+     {
+      "id": "cargo",
+      "rotulo": "Cargo",
+      "tipo": "texto",
+      "obrigatorio": false
+     },
+     {
+      "id": "categoria",
+      "rotulo": "Categoria",
+      "tipo": "opcao",
+      "opcoes": [
+       "Cliente",
+       "Parceiro (arquiteto, designer, construtora)",
+       "Fornecedor",
+       "Equipe",
+       "Outro"
+      ],
+      "obrigatorio": true
+     },
+     {
+      "id": "observacoes",
+      "rotulo": "Observações",
+      "tipo": "texto_longo",
       "obrigatorio": false
      }
     ]
@@ -11063,6 +11316,33 @@ export const CATALOGO = [
      }
     ],
     "fonte": "PROPOSTA — padrão de mercado (GTD: revisão semanal e limpeza de listas)"
+   },
+   {
+    "id": "SEC_CLIENTE_SEM_EMAIL",
+    "titulo": "Cliente sem e-mail no cadastro",
+    "severidade": "INFO",
+    "status": "PROPOSTA",
+    "gatilho": {
+     "tipo": "faltando",
+     "registro": "contato",
+     "campo": "email",
+     "filtros": [
+      {
+       "campo": "categoria",
+       "igual": "Cliente"
+      }
+     ]
+    },
+    "mensagem": "O contato '{{titulo}}' é cliente e está sem e-mail. Propostas, contratos e notas fiscais dependem dele.",
+    "acoes": [
+     {
+      "tipo": "tarefa",
+      "titulo": "Pedir o e-mail de '{{titulo}}'",
+      "papel": "assistente_direcao",
+      "prazo_dias": 3
+     }
+    ],
+    "fonte": "PROPOSTA — campos do painel legado VOICE Gerenciamento de Frentes, adequados ao VEOS"
    }
   ],
   "modelos": [

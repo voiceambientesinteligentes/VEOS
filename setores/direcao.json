@@ -77,7 +77,10 @@
         "Cobrar atualização semanal de status das metas junto aos donos",
         "Consolidar o relatório trimestral de metas para a revisão de planejamento"
       ],
-      "indicadores": ["rocks_no_prazo", "scorecard_no_alvo"]
+      "indicadores": [
+        "rocks_no_prazo",
+        "scorecard_no_alvo"
+      ]
     },
     {
       "papel": "relator_direcao",
@@ -89,7 +92,10 @@
         "Redigir a ata da reunião de direção e distribuir as tarefas decididas",
         "Controlar o prazo de resposta dos pedidos de alçada"
       ],
-      "indicadores": ["excecoes_registradas", "tempo_decisao_alcada"]
+      "indicadores": [
+        "excecoes_registradas",
+        "tempo_decisao_alcada"
+      ]
     },
     {
       "papel": "gestor_riscos",
@@ -100,7 +106,9 @@
         "Conduzir a revisão mensal de riscos com os diretores",
         "Acompanhar riscos típicos da VOICE: atraso de obra do cliente, dependência de um arquiteto, importação e câmbio de equipamentos, técnico-chave único por marca, segurança da informação de clientes"
       ],
-      "indicadores": ["riscos_criticos_sem_plano"]
+      "indicadores": [
+        "riscos_criticos_sem_plano"
+      ]
     },
     {
       "papel": "analista_indicadores",
@@ -111,7 +119,12 @@
         "Acompanhar margem operacional, reserva de caixa e participação de projetos abaixo de 30% de margem no faturamento",
         "Sinalizar desvios para a lista de IDS da reunião semanal"
       ],
-      "indicadores": ["faturamento_abaixo_margem", "margem_operacional", "reserva_caixa_meses", "scorecard_no_alvo"]
+      "indicadores": [
+        "faturamento_abaixo_margem",
+        "margem_operacional",
+        "reserva_caixa_meses",
+        "scorecard_no_alvo"
+      ]
     }
   ],
   "processos": [
@@ -120,11 +133,36 @@
       "nome": "Planejamento e desdobramento de metas",
       "descricao": "Ciclo EOS adaptado à VOICE: visão em uma página, metas anuais (com OKR quando atravessam setores) e Rocks de 90 dias por diretor, acompanhados semanalmente.",
       "etapas": [
-        { "id": "visao", "nome": "Revisar a visão (V/TO)", "responsavel": "assessor_estrategia", "criterio_saida": "V/TO atualizada com foco de nicho (automação premium), metas de 3 anos e de 1 ano aprovadas pela CEO" },
-        { "id": "metas_anuais", "nome": "Definir metas anuais", "responsavel": "assessor_estrategia", "criterio_saida": "Metas anuais registradas cobrindo as quatro perspectivas do Balanced Scorecard, cada uma com dono e número" },
-        { "id": "rocks", "nome": "Definir Rocks trimestrais", "responsavel": "assessor_estrategia", "criterio_saida": "3 a 7 Rocks por diretor registrados como meta, com data limite no fim do trimestre" },
-        { "id": "acompanhamento", "nome": "Acompanhar semanalmente", "responsavel": "assessor_estrategia", "criterio_saida": "Status no prazo/em risco atualizado toda semana antes da reunião de direção" },
-        { "id": "fechamento_trimestre", "nome": "Fechar o trimestre", "responsavel": "assessor_estrategia", "criterio_saida": "Cada Rock marcado como concluído ou descartado, com aprendizado registrado" }
+        {
+          "id": "visao",
+          "nome": "Revisar a visão (V/TO)",
+          "responsavel": "assessor_estrategia",
+          "criterio_saida": "V/TO atualizada com foco de nicho (automação premium), metas de 3 anos e de 1 ano aprovadas pela CEO"
+        },
+        {
+          "id": "metas_anuais",
+          "nome": "Definir metas anuais",
+          "responsavel": "assessor_estrategia",
+          "criterio_saida": "Metas anuais registradas cobrindo as quatro perspectivas do Balanced Scorecard, cada uma com dono e número"
+        },
+        {
+          "id": "rocks",
+          "nome": "Definir Rocks trimestrais",
+          "responsavel": "assessor_estrategia",
+          "criterio_saida": "3 a 7 Rocks por diretor registrados como meta, com data limite no fim do trimestre"
+        },
+        {
+          "id": "acompanhamento",
+          "nome": "Acompanhar semanalmente",
+          "responsavel": "assessor_estrategia",
+          "criterio_saida": "Status no prazo/em risco atualizado toda semana antes da reunião de direção"
+        },
+        {
+          "id": "fechamento_trimestre",
+          "nome": "Fechar o trimestre",
+          "responsavel": "assessor_estrategia",
+          "criterio_saida": "Cada Rock marcado como concluído ou descartado, com aprendizado registrado"
+        }
       ]
     },
     {
@@ -132,10 +170,30 @@
       "nome": "Decisão de alçada e exceções à política",
       "descricao": "Fluxo para tudo o que a Política de Saúde Financeira reserva à direção: margem entre 25% e 29,99%, margem abaixo de 25%, desconto acima de 2%, desconto que leve a margem abaixo de 30%, exposição de caixa ou pro forma acima de 10% do valor do contrato e projeto abaixo do ticket desejado com exceção registrada.",
       "etapas": [
-        { "id": "pedido", "nome": "Pedido de alçada", "responsavel": "relator_direcao", "criterio_saida": "Decisão registrada com tipo, projeto, margem ou exposição calculada e justificativa" },
-        { "id": "analise_financeira", "nome": "Análise financeira", "responsavel": "relator_direcao", "criterio_saida": "CFO confirmou margem pela fórmula da Política V1 sec.4 e, quando aplicável, exposição corrente e pro forma pela Política V1.1; impacto financeiro preenchido" },
-        { "id": "decisao", "nome": "Decisão da direção", "responsavel": "relator_direcao", "criterio_saida": "Decisão aprovada ou reprovada com autorizador identificado e data" },
-        { "id": "comunicacao", "nome": "Comunicação e acompanhamento", "responsavel": "relator_direcao", "criterio_saida": "Setores envolvidos avisados e data de revisão definida quando a decisão tem condição" }
+        {
+          "id": "pedido",
+          "nome": "Pedido de alçada",
+          "responsavel": "relator_direcao",
+          "criterio_saida": "Decisão registrada com tipo, projeto, margem ou exposição calculada e justificativa"
+        },
+        {
+          "id": "analise_financeira",
+          "nome": "Análise financeira",
+          "responsavel": "relator_direcao",
+          "criterio_saida": "CFO confirmou margem pela fórmula da Política V1 sec.4 e, quando aplicável, exposição corrente e pro forma pela Política V1.1; impacto financeiro preenchido"
+        },
+        {
+          "id": "decisao",
+          "nome": "Decisão da direção",
+          "responsavel": "relator_direcao",
+          "criterio_saida": "Decisão aprovada ou reprovada com autorizador identificado e data"
+        },
+        {
+          "id": "comunicacao",
+          "nome": "Comunicação e acompanhamento",
+          "responsavel": "relator_direcao",
+          "criterio_saida": "Setores envolvidos avisados e data de revisão definida quando a decisão tem condição"
+        }
       ]
     },
     {
@@ -143,10 +201,30 @@
       "nome": "Gestão de riscos",
       "descricao": "Identificar, avaliar, tratar e monitorar riscos com matriz probabilidade × impacto, segundo a ISO 31000.",
       "etapas": [
-        { "id": "identificar", "nome": "Identificar", "responsavel": "gestor_riscos", "criterio_saida": "Risco registrado com categoria, descrição e dono" },
-        { "id": "avaliar", "nome": "Avaliar", "responsavel": "gestor_riscos", "criterio_saida": "Probabilidade, impacto e nível preenchidos" },
-        { "id": "tratar", "nome": "Tratar", "responsavel": "gestor_riscos", "criterio_saida": "Plano de mitigação com ações e data de próxima revisão" },
-        { "id": "monitorar", "nome": "Monitorar", "responsavel": "gestor_riscos", "criterio_saida": "Risco revisado na data prevista; encerrado quando deixa de existir" }
+        {
+          "id": "identificar",
+          "nome": "Identificar",
+          "responsavel": "gestor_riscos",
+          "criterio_saida": "Risco registrado com categoria, descrição e dono"
+        },
+        {
+          "id": "avaliar",
+          "nome": "Avaliar",
+          "responsavel": "gestor_riscos",
+          "criterio_saida": "Probabilidade, impacto e nível preenchidos"
+        },
+        {
+          "id": "tratar",
+          "nome": "Tratar",
+          "responsavel": "gestor_riscos",
+          "criterio_saida": "Plano de mitigação com ações e data de próxima revisão"
+        },
+        {
+          "id": "monitorar",
+          "nome": "Monitorar",
+          "responsavel": "gestor_riscos",
+          "criterio_saida": "Risco revisado na data prevista; encerrado quando deixa de existir"
+        }
       ]
     }
   ],
@@ -156,20 +234,107 @@
       "nome": "Meta / Rock",
       "descricao": "Meta anual, Rock trimestral ou OKR da VOICE, com dono, número-alvo e prazo. O título diz o resultado esperado (ex.: 'Fechar 3 projetos acima de R$ 100 mil com margem ≥ 35% no 4º trimestre').",
       "responsavel": "assessor_estrategia",
-      "estados": ["rascunho", "no_prazo", "em_risco", "atrasada", "concluida", "descartada"],
+      "estados": [
+        "rascunho",
+        "no_prazo",
+        "em_risco",
+        "atrasada",
+        "concluida",
+        "descartada"
+      ],
       "estado_inicial": "rascunho",
-      "estados_finais": ["concluida", "descartada"],
+      "estados_finais": [
+        "concluida",
+        "descartada"
+      ],
       "campos": [
-        { "id": "tipo_meta", "rotulo": "Tipo", "tipo": "opcao", "opcoes": ["Meta anual", "Rock trimestral", "OKR - objetivo", "OKR - resultado-chave"], "obrigatorio": true },
-        { "id": "setor", "rotulo": "Setor dono", "tipo": "opcao", "opcoes": ["Direção Geral", "Financeiro", "Comercial", "Marketing", "Operações", "Tecnologia", "Pós-venda", "Administrativo e Pessoas", "Secretaria"], "obrigatorio": true },
-        { "id": "perspectiva", "rotulo": "Perspectiva (Balanced Scorecard)", "tipo": "opcao", "opcoes": ["Financeira", "Clientes e parceiros", "Processos internos", "Aprendizado e crescimento"], "obrigatorio": true },
-        { "id": "periodo", "rotulo": "Período (ex.: 2026-T4)", "tipo": "texto", "obrigatorio": true },
-        { "id": "medida", "rotulo": "Como será medido", "tipo": "texto", "obrigatorio": true },
-        { "id": "valor_alvo", "rotulo": "Valor-alvo", "tipo": "numero", "obrigatorio": false },
-        { "id": "valor_atual", "rotulo": "Valor atual", "tipo": "numero", "obrigatorio": false },
-        { "id": "data_limite", "rotulo": "Data limite", "tipo": "data", "obrigatorio": true },
-        { "id": "status_politica", "rotulo": "Origem da meta", "tipo": "opcao", "opcoes": ["POLITICA", "PROPOSTA"], "obrigatorio": true },
-        { "id": "observacoes", "rotulo": "Observações e aprendizados", "tipo": "texto_longo", "obrigatorio": false }
+        {
+          "id": "tipo_meta",
+          "rotulo": "Tipo",
+          "tipo": "opcao",
+          "opcoes": [
+            "Meta anual",
+            "Rock trimestral",
+            "OKR - objetivo",
+            "OKR - resultado-chave"
+          ],
+          "obrigatorio": true
+        },
+        {
+          "id": "setor",
+          "rotulo": "Setor dono",
+          "tipo": "opcao",
+          "opcoes": [
+            "Direção Geral",
+            "Financeiro",
+            "Comercial",
+            "Marketing",
+            "Operações",
+            "Tecnologia",
+            "Pós-venda",
+            "Administrativo e Pessoas",
+            "Secretaria"
+          ],
+          "obrigatorio": true
+        },
+        {
+          "id": "perspectiva",
+          "rotulo": "Perspectiva (Balanced Scorecard)",
+          "tipo": "opcao",
+          "opcoes": [
+            "Financeira",
+            "Clientes e parceiros",
+            "Processos internos",
+            "Aprendizado e crescimento"
+          ],
+          "obrigatorio": true
+        },
+        {
+          "id": "periodo",
+          "rotulo": "Período (ex.: 2026-T4)",
+          "tipo": "texto",
+          "obrigatorio": true
+        },
+        {
+          "id": "medida",
+          "rotulo": "Como será medido",
+          "tipo": "texto",
+          "obrigatorio": true
+        },
+        {
+          "id": "valor_alvo",
+          "rotulo": "Valor-alvo",
+          "tipo": "numero",
+          "obrigatorio": false
+        },
+        {
+          "id": "valor_atual",
+          "rotulo": "Valor atual",
+          "tipo": "numero",
+          "obrigatorio": false
+        },
+        {
+          "id": "data_limite",
+          "rotulo": "Data limite",
+          "tipo": "data",
+          "obrigatorio": true
+        },
+        {
+          "id": "status_politica",
+          "rotulo": "Origem da meta",
+          "tipo": "opcao",
+          "opcoes": [
+            "POLITICA",
+            "PROPOSTA"
+          ],
+          "obrigatorio": true
+        },
+        {
+          "id": "observacoes",
+          "rotulo": "Observações e aprendizados",
+          "tipo": "texto_longo",
+          "obrigatorio": false
+        }
       ]
     },
     {
@@ -177,31 +342,92 @@
       "nome": "Decisão / alçada",
       "descricao": "Decisão da direção ou pedido de alçada previsto na política. Todo registro de exceção guarda responsável pela autorização, justificativa, impacto financeiro conhecido e a decisão (Política V1 sec.14).",
       "responsavel": "relator_direcao",
-      "estados": ["solicitada", "em_analise", "aprovada", "reprovada", "cancelada"],
+      "estados": [
+        "solicitada",
+        "em_analise",
+        "aprovada",
+        "reprovada",
+        "cancelada"
+      ],
       "estado_inicial": "solicitada",
-      "estados_finais": ["aprovada", "reprovada", "cancelada"],
+      "estados_finais": [
+        "aprovada",
+        "reprovada",
+        "cancelada"
+      ],
       "campos": [
-        { "id": "tipo_decisao", "rotulo": "Tipo de decisão", "tipo": "opcao", "opcoes": [
-          "Margem entre 25% e 29,99%",
-          "Margem abaixo de 25% (extraordinária)",
-          "Desconto acima de 2% e até 5%",
-          "Desconto acima de 5% (excepcional)",
-          "Desconto que leva margem abaixo de 30%",
-          "Exposição de caixa acima de 10%",
-          "Exposição pro forma acima de 10%",
-          "Projeto abaixo do ticket desejado",
-          "Decisão estratégica",
-          "Outra"
-        ], "obrigatorio": true },
-        { "id": "projeto_ref", "rotulo": "Projeto / cliente relacionado", "tipo": "texto", "obrigatorio": false },
-        { "id": "margem_pct", "rotulo": "Margem de contribuição final (%)", "tipo": "numero", "obrigatorio": false },
-        { "id": "desconto_pct", "rotulo": "Desconto concedido (%)", "tipo": "numero", "obrigatorio": false },
-        { "id": "exposicao_pct", "rotulo": "Exposição de caixa (%) — informar se corrente ou pro forma", "tipo": "numero", "obrigatorio": false },
-        { "id": "justificativa", "rotulo": "Justificativa", "tipo": "texto_longo", "obrigatorio": true },
-        { "id": "impacto_financeiro", "rotulo": "Impacto financeiro conhecido (R$)", "tipo": "dinheiro", "obrigatorio": false },
-        { "id": "autorizador", "rotulo": "Responsável pela autorização", "tipo": "texto", "obrigatorio": false },
-        { "id": "data_decisao", "rotulo": "Data da decisão", "tipo": "data", "obrigatorio": false },
-        { "id": "condicoes", "rotulo": "Condições e data de revisão", "tipo": "texto_longo", "obrigatorio": false }
+        {
+          "id": "tipo_decisao",
+          "rotulo": "Tipo de decisão",
+          "tipo": "opcao",
+          "opcoes": [
+            "Margem entre 25% e 29,99%",
+            "Margem abaixo de 25% (extraordinária)",
+            "Desconto acima de 2% e até 5%",
+            "Desconto acima de 5% (excepcional)",
+            "Desconto que leva margem abaixo de 30%",
+            "Exposição de caixa acima de 10%",
+            "Exposição pro forma acima de 10%",
+            "Projeto abaixo do ticket desejado",
+            "Decisão estratégica",
+            "Outra"
+          ],
+          "obrigatorio": true
+        },
+        {
+          "id": "projeto_ref",
+          "rotulo": "Projeto / cliente relacionado",
+          "tipo": "texto",
+          "obrigatorio": false
+        },
+        {
+          "id": "margem_pct",
+          "rotulo": "Margem de contribuição final (%)",
+          "tipo": "numero",
+          "obrigatorio": false
+        },
+        {
+          "id": "desconto_pct",
+          "rotulo": "Desconto concedido (%)",
+          "tipo": "numero",
+          "obrigatorio": false
+        },
+        {
+          "id": "exposicao_pct",
+          "rotulo": "Exposição de caixa (%) — informar se corrente ou pro forma",
+          "tipo": "numero",
+          "obrigatorio": false
+        },
+        {
+          "id": "justificativa",
+          "rotulo": "Justificativa",
+          "tipo": "texto_longo",
+          "obrigatorio": true
+        },
+        {
+          "id": "impacto_financeiro",
+          "rotulo": "Impacto financeiro conhecido (R$)",
+          "tipo": "dinheiro",
+          "obrigatorio": false
+        },
+        {
+          "id": "autorizador",
+          "rotulo": "Responsável pela autorização",
+          "tipo": "texto",
+          "obrigatorio": false
+        },
+        {
+          "id": "data_decisao",
+          "rotulo": "Data da decisão",
+          "tipo": "data",
+          "obrigatorio": false
+        },
+        {
+          "id": "condicoes",
+          "rotulo": "Condições e data de revisão",
+          "tipo": "texto_longo",
+          "obrigatorio": false
+        }
       ]
     },
     {
@@ -209,28 +435,155 @@
       "nome": "Risco",
       "descricao": "Risco relevante para a VOICE, avaliado por probabilidade × impacto, com dono e plano de tratamento.",
       "responsavel": "gestor_riscos",
-      "estados": ["identificado", "avaliado", "em_tratamento", "monitorado", "aceito", "encerrado"],
+      "estados": [
+        "identificado",
+        "avaliado",
+        "em_tratamento",
+        "monitorado",
+        "aceito",
+        "encerrado"
+      ],
       "estado_inicial": "identificado",
-      "estados_finais": ["encerrado"],
+      "estados_finais": [
+        "encerrado"
+      ],
       "campos": [
-        { "id": "categoria", "rotulo": "Categoria", "tipo": "opcao", "opcoes": [
-          "Financeiro / caixa",
-          "Obra e cronograma do cliente",
-          "Técnico / integração de sistemas",
-          "Fornecedor, importação e câmbio",
-          "Pessoas-chave e certificações",
-          "Comercial / concentração em cliente ou arquiteto",
-          "Reputacional",
-          "Legal e contratual",
-          "Segurança da informação e LGPD"
-        ], "obrigatorio": true },
-        { "id": "probabilidade", "rotulo": "Probabilidade", "tipo": "opcao", "opcoes": ["Baixa", "Média", "Alta"], "obrigatorio": true },
-        { "id": "impacto", "rotulo": "Impacto", "tipo": "opcao", "opcoes": ["Baixo", "Médio", "Alto"], "obrigatorio": true },
-        { "id": "nivel", "rotulo": "Nível (matriz)", "tipo": "opcao", "opcoes": ["Baixo", "Médio", "Alto", "Crítico"], "obrigatorio": true },
-        { "id": "dono_risco", "rotulo": "Dono do risco", "tipo": "texto", "obrigatorio": true },
-        { "id": "plano_mitigacao", "rotulo": "Plano de tratamento", "tipo": "texto_longo", "obrigatorio": false },
-        { "id": "sinal_alerta", "rotulo": "Sinal de alerta (o que indica que está acontecendo)", "tipo": "texto", "obrigatorio": false },
-        { "id": "proxima_revisao", "rotulo": "Próxima revisão", "tipo": "data", "obrigatorio": false }
+        {
+          "id": "categoria",
+          "rotulo": "Categoria",
+          "tipo": "opcao",
+          "opcoes": [
+            "Financeiro / caixa",
+            "Obra e cronograma do cliente",
+            "Técnico / integração de sistemas",
+            "Fornecedor, importação e câmbio",
+            "Pessoas-chave e certificações",
+            "Comercial / concentração em cliente ou arquiteto",
+            "Reputacional",
+            "Legal e contratual",
+            "Segurança da informação e LGPD"
+          ],
+          "obrigatorio": true
+        },
+        {
+          "id": "probabilidade",
+          "rotulo": "Probabilidade",
+          "tipo": "opcao",
+          "opcoes": [
+            "Baixa",
+            "Média",
+            "Alta"
+          ],
+          "obrigatorio": true
+        },
+        {
+          "id": "impacto",
+          "rotulo": "Impacto",
+          "tipo": "opcao",
+          "opcoes": [
+            "Baixo",
+            "Médio",
+            "Alto"
+          ],
+          "obrigatorio": true
+        },
+        {
+          "id": "nivel",
+          "rotulo": "Nível (matriz)",
+          "tipo": "opcao",
+          "opcoes": [
+            "Baixo",
+            "Médio",
+            "Alto",
+            "Crítico"
+          ],
+          "obrigatorio": true
+        },
+        {
+          "id": "dono_risco",
+          "rotulo": "Dono do risco",
+          "tipo": "texto",
+          "obrigatorio": true
+        },
+        {
+          "id": "plano_mitigacao",
+          "rotulo": "Plano de tratamento",
+          "tipo": "texto_longo",
+          "obrigatorio": false
+        },
+        {
+          "id": "sinal_alerta",
+          "rotulo": "Sinal de alerta (o que indica que está acontecendo)",
+          "tipo": "texto",
+          "obrigatorio": false
+        },
+        {
+          "id": "proxima_revisao",
+          "rotulo": "Próxima revisão",
+          "tipo": "data",
+          "obrigatorio": false
+        }
+      ]
+    },
+    {
+      "tipo": "frente",
+      "nome": "Frente de trabalho",
+      "descricao": "Iniciativa em andamento da empresa (projeto interno, parceria, estrutura) com próxima ação, progresso e prazo. Visão do painel de frentes.",
+      "responsavel": "assessor_estrategia",
+      "estados": [
+        "pendente",
+        "planejada",
+        "em_andamento",
+        "concluida",
+        "cancelada"
+      ],
+      "estado_inicial": "pendente",
+      "estados_finais": [
+        "concluida",
+        "cancelada"
+      ],
+      "campos": [
+        {
+          "id": "categoria",
+          "rotulo": "Categoria",
+          "tipo": "texto",
+          "obrigatorio": true
+        },
+        {
+          "id": "prioridade",
+          "rotulo": "Prioridade",
+          "tipo": "opcao",
+          "opcoes": [
+            "Alta",
+            "Média",
+            "Baixa"
+          ],
+          "obrigatorio": true
+        },
+        {
+          "id": "descricao",
+          "rotulo": "Descrição",
+          "tipo": "texto_longo",
+          "obrigatorio": true
+        },
+        {
+          "id": "proxima_acao",
+          "rotulo": "Próxima ação",
+          "tipo": "texto_longo",
+          "obrigatorio": false
+        },
+        {
+          "id": "progresso",
+          "rotulo": "Progresso (%)",
+          "tipo": "numero",
+          "obrigatorio": false
+        },
+        {
+          "id": "dono",
+          "rotulo": "Dono da frente (pessoa)",
+          "tipo": "texto",
+          "obrigatorio": false
+        }
       ]
     }
   ],
@@ -315,14 +668,70 @@
     }
   ],
   "indicadores": [
-    { "id": "rocks_no_prazo", "nome": "Rocks concluídos no trimestre", "formula": "Rocks concluídos no trimestre / Rocks definidos no trimestre × 100", "meta": "≥ 80%", "frequencia": "trimestral", "status": "PROPOSTA" },
-    { "id": "scorecard_no_alvo", "nome": "Números do scorecard no alvo", "formula": "Números do scorecard semanal no alvo / total de números do scorecard × 100", "meta": "≥ 80% das semanas com ao menos 80% dos números no alvo", "frequencia": "semanal", "status": "PROPOSTA" },
-    { "id": "excecoes_registradas", "nome": "Exceções com registro completo", "formula": "Decisões de exceção com autorizador, justificativa, impacto financeiro e data preenchidos / total de exceções decididas × 100", "meta": "100% (Política V1 sec.14)", "frequencia": "mensal", "status": "POLITICA" },
-    { "id": "tempo_decisao_alcada", "nome": "Tempo de resposta de alçada", "formula": "Média de dias entre a criação do pedido de alçada e a data da decisão", "meta": "≤ 2 dias úteis", "frequencia": "semanal", "status": "PROPOSTA" },
-    { "id": "faturamento_abaixo_margem", "nome": "Faturamento de projetos abaixo de 30% de margem", "formula": "Faturamento de projetos com margem de contribuição < 30% / faturamento total do período × 100", "meta": "≤ 10% do faturamento no período (Política V1 sec.13)", "frequencia": "mensal", "status": "POLITICA" },
-    { "id": "margem_operacional", "nome": "Margem operacional da empresa", "formula": "Resultado operacional / receita líquida × 100 (a política fixa a meta; o detalhamento da fórmula é PROPOSTA a validar com o contador)", "meta": "12% a 15% ou superior (Política V1 sec.13)", "frequencia": "mensal", "status": "POLITICA" },
-    { "id": "reserva_caixa_meses", "nome": "Reserva de caixa em meses de custo fixo", "formula": "Reserva financeira disponível / custo fixo médio mensal", "meta": "≥ 3 meses (Política V1 sec.12)", "frequencia": "mensal", "status": "POLITICA" },
-    { "id": "riscos_criticos_sem_plano", "nome": "Riscos altos ou críticos sem plano", "formula": "Quantidade de riscos de nível Alto ou Crítico, não encerrados, sem plano de tratamento", "meta": "0", "frequencia": "mensal", "status": "PROPOSTA" }
+    {
+      "id": "rocks_no_prazo",
+      "nome": "Rocks concluídos no trimestre",
+      "formula": "Rocks concluídos no trimestre / Rocks definidos no trimestre × 100",
+      "meta": "≥ 80%",
+      "frequencia": "trimestral",
+      "status": "PROPOSTA"
+    },
+    {
+      "id": "scorecard_no_alvo",
+      "nome": "Números do scorecard no alvo",
+      "formula": "Números do scorecard semanal no alvo / total de números do scorecard × 100",
+      "meta": "≥ 80% das semanas com ao menos 80% dos números no alvo",
+      "frequencia": "semanal",
+      "status": "PROPOSTA"
+    },
+    {
+      "id": "excecoes_registradas",
+      "nome": "Exceções com registro completo",
+      "formula": "Decisões de exceção com autorizador, justificativa, impacto financeiro e data preenchidos / total de exceções decididas × 100",
+      "meta": "100% (Política V1 sec.14)",
+      "frequencia": "mensal",
+      "status": "POLITICA"
+    },
+    {
+      "id": "tempo_decisao_alcada",
+      "nome": "Tempo de resposta de alçada",
+      "formula": "Média de dias entre a criação do pedido de alçada e a data da decisão",
+      "meta": "≤ 2 dias úteis",
+      "frequencia": "semanal",
+      "status": "PROPOSTA"
+    },
+    {
+      "id": "faturamento_abaixo_margem",
+      "nome": "Faturamento de projetos abaixo de 30% de margem",
+      "formula": "Faturamento de projetos com margem de contribuição < 30% / faturamento total do período × 100",
+      "meta": "≤ 10% do faturamento no período (Política V1 sec.13)",
+      "frequencia": "mensal",
+      "status": "POLITICA"
+    },
+    {
+      "id": "margem_operacional",
+      "nome": "Margem operacional da empresa",
+      "formula": "Resultado operacional / receita líquida × 100 (a política fixa a meta; o detalhamento da fórmula é PROPOSTA a validar com o contador)",
+      "meta": "12% a 15% ou superior (Política V1 sec.13)",
+      "frequencia": "mensal",
+      "status": "POLITICA"
+    },
+    {
+      "id": "reserva_caixa_meses",
+      "nome": "Reserva de caixa em meses de custo fixo",
+      "formula": "Reserva financeira disponível / custo fixo médio mensal",
+      "meta": "≥ 3 meses (Política V1 sec.12)",
+      "frequencia": "mensal",
+      "status": "POLITICA"
+    },
+    {
+      "id": "riscos_criticos_sem_plano",
+      "nome": "Riscos altos ou críticos sem plano",
+      "formula": "Quantidade de riscos de nível Alto ou Crítico, não encerrados, sem plano de tratamento",
+      "meta": "0",
+      "frequencia": "mensal",
+      "status": "PROPOSTA"
+    }
   ],
   "sentinelas": [
     {
@@ -330,12 +739,37 @@
       "titulo": "Pedido de alçada sem decisão",
       "severidade": "ALTO",
       "status": "PROPOSTA",
-      "gatilho": { "tipo": "parado", "registro": "decisao", "filtros": [ { "campo": "estado", "em": ["solicitada", "em_analise"] } ], "dias": 2, "data_campo": "atualizado_em" },
+      "gatilho": {
+        "tipo": "parado",
+        "registro": "decisao",
+        "filtros": [
+          {
+            "campo": "estado",
+            "em": [
+              "solicitada",
+              "em_analise"
+            ]
+          }
+        ],
+        "dias": 2,
+        "data_campo": "atualizado_em"
+      },
       "mensagem": "O pedido de alçada '{{titulo}}' está sem movimentação há {{dias}} dias. Projeto e cliente esperam resposta; a política exige decisão expressa da direção.",
       "acoes": [
-        { "tipo": "tarefa", "titulo": "Levar pedido de alçada à CEO com análise do CFO", "papel": "relator_direcao", "prazo_dias": 1 },
-        { "tipo": "rascunho", "modelo": "pedido_analise_cfo" },
-        { "tipo": "notificar", "para": "CEO" }
+        {
+          "tipo": "tarefa",
+          "titulo": "Levar pedido de alçada à CEO com análise do CFO",
+          "papel": "relator_direcao",
+          "prazo_dias": 1
+        },
+        {
+          "tipo": "rascunho",
+          "modelo": "pedido_analise_cfo"
+        },
+        {
+          "tipo": "notificar",
+          "para": "CEO"
+        }
       ],
       "fonte": "PROPOSTA — padrão de mercado (EOS/Traction, IDS semanal); alçada definida na Política V1 sec.8 e sec.9"
     },
@@ -344,10 +778,25 @@
       "titulo": "Exceção aprovada sem responsável pela autorização",
       "severidade": "ALTO",
       "status": "POLITICA",
-      "gatilho": { "tipo": "faltando", "registro": "decisao", "campo": "autorizador", "filtros": [ { "campo": "estado", "igual": "aprovada" } ] },
+      "gatilho": {
+        "tipo": "faltando",
+        "registro": "decisao",
+        "campo": "autorizador",
+        "filtros": [
+          {
+            "campo": "estado",
+            "igual": "aprovada"
+          }
+        ]
+      },
       "mensagem": "A decisão '{{titulo}}' foi aprovada sem o responsável pela autorização registrado.",
       "acoes": [
-        { "tipo": "tarefa", "titulo": "Registrar quem autorizou a exceção", "papel": "relator_direcao", "prazo_dias": 1 }
+        {
+          "tipo": "tarefa",
+          "titulo": "Registrar quem autorizou a exceção",
+          "papel": "relator_direcao",
+          "prazo_dias": 1
+        }
       ],
       "fonte": "Política V1 sec.14"
     },
@@ -356,11 +805,39 @@
       "titulo": "Exceção sem impacto financeiro conhecido",
       "severidade": "ALTO",
       "status": "POLITICA",
-      "gatilho": { "tipo": "faltando", "registro": "decisao", "campo": "impacto_financeiro", "filtros": [ { "campo": "estado", "em": ["em_analise", "aprovada"] }, { "campo": "tipo_decisao", "nao_em": ["Decisão estratégica", "Outra"] } ] },
+      "gatilho": {
+        "tipo": "faltando",
+        "registro": "decisao",
+        "campo": "impacto_financeiro",
+        "filtros": [
+          {
+            "campo": "estado",
+            "em": [
+              "em_analise",
+              "aprovada"
+            ]
+          },
+          {
+            "campo": "tipo_decisao",
+            "nao_em": [
+              "Decisão estratégica",
+              "Outra"
+            ]
+          }
+        ]
+      },
       "mensagem": "A exceção '{{titulo}}' não tem impacto financeiro registrado. Sem esse número a direção não deve decidir.",
       "acoes": [
-        { "tipo": "tarefa", "titulo": "Calcular e registrar o impacto financeiro da exceção com o CFO", "papel": "relator_direcao", "prazo_dias": 1 },
-        { "tipo": "rascunho", "modelo": "pedido_analise_cfo" }
+        {
+          "tipo": "tarefa",
+          "titulo": "Calcular e registrar o impacto financeiro da exceção com o CFO",
+          "papel": "relator_direcao",
+          "prazo_dias": 1
+        },
+        {
+          "tipo": "rascunho",
+          "modelo": "pedido_analise_cfo"
+        }
       ],
       "fonte": "Política V1 sec.14"
     },
@@ -369,11 +846,42 @@
       "titulo": "Exceções de margem ou desconto se repetindo",
       "severidade": "MEDIO",
       "status": "PROPOSTA",
-      "gatilho": { "tipo": "contagem", "registro": "decisao", "filtros": [ { "campo": "estado", "igual": "aprovada" }, { "campo": "tipo_decisao", "em": ["Margem entre 25% e 29,99%", "Margem abaixo de 25% (extraordinária)", "Desconto acima de 2% e até 5%", "Desconto acima de 5% (excepcional)", "Desconto que leva margem abaixo de 30%"] } ], "janela_dias": 90, "data_campo": "data_decisao", "operador": ">=", "valor": 3 },
+      "gatilho": {
+        "tipo": "contagem",
+        "registro": "decisao",
+        "filtros": [
+          {
+            "campo": "estado",
+            "igual": "aprovada"
+          },
+          {
+            "campo": "tipo_decisao",
+            "em": [
+              "Margem entre 25% e 29,99%",
+              "Margem abaixo de 25% (extraordinária)",
+              "Desconto acima de 2% e até 5%",
+              "Desconto acima de 5% (excepcional)",
+              "Desconto que leva margem abaixo de 30%"
+            ]
+          }
+        ],
+        "janela_dias": 90,
+        "data_campo": "data_decisao",
+        "operador": ">=",
+        "valor": 3
+      },
       "mensagem": "{{total}} exceções de margem ou desconto aprovadas nos últimos 90 dias. Verificar se a exceção está virando regra.",
       "acoes": [
-        { "tipo": "tarefa", "titulo": "Incluir análise das exceções recorrentes na próxima reunião de direção", "papel": "analista_indicadores", "prazo_dias": 7 },
-        { "tipo": "notificar", "para": "CEO" }
+        {
+          "tipo": "tarefa",
+          "titulo": "Incluir análise das exceções recorrentes na próxima reunião de direção",
+          "papel": "analista_indicadores",
+          "prazo_dias": 7
+        },
+        {
+          "tipo": "notificar",
+          "para": "CEO"
+        }
       ],
       "fonte": "PROPOSTA — padrão de mercado (limite de 3 em 90 dias a calibrar); princípio da Política V1 sec.14"
     },
@@ -382,11 +890,33 @@
       "titulo": "Meta em risco sem atualização",
       "severidade": "MEDIO",
       "status": "PROPOSTA",
-      "gatilho": { "tipo": "parado", "registro": "meta", "filtros": [ { "campo": "estado", "em": ["em_risco", "atrasada"] } ], "dias": 7, "data_campo": "atualizado_em" },
+      "gatilho": {
+        "tipo": "parado",
+        "registro": "meta",
+        "filtros": [
+          {
+            "campo": "estado",
+            "em": [
+              "em_risco",
+              "atrasada"
+            ]
+          }
+        ],
+        "dias": 7,
+        "data_campo": "atualizado_em"
+      },
       "mensagem": "A meta '{{titulo}}' está em risco ou atrasada e não é atualizada há {{dias}} dias.",
       "acoes": [
-        { "tipo": "tarefa", "titulo": "Cobrar plano de recuperação do dono da meta e levar à lista de IDS", "papel": "assessor_estrategia", "prazo_dias": 2 },
-        { "tipo": "rascunho", "modelo": "cobranca_meta" }
+        {
+          "tipo": "tarefa",
+          "titulo": "Cobrar plano de recuperação do dono da meta e levar à lista de IDS",
+          "papel": "assessor_estrategia",
+          "prazo_dias": 2
+        },
+        {
+          "tipo": "rascunho",
+          "modelo": "cobranca_meta"
+        }
       ],
       "fonte": "PROPOSTA — padrão de mercado (EOS/Traction, revisão semanal de Rocks)"
     },
@@ -395,10 +925,28 @@
       "titulo": "Meta perto da data limite",
       "severidade": "MEDIO",
       "status": "PROPOSTA",
-      "gatilho": { "tipo": "vencido", "registro": "meta", "campo": "data_limite", "filtros": [ { "campo": "estado", "nao_em": ["rascunho"] } ], "antecedencia_dias": 14 },
+      "gatilho": {
+        "tipo": "vencido",
+        "registro": "meta",
+        "campo": "data_limite",
+        "filtros": [
+          {
+            "campo": "estado",
+            "nao_em": [
+              "rascunho"
+            ]
+          }
+        ],
+        "antecedencia_dias": 14
+      },
       "mensagem": "A meta '{{titulo}}' vence em até 14 dias (ou já venceu) e ainda não foi concluída.",
       "acoes": [
-        { "tipo": "tarefa", "titulo": "Confirmar com o dono se a meta será concluída ou descartada", "papel": "assessor_estrategia", "prazo_dias": 3 }
+        {
+          "tipo": "tarefa",
+          "titulo": "Confirmar com o dono se a meta será concluída ou descartada",
+          "papel": "assessor_estrategia",
+          "prazo_dias": 3
+        }
       ],
       "fonte": "PROPOSTA — padrão de mercado (EOS/Traction, Rocks de 90 dias)"
     },
@@ -407,11 +955,36 @@
       "titulo": "Risco alto ou crítico sem plano de tratamento",
       "severidade": "ALTO",
       "status": "PROPOSTA",
-      "gatilho": { "tipo": "faltando", "registro": "risco", "campo": "plano_mitigacao", "filtros": [ { "campo": "nivel", "em": ["Alto", "Crítico"] }, { "campo": "estado", "diferente": "encerrado" } ] },
+      "gatilho": {
+        "tipo": "faltando",
+        "registro": "risco",
+        "campo": "plano_mitigacao",
+        "filtros": [
+          {
+            "campo": "nivel",
+            "em": [
+              "Alto",
+              "Crítico"
+            ]
+          },
+          {
+            "campo": "estado",
+            "diferente": "encerrado"
+          }
+        ]
+      },
       "mensagem": "O risco '{{titulo}}' é de nível alto ou crítico e não tem plano de tratamento.",
       "acoes": [
-        { "tipo": "tarefa", "titulo": "Definir plano de tratamento com o dono do risco", "papel": "gestor_riscos", "prazo_dias": 3 },
-        { "tipo": "notificar", "para": "CEO" }
+        {
+          "tipo": "tarefa",
+          "titulo": "Definir plano de tratamento com o dono do risco",
+          "papel": "gestor_riscos",
+          "prazo_dias": 3
+        },
+        {
+          "tipo": "notificar",
+          "para": "CEO"
+        }
       ],
       "fonte": "PROPOSTA — padrão de mercado (ABNT NBR ISO 31000, matriz probabilidade × impacto)"
     },
@@ -420,13 +993,104 @@
       "titulo": "Revisão de risco vencida",
       "severidade": "MEDIO",
       "status": "PROPOSTA",
-      "gatilho": { "tipo": "vencido", "registro": "risco", "campo": "proxima_revisao", "filtros": [], "antecedencia_dias": 0 },
+      "gatilho": {
+        "tipo": "vencido",
+        "registro": "risco",
+        "campo": "proxima_revisao",
+        "filtros": [],
+        "antecedencia_dias": 0
+      },
       "mensagem": "A revisão do risco '{{titulo}}' está vencida.",
       "acoes": [
-        { "tipo": "tarefa", "titulo": "Revisar probabilidade, impacto e plano do risco", "papel": "gestor_riscos", "prazo_dias": 3 },
-        { "tipo": "rascunho", "modelo": "revisao_risco" }
+        {
+          "tipo": "tarefa",
+          "titulo": "Revisar probabilidade, impacto e plano do risco",
+          "papel": "gestor_riscos",
+          "prazo_dias": 3
+        },
+        {
+          "tipo": "rascunho",
+          "modelo": "revisao_risco"
+        }
       ],
       "fonte": "PROPOSTA — padrão de mercado (ABNT NBR ISO 31000, monitoramento e análise crítica)"
+    },
+    {
+      "id": "DIR_FRENTE_SEM_PROXIMA_ACAO",
+      "titulo": "Frente sem próxima ação",
+      "severidade": "MEDIO",
+      "status": "PROPOSTA",
+      "gatilho": {
+        "tipo": "faltando",
+        "registro": "frente",
+        "campo": "proxima_acao",
+        "filtros": []
+      },
+      "mensagem": "A frente '{{titulo}}' não tem próxima ação definida. Frente sem próximo passo concreto tende a parar.",
+      "acoes": [
+        {
+          "tipo": "tarefa",
+          "titulo": "Definir a próxima ação de '{{titulo}}'",
+          "papel": "assessor_estrategia",
+          "prazo_dias": 1
+        }
+      ],
+      "fonte": "PROPOSTA — GTD (David Allen): todo projeto precisa de uma próxima ação física definida"
+    },
+    {
+      "id": "DIR_FRENTE_PRAZO",
+      "titulo": "Frente vencendo ou vencida",
+      "severidade": "ALTO",
+      "status": "PROPOSTA",
+      "gatilho": {
+        "tipo": "vencido",
+        "registro": "frente",
+        "campo": "prazo",
+        "filtros": [],
+        "antecedencia_dias": 3
+      },
+      "mensagem": "A frente '{{titulo}}' vence em {{dias}} dia(s) ou já venceu e não está concluída.",
+      "acoes": [
+        {
+          "tipo": "tarefa",
+          "titulo": "Revisar prazo e plano de '{{titulo}}' com a CEO",
+          "papel": "assessor_estrategia",
+          "prazo_dias": 0
+        },
+        {
+          "tipo": "notificar",
+          "para": "CEO"
+        }
+      ],
+      "fonte": "PROPOSTA — campos do painel legado VOICE Gerenciamento de Frentes, adequados ao VEOS"
+    },
+    {
+      "id": "DIR_FRENTE_PARADA",
+      "titulo": "Frente em andamento parada",
+      "severidade": "MEDIO",
+      "status": "PROPOSTA",
+      "gatilho": {
+        "tipo": "parado",
+        "registro": "frente",
+        "filtros": [
+          {
+            "campo": "estado",
+            "igual": "em_andamento"
+          }
+        ],
+        "dias": 14,
+        "data_campo": "atualizado_em"
+      },
+      "mensagem": "A frente '{{titulo}}' está em andamento, mas sem atualização há {{dias}} dias.",
+      "acoes": [
+        {
+          "tipo": "tarefa",
+          "titulo": "Atualizar progresso e próxima ação de '{{titulo}}'",
+          "papel": "assessor_estrategia",
+          "prazo_dias": 2
+        }
+      ],
+      "fonte": "PROPOSTA — cadência quinzenal de revisão de iniciativas (EOS/Traction: Rocks)"
     }
   ],
   "modelos": [
@@ -471,25 +1135,89 @@
     "Ata da reunião mensal de saúde da empresa"
   ],
   "relacoes": [
-    { "setor": "financas", "fluxo": "Recebe o fechamento mensal, os indicadores da Política V1 sec.13 e a análise de margem e exposição para cada pedido de alçada; devolve decisões registradas." },
-    { "setor": "vendas", "fluxo": "Recebe pedidos de desconto acima de 2%, margem abaixo de 30% e projetos abaixo do ticket desejado; devolve decisão com justificativa registrada." },
-    { "setor": "operacoes", "fluxo": "Recebe pedidos de compra que elevam a exposição pro forma acima de 10% e riscos de obra; devolve autorização ou reprovação." },
-    { "setor": "pessoas", "fluxo": "Recebe indicadores de pessoas, certificações e riscos de pessoas-chave; devolve metas de capacitação e decisões de estrutura." },
-    { "setor": "marketing", "fluxo": "Recebe decisões sobre projetos-vitrine e sacrifício de margem classificado como investimento de marketing (Política V1 sec.8)." },
-    { "setor": "tecnologia", "fluxo": "Recebe riscos técnicos e de segurança da informação; devolve prioridades trimestrais." },
-    { "setor": "posvenda", "fluxo": "Recebe indicadores de satisfação, retrabalho e garantia para a revisão da política (Política V1 sec.15)." },
-    { "setor": "secretaria", "fluxo": "Apoia agenda, convocação e distribuição das atas da reunião de direção." }
+    {
+      "setor": "financas",
+      "fluxo": "Recebe o fechamento mensal, os indicadores da Política V1 sec.13 e a análise de margem e exposição para cada pedido de alçada; devolve decisões registradas."
+    },
+    {
+      "setor": "vendas",
+      "fluxo": "Recebe pedidos de desconto acima de 2%, margem abaixo de 30% e projetos abaixo do ticket desejado; devolve decisão com justificativa registrada."
+    },
+    {
+      "setor": "operacoes",
+      "fluxo": "Recebe pedidos de compra que elevam a exposição pro forma acima de 10% e riscos de obra; devolve autorização ou reprovação."
+    },
+    {
+      "setor": "pessoas",
+      "fluxo": "Recebe indicadores de pessoas, certificações e riscos de pessoas-chave; devolve metas de capacitação e decisões de estrutura."
+    },
+    {
+      "setor": "marketing",
+      "fluxo": "Recebe decisões sobre projetos-vitrine e sacrifício de margem classificado como investimento de marketing (Política V1 sec.8)."
+    },
+    {
+      "setor": "tecnologia",
+      "fluxo": "Recebe riscos técnicos e de segurança da informação; devolve prioridades trimestrais."
+    },
+    {
+      "setor": "posvenda",
+      "fluxo": "Recebe indicadores de satisfação, retrabalho e garantia para a revisão da política (Política V1 sec.15)."
+    },
+    {
+      "setor": "secretaria",
+      "fluxo": "Apoia agenda, convocação e distribuição das atas da reunião de direção."
+    }
   ],
   "fontes": [
-    { "titulo": "Política de Saúde Financeira da VOICE — V1 (sec.1, 2, 3, 4, 8, 9, 12, 13, 14, 15)", "tipo": "norma", "ref": "04 - PADROES/VOICE - Politica de Saude Financeira - V1.md" },
-    { "titulo": "Política de Saúde Financeira da VOICE — V1.1, clarificação de posição e exposição de caixa (sec.9, 10)", "tipo": "norma", "ref": "04 - PADROES/VOICE - Politica de Saude Financeira - V1.1 - Clarificacao de posicao e exposicao de caixa.md" },
-    { "titulo": "Traction / EOS — Level 10 Meeting", "tipo": "metodo", "ref": "https://www.eosworldwide.com/level-10-meeting" },
-    { "titulo": "Measure What Matters (OKR) — John Doerr", "tipo": "livro", "ref": "Doerr, J. Measure What Matters. Portfolio, 2018" },
-    { "titulo": "The Balanced Scorecard — Kaplan e Norton", "tipo": "livro", "ref": "Kaplan, R.; Norton, D. The Balanced Scorecard. HBS Press, 1996" },
-    { "titulo": "ABNT NBR ISO 31000 — Gestão de riscos", "tipo": "norma", "ref": "ABNT NBR ISO 31000:2018" },
-    { "titulo": "Skill risk-assessment (matriz e registro de riscos)", "tipo": "skill", "ref": "knowledge-work-plugins/operations/skills/risk-assessment/SKILL.md" },
-    { "titulo": "Skill status-report (status, riscos e decisões necessárias)", "tipo": "skill", "ref": "knowledge-work-plugins/operations/skills/status-report/SKILL.md" },
-    { "titulo": "Skill legal-risk-assessment (severidade × probabilidade e escalonamento)", "tipo": "skill", "ref": "knowledge-work-plugins/legal/skills/legal-risk-assessment/SKILL.md" },
-    { "titulo": "Skill business-pulse (painel executivo de pequena empresa)", "tipo": "skill", "ref": "knowledge-work-plugins/small-business/skills/business-pulse/SKILL.md" }
+    {
+      "titulo": "Política de Saúde Financeira da VOICE — V1 (sec.1, 2, 3, 4, 8, 9, 12, 13, 14, 15)",
+      "tipo": "norma",
+      "ref": "04 - PADROES/VOICE - Politica de Saude Financeira - V1.md"
+    },
+    {
+      "titulo": "Política de Saúde Financeira da VOICE — V1.1, clarificação de posição e exposição de caixa (sec.9, 10)",
+      "tipo": "norma",
+      "ref": "04 - PADROES/VOICE - Politica de Saude Financeira - V1.1 - Clarificacao de posicao e exposicao de caixa.md"
+    },
+    {
+      "titulo": "Traction / EOS — Level 10 Meeting",
+      "tipo": "metodo",
+      "ref": "https://www.eosworldwide.com/level-10-meeting"
+    },
+    {
+      "titulo": "Measure What Matters (OKR) — John Doerr",
+      "tipo": "livro",
+      "ref": "Doerr, J. Measure What Matters. Portfolio, 2018"
+    },
+    {
+      "titulo": "The Balanced Scorecard — Kaplan e Norton",
+      "tipo": "livro",
+      "ref": "Kaplan, R.; Norton, D. The Balanced Scorecard. HBS Press, 1996"
+    },
+    {
+      "titulo": "ABNT NBR ISO 31000 — Gestão de riscos",
+      "tipo": "norma",
+      "ref": "ABNT NBR ISO 31000:2018"
+    },
+    {
+      "titulo": "Skill risk-assessment (matriz e registro de riscos)",
+      "tipo": "skill",
+      "ref": "knowledge-work-plugins/operations/skills/risk-assessment/SKILL.md"
+    },
+    {
+      "titulo": "Skill status-report (status, riscos e decisões necessárias)",
+      "tipo": "skill",
+      "ref": "knowledge-work-plugins/operations/skills/status-report/SKILL.md"
+    },
+    {
+      "titulo": "Skill legal-risk-assessment (severidade × probabilidade e escalonamento)",
+      "tipo": "skill",
+      "ref": "knowledge-work-plugins/legal/skills/legal-risk-assessment/SKILL.md"
+    },
+    {
+      "titulo": "Skill business-pulse (painel executivo de pequena empresa)",
+      "tipo": "skill",
+      "ref": "knowledge-work-plugins/small-business/skills/business-pulse/SKILL.md"
+    }
   ]
 }

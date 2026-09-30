@@ -1,7 +1,7 @@
 // Ferramentas do CFO: Calculadora de Precos e Negociacao ao Vivo. Calculo local, a cada
 // digitacao, pela Politica V1 (MC com provisao de 2%, faixas 35/30/25, alcada de desconto,
 // ticket como meta) e Simples Nacional (LC 123). Nada e gravado nem enviado daqui.
-import { FONTE_POLITICA, FONTE_SIMPLES, SIMPLES, aliquotaSimples, anexoPorFatorR, calculadora, negociacao } from "../../domain/precificacao.js";
+import { FONTE_POLITICA, FONTE_SIMPLES, aliquotaSimples, anexoPorFatorR, calculadora, negociacao, paraProposta } from "../../domain/precificacao.js";
 import { parseMoneyInput } from "../../domain/controls.js";
 import { formatBRL, toScaled } from "../../domain/format.js";
 import { clear, field, h, method, panel, stamp, stat } from "../dom.js";
@@ -172,6 +172,8 @@ export function telaCalculadora(root) {
 export function telaNegociacao(root, fontes = null) {
   const cliente = h("input", { class: "input", id: "neg-cliente", type: "text", autocomplete: "off" });
   const tabela = inp("neg-tabela");
+  const referencia = h("input", { class: "input", id: "neg-ref", type: "text", autocomplete: "off", placeholder: "Ex.: EST-000123" });
+  const condicao = h("input", { class: "input", id: "neg-condicao", type: "text", autocomplete: "off", placeholder: "Ex.: 30% na assinatura, 70% por fase" });
   const descModo = sel("neg-desc-modo", [["pct", "%"], ["rs", "R$"]], "pct");
   const descValor = inp("neg-desc", { value: "0" });
   const linhasCusto = h("tbody");
@@ -225,6 +227,7 @@ export function telaNegociacao(root, fontes = null) {
         cliente.value = o.cliente ?? "";
         const sub = money((o.subtotal ?? o.total ?? "0").replace(".", ",")), tot = money((o.total ?? "0").replace(".", ","));
         tabela.value = decimalBR(o.subtotal ?? o.total ?? "0");
+        referencia.value = o.numero ?? "";
         descModo.value = "rs";
         descValor.value = sub > tot ? brl(sub - tot).replace("R$", "").trim() : "0";
         clear(linhasCusto);
@@ -239,6 +242,29 @@ export function telaNegociacao(root, fontes = null) {
     busca.addEventListener("keydown", (e) => { if (e.key === "Enter") { e.preventDefault(); carregar(); } });
     return panel({ title: "Orçamentos do Zoho Books", subtitle: "Importa cliente, preço, desconto e itens com o preço de compra do cadastro. Nada é alterado no Zoho.", actions: buscar },
       h("div", { class: "form-grid" }, field("zoho-busca", "Buscar", busca), field("zoho-status", "Situação", status)), lista);
+  }
+
+  function botaoSalvar(r) {
+    if (!fontes?.salvarProposta) return null;
+    const out = h("div", { class: "stack-s", role: "status" });
+    const b = h("button", { class: "btn btn-primary", type: "button" }, "Salvar como proposta no Comercial");
+    b.addEventListener("click", async () => {
+      clear(out);
+      let reg;
+      try { reg = paraProposta(r, { cliente: cliente.value, referencia: referencia.value, condicao: condicao.value }); } catch (e) { return out.append(h("p", { class: "field-error" }, e.message)); }
+      b.disabled = true;
+      try {
+        const res = await fontes.salvarProposta(reg);
+        const al = res.alertas_do_registro ?? [];
+        out.append(h("p", { class: "notice notice-ok" }, `Proposta salva no Comercial (${reg.estado === "aguardando_direcao" ? "aguardando a direção" : "rascunho"}). `, h("a", { href: "#/setor/vendas/registros" }, "Abrir no Comercial")),
+          al.length ? h("ul", { class: "list-plain stack-s" }, al.map((a) => h("li", null, stamp(a.severidade, a.severidade === "CRITICO" || a.severidade === "ALTO" ? "risk" : "warn"), " ", h("strong", null, a.titulo), h("p", { class: "field-hint" }, a.mensagem)))) : null,
+          reg.estado === "aguardando_direcao" ? h("p", { class: "field-hint" }, "O Radar avisa a direção: a alçada desta proposta exige aprovação.") : null);
+      } catch (e) {
+        b.disabled = false;
+        out.append(h("p", { class: "field-error" }, `Não foi possível salvar: ${e.message}`));
+      }
+    });
+    return h("div", { class: "stack-s" }, h("div", { class: "row" }, b), out);
   }
 
   function calcular() {
@@ -279,6 +305,7 @@ export function telaNegociacao(root, fontes = null) {
           stat("Preço negociado", brl(r.liquido)),
           stat("Custos adicionais", brl(r.custoExtras), "% sobre o preço já com desconto")]),
         listaExigencias(r),
+        botaoSalvar(r),
         method("Fórmulas e fonte",
           "Preço negociado = tabela − desconto. Custo adicional em % incide sobre o preço negociado.",
           "Receita de produtos e de serviços é rateada pela participação de cada um no custo direto; cada parte paga a alíquota do seu anexo.",
@@ -300,7 +327,9 @@ export function telaNegociacao(root, fontes = null) {
             field("neg-cliente", "Cliente", cliente),
             field("neg-tabela", "Preço de tabela (R$)", tabela),
             field("neg-desc-modo", "Desconto em", descModo),
-            field("neg-desc", "Desconto", descValor, "Política V1: até 2% com MC ≥ 32% é autonomia comercial; acima disso, direção."))),
+            field("neg-desc", "Desconto", descValor, "Política V1: até 2% com MC ≥ 32% é autonomia comercial; acima disso, direção."),
+            field("neg-ref", "Referência da oportunidade", referencia, "Número do orçamento ou da oportunidade."),
+            field("neg-condicao", "Condição de pagamento", condicao))),
         panel({ title: "Custos de compra e execução", subtitle: "Custo direto de cada item (sem imposto de venda).", actions: botao("+ Custo", () => novoCusto()) },
           h("div", { class: "table-wrap" }, h("table", { class: "table" }, h("thead", null, h("tr", null, ["Tipo", "Descrição", "Qtd", "Custo unit. (R$)", ""].map((t) => h("th", { scope: "col" }, t)))), linhasCusto))),
         panel({ title: "Custos adicionais", subtitle: "Comissões, frete, deslocamento. Em %, incide sobre o preço já com desconto.", actions: botao("+ Adicional", novoExtra) },

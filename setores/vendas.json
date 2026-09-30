@@ -71,7 +71,11 @@
         "Agendar visitas técnicas/briefings para o consultor.",
         "Manter lead e parceiro atualizados no VEOS."
       ],
-      "indicadores": ["leads_novos", "tempo_primeira_resposta", "taxa_qualificacao"]
+      "indicadores": [
+        "leads_novos",
+        "tempo_primeira_resposta",
+        "taxa_qualificacao"
+      ]
     },
     {
       "papel": "consultor",
@@ -83,7 +87,12 @@
         "Manter próximo passo e data em cada oportunidade aberta.",
         "Fazer a passagem formal do projeto ganho para Operações e Financeiro."
       ],
-      "indicadores": ["taxa_conversao_proposta", "ticket_medio", "margem_media_propostas", "ciclo_venda"]
+      "indicadores": [
+        "taxa_conversao_proposta",
+        "ticket_medio",
+        "margem_media_propostas",
+        "ciclo_venda"
+      ]
     },
     {
       "papel": "projetista",
@@ -94,7 +103,10 @@
         "Montar a planilha de custos diretos e a margem de contribuição conforme a fórmula oficial (Política V1 sec.4 e sec.5), incluindo provisão de risco de 2% (sec.6).",
         "Propor alternativas de escopo e equipamento antes de qualquer desconto."
       ],
-      "indicadores": ["margem_media_propostas", "vendas_abaixo_30"]
+      "indicadores": [
+        "margem_media_propostas",
+        "vendas_abaixo_30"
+      ]
     },
     {
       "papel": "gestor_parceiros",
@@ -106,7 +118,9 @@
         "Organizar, com Marketing, visitas ao showroom e encontros com escritórios.",
         "Acompanhar concentração de vendas por parceiro."
       ],
-      "indicadores": ["indicacoes_parceiros"]
+      "indicadores": [
+        "indicacoes_parceiros"
+      ]
     },
     {
       "papel": "assistente_comercial",
@@ -117,7 +131,9 @@
         "Reunir documentos de fechamento (contrato, dados do cliente, condição de pagamento).",
         "Montar o dossiê de passagem para Operações e Financeiro."
       ],
-      "indicadores": ["ciclo_venda"]
+      "indicadores": [
+        "ciclo_venda"
+      ]
     }
   ],
   "processos": [
@@ -126,13 +142,48 @@
       "nome": "Funil de projetos",
       "descricao": "Do primeiro contato até a passagem do projeto ganho para Operações e Financeiro. Cada etapa tem critério de saída objetivo, para que o pipeline reflita a realidade.",
       "etapas": [
-        { "id": "prospeccao", "nome": "Prospecção e entrada de lead", "responsavel": "sdr", "criterio_saida": "Lead registrado com origem, contato, tipo de imóvel e parceiro indicador (se houver), respondido no mesmo dia útil." },
-        { "id": "qualificacao", "nome": "Qualificação", "responsavel": "sdr", "criterio_saida": "Perfil compatível com projeto premium, fase da obra conhecida, decisor identificado e visita/briefing agendado; ou lead desqualificado com motivo." },
-        { "id": "visita_briefing", "nome": "Visita técnica / briefing", "responsavel": "consultor", "criterio_saida": "Briefing SPIN registrado (sistemas desejados, ambientes, rotina da família, restrições do arquiteto), plantas recebidas e expectativa de investimento conversada." },
-        { "id": "projeto_proposta", "nome": "Projeto preliminar e proposta", "responsavel": "projetista", "criterio_saida": "Proposta com margem calculada pela fórmula oficial, faixa de margem classificada, condição de pagamento de referência e, se fora da faixa normal, aprovação da direção registrada; proposta enviada." },
-        { "id": "negociacao", "nome": "Negociação", "responsavel": "consultor", "criterio_saida": "Objeções tratadas na ordem da Política (escopo, equipamento, pagamento, benefício, fase e só depois preço), margem recalculada a cada concessão e aceite verbal do cliente." },
-        { "id": "fechamento", "nome": "Fechamento", "responsavel": "consultor", "criterio_saida": "Contrato assinado e entrada (referência 50%) confirmada com Finanças; oportunidade marcada como ganha com data de ganho." },
-        { "id": "passagem", "nome": "Passagem para Operações e Financeiro", "responsavel": "assistente_comercial", "criterio_saida": "Reunião de passagem feita; dossiê com escopo vendido, plantas, contatos do arquiteto e da obra, cronograma de fases e plano de recebimento entregue; data de passagem registrada." }
+        {
+          "id": "prospeccao",
+          "nome": "Prospecção e entrada de lead",
+          "responsavel": "sdr",
+          "criterio_saida": "Lead registrado com origem, contato, tipo de imóvel e parceiro indicador (se houver), respondido no mesmo dia útil."
+        },
+        {
+          "id": "qualificacao",
+          "nome": "Qualificação",
+          "responsavel": "sdr",
+          "criterio_saida": "Perfil compatível com projeto premium, fase da obra conhecida, decisor identificado e visita/briefing agendado; ou lead desqualificado com motivo."
+        },
+        {
+          "id": "visita_briefing",
+          "nome": "Visita técnica / briefing",
+          "responsavel": "consultor",
+          "criterio_saida": "Briefing SPIN registrado (sistemas desejados, ambientes, rotina da família, restrições do arquiteto), plantas recebidas e expectativa de investimento conversada."
+        },
+        {
+          "id": "projeto_proposta",
+          "nome": "Projeto preliminar e proposta",
+          "responsavel": "projetista",
+          "criterio_saida": "Proposta com margem calculada pela fórmula oficial, faixa de margem classificada, condição de pagamento de referência e, se fora da faixa normal, aprovação da direção registrada; proposta enviada."
+        },
+        {
+          "id": "negociacao",
+          "nome": "Negociação",
+          "responsavel": "consultor",
+          "criterio_saida": "Objeções tratadas na ordem da Política (escopo, equipamento, pagamento, benefício, fase e só depois preço), margem recalculada a cada concessão e aceite verbal do cliente."
+        },
+        {
+          "id": "fechamento",
+          "nome": "Fechamento",
+          "responsavel": "consultor",
+          "criterio_saida": "Contrato assinado e entrada (referência 50%) confirmada com Finanças; oportunidade marcada como ganha com data de ganho."
+        },
+        {
+          "id": "passagem",
+          "nome": "Passagem para Operações e Financeiro",
+          "responsavel": "assistente_comercial",
+          "criterio_saida": "Reunião de passagem feita; dossiê com escopo vendido, plantas, contatos do arquiteto e da obra, cronograma de fases e plano de recebimento entregue; data de passagem registrada."
+        }
       ]
     },
     {
@@ -140,10 +191,30 @@
       "nome": "Prospecção ativa e reativação",
       "descricao": "Motor de geração de demanda próprio do Comercial, independente de campanhas: base de arquitetos/parceiros, construtoras com obras em andamento e clientes antigos com potencial de ampliação ou atualização.",
       "etapas": [
-        { "id": "lista", "nome": "Montar a lista da semana", "responsavel": "sdr", "criterio_saida": "Lista com pelo menos 20 contatos: parceiros sem contato recente, construtoras com lançamentos e clientes com projeto entregue há mais de 2 anos." },
-        { "id": "abordagem", "nome": "Abordagem personalizada", "responsavel": "sdr", "criterio_saida": "Mensagem enviada citando algo concreto (projeto anterior, obra em andamento, novidade tecnológica relevante), registrada no lead ou no parceiro." },
-        { "id": "cadencia", "nome": "Cadência de acompanhamento", "responsavel": "sdr", "criterio_saida": "Até 4 toques em 3 semanas alternando WhatsApp, e-mail e ligação; resposta positiva vira lead qualificado ou visita agendada." },
-        { "id": "retorno_parceiro", "nome": "Retorno ao parceiro", "responsavel": "gestor_parceiros", "criterio_saida": "Parceiro informado do resultado da indicação e próximo contato agendado." }
+        {
+          "id": "lista",
+          "nome": "Montar a lista da semana",
+          "responsavel": "sdr",
+          "criterio_saida": "Lista com pelo menos 20 contatos: parceiros sem contato recente, construtoras com lançamentos e clientes com projeto entregue há mais de 2 anos."
+        },
+        {
+          "id": "abordagem",
+          "nome": "Abordagem personalizada",
+          "responsavel": "sdr",
+          "criterio_saida": "Mensagem enviada citando algo concreto (projeto anterior, obra em andamento, novidade tecnológica relevante), registrada no lead ou no parceiro."
+        },
+        {
+          "id": "cadencia",
+          "nome": "Cadência de acompanhamento",
+          "responsavel": "sdr",
+          "criterio_saida": "Até 4 toques em 3 semanas alternando WhatsApp, e-mail e ligação; resposta positiva vira lead qualificado ou visita agendada."
+        },
+        {
+          "id": "retorno_parceiro",
+          "nome": "Retorno ao parceiro",
+          "responsavel": "gestor_parceiros",
+          "criterio_saida": "Parceiro informado do resultado da indicação e próximo contato agendado."
+        }
       ]
     },
     {
@@ -151,9 +222,24 @@
       "nome": "Aprovação de margem e desconto",
       "descricao": "Aplicação literal das seções 3, 8 e 9 da Política de Saúde Financeira V1. Nenhuma proposta fora da faixa normal é enviada sem registro de aprovação e justificativa.",
       "etapas": [
-        { "id": "calculo", "nome": "Cálculo da margem", "responsavel": "projetista", "criterio_saida": "Margem de contribuição calculada sobre a receita líquida, com custos diretos e provisão de 2%, e faixa classificada (VERDE, ACEITÁVEL, ATENÇÃO, NÃO APROVADO)." },
-        { "id": "enquadramento", "nome": "Enquadramento de desconto", "responsavel": "consultor", "criterio_saida": "Faixa de desconto registrada: até 2% com margem ≥ 32% (autonomia comercial); acima de 2% até 5% ou margem < 30% (direção); acima de 5% (nova análise financeira integral)." },
-        { "id": "aprovacao", "nome": "Aprovação da direção quando exigida", "responsavel": "consultor", "criterio_saida": "Nome de quem aprovou, justificativa e impacto financeiro registrados na proposta (Política V1 sec.14)." }
+        {
+          "id": "calculo",
+          "nome": "Cálculo da margem",
+          "responsavel": "projetista",
+          "criterio_saida": "Margem de contribuição calculada sobre a receita líquida, com custos diretos e provisão de 2%, e faixa classificada (VERDE, ACEITÁVEL, ATENÇÃO, NÃO APROVADO)."
+        },
+        {
+          "id": "enquadramento",
+          "nome": "Enquadramento de desconto",
+          "responsavel": "consultor",
+          "criterio_saida": "Faixa de desconto registrada: até 2% com margem ≥ 32% (autonomia comercial); acima de 2% até 5% ou margem < 30% (direção); acima de 5% (nova análise financeira integral)."
+        },
+        {
+          "id": "aprovacao",
+          "nome": "Aprovação da direção quando exigida",
+          "responsavel": "consultor",
+          "criterio_saida": "Nome de quem aprovou, justificativa e impacto financeiro registrados na proposta (Política V1 sec.14)."
+        }
       ]
     }
   ],
@@ -163,21 +249,121 @@
       "nome": "Lead",
       "descricao": "Contato ainda não qualificado: indicação de arquiteto, cliente antigo, visitante do showroom, formulário do site ou prospecção ativa.",
       "responsavel": "sdr",
-      "estados": ["novo", "em_contato", "qualificado", "desqualificado", "convertido"],
+      "estados": [
+        "novo",
+        "em_contato",
+        "qualificado",
+        "desqualificado",
+        "convertido"
+      ],
       "estado_inicial": "novo",
-      "estados_finais": ["desqualificado", "convertido"],
+      "estados_finais": [
+        "desqualificado",
+        "convertido"
+      ],
       "campos": [
-        { "id": "nome_contato", "rotulo": "Nome do contato", "tipo": "texto", "obrigatorio": true },
-        { "id": "telefone", "rotulo": "Telefone / WhatsApp", "tipo": "telefone", "obrigatorio": true },
-        { "id": "email", "rotulo": "E-mail", "tipo": "email", "obrigatorio": false },
-        { "id": "origem", "rotulo": "Origem", "tipo": "opcao", "opcoes": ["indicacao_arquiteto", "indicacao_designer", "indicacao_construtora", "indicacao_cliente", "cliente_antigo_reativacao", "prospeccao_ativa", "site", "instagram", "showroom_evento", "outro"], "obrigatorio": true },
-        { "id": "parceiro_indicador", "rotulo": "Parceiro indicador", "tipo": "texto", "obrigatorio": false },
-        { "id": "tipo_imovel", "rotulo": "Tipo de imóvel", "tipo": "opcao", "opcoes": ["casa_alto_padrao", "apartamento_alto_padrao", "casa_campo_praia", "escritorio_corporativo", "comercial_varejo", "hotelaria_restaurante", "outro"], "obrigatorio": true },
-        { "id": "fase_obra", "rotulo": "Fase da obra", "tipo": "opcao", "opcoes": ["projeto_arquitetonico", "fundacao_estrutura", "alvenaria_infraestrutura", "acabamento", "pronto_reforma"], "obrigatorio": false },
-        { "id": "cidade", "rotulo": "Cidade / bairro", "tipo": "texto", "obrigatorio": false },
-        { "id": "interesse", "rotulo": "Sistemas de interesse", "tipo": "texto_longo", "obrigatorio": false },
-        { "id": "motivo_desqualificacao", "rotulo": "Motivo da desqualificação", "tipo": "opcao", "opcoes": ["fora_do_perfil", "fora_da_regiao", "sem_orcamento", "so_produto_avulso", "sem_resposta", "outro"], "obrigatorio": false },
-        { "id": "proximo_contato", "rotulo": "Próximo contato", "tipo": "data", "obrigatorio": false }
+        {
+          "id": "nome_contato",
+          "rotulo": "Nome do contato",
+          "tipo": "texto",
+          "obrigatorio": true
+        },
+        {
+          "id": "telefone",
+          "rotulo": "Telefone / WhatsApp",
+          "tipo": "telefone",
+          "obrigatorio": true
+        },
+        {
+          "id": "email",
+          "rotulo": "E-mail",
+          "tipo": "email",
+          "obrigatorio": false
+        },
+        {
+          "id": "origem",
+          "rotulo": "Origem",
+          "tipo": "opcao",
+          "opcoes": [
+            "indicacao_arquiteto",
+            "indicacao_designer",
+            "indicacao_construtora",
+            "indicacao_cliente",
+            "cliente_antigo_reativacao",
+            "prospeccao_ativa",
+            "site",
+            "instagram",
+            "showroom_evento",
+            "outro"
+          ],
+          "obrigatorio": true
+        },
+        {
+          "id": "parceiro_indicador",
+          "rotulo": "Parceiro indicador",
+          "tipo": "texto",
+          "obrigatorio": false
+        },
+        {
+          "id": "tipo_imovel",
+          "rotulo": "Tipo de imóvel",
+          "tipo": "opcao",
+          "opcoes": [
+            "casa_alto_padrao",
+            "apartamento_alto_padrao",
+            "casa_campo_praia",
+            "escritorio_corporativo",
+            "comercial_varejo",
+            "hotelaria_restaurante",
+            "outro"
+          ],
+          "obrigatorio": true
+        },
+        {
+          "id": "fase_obra",
+          "rotulo": "Fase da obra",
+          "tipo": "opcao",
+          "opcoes": [
+            "projeto_arquitetonico",
+            "fundacao_estrutura",
+            "alvenaria_infraestrutura",
+            "acabamento",
+            "pronto_reforma"
+          ],
+          "obrigatorio": false
+        },
+        {
+          "id": "cidade",
+          "rotulo": "Cidade / bairro",
+          "tipo": "texto",
+          "obrigatorio": false
+        },
+        {
+          "id": "interesse",
+          "rotulo": "Sistemas de interesse",
+          "tipo": "texto_longo",
+          "obrigatorio": false
+        },
+        {
+          "id": "motivo_desqualificacao",
+          "rotulo": "Motivo da desqualificação",
+          "tipo": "opcao",
+          "opcoes": [
+            "fora_do_perfil",
+            "fora_da_regiao",
+            "sem_orcamento",
+            "so_produto_avulso",
+            "sem_resposta",
+            "outro"
+          ],
+          "obrigatorio": false
+        },
+        {
+          "id": "proximo_contato",
+          "rotulo": "Próximo contato",
+          "tipo": "data",
+          "obrigatorio": false
+        }
       ]
     },
     {
@@ -185,25 +371,137 @@
       "nome": "Oportunidade de projeto",
       "descricao": "Projeto em negociação com cliente qualificado, da visita técnica ao ganho ou perda.",
       "responsavel": "consultor",
-      "estados": ["qualificacao", "visita", "projeto", "proposta", "negociacao", "ganha", "perdida"],
+      "estados": [
+        "qualificacao",
+        "visita",
+        "projeto",
+        "proposta",
+        "negociacao",
+        "ganha",
+        "perdida"
+      ],
       "estado_inicial": "qualificacao",
-      "estados_finais": ["ganha", "perdida"],
+      "estados_finais": [
+        "ganha",
+        "perdida"
+      ],
       "campos": [
-        { "id": "cliente_nome", "rotulo": "Cliente", "tipo": "texto", "obrigatorio": true },
-        { "id": "parceiro_indicador", "rotulo": "Arquiteto / parceiro envolvido", "tipo": "texto", "obrigatorio": false },
-        { "id": "tipo_imovel", "rotulo": "Tipo de imóvel", "tipo": "opcao", "opcoes": ["casa_alto_padrao", "apartamento_alto_padrao", "casa_campo_praia", "escritorio_corporativo", "comercial_varejo", "hotelaria_restaurante", "outro"], "obrigatorio": true },
-        { "id": "fase_obra", "rotulo": "Fase da obra", "tipo": "opcao", "opcoes": ["projeto_arquitetonico", "fundacao_estrutura", "alvenaria_infraestrutura", "acabamento", "pronto_reforma"], "obrigatorio": true },
-        { "id": "escopo_sistemas", "rotulo": "Escopo de sistemas (briefing)", "tipo": "texto_longo", "obrigatorio": false },
-        { "id": "valor_estimado", "rotulo": "Valor estimado do projeto", "tipo": "dinheiro", "obrigatorio": true },
-        { "id": "decisor_identificado", "rotulo": "Decisor identificado", "tipo": "sim_nao", "obrigatorio": false },
-        { "id": "data_visita", "rotulo": "Data da visita técnica", "tipo": "data", "obrigatorio": false },
-        { "id": "proximo_passo", "rotulo": "Próximo passo", "tipo": "texto", "obrigatorio": true },
-        { "id": "data_proximo_passo", "rotulo": "Data do próximo passo", "tipo": "data", "obrigatorio": true },
-        { "id": "data_prevista_fechamento", "rotulo": "Previsão de fechamento", "tipo": "data", "obrigatorio": false },
-        { "id": "data_ganho", "rotulo": "Data do ganho", "tipo": "data", "obrigatorio": false },
-        { "id": "motivo_perda", "rotulo": "Motivo da perda", "tipo": "opcao", "opcoes": ["preco", "concorrente", "escopo_reduzido_pelo_cliente", "obra_adiada", "arquiteto_indicou_outro", "sem_retorno", "margem_inviavel", "outro"], "obrigatorio": false },
-        { "id": "data_passagem", "rotulo": "Data da passagem para Operações e Financeiro", "tipo": "data", "obrigatorio": false },
-        { "id": "excecao_ticket", "rotulo": "Justificativa de exceção ao ticket desejado", "tipo": "texto_longo", "obrigatorio": false }
+        {
+          "id": "cliente_nome",
+          "rotulo": "Cliente",
+          "tipo": "texto",
+          "obrigatorio": true
+        },
+        {
+          "id": "parceiro_indicador",
+          "rotulo": "Arquiteto / parceiro envolvido",
+          "tipo": "texto",
+          "obrigatorio": false
+        },
+        {
+          "id": "tipo_imovel",
+          "rotulo": "Tipo de imóvel",
+          "tipo": "opcao",
+          "opcoes": [
+            "casa_alto_padrao",
+            "apartamento_alto_padrao",
+            "casa_campo_praia",
+            "escritorio_corporativo",
+            "comercial_varejo",
+            "hotelaria_restaurante",
+            "outro"
+          ],
+          "obrigatorio": true
+        },
+        {
+          "id": "fase_obra",
+          "rotulo": "Fase da obra",
+          "tipo": "opcao",
+          "opcoes": [
+            "projeto_arquitetonico",
+            "fundacao_estrutura",
+            "alvenaria_infraestrutura",
+            "acabamento",
+            "pronto_reforma"
+          ],
+          "obrigatorio": true
+        },
+        {
+          "id": "escopo_sistemas",
+          "rotulo": "Escopo de sistemas (briefing)",
+          "tipo": "texto_longo",
+          "obrigatorio": false
+        },
+        {
+          "id": "valor_estimado",
+          "rotulo": "Valor estimado do projeto",
+          "tipo": "dinheiro",
+          "obrigatorio": true
+        },
+        {
+          "id": "decisor_identificado",
+          "rotulo": "Decisor identificado",
+          "tipo": "sim_nao",
+          "obrigatorio": false
+        },
+        {
+          "id": "data_visita",
+          "rotulo": "Data da visita técnica",
+          "tipo": "data",
+          "obrigatorio": false
+        },
+        {
+          "id": "proximo_passo",
+          "rotulo": "Próximo passo",
+          "tipo": "texto",
+          "obrigatorio": true
+        },
+        {
+          "id": "data_proximo_passo",
+          "rotulo": "Data do próximo passo",
+          "tipo": "data",
+          "obrigatorio": true
+        },
+        {
+          "id": "data_prevista_fechamento",
+          "rotulo": "Previsão de fechamento",
+          "tipo": "data",
+          "obrigatorio": false
+        },
+        {
+          "id": "data_ganho",
+          "rotulo": "Data do ganho",
+          "tipo": "data",
+          "obrigatorio": false
+        },
+        {
+          "id": "motivo_perda",
+          "rotulo": "Motivo da perda",
+          "tipo": "opcao",
+          "opcoes": [
+            "preco",
+            "concorrente",
+            "escopo_reduzido_pelo_cliente",
+            "obra_adiada",
+            "arquiteto_indicou_outro",
+            "sem_retorno",
+            "margem_inviavel",
+            "outro"
+          ],
+          "obrigatorio": false
+        },
+        {
+          "id": "data_passagem",
+          "rotulo": "Data da passagem para Operações e Financeiro",
+          "tipo": "data",
+          "obrigatorio": false
+        },
+        {
+          "id": "excecao_ticket",
+          "rotulo": "Justificativa de exceção ao ticket desejado",
+          "tipo": "texto_longo",
+          "obrigatorio": false
+        }
       ]
     },
     {
@@ -211,23 +509,117 @@
       "nome": "Proposta comercial",
       "descricao": "Versão de proposta de uma oportunidade, com margem de contribuição, desconto e aprovações conforme a Política V1.",
       "responsavel": "projetista",
-      "estados": ["rascunho", "analise_margem", "aguardando_direcao", "enviada", "revisao", "aceita", "recusada"],
+      "estados": [
+        "rascunho",
+        "analise_margem",
+        "aguardando_direcao",
+        "enviada",
+        "revisao",
+        "aceita",
+        "recusada"
+      ],
       "estado_inicial": "rascunho",
-      "estados_finais": ["aceita", "recusada"],
+      "estados_finais": [
+        "aceita",
+        "recusada"
+      ],
       "campos": [
-        { "id": "oportunidade_ref", "rotulo": "Oportunidade", "tipo": "texto", "obrigatorio": true },
-        { "id": "versao", "rotulo": "Versão", "tipo": "numero", "obrigatorio": true },
-        { "id": "valor_bruto", "rotulo": "Valor bruto vendido", "tipo": "dinheiro", "obrigatorio": true },
-        { "id": "desconto_percentual", "rotulo": "Desconto (%)", "tipo": "numero", "obrigatorio": false },
-        { "id": "faixa_desconto", "rotulo": "Faixa de desconto (Política sec.9)", "tipo": "opcao", "opcoes": ["sem_desconto", "ate_2_autonomia", "acima_2_ate_5_direcao", "acima_5_analise_integral"], "obrigatorio": true },
-        { "id": "margem_contribuicao_percentual", "rotulo": "Margem de contribuição (%)", "tipo": "numero", "obrigatorio": true },
-        { "id": "faixa_margem", "rotulo": "Faixa de margem (Política sec.3)", "tipo": "opcao", "opcoes": ["VERDE", "ACEITAVEL", "ATENCAO", "NAO_APROVADO"], "obrigatorio": true },
-        { "id": "aprovacao_direcao", "rotulo": "Aprovação da direção", "tipo": "opcao", "opcoes": ["nao_necessaria", "pendente", "aprovada", "negada"], "obrigatorio": true },
-        { "id": "aprovado_por", "rotulo": "Aprovado por", "tipo": "texto", "obrigatorio": false },
-        { "id": "justificativa_excecao", "rotulo": "Justificativa e impacto financeiro da exceção", "tipo": "texto_longo", "obrigatorio": false },
-        { "id": "condicao_pagamento", "rotulo": "Condição de pagamento", "tipo": "texto", "obrigatorio": true },
-        { "id": "data_envio", "rotulo": "Data de envio", "tipo": "data", "obrigatorio": false },
-        { "id": "validade", "rotulo": "Validade da proposta", "tipo": "data", "obrigatorio": false }
+        {
+          "id": "oportunidade_ref",
+          "rotulo": "Oportunidade",
+          "tipo": "texto",
+          "obrigatorio": true
+        },
+        {
+          "id": "versao",
+          "rotulo": "Versão",
+          "tipo": "numero",
+          "obrigatorio": true
+        },
+        {
+          "id": "valor_bruto",
+          "rotulo": "Valor bruto vendido",
+          "tipo": "dinheiro",
+          "obrigatorio": true
+        },
+        {
+          "id": "desconto_percentual",
+          "rotulo": "Desconto (%)",
+          "tipo": "numero",
+          "obrigatorio": false
+        },
+        {
+          "id": "faixa_desconto",
+          "rotulo": "Faixa de desconto (Política sec.9)",
+          "tipo": "opcao",
+          "opcoes": [
+            "sem_desconto",
+            "ate_2_autonomia",
+            "acima_2_ate_5_direcao",
+            "acima_5_analise_integral"
+          ],
+          "obrigatorio": true
+        },
+        {
+          "id": "margem_contribuicao_percentual",
+          "rotulo": "Margem de contribuição (%)",
+          "tipo": "numero",
+          "obrigatorio": true
+        },
+        {
+          "id": "faixa_margem",
+          "rotulo": "Faixa de margem (Política sec.3)",
+          "tipo": "opcao",
+          "opcoes": [
+            "VERDE",
+            "ACEITAVEL",
+            "ATENCAO",
+            "NAO_APROVADO"
+          ],
+          "obrigatorio": true
+        },
+        {
+          "id": "aprovacao_direcao",
+          "rotulo": "Aprovação da direção",
+          "tipo": "opcao",
+          "opcoes": [
+            "nao_necessaria",
+            "pendente",
+            "aprovada",
+            "negada"
+          ],
+          "obrigatorio": true
+        },
+        {
+          "id": "aprovado_por",
+          "rotulo": "Aprovado por",
+          "tipo": "texto",
+          "obrigatorio": false
+        },
+        {
+          "id": "justificativa_excecao",
+          "rotulo": "Justificativa e impacto financeiro da exceção",
+          "tipo": "texto_longo",
+          "obrigatorio": false
+        },
+        {
+          "id": "condicao_pagamento",
+          "rotulo": "Condição de pagamento",
+          "tipo": "texto",
+          "obrigatorio": true
+        },
+        {
+          "id": "data_envio",
+          "rotulo": "Data de envio",
+          "tipo": "data",
+          "obrigatorio": false
+        },
+        {
+          "id": "validade",
+          "rotulo": "Validade da proposta",
+          "tipo": "data",
+          "obrigatorio": false
+        }
       ]
     },
     {
@@ -235,20 +627,90 @@
       "nome": "Parceiro indicador",
       "descricao": "Arquiteto, designer de interiores, construtora ou engenheiro que indica clientes e influencia a especificação.",
       "responsavel": "gestor_parceiros",
-      "estados": ["prospectado", "ativo", "inativo", "encerrado"],
+      "estados": [
+        "prospectado",
+        "ativo",
+        "inativo",
+        "encerrado"
+      ],
       "estado_inicial": "prospectado",
-      "estados_finais": ["encerrado"],
+      "estados_finais": [
+        "encerrado"
+      ],
       "campos": [
-        { "id": "tipo_parceiro", "rotulo": "Tipo de parceiro", "tipo": "opcao", "opcoes": ["arquiteto", "designer_interiores", "construtora", "incorporadora", "engenheiro", "outro"], "obrigatorio": true },
-        { "id": "escritorio", "rotulo": "Escritório / empresa", "tipo": "texto", "obrigatorio": true },
-        { "id": "contato", "rotulo": "Pessoa de contato", "tipo": "texto", "obrigatorio": true },
-        { "id": "telefone", "rotulo": "Telefone / WhatsApp", "tipo": "telefone", "obrigatorio": false },
-        { "id": "email", "rotulo": "E-mail", "tipo": "email", "obrigatorio": false },
-        { "id": "nivel", "rotulo": "Nível (A/B/C)", "tipo": "opcao", "opcoes": ["A", "B", "C"], "obrigatorio": true },
-        { "id": "ultimo_contato", "rotulo": "Último contato", "tipo": "data", "obrigatorio": true },
-        { "id": "proximo_contato", "rotulo": "Próximo contato", "tipo": "data", "obrigatorio": false },
-        { "id": "indicacoes_12m", "rotulo": "Indicações nos últimos 12 meses", "tipo": "numero", "obrigatorio": false },
-        { "id": "acordo_comissao", "rotulo": "Acordo de comissão / reserva técnica (aprovado pela direção)", "tipo": "texto", "obrigatorio": false }
+        {
+          "id": "tipo_parceiro",
+          "rotulo": "Tipo de parceiro",
+          "tipo": "opcao",
+          "opcoes": [
+            "arquiteto",
+            "designer_interiores",
+            "construtora",
+            "incorporadora",
+            "engenheiro",
+            "outro"
+          ],
+          "obrigatorio": true
+        },
+        {
+          "id": "escritorio",
+          "rotulo": "Escritório / empresa",
+          "tipo": "texto",
+          "obrigatorio": true
+        },
+        {
+          "id": "contato",
+          "rotulo": "Pessoa de contato",
+          "tipo": "texto",
+          "obrigatorio": true
+        },
+        {
+          "id": "telefone",
+          "rotulo": "Telefone / WhatsApp",
+          "tipo": "telefone",
+          "obrigatorio": false
+        },
+        {
+          "id": "email",
+          "rotulo": "E-mail",
+          "tipo": "email",
+          "obrigatorio": false
+        },
+        {
+          "id": "nivel",
+          "rotulo": "Nível (A/B/C)",
+          "tipo": "opcao",
+          "opcoes": [
+            "A",
+            "B",
+            "C"
+          ],
+          "obrigatorio": true
+        },
+        {
+          "id": "ultimo_contato",
+          "rotulo": "Último contato",
+          "tipo": "data",
+          "obrigatorio": true
+        },
+        {
+          "id": "proximo_contato",
+          "rotulo": "Próximo contato",
+          "tipo": "data",
+          "obrigatorio": false
+        },
+        {
+          "id": "indicacoes_12m",
+          "rotulo": "Indicações nos últimos 12 meses",
+          "tipo": "numero",
+          "obrigatorio": false
+        },
+        {
+          "id": "acordo_comissao",
+          "rotulo": "Acordo de comissão / reserva técnica (aprovado pela direção)",
+          "tipo": "texto",
+          "obrigatorio": false
+        }
       ]
     }
   ],
@@ -328,16 +790,86 @@
     }
   ],
   "indicadores": [
-    { "id": "leads_novos", "nome": "Leads novos", "formula": "Quantidade de leads criados no período", "meta": "≥ 8 por semana", "frequencia": "semanal", "status": "PROPOSTA" },
-    { "id": "tempo_primeira_resposta", "nome": "Tempo até a primeira resposta", "formula": "Mediana das horas entre criação do lead e primeiro contato registrado", "meta": "≤ 4 horas úteis", "frequencia": "semanal", "status": "PROPOSTA" },
-    { "id": "taxa_qualificacao", "nome": "Taxa de qualificação", "formula": "Leads qualificados ou convertidos ÷ leads encerrados no período × 100", "meta": "≥ 40%", "frequencia": "mensal", "status": "PROPOSTA" },
-    { "id": "taxa_conversao_proposta", "nome": "Conversão de proposta em venda", "formula": "Oportunidades ganhas ÷ oportunidades que chegaram a proposta no período × 100", "meta": "≥ 30%", "frequencia": "mensal", "status": "PROPOSTA" },
-    { "id": "ticket_medio", "nome": "Ticket médio de projetos novos", "formula": "Soma do valor das oportunidades ganhas ÷ quantidade ganha", "meta": "≥ R$ 100.000,00 (meta desejada; não é bloqueio)", "frequencia": "mensal", "status": "POLITICA" },
-    { "id": "margem_media_propostas", "nome": "Margem de contribuição média das vendas", "formula": "Média ponderada pela receita líquida da margem de contribuição % das propostas aceitas", "meta": "≥ 35% (alvo); mínimo 30% para aprovação normal", "frequencia": "mensal", "status": "POLITICA" },
-    { "id": "vendas_abaixo_30", "nome": "Vendas abaixo de 30% de margem", "formula": "Faturamento de projetos com margem < 30% ÷ faturamento total do período × 100", "meta": "≤ 10% do faturamento", "frequencia": "mensal", "status": "POLITICA" },
-    { "id": "cobertura_pipeline", "nome": "Cobertura do pipeline", "formula": "Valor estimado das oportunidades abertas (visita a negociação) ÷ meta de vendas do próximo trimestre", "meta": "≥ 3×", "frequencia": "semanal", "status": "PROPOSTA" },
-    { "id": "ciclo_venda", "nome": "Ciclo de venda", "formula": "Mediana de dias entre criação da oportunidade e data do ganho", "meta": "≤ 60 dias", "frequencia": "mensal", "status": "PROPOSTA" },
-    { "id": "indicacoes_parceiros", "nome": "Indicações de parceiros", "formula": "Leads com origem indicação de arquiteto, designer ou construtora no período", "meta": "≥ 6 por mês", "frequencia": "mensal", "status": "PROPOSTA" }
+    {
+      "id": "leads_novos",
+      "nome": "Leads novos",
+      "formula": "Quantidade de leads criados no período",
+      "meta": "≥ 8 por semana",
+      "frequencia": "semanal",
+      "status": "PROPOSTA"
+    },
+    {
+      "id": "tempo_primeira_resposta",
+      "nome": "Tempo até a primeira resposta",
+      "formula": "Mediana das horas entre criação do lead e primeiro contato registrado",
+      "meta": "≤ 4 horas úteis",
+      "frequencia": "semanal",
+      "status": "PROPOSTA"
+    },
+    {
+      "id": "taxa_qualificacao",
+      "nome": "Taxa de qualificação",
+      "formula": "Leads qualificados ou convertidos ÷ leads encerrados no período × 100",
+      "meta": "≥ 40%",
+      "frequencia": "mensal",
+      "status": "PROPOSTA"
+    },
+    {
+      "id": "taxa_conversao_proposta",
+      "nome": "Conversão de proposta em venda",
+      "formula": "Oportunidades ganhas ÷ oportunidades que chegaram a proposta no período × 100",
+      "meta": "≥ 30%",
+      "frequencia": "mensal",
+      "status": "PROPOSTA"
+    },
+    {
+      "id": "ticket_medio",
+      "nome": "Ticket médio de projetos novos",
+      "formula": "Soma do valor das oportunidades ganhas ÷ quantidade ganha",
+      "meta": "≥ R$ 100.000,00 (meta desejada; não é bloqueio)",
+      "frequencia": "mensal",
+      "status": "POLITICA"
+    },
+    {
+      "id": "margem_media_propostas",
+      "nome": "Margem de contribuição média das vendas",
+      "formula": "Média ponderada pela receita líquida da margem de contribuição % das propostas aceitas",
+      "meta": "≥ 35% (alvo); mínimo 30% para aprovação normal",
+      "frequencia": "mensal",
+      "status": "POLITICA"
+    },
+    {
+      "id": "vendas_abaixo_30",
+      "nome": "Vendas abaixo de 30% de margem",
+      "formula": "Faturamento de projetos com margem < 30% ÷ faturamento total do período × 100",
+      "meta": "≤ 10% do faturamento",
+      "frequencia": "mensal",
+      "status": "POLITICA"
+    },
+    {
+      "id": "cobertura_pipeline",
+      "nome": "Cobertura do pipeline",
+      "formula": "Valor estimado das oportunidades abertas (visita a negociação) ÷ meta de vendas do próximo trimestre",
+      "meta": "≥ 3×",
+      "frequencia": "semanal",
+      "status": "PROPOSTA"
+    },
+    {
+      "id": "ciclo_venda",
+      "nome": "Ciclo de venda",
+      "formula": "Mediana de dias entre criação da oportunidade e data do ganho",
+      "meta": "≤ 60 dias",
+      "frequencia": "mensal",
+      "status": "PROPOSTA"
+    },
+    {
+      "id": "indicacoes_parceiros",
+      "nome": "Indicações de parceiros",
+      "formula": "Leads com origem indicação de arquiteto, designer ou construtora no período",
+      "meta": "≥ 6 por mês",
+      "frequencia": "mensal",
+      "status": "PROPOSTA"
+    }
   ],
   "sentinelas": [
     {
@@ -348,7 +880,12 @@
       "gatilho": {
         "tipo": "contagem",
         "registro": "oportunidade",
-        "filtros": [{ "campo": "estado", "igual": "ganha" }],
+        "filtros": [
+          {
+            "campo": "estado",
+            "igual": "ganha"
+          }
+        ],
         "janela_dias": 30,
         "data_campo": "data_ganho",
         "operador": "<",
@@ -356,13 +893,40 @@
       },
       "mensagem": "Faltando venda: {{total}} oportunidade(s) ganha(s) nos últimos 30 dias. Acionar prospecção em parceiros e clientes antigos e follow-up de todas as propostas abertas.",
       "acoes": [
-        { "tipo": "tarefa", "titulo": "Prospecção emergencial: 20 contatos em arquitetos nível A/B e clientes antigos nesta semana", "papel": "sdr", "prazo_dias": 2 },
-        { "tipo": "tarefa", "titulo": "Follow-up de todas as propostas enviadas e negociações abertas", "papel": "consultor", "prazo_dias": 1 },
-        { "tipo": "tarefa", "titulo": "Ligar para os 5 parceiros que mais indicaram nos últimos 12 meses", "papel": "gestor_parceiros", "prazo_dias": 3 },
-        { "tipo": "rascunho", "modelo": "email_parceiro_arquiteto" },
-        { "tipo": "rascunho", "modelo": "reativacao_cliente_whatsapp" },
-        { "tipo": "notificar", "para": "direcao" },
-        { "tipo": "notificar", "para": "CSO" }
+        {
+          "tipo": "tarefa",
+          "titulo": "Prospecção emergencial: 20 contatos em arquitetos nível A/B e clientes antigos nesta semana",
+          "papel": "sdr",
+          "prazo_dias": 2
+        },
+        {
+          "tipo": "tarefa",
+          "titulo": "Follow-up de todas as propostas enviadas e negociações abertas",
+          "papel": "consultor",
+          "prazo_dias": 1
+        },
+        {
+          "tipo": "tarefa",
+          "titulo": "Ligar para os 5 parceiros que mais indicaram nos últimos 12 meses",
+          "papel": "gestor_parceiros",
+          "prazo_dias": 3
+        },
+        {
+          "tipo": "rascunho",
+          "modelo": "email_parceiro_arquiteto"
+        },
+        {
+          "tipo": "rascunho",
+          "modelo": "reativacao_cliente_whatsapp"
+        },
+        {
+          "tipo": "notificar",
+          "para": "direcao"
+        },
+        {
+          "tipo": "notificar",
+          "para": "CSO"
+        }
       ],
       "fonte": "PROPOSTA — padrão de mercado (Predictable Revenue: métricas de entrada do funil)"
     },
@@ -375,7 +939,17 @@
         "tipo": "soma",
         "registro": "oportunidade",
         "campo": "valor_estimado",
-        "filtros": [{ "campo": "estado", "em": ["visita", "projeto", "proposta", "negociacao"] }],
+        "filtros": [
+          {
+            "campo": "estado",
+            "em": [
+              "visita",
+              "projeto",
+              "proposta",
+              "negociacao"
+            ]
+          }
+        ],
         "janela_dias": 180,
         "data_campo": "criado_em",
         "operador": "<",
@@ -383,10 +957,26 @@
       },
       "mensagem": "Pipeline aberto (oportunidades dos últimos 180 dias entre visita e negociação) soma R$ {{total}}, abaixo de R$ 600 mil (≈ 3× duas vendas de ticket desejado).",
       "acoes": [
-        { "tipo": "tarefa", "titulo": "Montar lista extra de 30 contatos (construtoras com obras em fase de infraestrutura e escritórios de arquitetura)", "papel": "sdr", "prazo_dias": 2 },
-        { "tipo": "tarefa", "titulo": "Revisar oportunidades em qualificação e agendar visitas técnicas", "papel": "consultor", "prazo_dias": 3 },
-        { "tipo": "rascunho", "modelo": "email_parceiro_arquiteto" },
-        { "tipo": "notificar", "para": "direcao" }
+        {
+          "tipo": "tarefa",
+          "titulo": "Montar lista extra de 30 contatos (construtoras com obras em fase de infraestrutura e escritórios de arquitetura)",
+          "papel": "sdr",
+          "prazo_dias": 2
+        },
+        {
+          "tipo": "tarefa",
+          "titulo": "Revisar oportunidades em qualificação e agendar visitas técnicas",
+          "papel": "consultor",
+          "prazo_dias": 3
+        },
+        {
+          "tipo": "rascunho",
+          "modelo": "email_parceiro_arquiteto"
+        },
+        {
+          "tipo": "notificar",
+          "para": "direcao"
+        }
       ],
       "fonte": "PROPOSTA — padrão de mercado (cobertura de pipeline 3×; revisão de pipeline)"
     },
@@ -398,14 +988,27 @@
       "gatilho": {
         "tipo": "parado",
         "registro": "lead",
-        "filtros": [{ "campo": "estado", "igual": "novo" }],
+        "filtros": [
+          {
+            "campo": "estado",
+            "igual": "novo"
+          }
+        ],
         "dias": 1,
         "data_campo": "criado_em"
       },
       "mensagem": "O lead {{titulo}} está sem resposta há {{dias}} dia(s). Cliente de alto padrão que espera costuma chamar o próximo fornecedor.",
       "acoes": [
-        { "tipo": "tarefa", "titulo": "Responder o lead hoje e propor horário de briefing", "papel": "sdr", "prazo_dias": 0 },
-        { "tipo": "rascunho", "modelo": "primeiro_contato_lead" }
+        {
+          "tipo": "tarefa",
+          "titulo": "Responder o lead hoje e propor horário de briefing",
+          "papel": "sdr",
+          "prazo_dias": 0
+        },
+        {
+          "tipo": "rascunho",
+          "modelo": "primeiro_contato_lead"
+        }
       ],
       "fonte": "PROPOSTA — padrão de mercado (speed-to-lead)"
     },
@@ -417,14 +1020,27 @@
       "gatilho": {
         "tipo": "parado",
         "registro": "proposta",
-        "filtros": [{ "campo": "estado", "igual": "enviada" }],
+        "filtros": [
+          {
+            "campo": "estado",
+            "igual": "enviada"
+          }
+        ],
         "dias": 3,
         "data_campo": "atualizado_em"
       },
       "mensagem": "A proposta {{titulo}} está sem movimentação há {{dias}} dias.",
       "acoes": [
-        { "tipo": "tarefa", "titulo": "Fazer follow-up da proposta e agendar reunião de apresentação com cliente e arquiteto", "papel": "consultor", "prazo_dias": 1 },
-        { "tipo": "rascunho", "modelo": "followup_proposta" }
+        {
+          "tipo": "tarefa",
+          "titulo": "Fazer follow-up da proposta e agendar reunião de apresentação com cliente e arquiteto",
+          "papel": "consultor",
+          "prazo_dias": 1
+        },
+        {
+          "tipo": "rascunho",
+          "modelo": "followup_proposta"
+        }
       ],
       "fonte": "PROPOSTA — padrão de mercado (plano de ação mútuo)"
     },
@@ -436,14 +1052,30 @@
       "gatilho": {
         "tipo": "parado",
         "registro": "oportunidade",
-        "filtros": [{ "campo": "estado", "nao_em": ["ganha", "perdida"] }],
+        "filtros": [
+          {
+            "campo": "estado",
+            "nao_em": [
+              "ganha",
+              "perdida"
+            ]
+          }
+        ],
         "dias": 14,
         "data_campo": "atualizado_em"
       },
       "mensagem": "A oportunidade {{titulo}} está sem atualização há {{dias}} dias. Definir próximo passo com data ou encerrar como perdida com motivo.",
       "acoes": [
-        { "tipo": "tarefa", "titulo": "Atualizar próximo passo e data, ou encerrar com motivo de perda", "papel": "consultor", "prazo_dias": 2 },
-        { "tipo": "rascunho", "modelo": "followup_proposta" }
+        {
+          "tipo": "tarefa",
+          "titulo": "Atualizar próximo passo e data, ou encerrar com motivo de perda",
+          "papel": "consultor",
+          "prazo_dias": 2
+        },
+        {
+          "tipo": "rascunho",
+          "modelo": "followup_proposta"
+        }
       ],
       "fonte": "PROPOSTA — padrão de mercado (higiene de pipeline)"
     },
@@ -456,8 +1088,17 @@
         "tipo": "contagem",
         "registro": "proposta",
         "filtros": [
-          { "campo": "faixa_margem", "em": ["ATENCAO", "NAO_APROVADO"] },
-          { "campo": "aprovacao_direcao", "igual": "pendente" }
+          {
+            "campo": "faixa_margem",
+            "em": [
+              "ATENCAO",
+              "NAO_APROVADO"
+            ]
+          },
+          {
+            "campo": "aprovacao_direcao",
+            "igual": "pendente"
+          }
         ],
         "janela_dias": 30,
         "data_campo": "criado_em",
@@ -466,9 +1107,20 @@
       },
       "mensagem": "{{total}} proposta(s) com margem abaixo de 30% aguardando autorização expressa da direção. Não enviar ao cliente antes da decisão registrada.",
       "acoes": [
-        { "tipo": "tarefa", "titulo": "Levar propostas em ATENÇÃO/NÃO APROVADO à direção com justificativa e impacto financeiro", "papel": "consultor", "prazo_dias": 1 },
-        { "tipo": "rascunho", "modelo": "pedido_aprovacao_direcao" },
-        { "tipo": "notificar", "para": "direcao" }
+        {
+          "tipo": "tarefa",
+          "titulo": "Levar propostas em ATENÇÃO/NÃO APROVADO à direção com justificativa e impacto financeiro",
+          "papel": "consultor",
+          "prazo_dias": 1
+        },
+        {
+          "tipo": "rascunho",
+          "modelo": "pedido_aprovacao_direcao"
+        },
+        {
+          "tipo": "notificar",
+          "para": "direcao"
+        }
       ],
       "fonte": "Política V1 sec.3 e sec.8"
     },
@@ -481,12 +1133,28 @@
         "tipo": "faltando",
         "registro": "proposta",
         "campo": "justificativa_excecao",
-        "filtros": [{ "campo": "faixa_margem", "em": ["ATENCAO", "NAO_APROVADO"] }]
+        "filtros": [
+          {
+            "campo": "faixa_margem",
+            "em": [
+              "ATENCAO",
+              "NAO_APROVADO"
+            ]
+          }
+        ]
       },
       "mensagem": "A proposta {{titulo}} está abaixo de 30% de margem e não tem justificativa registrada. Exceção sem registro não pode seguir.",
       "acoes": [
-        { "tipo": "tarefa", "titulo": "Registrar justificativa, responsável pela autorização e impacto financeiro", "papel": "consultor", "prazo_dias": 1 },
-        { "tipo": "notificar", "para": "CSO" }
+        {
+          "tipo": "tarefa",
+          "titulo": "Registrar justificativa, responsável pela autorização e impacto financeiro",
+          "papel": "consultor",
+          "prazo_dias": 1
+        },
+        {
+          "tipo": "notificar",
+          "para": "CSO"
+        }
       ],
       "fonte": "Política V1 sec.8 e sec.14"
     },
@@ -499,13 +1167,32 @@
         "tipo": "faltando",
         "registro": "proposta",
         "campo": "aprovado_por",
-        "filtros": [{ "campo": "faixa_desconto", "em": ["acima_2_ate_5_direcao", "acima_5_analise_integral"] }]
+        "filtros": [
+          {
+            "campo": "faixa_desconto",
+            "em": [
+              "acima_2_ate_5_direcao",
+              "acima_5_analise_integral"
+            ]
+          }
+        ]
       },
       "mensagem": "A proposta {{titulo}} tem desconto acima de 2% sem registro de quem aprovou. Acima de 2% até 5% exige a direção; acima de 5% exige nova análise financeira integral.",
       "acoes": [
-        { "tipo": "tarefa", "titulo": "Recalcular a margem com o desconto e obter aprovação da direção (ou nova análise financeira se > 5%)", "papel": "projetista", "prazo_dias": 1 },
-        { "tipo": "rascunho", "modelo": "pedido_aprovacao_direcao" },
-        { "tipo": "notificar", "para": "direcao" }
+        {
+          "tipo": "tarefa",
+          "titulo": "Recalcular a margem com o desconto e obter aprovação da direção (ou nova análise financeira se > 5%)",
+          "papel": "projetista",
+          "prazo_dias": 1
+        },
+        {
+          "tipo": "rascunho",
+          "modelo": "pedido_aprovacao_direcao"
+        },
+        {
+          "tipo": "notificar",
+          "para": "direcao"
+        }
       ],
       "fonte": "Política V1 sec.9"
     },
@@ -518,12 +1205,25 @@
         "tipo": "faltando",
         "registro": "oportunidade",
         "campo": "data_passagem",
-        "filtros": [{ "campo": "estado", "igual": "ganha" }]
+        "filtros": [
+          {
+            "campo": "estado",
+            "igual": "ganha"
+          }
+        ]
       },
       "mensagem": "A oportunidade {{titulo}} foi ganha e ainda não tem passagem registrada para Operações e Financeiro.",
       "acoes": [
-        { "tipo": "tarefa", "titulo": "Montar dossiê de passagem e agendar reunião com Operações e Financeiro", "papel": "assistente_comercial", "prazo_dias": 2 },
-        { "tipo": "rascunho", "modelo": "dossie_passagem" }
+        {
+          "tipo": "tarefa",
+          "titulo": "Montar dossiê de passagem e agendar reunião com Operações e Financeiro",
+          "papel": "assistente_comercial",
+          "prazo_dias": 2
+        },
+        {
+          "tipo": "rascunho",
+          "modelo": "dossie_passagem"
+        }
       ],
       "fonte": "PROPOSTA — padrão de mercado (handoff vendas → implantação)"
     },
@@ -535,14 +1235,27 @@
       "gatilho": {
         "tipo": "parado",
         "registro": "parceiro",
-        "filtros": [{ "campo": "estado", "igual": "ativo" }],
+        "filtros": [
+          {
+            "campo": "estado",
+            "igual": "ativo"
+          }
+        ],
         "dias": 45,
         "data_campo": "ultimo_contato"
       },
       "mensagem": "O parceiro {{titulo}} está sem contato há {{dias}} dias. Parceiro esquecido indica outro fornecedor.",
       "acoes": [
-        { "tipo": "tarefa", "titulo": "Contatar o parceiro com novidade relevante ou convite ao showroom", "papel": "gestor_parceiros", "prazo_dias": 5 },
-        { "tipo": "rascunho", "modelo": "email_parceiro_arquiteto" }
+        {
+          "tipo": "tarefa",
+          "titulo": "Contatar o parceiro com novidade relevante ou convite ao showroom",
+          "papel": "gestor_parceiros",
+          "prazo_dias": 5
+        },
+        {
+          "tipo": "rascunho",
+          "modelo": "email_parceiro_arquiteto"
+        }
       ],
       "fonte": "PROPOSTA — padrão de mercado (gestão de contas por nível)"
     }
@@ -589,6 +1302,42 @@
       "tipo": "documento",
       "assunto": "Passagem de projeto ganho — {{titulo}}",
       "corpo": "Cliente: {{cliente_nome}}\nArquiteto/parceiro: {{parceiro_indicador}}\nFase da obra: {{fase_obra}}\nEscopo vendido: {{escopo_sistemas}}\nProposta aceita (versão, valor, margem): \nCondição de recebimento (referência 50% / 40% / 10%, Política sec.10): \nContatos da obra e do arquiteto: \nCompromissos assumidos com o cliente (prazos, acabamentos, marcas): \nRiscos conhecidos: \nResponsável comercial: {{responsavel}}"
+    },
+    {
+      "id": "whatsapp_pos_fechamento",
+      "tipo": "whatsapp",
+      "assunto": "Pós-fechamento: dados para o contrato",
+      "corpo": "Olá, {{cliente}}! Que alegria seguir com a VOICE no seu projeto. Para prepararmos o contrato, pode me enviar:\n\n• Nome completo ou razão social\n• CPF ou CNPJ\n• Endereço do cliente\n• Endereço da obra\n• E-mail para receber o contrato\n\nQualquer dúvida, estou por aqui. Obrigado!"
+    },
+    {
+      "id": "whatsapp_planta_baixa",
+      "tipo": "whatsapp",
+      "assunto": "Pedido de planta baixa",
+      "corpo": "Olá, {{cliente}}! Para desenharmos a automação sob medida, precisamos da planta baixa do imóvel (PDF ou DWG) e, se houver, do projeto de interiores e do luminotécnico. Se preferir, falamos direto com o seu arquiteto. Pode nos enviar por aqui?"
+    },
+    {
+      "id": "whatsapp_followup_orcamento",
+      "tipo": "whatsapp",
+      "assunto": "Acompanhamento do orçamento",
+      "corpo": "Olá, {{cliente}}! Tudo bem? Passando para saber se conseguiu avaliar a proposta {{referencia}} que enviamos. Posso esclarecer algum ponto ou ajustar algo no escopo? Fico à disposição."
+    },
+    {
+      "id": "whatsapp_agendamento_visita",
+      "tipo": "whatsapp",
+      "assunto": "Agendamento de visita técnica",
+      "corpo": "Olá, {{cliente}}! Gostaríamos de agendar uma visita técnica para conhecer o espaço e entender como você quer viver a casa. Qual destes horários fica melhor: {{opcao_1}} ou {{opcao_2}}? A visita leva cerca de 1 hora."
+    },
+    {
+      "id": "whatsapp_boas_vindas",
+      "tipo": "whatsapp",
+      "assunto": "Boas-vindas ao cliente",
+      "corpo": "Olá, {{cliente}}! Seja muito bem-vindo(a) à VOICE Ambientes Inteligentes. A partir de agora, {{responsavel}} acompanha o seu projeto e manda as atualizações de cada fase. Estamos felizes em fazer parte da sua casa."
+    },
+    {
+      "id": "whatsapp_envio_contrato",
+      "tipo": "whatsapp",
+      "assunto": "Envio do contrato",
+      "corpo": "Olá, {{cliente}}! Enviamos o contrato do seu projeto para o e-mail {{email}}. Confira com calma; se estiver tudo certo, é só assinar e nos retornar. Se tiver qualquer dúvida sobre escopo, prazos ou pagamento, me chame por aqui."
     }
   ],
   "documentos": [
@@ -600,22 +1349,77 @@
     "Registro de exceção de margem/desconto"
   ],
   "relacoes": [
-    { "setor": "marketing", "fluxo": "Recebe leads de campanhas, eventos e showroom; devolve qualidade dos leads, motivos de perda e cases candidatos." },
-    { "setor": "financas", "fluxo": "Envia propostas para validação de margem, exceções e condição de recebimento; recebe confirmação da entrada para marcar o ganho." },
-    { "setor": "operacoes", "fluxo": "Entrega o dossiê de passagem do projeto ganho; recebe viabilidade técnica e prazos de execução para a proposta." },
-    { "setor": "posvenda", "fluxo": "Recebe indicações e oportunidades de ampliação/upsell de clientes da base; informa o que foi vendido e prometido." },
-    { "setor": "direcao", "fluxo": "Solicita autorização de margem abaixo de 30% e descontos acima de 2%; reporta previsão e alertas de falta de venda." }
+    {
+      "setor": "marketing",
+      "fluxo": "Recebe leads de campanhas, eventos e showroom; devolve qualidade dos leads, motivos de perda e cases candidatos."
+    },
+    {
+      "setor": "financas",
+      "fluxo": "Envia propostas para validação de margem, exceções e condição de recebimento; recebe confirmação da entrada para marcar o ganho."
+    },
+    {
+      "setor": "operacoes",
+      "fluxo": "Entrega o dossiê de passagem do projeto ganho; recebe viabilidade técnica e prazos de execução para a proposta."
+    },
+    {
+      "setor": "posvenda",
+      "fluxo": "Recebe indicações e oportunidades de ampliação/upsell de clientes da base; informa o que foi vendido e prometido."
+    },
+    {
+      "setor": "direcao",
+      "fluxo": "Solicita autorização de margem abaixo de 30% e descontos acima de 2%; reporta previsão e alertas de falta de venda."
+    }
   ],
   "fontes": [
-    { "titulo": "Política de Saúde Financeira da VOICE — V1 (sec.2, 3, 8, 9, 10, 14)", "tipo": "norma", "ref": "04 - PADROES/VOICE - Politica de Saude Financeira - V1.md" },
-    { "titulo": "Skill pipeline-review", "tipo": "skill", "ref": "knowledge-work-plugins/sales/skills/pipeline-review/SKILL.md" },
-    { "titulo": "Skill lead-triage", "tipo": "skill", "ref": "knowledge-work-plugins/sales/skills/lead-triage/SKILL.md" },
-    { "titulo": "Skill close-plan (plano de ação mútuo)", "tipo": "skill", "ref": "knowledge-work-plugins/sales/skills/close-plan/SKILL.md" },
-    { "titulo": "Skill handle-objection", "tipo": "skill", "ref": "knowledge-work-plugins/sales/skills/handle-objection/SKILL.md" },
-    { "titulo": "Skill reactivate (reativação de clientes)", "tipo": "skill", "ref": "knowledge-work-plugins/small-business/skills/reactivate/SKILL.md" },
-    { "titulo": "Skill speed-to-lead", "tipo": "skill", "ref": "knowledge-work-plugins/small-business/skills/speed-to-lead/SKILL.md" },
-    { "titulo": "SPIN Selling — Neil Rackham", "tipo": "livro", "ref": "https://blog.hubspot.com/sales/spin-selling-the-ultimate-guide" },
-    { "titulo": "Predictable Revenue — Aaron Ross e Marylou Tyler", "tipo": "livro", "ref": "https://predictablerevenue.com/blog/15-minute-summary-of-predictable-revenue/" },
-    { "titulo": "The Challenger Sale — Matthew Dixon e Brent Adamson", "tipo": "livro", "ref": "The Challenger Sale (Portfolio/Penguin, 2011)" }
+    {
+      "titulo": "Política de Saúde Financeira da VOICE — V1 (sec.2, 3, 8, 9, 10, 14)",
+      "tipo": "norma",
+      "ref": "04 - PADROES/VOICE - Politica de Saude Financeira - V1.md"
+    },
+    {
+      "titulo": "Skill pipeline-review",
+      "tipo": "skill",
+      "ref": "knowledge-work-plugins/sales/skills/pipeline-review/SKILL.md"
+    },
+    {
+      "titulo": "Skill lead-triage",
+      "tipo": "skill",
+      "ref": "knowledge-work-plugins/sales/skills/lead-triage/SKILL.md"
+    },
+    {
+      "titulo": "Skill close-plan (plano de ação mútuo)",
+      "tipo": "skill",
+      "ref": "knowledge-work-plugins/sales/skills/close-plan/SKILL.md"
+    },
+    {
+      "titulo": "Skill handle-objection",
+      "tipo": "skill",
+      "ref": "knowledge-work-plugins/sales/skills/handle-objection/SKILL.md"
+    },
+    {
+      "titulo": "Skill reactivate (reativação de clientes)",
+      "tipo": "skill",
+      "ref": "knowledge-work-plugins/small-business/skills/reactivate/SKILL.md"
+    },
+    {
+      "titulo": "Skill speed-to-lead",
+      "tipo": "skill",
+      "ref": "knowledge-work-plugins/small-business/skills/speed-to-lead/SKILL.md"
+    },
+    {
+      "titulo": "SPIN Selling — Neil Rackham",
+      "tipo": "livro",
+      "ref": "https://blog.hubspot.com/sales/spin-selling-the-ultimate-guide"
+    },
+    {
+      "titulo": "Predictable Revenue — Aaron Ross e Marylou Tyler",
+      "tipo": "livro",
+      "ref": "https://predictablerevenue.com/blog/15-minute-summary-of-predictable-revenue/"
+    },
+    {
+      "titulo": "The Challenger Sale — Matthew Dixon e Brent Adamson",
+      "tipo": "livro",
+      "ref": "The Challenger Sale (Portfolio/Penguin, 2011)"
+    }
   ]
 }

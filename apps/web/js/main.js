@@ -28,7 +28,7 @@ const el = {
 const SITUACAO = { OK: ["OK", "ok"], REVISAR: ["Revisar", "warn"], BLOQUEAR_ENVIO: ["Não enviar", "risk"] };
 let eu = null;
 // Fontes automaticas da Negociacao ao Vivo (Zoho); a tela funciona sem elas.
-const fontesZoho = { rbt12: api.zohoRbt12, orcamentos: api.zohoOrcamentos, orcamento: api.zohoOrcamento };
+const fontesZoho = { rbt12: api.zohoRbt12, orcamentos: api.zohoOrcamentos, orcamento: api.zohoOrcamento, salvarProposta: api.criarRegistro };
 const rotaBase = () => location.hash.split("?")[0];
 let atual = null;
 
