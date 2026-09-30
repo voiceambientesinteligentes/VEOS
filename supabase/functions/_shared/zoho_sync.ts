@@ -181,21 +181,37 @@ async function listarProjects(o: Orcamento, forcar: boolean) {
     await gravar(linhas, o);
     await salvarEstado("projects", modulo, { estado: "ok", total: linhas.length, ultima_volta_em: new Date().toISOString(), erro: null });
   }
-  // projetos arquivados/fechados (API classica do Projects; a v3 lista so os ativos)
+  // demais projetos (arquivados, modelos, fechados): a v3 os expoe por "visoes" (view_id)
   const arquivados: Obj[] = [];
-  for (let index = 1; index <= 1000; index += 100) {
-    if (o.resta < 12_000) break;
+  const visoes: string[] = [];
+  let visoesBrutas = "";
+  try {
     await o.vez();
-    let d: Obj;
-    try { d = await zohoGet(`/restapi/portal/${PORTAL_PROJECTS}/projects/`, { status: "archived", index, range: 100 }, "projects"); } catch (e) { o.erros.push(`projects/arquivados: ${e instanceof Error ? e.message : e}`); break; }
-    const lista = (d.projects ?? []) as Obj[];
-    arquivados.push(...lista);
-    if (lista.length < 100) break;
-  }
+    const cv = await zohoGet(`${base}/projects/customview`, {}, "projects");
+    // resposta: { favourites: [], default_views: [{custom_view_id, name: "zp.search.allprojs"...}], custom_views: [...] }
+    const lista = Object.values(cv ?? {}).filter(Array.isArray).flat() as Obj[];
+    visoesBrutas = JSON.stringify(cv).slice(0, 300);
+    for (const v of lista) {
+      const nomeV = String(v.name ?? v.view_name ?? "");
+      if (/lixeira|trash|excluid|deleted/i.test(nomeV)) continue;
+      const vid = String(v.custom_view_id ?? v.id ?? v.view_id ?? "");
+      if (!vid) continue;
+      visoes.push(nomeV);
+      for (let page = 1; page <= 20; page++) {
+        if (o.resta < 12_000) break;
+        await o.vez();
+        const d = await zohoGet(`${base}/projects`, { view_id: vid, page, per_page: 100 }, "projects");
+        const itens = (Array.isArray(d) ? d : d.projects ?? []) as Obj[];
+        arquivados.push(...itens.map((p) => ({ ...p, visao: nomeV })));
+        if (itens.length < 100) break;
+      }
+    }
+  } catch (e) { o.erros.push(`projects/visoes: ${e instanceof Error ? e.message : e}`); }
   const ativos = new Set(projetos.map((p) => String(p.id)));
-  const novosArq = arquivados.filter((p) => !ativos.has(String(p.id_string ?? p.id)));
-  await gravar(novosArq.map((p) => ({ produto: "projects", modulo: "projects", zoho_id: String(p.id_string ?? p.id), nome: tx(p.key, p.name, "(arquivado)"), dados: { ...p, id: String(p.id_string ?? p.id), arquivado: true }, modificado_em: quando(p.updated_date_long ? new Date(Number(p.updated_date_long)).toISOString() : null), completo: true })), o);
-  await salvarEstado("projects", "projects", { estado: "ok", total: projetos.length + novosArq.length, ultima_volta_em: new Date().toISOString(), erro: null });
+  const vistos = new Set<string>();
+  const novosArq = arquivados.filter((p) => { const k = String(p.id_string ?? p.id); if (ativos.has(k) || vistos.has(k)) return false; vistos.add(k); return true; });
+  await gravar(novosArq.map((p) => ({ produto: "projects", modulo: "projects", zoho_id: String(p.id_string ?? p.id), nome: tx(p.key, p.name, p.visao ? `(${p.visao})` : null), dados: { ...p, id: String(p.id_string ?? p.id), arquivado: true }, modificado_em: quando(p.modified_time ?? p.updated_time ?? null), completo: true })), o);
+  await salvarEstado("projects", "projects", { estado: "ok", total: projetos.length + novosArq.length, cursor: { visoes, visoesBrutas: visoes.length ? undefined : visoesBrutas }, ultima_volta_em: new Date().toISOString(), erro: null });
   await tarefasArquivados(novosArq.map((p) => ({ id: String(p.id_string ?? p.id), name: p.name, key: p.key })), base, o);
 }
 
