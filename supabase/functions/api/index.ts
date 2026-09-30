@@ -18,6 +18,7 @@ import { rotearZoho } from "./zoho.ts";
 import { rotearFluxo } from "./fluxo.ts";
 
 const ORIGENS = [
+  /^https:\/\/voiceambientesinteligentes\.github\.io$/,
   /^https:\/\/veos-voice\.netlify\.app$/,
   /^https:\/\/[a-z0-9-]+--veos-voice\.netlify\.app$/,
   /^http:\/\/127\.0\.0\.1:8878$/,

@@ -24,6 +24,7 @@ Formato: data · decisão · quem · origem. Propostas ficam separadas até o Fe
 | 30/09/2026 | Impostos **automáticos**: a empresa está no Simples Nacional (imposto "SIMPLES" no Zoho Books); alíquota efetiva calculada pela LC 123 a partir da receita dos últimos 12 meses, que virá do Zoho Books. PIS/COFINS/IRPJ/CSLL separados do legado (Lucro Presumido) não se aplicam. Anexo dos serviços (III ou V) a confirmar com o contador. | resposta de 30/09 + leitura do Zoho |
 | 30/09/2026 | **Integrar o Zoho agora** (Books, CRM, Projects). Substitui "só dados TESTE até a fase de preenchimento" para leitura; dados do Zoho aparecem com a fonte indicada. Escrita no Zoho (etapa/valor de negócio) só com confirmação na tela. | pergunta respondida em 30/09 |
 | 30/09/2026 | Nomes dos diretores continuam como estão (codinomes NEXUS/TITAN etc. não adotados por ora). | pergunta respondida em 30/09 |
+| 30/09/2026 | Portal publicado no **GitHub Pages** (`voiceambientesinteligentes.github.io/VEOS/`): a Netlify pausou as publicações do plano gratuito (créditos do mês esgotados) e o Fernando não vai pagar agora. Workflow `publicar-site`; CSP por meta tag; login e retorno do Zoho apontam para o novo endereço. A Netlify fica congelada na última versão. | mensagem de 30/09 |
 | 30/09/2026 | Dados de exemplo sempre marcados TESTE; dados reais numa fase própria. | Plano Mestre §1 |
 
 ## Propostas (aguardando confirmação)

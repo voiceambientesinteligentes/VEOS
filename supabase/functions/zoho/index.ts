@@ -5,7 +5,8 @@
 import { HttpError, servico, URL_BASE } from "../_shared/banco.ts";
 import { conectar, configurado } from "../_shared/zoho.ts";
 
-const PORTAL = "https://veos-voice.netlify.app/#/integracoes";
+// endereco publico do portal (GitHub Pages; a Netlify ficou sem creditos de publicacao)
+const PORTAL = `${Deno.env.get("VEOS_PORTAL_URL") ?? "https://voiceambientesinteligentes.github.io/VEOS/"}#/integracoes`;
 const ir = (resultado: string) => new Response(null, { status: 303, headers: { Location: `${PORTAL}?zoho=${resultado}`, "Cache-Control": "no-store" } });
 
 async function registrar(acao: string, usuario: string | null, detalhe: string) {
