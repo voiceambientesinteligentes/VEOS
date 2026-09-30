@@ -1,0 +1,8306 @@
+{
+ "exposicao": [
+  {
+   "posicao": "-292027.72",
+   "valor_contrato": null,
+   "esperado": {
+    "posicao": "-292027.72",
+    "exposicao": "292027.72",
+    "pct": null,
+    "gatilho": "NAO RESOLVIDO (falha fechada)"
+   }
+  },
+  {
+   "posicao": "-270155.48",
+   "valor_contrato": "408897.82",
+   "esperado": {
+    "posicao": "-270155.48",
+    "exposicao": "270155.48",
+    "pct": "66.0692",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "-389874.11",
+   "valor_contrato": "156405.40",
+   "esperado": {
+    "posicao": "-389874.11",
+    "exposicao": "389874.11",
+    "pct": "249.2715",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "429621.24",
+   "valor_contrato": "209457.86",
+   "esperado": {
+    "posicao": "429621.24",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "157651.92",
+   "valor_contrato": "878190.57",
+   "esperado": {
+    "posicao": "157651.92",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "168576.92",
+   "valor_contrato": "26539.02",
+   "esperado": {
+    "posicao": "168576.92",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "291509.44",
+   "valor_contrato": "328261.44",
+   "esperado": {
+    "posicao": "291509.44",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "156250.25",
+   "valor_contrato": "485805.08",
+   "esperado": {
+    "posicao": "156250.25",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "53987.39",
+   "valor_contrato": "716200.68",
+   "esperado": {
+    "posicao": "53987.39",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-105882.43",
+   "valor_contrato": "225379.19",
+   "esperado": {
+    "posicao": "-105882.43",
+    "exposicao": "105882.43",
+    "pct": "46.9797",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "-441607.93",
+   "valor_contrato": "230234.39",
+   "esperado": {
+    "posicao": "-441607.93",
+    "exposicao": "441607.93",
+    "pct": "191.8080",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "-78356.56",
+   "valor_contrato": "783565.64",
+   "esperado": {
+    "posicao": "-78356.56",
+    "exposicao": "78356.56",
+    "pct": "10.0000",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-40042.29",
+   "valor_contrato": "894407.24",
+   "esperado": {
+    "posicao": "-40042.29",
+    "exposicao": "40042.29",
+    "pct": "4.4770",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-292204.61",
+   "valor_contrato": "552020.94",
+   "esperado": {
+    "posicao": "-292204.61",
+    "exposicao": "292204.61",
+    "pct": "52.9336",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "-61327.75",
+   "valor_contrato": "676957.30",
+   "esperado": {
+    "posicao": "-61327.75",
+    "exposicao": "61327.75",
+    "pct": "9.0593",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-126872.55",
+   "valor_contrato": "755815.37",
+   "esperado": {
+    "posicao": "-126872.55",
+    "exposicao": "126872.55",
+    "pct": "16.7862",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "-298138.79",
+   "valor_contrato": "147450.22",
+   "esperado": {
+    "posicao": "-298138.79",
+    "exposicao": "298138.79",
+    "pct": "202.1962",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "206871.71",
+   "valor_contrato": null,
+   "esperado": {
+    "posicao": "206871.71",
+    "exposicao": "0",
+    "pct": null,
+    "gatilho": "NAO RESOLVIDO (falha fechada)"
+   }
+  },
+  {
+   "posicao": "10410.55",
+   "valor_contrato": "355664.60",
+   "esperado": {
+    "posicao": "10410.55",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-296045.50",
+   "valor_contrato": "610188.55",
+   "esperado": {
+    "posicao": "-296045.5",
+    "exposicao": "296045.5",
+    "pct": "48.5171",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "-258405.08",
+   "valor_contrato": "224118.38",
+   "esperado": {
+    "posicao": "-258405.08",
+    "exposicao": "258405.08",
+    "pct": "115.2985",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "-52885.13",
+   "valor_contrato": "745704.17",
+   "esperado": {
+    "posicao": "-52885.13",
+    "exposicao": "52885.13",
+    "pct": "7.0920",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-9854.60",
+   "valor_contrato": "98545.99",
+   "esperado": {
+    "posicao": "-9854.60",
+    "exposicao": "9854.60",
+    "pct": "10.0000",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "-450175.14",
+   "valor_contrato": "0.00",
+   "esperado": {
+    "posicao": "-450175.14",
+    "exposicao": "450175.14",
+    "pct": null,
+    "gatilho": "NAO RESOLVIDO (falha fechada)"
+   }
+  },
+  {
+   "posicao": "97683.82",
+   "valor_contrato": "351271.56",
+   "esperado": {
+    "posicao": "97683.82",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-145455.23",
+   "valor_contrato": "166666.38",
+   "esperado": {
+    "posicao": "-145455.23",
+    "exposicao": "145455.23",
+    "pct": "87.2733",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "-71436.23",
+   "valor_contrato": "889954.65",
+   "esperado": {
+    "posicao": "-71436.23",
+    "exposicao": "71436.23",
+    "pct": "8.0270",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "328761.98",
+   "valor_contrato": "691159.94",
+   "esperado": {
+    "posicao": "328761.98",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "382447.91",
+   "valor_contrato": "586781.88",
+   "esperado": {
+    "posicao": "382447.91",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "94441.77",
+   "valor_contrato": "750472.14",
+   "esperado": {
+    "posicao": "94441.77",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-190917.59",
+   "valor_contrato": "725549.37",
+   "esperado": {
+    "posicao": "-190917.59",
+    "exposicao": "190917.59",
+    "pct": "26.3135",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "-258303.14",
+   "valor_contrato": "328146.88",
+   "esperado": {
+    "posicao": "-258303.14",
+    "exposicao": "258303.14",
+    "pct": "78.7157",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "-420500.65",
+   "valor_contrato": "745437.60",
+   "esperado": {
+    "posicao": "-420500.65",
+    "exposicao": "420500.65",
+    "pct": "56.4099",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "-73051.53",
+   "valor_contrato": "730515.34",
+   "esperado": {
+    "posicao": "-73051.53",
+    "exposicao": "73051.53",
+    "pct": "10.0000",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "338158.68",
+   "valor_contrato": null,
+   "esperado": {
+    "posicao": "338158.68",
+    "exposicao": "0",
+    "pct": null,
+    "gatilho": "NAO RESOLVIDO (falha fechada)"
+   }
+  },
+  {
+   "posicao": "-100634.35",
+   "valor_contrato": "215056.38",
+   "esperado": {
+    "posicao": "-100634.35",
+    "exposicao": "100634.35",
+    "pct": "46.7944",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "-1939.62",
+   "valor_contrato": "130106.14",
+   "esperado": {
+    "posicao": "-1939.62",
+    "exposicao": "1939.62",
+    "pct": "1.4908",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "24774.96",
+   "valor_contrato": "749374.80",
+   "esperado": {
+    "posicao": "24774.96",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-151654.80",
+   "valor_contrato": "179461.77",
+   "esperado": {
+    "posicao": "-151654.8",
+    "exposicao": "151654.8",
+    "pct": "84.5054",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "-62701.40",
+   "valor_contrato": "90226.02",
+   "esperado": {
+    "posicao": "-62701.4",
+    "exposicao": "62701.4",
+    "pct": "69.4937",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "-134831.46",
+   "valor_contrato": "579872.06",
+   "esperado": {
+    "posicao": "-134831.46",
+    "exposicao": "134831.46",
+    "pct": "23.2519",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "-135080.61",
+   "valor_contrato": "104243.82",
+   "esperado": {
+    "posicao": "-135080.61",
+    "exposicao": "135080.61",
+    "pct": "129.5814",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "490241.65",
+   "valor_contrato": "638866.28",
+   "esperado": {
+    "posicao": "490241.65",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "269892.72",
+   "valor_contrato": "598607.86",
+   "esperado": {
+    "posicao": "269892.72",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-78150.09",
+   "valor_contrato": "781500.88",
+   "esperado": {
+    "posicao": "-78150.09",
+    "exposicao": "78150.09",
+    "pct": "10.0000",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "212344.60",
+   "valor_contrato": "120169.09",
+   "esperado": {
+    "posicao": "212344.6",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "153489.94",
+   "valor_contrato": "0.00",
+   "esperado": {
+    "posicao": "153489.94",
+    "exposicao": "0",
+    "pct": null,
+    "gatilho": "NAO RESOLVIDO (falha fechada)"
+   }
+  },
+  {
+   "posicao": "189504.89",
+   "valor_contrato": "694712.40",
+   "esperado": {
+    "posicao": "189504.89",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-173305.65",
+   "valor_contrato": "524432.84",
+   "esperado": {
+    "posicao": "-173305.65",
+    "exposicao": "173305.65",
+    "pct": "33.0463",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "143503.54",
+   "valor_contrato": "309842.84",
+   "esperado": {
+    "posicao": "143503.54",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "174566.45",
+   "valor_contrato": "44743.28",
+   "esperado": {
+    "posicao": "174566.45",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "423741.47",
+   "valor_contrato": null,
+   "esperado": {
+    "posicao": "423741.47",
+    "exposicao": "0",
+    "pct": null,
+    "gatilho": "NAO RESOLVIDO (falha fechada)"
+   }
+  },
+  {
+   "posicao": "-178466.80",
+   "valor_contrato": "623274.72",
+   "esperado": {
+    "posicao": "-178466.8",
+    "exposicao": "178466.8",
+    "pct": "28.6337",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "56598.34",
+   "valor_contrato": "711791.26",
+   "esperado": {
+    "posicao": "56598.34",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "17362.38",
+   "valor_contrato": "392209.27",
+   "esperado": {
+    "posicao": "17362.38",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-37671.96",
+   "valor_contrato": "376719.65",
+   "esperado": {
+    "posicao": "-37671.96",
+    "exposicao": "37671.96",
+    "pct": "10.0000",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "117659.92",
+   "valor_contrato": "122448.03",
+   "esperado": {
+    "posicao": "117659.92",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "408671.31",
+   "valor_contrato": "659630.42",
+   "esperado": {
+    "posicao": "408671.31",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-323652.22",
+   "valor_contrato": "478360.26",
+   "esperado": {
+    "posicao": "-323652.22",
+    "exposicao": "323652.22",
+    "pct": "67.6587",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "471217.50",
+   "valor_contrato": "332470.32",
+   "esperado": {
+    "posicao": "471217.5",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "77522.39",
+   "valor_contrato": "107888.98",
+   "esperado": {
+    "posicao": "77522.39",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "426895.25",
+   "valor_contrato": "83759.65",
+   "esperado": {
+    "posicao": "426895.25",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "196207.08",
+   "valor_contrato": "747805.28",
+   "esperado": {
+    "posicao": "196207.08",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "384468.68",
+   "valor_contrato": "363434.07",
+   "esperado": {
+    "posicao": "384468.68",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "323430.89",
+   "valor_contrato": "537376.77",
+   "esperado": {
+    "posicao": "323430.89",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-325504.47",
+   "valor_contrato": "878408.82",
+   "esperado": {
+    "posicao": "-325504.47",
+    "exposicao": "325504.47",
+    "pct": "37.0561",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "-65051.57",
+   "valor_contrato": "650515.70",
+   "esperado": {
+    "posicao": "-65051.57",
+    "exposicao": "65051.57",
+    "pct": "10.0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-417455.31",
+   "valor_contrato": "460856.19",
+   "esperado": {
+    "posicao": "-417455.31",
+    "exposicao": "417455.31",
+    "pct": "90.5826",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "-21741.25",
+   "valor_contrato": null,
+   "esperado": {
+    "posicao": "-21741.25",
+    "exposicao": "21741.25",
+    "pct": null,
+    "gatilho": "NAO RESOLVIDO (falha fechada)"
+   }
+  },
+  {
+   "posicao": "438291.09",
+   "valor_contrato": "0.00",
+   "esperado": {
+    "posicao": "438291.09",
+    "exposicao": "0",
+    "pct": null,
+    "gatilho": "NAO RESOLVIDO (falha fechada)"
+   }
+  },
+  {
+   "posicao": "-234232.71",
+   "valor_contrato": "300293.54",
+   "esperado": {
+    "posicao": "-234232.71",
+    "exposicao": "234232.71",
+    "pct": "78.0012",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "-472633.00",
+   "valor_contrato": "299851.09",
+   "esperado": {
+    "posicao": "-472633",
+    "exposicao": "472633",
+    "pct": "157.6226",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "-438218.65",
+   "valor_contrato": "725890.84",
+   "esperado": {
+    "posicao": "-438218.65",
+    "exposicao": "438218.65",
+    "pct": "60.3698",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "-212493.06",
+   "valor_contrato": "748593.74",
+   "esperado": {
+    "posicao": "-212493.06",
+    "exposicao": "212493.06",
+    "pct": "28.3856",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "442864.12",
+   "valor_contrato": "44540.10",
+   "esperado": {
+    "posicao": "442864.12",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "345465.01",
+   "valor_contrato": "270834.35",
+   "esperado": {
+    "posicao": "345465.01",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-251167.55",
+   "valor_contrato": "67549.56",
+   "esperado": {
+    "posicao": "-251167.55",
+    "exposicao": "251167.55",
+    "pct": "371.8271",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "-85524.04",
+   "valor_contrato": "855240.38",
+   "esperado": {
+    "posicao": "-85524.04",
+    "exposicao": "85524.04",
+    "pct": "10.0000",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "-162798.45",
+   "valor_contrato": "380050.53",
+   "esperado": {
+    "posicao": "-162798.45",
+    "exposicao": "162798.45",
+    "pct": "42.8360",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "-256674.01",
+   "valor_contrato": "416118.30",
+   "esperado": {
+    "posicao": "-256674.01",
+    "exposicao": "256674.01",
+    "pct": "61.6829",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "339695.15",
+   "valor_contrato": "192677.34",
+   "esperado": {
+    "posicao": "339695.15",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-397561.93",
+   "valor_contrato": "258009.44",
+   "esperado": {
+    "posicao": "-397561.93",
+    "exposicao": "397561.93",
+    "pct": "154.0881",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "-232389.25",
+   "valor_contrato": "515794.38",
+   "esperado": {
+    "posicao": "-232389.25",
+    "exposicao": "232389.25",
+    "pct": "45.0546",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "136984.83",
+   "valor_contrato": "377312.32",
+   "esperado": {
+    "posicao": "136984.83",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-400098.18",
+   "valor_contrato": "183180.23",
+   "esperado": {
+    "posicao": "-400098.18",
+    "exposicao": "400098.18",
+    "pct": "218.4178",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "-337584.81",
+   "valor_contrato": null,
+   "esperado": {
+    "posicao": "-337584.81",
+    "exposicao": "337584.81",
+    "pct": null,
+    "gatilho": "NAO RESOLVIDO (falha fechada)"
+   }
+  },
+  {
+   "posicao": "11163.85",
+   "valor_contrato": "258489.68",
+   "esperado": {
+    "posicao": "11163.85",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-223433.28",
+   "valor_contrato": "264505.30",
+   "esperado": {
+    "posicao": "-223433.28",
+    "exposicao": "223433.28",
+    "pct": "84.4721",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "-75551.02",
+   "valor_contrato": "755510.16",
+   "esperado": {
+    "posicao": "-75551.02",
+    "exposicao": "75551.02",
+    "pct": "10.0000",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "87710.56",
+   "valor_contrato": "540725.62",
+   "esperado": {
+    "posicao": "87710.56",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-268194.60",
+   "valor_contrato": "301679.44",
+   "esperado": {
+    "posicao": "-268194.6",
+    "exposicao": "268194.6",
+    "pct": "88.9005",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "-337058.88",
+   "valor_contrato": "395238.90",
+   "esperado": {
+    "posicao": "-337058.88",
+    "exposicao": "337058.88",
+    "pct": "85.2798",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "-450374.75",
+   "valor_contrato": "0.00",
+   "esperado": {
+    "posicao": "-450374.75",
+    "exposicao": "450374.75",
+    "pct": null,
+    "gatilho": "NAO RESOLVIDO (falha fechada)"
+   }
+  },
+  {
+   "posicao": "-36966.49",
+   "valor_contrato": "4471.21",
+   "esperado": {
+    "posicao": "-36966.49",
+    "exposicao": "36966.49",
+    "pct": "826.7670",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "131307.54",
+   "valor_contrato": "53169.10",
+   "esperado": {
+    "posicao": "131307.54",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-355455.10",
+   "valor_contrato": "53117.36",
+   "esperado": {
+    "posicao": "-355455.1",
+    "exposicao": "355455.1",
+    "pct": "669.1882",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "-109658.71",
+   "valor_contrato": "208630.83",
+   "esperado": {
+    "posicao": "-109658.71",
+    "exposicao": "109658.71",
+    "pct": "52.5611",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "-315904.65",
+   "valor_contrato": "385277.21",
+   "esperado": {
+    "posicao": "-315904.65",
+    "exposicao": "315904.65",
+    "pct": "81.9941",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "223887.32",
+   "valor_contrato": "21688.41",
+   "esperado": {
+    "posicao": "223887.32",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-66102.73",
+   "valor_contrato": "661027.29",
+   "esperado": {
+    "posicao": "-66102.73",
+    "exposicao": "66102.73",
+    "pct": "10.0000",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "429907.59",
+   "valor_contrato": "819349.34",
+   "esperado": {
+    "posicao": "429907.59",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-435296.89",
+   "valor_contrato": "257789.65",
+   "esperado": {
+    "posicao": "-435296.89",
+    "exposicao": "435296.89",
+    "pct": "168.8574",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "351218.17",
+   "valor_contrato": null,
+   "esperado": {
+    "posicao": "351218.17",
+    "exposicao": "0",
+    "pct": null,
+    "gatilho": "NAO RESOLVIDO (falha fechada)"
+   }
+  },
+  {
+   "posicao": "-377530.78",
+   "valor_contrato": "750299.18",
+   "esperado": {
+    "posicao": "-377530.78",
+    "exposicao": "377530.78",
+    "pct": "50.3174",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "122280.87",
+   "valor_contrato": "229952.56",
+   "esperado": {
+    "posicao": "122280.87",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "386502.43",
+   "valor_contrato": "757913.23",
+   "esperado": {
+    "posicao": "386502.43",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-310984.67",
+   "valor_contrato": "689729.40",
+   "esperado": {
+    "posicao": "-310984.67",
+    "exposicao": "310984.67",
+    "pct": "45.0879",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "149956.97",
+   "valor_contrato": "218172.57",
+   "esperado": {
+    "posicao": "149956.97",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "264857.66",
+   "valor_contrato": "374953.16",
+   "esperado": {
+    "posicao": "264857.66",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "355846.05",
+   "valor_contrato": "444092.70",
+   "esperado": {
+    "posicao": "355846.05",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-53719.81",
+   "valor_contrato": "537198.11",
+   "esperado": {
+    "posicao": "-53719.81",
+    "exposicao": "53719.81",
+    "pct": "10.0000",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-281316.58",
+   "valor_contrato": "28907.76",
+   "esperado": {
+    "posicao": "-281316.58",
+    "exposicao": "281316.58",
+    "pct": "973.1525",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "19834.00",
+   "valor_contrato": "644831.26",
+   "esperado": {
+    "posicao": "19834",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-352711.12",
+   "valor_contrato": "131685.34",
+   "esperado": {
+    "posicao": "-352711.12",
+    "exposicao": "352711.12",
+    "pct": "267.8439",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "390496.88",
+   "valor_contrato": "836330.20",
+   "esperado": {
+    "posicao": "390496.88",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "381231.98",
+   "valor_contrato": "0.00",
+   "esperado": {
+    "posicao": "381231.98",
+    "exposicao": "0",
+    "pct": null,
+    "gatilho": "NAO RESOLVIDO (falha fechada)"
+   }
+  },
+  {
+   "posicao": "-166077.23",
+   "valor_contrato": "360662.90",
+   "esperado": {
+    "posicao": "-166077.23",
+    "exposicao": "166077.23",
+    "pct": "46.0478",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "338259.90",
+   "valor_contrato": "895742.73",
+   "esperado": {
+    "posicao": "338259.9",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "152952.90",
+   "valor_contrato": "354123.69",
+   "esperado": {
+    "posicao": "152952.9",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-206740.09",
+   "valor_contrato": null,
+   "esperado": {
+    "posicao": "-206740.09",
+    "exposicao": "206740.09",
+    "pct": null,
+    "gatilho": "NAO RESOLVIDO (falha fechada)"
+   }
+  },
+  {
+   "posicao": "276064.79",
+   "valor_contrato": "887071.44",
+   "esperado": {
+    "posicao": "276064.79",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-39739.18",
+   "valor_contrato": "397391.82",
+   "esperado": {
+    "posicao": "-39739.18",
+    "exposicao": "39739.18",
+    "pct": "10.0000",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "94272.24",
+   "valor_contrato": "726491.43",
+   "esperado": {
+    "posicao": "94272.24",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-226216.55",
+   "valor_contrato": "813603.34",
+   "esperado": {
+    "posicao": "-226216.55",
+    "exposicao": "226216.55",
+    "pct": "27.8043",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "437057.97",
+   "valor_contrato": "494815.37",
+   "esperado": {
+    "posicao": "437057.97",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "116906.72",
+   "valor_contrato": "399718.67",
+   "esperado": {
+    "posicao": "116906.72",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "81669.04",
+   "valor_contrato": "328138.62",
+   "esperado": {
+    "posicao": "81669.04",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "287074.38",
+   "valor_contrato": "492299.52",
+   "esperado": {
+    "posicao": "287074.38",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "63959.38",
+   "valor_contrato": "130937.42",
+   "esperado": {
+    "posicao": "63959.38",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "46059.73",
+   "valor_contrato": "814897.74",
+   "esperado": {
+    "posicao": "46059.73",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "314681.26",
+   "valor_contrato": "327248.52",
+   "esperado": {
+    "posicao": "314681.26",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "341704.45",
+   "valor_contrato": "130726.56",
+   "esperado": {
+    "posicao": "341704.45",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-32681.83",
+   "valor_contrato": "326818.30",
+   "esperado": {
+    "posicao": "-32681.83",
+    "exposicao": "32681.83",
+    "pct": "10.0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "233860.19",
+   "valor_contrato": "526877.96",
+   "esperado": {
+    "posicao": "233860.19",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "214746.85",
+   "valor_contrato": "730493.68",
+   "esperado": {
+    "posicao": "214746.85",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-204416.17",
+   "valor_contrato": "445402.77",
+   "esperado": {
+    "posicao": "-204416.17",
+    "exposicao": "204416.17",
+    "pct": "45.8947",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "-48926.79",
+   "valor_contrato": null,
+   "esperado": {
+    "posicao": "-48926.79",
+    "exposicao": "48926.79",
+    "pct": null,
+    "gatilho": "NAO RESOLVIDO (falha fechada)"
+   }
+  },
+  {
+   "posicao": "-173075.90",
+   "valor_contrato": "764997.77",
+   "esperado": {
+    "posicao": "-173075.9",
+    "exposicao": "173075.9",
+    "pct": "22.6244",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "-41454.76",
+   "valor_contrato": "0.00",
+   "esperado": {
+    "posicao": "-41454.76",
+    "exposicao": "41454.76",
+    "pct": null,
+    "gatilho": "NAO RESOLVIDO (falha fechada)"
+   }
+  },
+  {
+   "posicao": "-463526.14",
+   "valor_contrato": "54899.07",
+   "esperado": {
+    "posicao": "-463526.14",
+    "exposicao": "463526.14",
+    "pct": "844.3242",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "-398770.66",
+   "valor_contrato": "160188.76",
+   "esperado": {
+    "posicao": "-398770.66",
+    "exposicao": "398770.66",
+    "pct": "248.9380",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "-462613.62",
+   "valor_contrato": "381013.80",
+   "esperado": {
+    "posicao": "-462613.62",
+    "exposicao": "462613.62",
+    "pct": "121.4165",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "-116676.47",
+   "valor_contrato": "572257.75",
+   "esperado": {
+    "posicao": "-116676.47",
+    "exposicao": "116676.47",
+    "pct": "20.3888",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "-56129.96",
+   "valor_contrato": "561299.64",
+   "esperado": {
+    "posicao": "-56129.96",
+    "exposicao": "56129.96",
+    "pct": "10.0000",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "397487.41",
+   "valor_contrato": "642421.50",
+   "esperado": {
+    "posicao": "397487.41",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-327370.14",
+   "valor_contrato": "684898.85",
+   "esperado": {
+    "posicao": "-327370.14",
+    "exposicao": "327370.14",
+    "pct": "47.7983",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "-83835.56",
+   "valor_contrato": "114096.74",
+   "esperado": {
+    "posicao": "-83835.56",
+    "exposicao": "83835.56",
+    "pct": "73.4776",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "-387986.43",
+   "valor_contrato": "78315.96",
+   "esperado": {
+    "posicao": "-387986.43",
+    "exposicao": "387986.43",
+    "pct": "495.4117",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "148788.13",
+   "valor_contrato": "580543.71",
+   "esperado": {
+    "posicao": "148788.13",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "172118.48",
+   "valor_contrato": "375594.26",
+   "esperado": {
+    "posicao": "172118.48",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "118355.19",
+   "valor_contrato": "695620.22",
+   "esperado": {
+    "posicao": "118355.19",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "494645.88",
+   "valor_contrato": "784530.58",
+   "esperado": {
+    "posicao": "494645.88",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-275141.44",
+   "valor_contrato": "46697.75",
+   "esperado": {
+    "posicao": "-275141.44",
+    "exposicao": "275141.44",
+    "pct": "589.1964",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "-343612.26",
+   "valor_contrato": null,
+   "esperado": {
+    "posicao": "-343612.26",
+    "exposicao": "343612.26",
+    "pct": null,
+    "gatilho": "NAO RESOLVIDO (falha fechada)"
+   }
+  },
+  {
+   "posicao": "-66297.11",
+   "valor_contrato": "662971.07",
+   "esperado": {
+    "posicao": "-66297.11",
+    "exposicao": "66297.11",
+    "pct": "10.0000",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "73312.35",
+   "valor_contrato": "826071.93",
+   "esperado": {
+    "posicao": "73312.35",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "320307.79",
+   "valor_contrato": "393265.66",
+   "esperado": {
+    "posicao": "320307.79",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "271748.93",
+   "valor_contrato": "426877.69",
+   "esperado": {
+    "posicao": "271748.93",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-443711.18",
+   "valor_contrato": "477659.34",
+   "esperado": {
+    "posicao": "-443711.18",
+    "exposicao": "443711.18",
+    "pct": "92.8928",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "-431512.49",
+   "valor_contrato": "643864.54",
+   "esperado": {
+    "posicao": "-431512.49",
+    "exposicao": "431512.49",
+    "pct": "67.0191",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "-194396.21",
+   "valor_contrato": "515797.87",
+   "esperado": {
+    "posicao": "-194396.21",
+    "exposicao": "194396.21",
+    "pct": "37.6884",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "-164641.48",
+   "valor_contrato": "0.00",
+   "esperado": {
+    "posicao": "-164641.48",
+    "exposicao": "164641.48",
+    "pct": null,
+    "gatilho": "NAO RESOLVIDO (falha fechada)"
+   }
+  },
+  {
+   "posicao": "230093.83",
+   "valor_contrato": "74386.38",
+   "esperado": {
+    "posicao": "230093.83",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-123175.72",
+   "valor_contrato": "551864.13",
+   "esperado": {
+    "posicao": "-123175.72",
+    "exposicao": "123175.72",
+    "pct": "22.3199",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "127950.68",
+   "valor_contrato": "410863.30",
+   "esperado": {
+    "posicao": "127950.68",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-24589.39",
+   "valor_contrato": "245893.89",
+   "esperado": {
+    "posicao": "-24589.39",
+    "exposicao": "24589.39",
+    "pct": "10.0000",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "74288.48",
+   "valor_contrato": "229286.51",
+   "esperado": {
+    "posicao": "74288.48",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-142585.97",
+   "valor_contrato": "14859.75",
+   "esperado": {
+    "posicao": "-142585.97",
+    "exposicao": "142585.97",
+    "pct": "959.5449",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "-325735.65",
+   "valor_contrato": "679589.64",
+   "esperado": {
+    "posicao": "-325735.65",
+    "exposicao": "325735.65",
+    "pct": "47.9312",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "-125095.30",
+   "valor_contrato": "122738.75",
+   "esperado": {
+    "posicao": "-125095.3",
+    "exposicao": "125095.3",
+    "pct": "101.9200",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "-334242.64",
+   "valor_contrato": null,
+   "esperado": {
+    "posicao": "-334242.64",
+    "exposicao": "334242.64",
+    "pct": null,
+    "gatilho": "NAO RESOLVIDO (falha fechada)"
+   }
+  },
+  {
+   "posicao": "241277.57",
+   "valor_contrato": "139234.88",
+   "esperado": {
+    "posicao": "241277.57",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "100081.45",
+   "valor_contrato": "886246.28",
+   "esperado": {
+    "posicao": "100081.45",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-238165.83",
+   "valor_contrato": "175265.16",
+   "esperado": {
+    "posicao": "-238165.83",
+    "exposicao": "238165.83",
+    "pct": "135.8889",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "-368.52",
+   "valor_contrato": "755125.28",
+   "esperado": {
+    "posicao": "-368.52",
+    "exposicao": "368.52",
+    "pct": "0.0488",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "385454.75",
+   "valor_contrato": "729831.84",
+   "esperado": {
+    "posicao": "385454.75",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-415.81",
+   "valor_contrato": "4158.08",
+   "esperado": {
+    "posicao": "-415.81",
+    "exposicao": "415.81",
+    "pct": "10.0000",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "-168240.90",
+   "valor_contrato": "593550.82",
+   "esperado": {
+    "posicao": "-168240.9",
+    "exposicao": "168240.9",
+    "pct": "28.3448",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "239878.42",
+   "valor_contrato": "73346.67",
+   "esperado": {
+    "posicao": "239878.42",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-107716.87",
+   "valor_contrato": "184412.71",
+   "esperado": {
+    "posicao": "-107716.87",
+    "exposicao": "107716.87",
+    "pct": "58.4108",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "433898.64",
+   "valor_contrato": "751908.43",
+   "esperado": {
+    "posicao": "433898.64",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-45619.07",
+   "valor_contrato": "775791.83",
+   "esperado": {
+    "posicao": "-45619.07",
+    "exposicao": "45619.07",
+    "pct": "5.8803",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "230389.33",
+   "valor_contrato": "888439.40",
+   "esperado": {
+    "posicao": "230389.33",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "263243.18",
+   "valor_contrato": "623248.94",
+   "esperado": {
+    "posicao": "263243.18",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "374309.35",
+   "valor_contrato": "0.00",
+   "esperado": {
+    "posicao": "374309.35",
+    "exposicao": "0",
+    "pct": null,
+    "gatilho": "NAO RESOLVIDO (falha fechada)"
+   }
+  },
+  {
+   "posicao": "-151361.77",
+   "valor_contrato": "734528.68",
+   "esperado": {
+    "posicao": "-151361.77",
+    "exposicao": "151361.77",
+    "pct": "20.6067",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "-239975.30",
+   "valor_contrato": "276038.74",
+   "esperado": {
+    "posicao": "-239975.3",
+    "exposicao": "239975.3",
+    "pct": "86.9354",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "-248117.50",
+   "valor_contrato": null,
+   "esperado": {
+    "posicao": "-248117.5",
+    "exposicao": "248117.5",
+    "pct": null,
+    "gatilho": "NAO RESOLVIDO (falha fechada)"
+   }
+  },
+  {
+   "posicao": "18703.98",
+   "valor_contrato": "764476.70",
+   "esperado": {
+    "posicao": "18703.98",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "145977.35",
+   "valor_contrato": "473179.20",
+   "esperado": {
+    "posicao": "145977.35",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "20076.12",
+   "valor_contrato": "681207.88",
+   "esperado": {
+    "posicao": "20076.12",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-457636.62",
+   "valor_contrato": "426820.79",
+   "esperado": {
+    "posicao": "-457636.62",
+    "exposicao": "457636.62",
+    "pct": "107.2199",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "47386.71",
+   "valor_contrato": "31643.68",
+   "esperado": {
+    "posicao": "47386.71",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "173300.00",
+   "valor_contrato": "89495.69",
+   "esperado": {
+    "posicao": "173300",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-294577.77",
+   "valor_contrato": "888019.43",
+   "esperado": {
+    "posicao": "-294577.77",
+    "exposicao": "294577.77",
+    "pct": "33.1724",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "263780.46",
+   "valor_contrato": "378990.88",
+   "esperado": {
+    "posicao": "263780.46",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "221598.73",
+   "valor_contrato": "372649.89",
+   "esperado": {
+    "posicao": "221598.73",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "388671.89",
+   "valor_contrato": "272706.00",
+   "esperado": {
+    "posicao": "388671.89",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-11228.08",
+   "valor_contrato": "112280.79",
+   "esperado": {
+    "posicao": "-11228.08",
+    "exposicao": "11228.08",
+    "pct": "10.0000",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "-218238.19",
+   "valor_contrato": "613876.28",
+   "esperado": {
+    "posicao": "-218238.19",
+    "exposicao": "218238.19",
+    "pct": "35.5508",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "294880.33",
+   "valor_contrato": "450608.49",
+   "esperado": {
+    "posicao": "294880.33",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-199116.66",
+   "valor_contrato": "540646.31",
+   "esperado": {
+    "posicao": "-199116.66",
+    "exposicao": "199116.66",
+    "pct": "36.8294",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "265411.29",
+   "valor_contrato": "805610.56",
+   "esperado": {
+    "posicao": "265411.29",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "464717.60",
+   "valor_contrato": "499123.88",
+   "esperado": {
+    "posicao": "464717.6",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "198997.43",
+   "valor_contrato": null,
+   "esperado": {
+    "posicao": "198997.43",
+    "exposicao": "0",
+    "pct": null,
+    "gatilho": "NAO RESOLVIDO (falha fechada)"
+   }
+  },
+  {
+   "posicao": "350611.77",
+   "valor_contrato": "735625.34",
+   "esperado": {
+    "posicao": "350611.77",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "40676.33",
+   "valor_contrato": "770248.80",
+   "esperado": {
+    "posicao": "40676.33",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-430075.90",
+   "valor_contrato": "0.00",
+   "esperado": {
+    "posicao": "-430075.9",
+    "exposicao": "430075.9",
+    "pct": null,
+    "gatilho": "NAO RESOLVIDO (falha fechada)"
+   }
+  },
+  {
+   "posicao": "-418021.22",
+   "valor_contrato": "583114.61",
+   "esperado": {
+    "posicao": "-418021.22",
+    "exposicao": "418021.22",
+    "pct": "71.6877",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "-84535.25",
+   "valor_contrato": "845352.54",
+   "esperado": {
+    "posicao": "-84535.25",
+    "exposicao": "84535.25",
+    "pct": "10.0000",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-209204.05",
+   "valor_contrato": "802630.24",
+   "esperado": {
+    "posicao": "-209204.05",
+    "exposicao": "209204.05",
+    "pct": "26.0648",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "227906.18",
+   "valor_contrato": "811415.70",
+   "esperado": {
+    "posicao": "227906.18",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-147438.14",
+   "valor_contrato": "679983.06",
+   "esperado": {
+    "posicao": "-147438.14",
+    "exposicao": "147438.14",
+    "pct": "21.6826",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "-139064.24",
+   "valor_contrato": "336574.99",
+   "esperado": {
+    "posicao": "-139064.24",
+    "exposicao": "139064.24",
+    "pct": "41.3175",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "-431049.00",
+   "valor_contrato": "564060.79",
+   "esperado": {
+    "posicao": "-431049",
+    "exposicao": "431049",
+    "pct": "76.4189",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "-156891.84",
+   "valor_contrato": "554918.77",
+   "esperado": {
+    "posicao": "-156891.84",
+    "exposicao": "156891.84",
+    "pct": "28.2729",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "374305.09",
+   "valor_contrato": "412839.71",
+   "esperado": {
+    "posicao": "374305.09",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-358170.99",
+   "valor_contrato": "200784.49",
+   "esperado": {
+    "posicao": "-358170.99",
+    "exposicao": "358170.99",
+    "pct": "178.3858",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "-440637.13",
+   "valor_contrato": "258511.68",
+   "esperado": {
+    "posicao": "-440637.13",
+    "exposicao": "440637.13",
+    "pct": "170.4515",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "202480.81",
+   "valor_contrato": "361271.30",
+   "esperado": {
+    "posicao": "202480.81",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-36709.18",
+   "valor_contrato": "367091.78",
+   "esperado": {
+    "posicao": "-36709.18",
+    "exposicao": "36709.18",
+    "pct": "10.0000",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "350448.37",
+   "valor_contrato": null,
+   "esperado": {
+    "posicao": "350448.37",
+    "exposicao": "0",
+    "pct": null,
+    "gatilho": "NAO RESOLVIDO (falha fechada)"
+   }
+  },
+  {
+   "posicao": "-79088.44",
+   "valor_contrato": "889922.12",
+   "esperado": {
+    "posicao": "-79088.44",
+    "exposicao": "79088.44",
+    "pct": "8.8871",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-215562.28",
+   "valor_contrato": "741822.58",
+   "esperado": {
+    "posicao": "-215562.28",
+    "exposicao": "215562.28",
+    "pct": "29.0585",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "230934.56",
+   "valor_contrato": "29959.42",
+   "esperado": {
+    "posicao": "230934.56",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "74108.04",
+   "valor_contrato": "705306.18",
+   "esperado": {
+    "posicao": "74108.04",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-123324.70",
+   "valor_contrato": "642042.59",
+   "esperado": {
+    "posicao": "-123324.7",
+    "exposicao": "123324.7",
+    "pct": "19.2082",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "-438847.03",
+   "valor_contrato": "536956.62",
+   "esperado": {
+    "posicao": "-438847.03",
+    "exposicao": "438847.03",
+    "pct": "81.7286",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "-328356.26",
+   "valor_contrato": "755559.75",
+   "esperado": {
+    "posicao": "-328356.26",
+    "exposicao": "328356.26",
+    "pct": "43.4587",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "-391624.87",
+   "valor_contrato": "479567.12",
+   "esperado": {
+    "posicao": "-391624.87",
+    "exposicao": "391624.87",
+    "pct": "81.6622",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "-250119.90",
+   "valor_contrato": "0.00",
+   "esperado": {
+    "posicao": "-250119.9",
+    "exposicao": "250119.9",
+    "pct": null,
+    "gatilho": "NAO RESOLVIDO (falha fechada)"
+   }
+  },
+  {
+   "posicao": "-26635.52",
+   "valor_contrato": "266355.23",
+   "esperado": {
+    "posicao": "-26635.52",
+    "exposicao": "26635.52",
+    "pct": "10.0000",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-79339.91",
+   "valor_contrato": "290464.14",
+   "esperado": {
+    "posicao": "-79339.91",
+    "exposicao": "79339.91",
+    "pct": "27.3149",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "81575.97",
+   "valor_contrato": "731849.47",
+   "esperado": {
+    "posicao": "81575.97",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-383207.28",
+   "valor_contrato": "748994.84",
+   "esperado": {
+    "posicao": "-383207.28",
+    "exposicao": "383207.28",
+    "pct": "51.1629",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "264760.62",
+   "valor_contrato": "691217.47",
+   "esperado": {
+    "posicao": "264760.62",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "428809.62",
+   "valor_contrato": "160983.71",
+   "esperado": {
+    "posicao": "428809.62",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "120690.59",
+   "valor_contrato": "212428.98",
+   "esperado": {
+    "posicao": "120690.59",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-250287.50",
+   "valor_contrato": null,
+   "esperado": {
+    "posicao": "-250287.5",
+    "exposicao": "250287.5",
+    "pct": null,
+    "gatilho": "NAO RESOLVIDO (falha fechada)"
+   }
+  },
+  {
+   "posicao": "28527.96",
+   "valor_contrato": "45144.59",
+   "esperado": {
+    "posicao": "28527.96",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-318727.47",
+   "valor_contrato": "511687.41",
+   "esperado": {
+    "posicao": "-318727.47",
+    "exposicao": "318727.47",
+    "pct": "62.2895",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "466815.99",
+   "valor_contrato": "506462.93",
+   "esperado": {
+    "posicao": "466815.99",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-7596.18",
+   "valor_contrato": "75961.85",
+   "esperado": {
+    "posicao": "-7596.18",
+    "exposicao": "7596.18",
+    "pct": "10.0000",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-354659.47",
+   "valor_contrato": "195003.58",
+   "esperado": {
+    "posicao": "-354659.47",
+    "exposicao": "354659.47",
+    "pct": "181.8733",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "409875.42",
+   "valor_contrato": "507873.71",
+   "esperado": {
+    "posicao": "409875.42",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "86065.81",
+   "valor_contrato": "799533.22",
+   "esperado": {
+    "posicao": "86065.81",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "388463.47",
+   "valor_contrato": "838811.42",
+   "esperado": {
+    "posicao": "388463.47",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-453982.28",
+   "valor_contrato": "65444.57",
+   "esperado": {
+    "posicao": "-453982.28",
+    "exposicao": "453982.28",
+    "pct": "693.6898",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "-453423.05",
+   "valor_contrato": "748664.30",
+   "esperado": {
+    "posicao": "-453423.05",
+    "exposicao": "453423.05",
+    "pct": "60.5643",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "42890.48",
+   "valor_contrato": "682476.55",
+   "esperado": {
+    "posicao": "42890.48",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "130744.01",
+   "valor_contrato": "561474.11",
+   "esperado": {
+    "posicao": "130744.01",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-140093.95",
+   "valor_contrato": "484225.26",
+   "esperado": {
+    "posicao": "-140093.95",
+    "exposicao": "140093.95",
+    "pct": "28.9316",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "491517.35",
+   "valor_contrato": "290770.04",
+   "esperado": {
+    "posicao": "491517.35",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "112193.15",
+   "valor_contrato": "0.00",
+   "esperado": {
+    "posicao": "112193.15",
+    "exposicao": "0",
+    "pct": null,
+    "gatilho": "NAO RESOLVIDO (falha fechada)"
+   }
+  },
+  {
+   "posicao": "-450599.25",
+   "valor_contrato": "412562.90",
+   "esperado": {
+    "posicao": "-450599.25",
+    "exposicao": "450599.25",
+    "pct": "109.2195",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "414213.71",
+   "valor_contrato": null,
+   "esperado": {
+    "posicao": "414213.71",
+    "exposicao": "0",
+    "pct": null,
+    "gatilho": "NAO RESOLVIDO (falha fechada)"
+   }
+  },
+  {
+   "posicao": "-427116.54",
+   "valor_contrato": "456862.29",
+   "esperado": {
+    "posicao": "-427116.54",
+    "exposicao": "427116.54",
+    "pct": "93.4891",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "19210.39",
+   "valor_contrato": "773770.26",
+   "esperado": {
+    "posicao": "19210.39",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-126563.66",
+   "valor_contrato": "569275.97",
+   "esperado": {
+    "posicao": "-126563.66",
+    "exposicao": "126563.66",
+    "pct": "22.2324",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "-21443.79",
+   "valor_contrato": "521343.24",
+   "esperado": {
+    "posicao": "-21443.79",
+    "exposicao": "21443.79",
+    "pct": "4.1132",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-485414.53",
+   "valor_contrato": "655919.31",
+   "esperado": {
+    "posicao": "-485414.53",
+    "exposicao": "485414.53",
+    "pct": "74.0052",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "-50109.88",
+   "valor_contrato": "719226.95",
+   "esperado": {
+    "posicao": "-50109.88",
+    "exposicao": "50109.88",
+    "pct": "6.9672",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-344717.72",
+   "valor_contrato": "306866.66",
+   "esperado": {
+    "posicao": "-344717.72",
+    "exposicao": "344717.72",
+    "pct": "112.3347",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "-433614.99",
+   "valor_contrato": "705744.60",
+   "esperado": {
+    "posicao": "-433614.99",
+    "exposicao": "433614.99",
+    "pct": "61.4408",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "-72803.24",
+   "valor_contrato": "728032.37",
+   "esperado": {
+    "posicao": "-72803.24",
+    "exposicao": "72803.24",
+    "pct": "10.0000",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "88936.03",
+   "valor_contrato": "781288.80",
+   "esperado": {
+    "posicao": "88936.03",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-44821.74",
+   "valor_contrato": "469756.47",
+   "esperado": {
+    "posicao": "-44821.74",
+    "exposicao": "44821.74",
+    "pct": "9.5415",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-87226.31",
+   "valor_contrato": "64666.03",
+   "esperado": {
+    "posicao": "-87226.31",
+    "exposicao": "87226.31",
+    "pct": "134.8874",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "-461602.77",
+   "valor_contrato": "146987.05",
+   "esperado": {
+    "posicao": "-461602.77",
+    "exposicao": "461602.77",
+    "pct": "314.0432",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "-326157.68",
+   "valor_contrato": "192526.85",
+   "esperado": {
+    "posicao": "-326157.68",
+    "exposicao": "326157.68",
+    "pct": "169.4089",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "-345235.53",
+   "valor_contrato": "310894.97",
+   "esperado": {
+    "posicao": "-345235.53",
+    "exposicao": "345235.53",
+    "pct": "111.0457",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "-98208.62",
+   "valor_contrato": "93620.36",
+   "esperado": {
+    "posicao": "-98208.62",
+    "exposicao": "98208.62",
+    "pct": "104.9009",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "-482467.71",
+   "valor_contrato": null,
+   "esperado": {
+    "posicao": "-482467.71",
+    "exposicao": "482467.71",
+    "pct": null,
+    "gatilho": "NAO RESOLVIDO (falha fechada)"
+   }
+  },
+  {
+   "posicao": "-135988.78",
+   "valor_contrato": "55312.18",
+   "esperado": {
+    "posicao": "-135988.78",
+    "exposicao": "135988.78",
+    "pct": "245.8568",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "-420482.10",
+   "valor_contrato": "659624.76",
+   "esperado": {
+    "posicao": "-420482.1",
+    "exposicao": "420482.1",
+    "pct": "63.7457",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "-12087.13",
+   "valor_contrato": "120871.28",
+   "esperado": {
+    "posicao": "-12087.13",
+    "exposicao": "12087.13",
+    "pct": "10.0000",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "479039.11",
+   "valor_contrato": "0.00",
+   "esperado": {
+    "posicao": "479039.11",
+    "exposicao": "0",
+    "pct": null,
+    "gatilho": "NAO RESOLVIDO (falha fechada)"
+   }
+  },
+  {
+   "posicao": "-176856.10",
+   "valor_contrato": "238330.43",
+   "esperado": {
+    "posicao": "-176856.1",
+    "exposicao": "176856.1",
+    "pct": "74.2063",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "-35242.00",
+   "valor_contrato": "76117.92",
+   "esperado": {
+    "posicao": "-35242",
+    "exposicao": "35242",
+    "pct": "46.2992",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "2847.73",
+   "valor_contrato": "383193.74",
+   "esperado": {
+    "posicao": "2847.73",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "374371.52",
+   "valor_contrato": "524314.28",
+   "esperado": {
+    "posicao": "374371.52",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "354126.14",
+   "valor_contrato": "809874.11",
+   "esperado": {
+    "posicao": "354126.14",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "309357.29",
+   "valor_contrato": "25324.90",
+   "esperado": {
+    "posicao": "309357.29",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "172475.10",
+   "valor_contrato": "165673.94",
+   "esperado": {
+    "posicao": "172475.1",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "439149.45",
+   "valor_contrato": "163959.01",
+   "esperado": {
+    "posicao": "439149.45",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "46686.01",
+   "valor_contrato": "128392.39",
+   "esperado": {
+    "posicao": "46686.01",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-73436.28",
+   "valor_contrato": "734362.79",
+   "esperado": {
+    "posicao": "-73436.28",
+    "exposicao": "73436.28",
+    "pct": "10.0000",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "45515.50",
+   "valor_contrato": "549424.57",
+   "esperado": {
+    "posicao": "45515.5",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "80194.48",
+   "valor_contrato": "676636.22",
+   "esperado": {
+    "posicao": "80194.48",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "245269.81",
+   "valor_contrato": null,
+   "esperado": {
+    "posicao": "245269.81",
+    "exposicao": "0",
+    "pct": null,
+    "gatilho": "NAO RESOLVIDO (falha fechada)"
+   }
+  },
+  {
+   "posicao": "306030.29",
+   "valor_contrato": "497200.54",
+   "esperado": {
+    "posicao": "306030.29",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "275496.32",
+   "valor_contrato": "494885.92",
+   "esperado": {
+    "posicao": "275496.32",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-400870.03",
+   "valor_contrato": "725336.49",
+   "esperado": {
+    "posicao": "-400870.03",
+    "exposicao": "400870.03",
+    "pct": "55.2668",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "-106264.95",
+   "valor_contrato": "563421.12",
+   "esperado": {
+    "posicao": "-106264.95",
+    "exposicao": "106264.95",
+    "pct": "18.8607",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "-452636.28",
+   "valor_contrato": "118123.22",
+   "esperado": {
+    "posicao": "-452636.28",
+    "exposicao": "452636.28",
+    "pct": "383.1899",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "432698.48",
+   "valor_contrato": "219423.11",
+   "esperado": {
+    "posicao": "432698.48",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-371379.41",
+   "valor_contrato": "202705.94",
+   "esperado": {
+    "posicao": "-371379.41",
+    "exposicao": "371379.41",
+    "pct": "183.2109",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "-65017.76",
+   "valor_contrato": "650177.65",
+   "esperado": {
+    "posicao": "-65017.76",
+    "exposicao": "65017.76",
+    "pct": "10.0000",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "206979.43",
+   "valor_contrato": "467782.87",
+   "esperado": {
+    "posicao": "206979.43",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "438625.55",
+   "valor_contrato": "0.00",
+   "esperado": {
+    "posicao": "438625.55",
+    "exposicao": "0",
+    "pct": null,
+    "gatilho": "NAO RESOLVIDO (falha fechada)"
+   }
+  },
+  {
+   "posicao": "-457011.78",
+   "valor_contrato": "450952.52",
+   "esperado": {
+    "posicao": "-457011.78",
+    "exposicao": "457011.78",
+    "pct": "101.3437",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "-302437.25",
+   "valor_contrato": "88923.24",
+   "esperado": {
+    "posicao": "-302437.25",
+    "exposicao": "302437.25",
+    "pct": "340.1105",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "-313965.83",
+   "valor_contrato": "640385.17",
+   "esperado": {
+    "posicao": "-313965.83",
+    "exposicao": "313965.83",
+    "pct": "49.0277",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "124358.12",
+   "valor_contrato": "829198.56",
+   "esperado": {
+    "posicao": "124358.12",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "264432.79",
+   "valor_contrato": "731839.87",
+   "esperado": {
+    "posicao": "264432.79",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "281345.15",
+   "valor_contrato": "683595.50",
+   "esperado": {
+    "posicao": "281345.15",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "430334.51",
+   "valor_contrato": null,
+   "esperado": {
+    "posicao": "430334.51",
+    "exposicao": "0",
+    "pct": null,
+    "gatilho": "NAO RESOLVIDO (falha fechada)"
+   }
+  },
+  {
+   "posicao": "100369.99",
+   "valor_contrato": "229584.43",
+   "esperado": {
+    "posicao": "100369.99",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-6965.26",
+   "valor_contrato": "69652.64",
+   "esperado": {
+    "posicao": "-6965.26",
+    "exposicao": "6965.26",
+    "pct": "10.0000",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-85051.72",
+   "valor_contrato": "806495.03",
+   "esperado": {
+    "posicao": "-85051.72",
+    "exposicao": "85051.72",
+    "pct": "10.5458",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "41898.40",
+   "valor_contrato": "186970.64",
+   "esperado": {
+    "posicao": "41898.4",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "273212.85",
+   "valor_contrato": "432482.17",
+   "esperado": {
+    "posicao": "273212.85",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "442527.21",
+   "valor_contrato": "692712.47",
+   "esperado": {
+    "posicao": "442527.21",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-66485.64",
+   "valor_contrato": "338941.32",
+   "esperado": {
+    "posicao": "-66485.64",
+    "exposicao": "66485.64",
+    "pct": "19.6157",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "234847.31",
+   "valor_contrato": "130729.08",
+   "esperado": {
+    "posicao": "234847.31",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "267570.12",
+   "valor_contrato": "488713.87",
+   "esperado": {
+    "posicao": "267570.12",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-156342.18",
+   "valor_contrato": "717237.85",
+   "esperado": {
+    "posicao": "-156342.18",
+    "exposicao": "156342.18",
+    "pct": "21.7978",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "65888.63",
+   "valor_contrato": "181007.00",
+   "esperado": {
+    "posicao": "65888.63",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "447078.00",
+   "valor_contrato": "499702.23",
+   "esperado": {
+    "posicao": "447078",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-77511.33",
+   "valor_contrato": "775113.30",
+   "esperado": {
+    "posicao": "-77511.33",
+    "exposicao": "77511.33",
+    "pct": "10.0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "411104.83",
+   "valor_contrato": "586709.80",
+   "esperado": {
+    "posicao": "411104.83",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-228961.87",
+   "valor_contrato": "437169.51",
+   "esperado": {
+    "posicao": "-228961.87",
+    "exposicao": "228961.87",
+    "pct": "52.3737",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "-271301.39",
+   "valor_contrato": "0.00",
+   "esperado": {
+    "posicao": "-271301.39",
+    "exposicao": "271301.39",
+    "pct": null,
+    "gatilho": "NAO RESOLVIDO (falha fechada)"
+   }
+  },
+  {
+   "posicao": "438572.52",
+   "valor_contrato": null,
+   "esperado": {
+    "posicao": "438572.52",
+    "exposicao": "0",
+    "pct": null,
+    "gatilho": "NAO RESOLVIDO (falha fechada)"
+   }
+  },
+  {
+   "posicao": "87679.32",
+   "valor_contrato": "615495.65",
+   "esperado": {
+    "posicao": "87679.32",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-402290.76",
+   "valor_contrato": "530853.19",
+   "esperado": {
+    "posicao": "-402290.76",
+    "exposicao": "402290.76",
+    "pct": "75.7819",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "20685.69",
+   "valor_contrato": "188240.06",
+   "esperado": {
+    "posicao": "20685.69",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "202529.30",
+   "valor_contrato": "535578.30",
+   "esperado": {
+    "posicao": "202529.3",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-446808.12",
+   "valor_contrato": "618608.97",
+   "esperado": {
+    "posicao": "-446808.12",
+    "exposicao": "446808.12",
+    "pct": "72.2279",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "209593.87",
+   "valor_contrato": "436174.55",
+   "esperado": {
+    "posicao": "209593.87",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-68146.61",
+   "valor_contrato": "681466.09",
+   "esperado": {
+    "posicao": "-68146.61",
+    "exposicao": "68146.61",
+    "pct": "10.0000",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "466780.27",
+   "valor_contrato": "391420.59",
+   "esperado": {
+    "posicao": "466780.27",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-458535.91",
+   "valor_contrato": "368869.02",
+   "esperado": {
+    "posicao": "-458535.91",
+    "exposicao": "458535.91",
+    "pct": "124.3086",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "100834.59",
+   "valor_contrato": "705790.14",
+   "esperado": {
+    "posicao": "100834.59",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-331723.95",
+   "valor_contrato": "129907.31",
+   "esperado": {
+    "posicao": "-331723.95",
+    "exposicao": "331723.95",
+    "pct": "255.3543",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "447115.40",
+   "valor_contrato": "861305.07",
+   "esperado": {
+    "posicao": "447115.4",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "55527.61",
+   "valor_contrato": "437281.82",
+   "esperado": {
+    "posicao": "55527.61",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-156903.67",
+   "valor_contrato": "143779.98",
+   "esperado": {
+    "posicao": "-156903.67",
+    "exposicao": "156903.67",
+    "pct": "109.1276",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "-455664.23",
+   "valor_contrato": "209373.35",
+   "esperado": {
+    "posicao": "-455664.23",
+    "exposicao": "455664.23",
+    "pct": "217.6324",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "207321.26",
+   "valor_contrato": "230675.92",
+   "esperado": {
+    "posicao": "207321.26",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "92774.49",
+   "valor_contrato": null,
+   "esperado": {
+    "posicao": "92774.49",
+    "exposicao": "0",
+    "pct": null,
+    "gatilho": "NAO RESOLVIDO (falha fechada)"
+   }
+  },
+  {
+   "posicao": "-33554.23",
+   "valor_contrato": "335542.32",
+   "esperado": {
+    "posicao": "-33554.23",
+    "exposicao": "33554.23",
+    "pct": "10.0000",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "467925.95",
+   "valor_contrato": "626513.06",
+   "esperado": {
+    "posicao": "467925.95",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-210864.34",
+   "valor_contrato": "821261.28",
+   "esperado": {
+    "posicao": "-210864.34",
+    "exposicao": "210864.34",
+    "pct": "25.6757",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "-371260.66",
+   "valor_contrato": "164136.34",
+   "esperado": {
+    "posicao": "-371260.66",
+    "exposicao": "371260.66",
+    "pct": "226.1904",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "333022.01",
+   "valor_contrato": "0.00",
+   "esperado": {
+    "posicao": "333022.01",
+    "exposicao": "0",
+    "pct": null,
+    "gatilho": "NAO RESOLVIDO (falha fechada)"
+   }
+  },
+  {
+   "posicao": "-187675.84",
+   "valor_contrato": "821122.54",
+   "esperado": {
+    "posicao": "-187675.84",
+    "exposicao": "187675.84",
+    "pct": "22.8560",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "-414175.18",
+   "valor_contrato": "262161.86",
+   "esperado": {
+    "posicao": "-414175.18",
+    "exposicao": "414175.18",
+    "pct": "157.9845",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "32277.95",
+   "valor_contrato": "705832.66",
+   "esperado": {
+    "posicao": "32277.95",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "422499.28",
+   "valor_contrato": "89266.21",
+   "esperado": {
+    "posicao": "422499.28",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-6720.88",
+   "valor_contrato": "128147.09",
+   "esperado": {
+    "posicao": "-6720.88",
+    "exposicao": "6720.88",
+    "pct": "5.2447",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-357796.07",
+   "valor_contrato": "833821.67",
+   "esperado": {
+    "posicao": "-357796.07",
+    "exposicao": "357796.07",
+    "pct": "42.9104",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "-28426.87",
+   "valor_contrato": "284268.70",
+   "esperado": {
+    "posicao": "-28426.87",
+    "exposicao": "28426.87",
+    "pct": "10.0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "203308.63",
+   "valor_contrato": "314370.55",
+   "esperado": {
+    "posicao": "203308.63",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-188938.78",
+   "valor_contrato": "860020.18",
+   "esperado": {
+    "posicao": "-188938.78",
+    "exposicao": "188938.78",
+    "pct": "21.9691",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "-306763.05",
+   "valor_contrato": "689669.45",
+   "esperado": {
+    "posicao": "-306763.05",
+    "exposicao": "306763.05",
+    "pct": "44.4797",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "-223722.45",
+   "valor_contrato": "164069.78",
+   "esperado": {
+    "posicao": "-223722.45",
+    "exposicao": "223722.45",
+    "pct": "136.3581",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "-414727.68",
+   "valor_contrato": null,
+   "esperado": {
+    "posicao": "-414727.68",
+    "exposicao": "414727.68",
+    "pct": null,
+    "gatilho": "NAO RESOLVIDO (falha fechada)"
+   }
+  },
+  {
+   "posicao": "-193100.82",
+   "valor_contrato": "499437.12",
+   "esperado": {
+    "posicao": "-193100.82",
+    "exposicao": "193100.82",
+    "pct": "38.6637",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "434235.81",
+   "valor_contrato": "289901.07",
+   "esperado": {
+    "posicao": "434235.81",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "235851.47",
+   "valor_contrato": "842182.88",
+   "esperado": {
+    "posicao": "235851.47",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-78935.38",
+   "valor_contrato": "298783.65",
+   "esperado": {
+    "posicao": "-78935.38",
+    "exposicao": "78935.38",
+    "pct": "26.4189",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "-434223.67",
+   "valor_contrato": "556837.76",
+   "esperado": {
+    "posicao": "-434223.67",
+    "exposicao": "434223.67",
+    "pct": "77.9803",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "-19005.95",
+   "valor_contrato": "190059.51",
+   "esperado": {
+    "posicao": "-19005.95",
+    "exposicao": "19005.95",
+    "pct": "10.0000",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "476178.00",
+   "valor_contrato": "473235.82",
+   "esperado": {
+    "posicao": "476178",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "51284.66",
+   "valor_contrato": "495515.20",
+   "esperado": {
+    "posicao": "51284.66",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "316244.01",
+   "valor_contrato": "461260.44",
+   "esperado": {
+    "posicao": "316244.01",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "399720.61",
+   "valor_contrato": "714233.47",
+   "esperado": {
+    "posicao": "399720.61",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "497935.45",
+   "valor_contrato": "0.00",
+   "esperado": {
+    "posicao": "497935.45",
+    "exposicao": "0",
+    "pct": null,
+    "gatilho": "NAO RESOLVIDO (falha fechada)"
+   }
+  },
+  {
+   "posicao": "-202776.47",
+   "valor_contrato": "39808.70",
+   "esperado": {
+    "posicao": "-202776.47",
+    "exposicao": "202776.47",
+    "pct": "509.3773",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "-414362.06",
+   "valor_contrato": "762845.27",
+   "esperado": {
+    "posicao": "-414362.06",
+    "exposicao": "414362.06",
+    "pct": "54.3180",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "-154305.02",
+   "valor_contrato": "408815.39",
+   "esperado": {
+    "posicao": "-154305.02",
+    "exposicao": "154305.02",
+    "pct": "37.7444",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "-195027.38",
+   "valor_contrato": "214756.34",
+   "esperado": {
+    "posicao": "-195027.38",
+    "exposicao": "195027.38",
+    "pct": "90.8133",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "47673.39",
+   "valor_contrato": "29817.99",
+   "esperado": {
+    "posicao": "47673.39",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-6350.98",
+   "valor_contrato": null,
+   "esperado": {
+    "posicao": "-6350.98",
+    "exposicao": "6350.98",
+    "pct": null,
+    "gatilho": "NAO RESOLVIDO (falha fechada)"
+   }
+  },
+  {
+   "posicao": "73332.13",
+   "valor_contrato": "188989.08",
+   "esperado": {
+    "posicao": "73332.13",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "11319.96",
+   "valor_contrato": "88267.48",
+   "esperado": {
+    "posicao": "11319.96",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-28763.99",
+   "valor_contrato": "319952.20",
+   "esperado": {
+    "posicao": "-28763.99",
+    "exposicao": "28763.99",
+    "pct": "8.9901",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "10360.83",
+   "valor_contrato": "6221.84",
+   "esperado": {
+    "posicao": "10360.83",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "369164.67",
+   "valor_contrato": "586531.75",
+   "esperado": {
+    "posicao": "369164.67",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-499092.13",
+   "valor_contrato": "477003.56",
+   "esperado": {
+    "posicao": "-499092.13",
+    "exposicao": "499092.13",
+    "pct": "104.6307",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "429379.06",
+   "valor_contrato": "775261.96",
+   "esperado": {
+    "posicao": "429379.06",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "241825.70",
+   "valor_contrato": "62390.64",
+   "esperado": {
+    "posicao": "241825.7",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-274262.95",
+   "valor_contrato": "382668.16",
+   "esperado": {
+    "posicao": "-274262.95",
+    "exposicao": "274262.95",
+    "pct": "71.6712",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "-219664.52",
+   "valor_contrato": "336149.68",
+   "esperado": {
+    "posicao": "-219664.52",
+    "exposicao": "219664.52",
+    "pct": "65.3472",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "-54533.77",
+   "valor_contrato": "545337.68",
+   "esperado": {
+    "posicao": "-54533.77",
+    "exposicao": "54533.77",
+    "pct": "10.0000",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "147617.06",
+   "valor_contrato": "108854.24",
+   "esperado": {
+    "posicao": "147617.06",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "185789.17",
+   "valor_contrato": "666215.16",
+   "esperado": {
+    "posicao": "185789.17",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "441647.78",
+   "valor_contrato": "884034.95",
+   "esperado": {
+    "posicao": "441647.78",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "45033.27",
+   "valor_contrato": "723493.65",
+   "esperado": {
+    "posicao": "45033.27",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "328961.40",
+   "valor_contrato": "321277.76",
+   "esperado": {
+    "posicao": "328961.4",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "402100.02",
+   "valor_contrato": null,
+   "esperado": {
+    "posicao": "402100.02",
+    "exposicao": "0",
+    "pct": null,
+    "gatilho": "NAO RESOLVIDO (falha fechada)"
+   }
+  },
+  {
+   "posicao": "54150.35",
+   "valor_contrato": "898873.62",
+   "esperado": {
+    "posicao": "54150.35",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-242468.45",
+   "valor_contrato": "201979.87",
+   "esperado": {
+    "posicao": "-242468.45",
+    "exposicao": "242468.45",
+    "pct": "120.0458",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "-385226.26",
+   "valor_contrato": "731774.11",
+   "esperado": {
+    "posicao": "-385226.26",
+    "exposicao": "385226.26",
+    "pct": "52.6428",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "209828.92",
+   "valor_contrato": "806735.51",
+   "esperado": {
+    "posicao": "209828.92",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-37470.94",
+   "valor_contrato": "374709.35",
+   "esperado": {
+    "posicao": "-37470.94",
+    "exposicao": "37470.94",
+    "pct": "10.0000",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "383253.33",
+   "valor_contrato": "315988.53",
+   "esperado": {
+    "posicao": "383253.33",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-262146.52",
+   "valor_contrato": "715860.30",
+   "esperado": {
+    "posicao": "-262146.52",
+    "exposicao": "262146.52",
+    "pct": "36.6198",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "-482810.42",
+   "valor_contrato": "612634.01",
+   "esperado": {
+    "posicao": "-482810.42",
+    "exposicao": "482810.42",
+    "pct": "78.8089",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "211484.26",
+   "valor_contrato": "7789.09",
+   "esperado": {
+    "posicao": "211484.26",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "450158.60",
+   "valor_contrato": "439905.92",
+   "esperado": {
+    "posicao": "450158.6",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-327614.30",
+   "valor_contrato": "850663.77",
+   "esperado": {
+    "posicao": "-327614.3",
+    "exposicao": "327614.3",
+    "pct": "38.5128",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "26644.84",
+   "valor_contrato": "786989.00",
+   "esperado": {
+    "posicao": "26644.84",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "90620.00",
+   "valor_contrato": "251328.24",
+   "esperado": {
+    "posicao": "90620",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "341245.46",
+   "valor_contrato": "115913.46",
+   "esperado": {
+    "posicao": "341245.46",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "316573.69",
+   "valor_contrato": "531430.54",
+   "esperado": {
+    "posicao": "316573.69",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-7164.04",
+   "valor_contrato": "71640.45",
+   "esperado": {
+    "posicao": "-7164.04",
+    "exposicao": "7164.04",
+    "pct": "10.0000",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-148936.97",
+   "valor_contrato": null,
+   "esperado": {
+    "posicao": "-148936.97",
+    "exposicao": "148936.97",
+    "pct": null,
+    "gatilho": "NAO RESOLVIDO (falha fechada)"
+   }
+  },
+  {
+   "posicao": "293992.14",
+   "valor_contrato": "809162.90",
+   "esperado": {
+    "posicao": "293992.14",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "192281.30",
+   "valor_contrato": "409361.87",
+   "esperado": {
+    "posicao": "192281.3",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "89481.83",
+   "valor_contrato": "889324.03",
+   "esperado": {
+    "posicao": "89481.83",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "467679.87",
+   "valor_contrato": "402.52",
+   "esperado": {
+    "posicao": "467679.87",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-42002.18",
+   "valor_contrato": "493192.04",
+   "esperado": {
+    "posicao": "-42002.18",
+    "exposicao": "42002.18",
+    "pct": "8.5164",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "252452.72",
+   "valor_contrato": "0.00",
+   "esperado": {
+    "posicao": "252452.72",
+    "exposicao": "0",
+    "pct": null,
+    "gatilho": "NAO RESOLVIDO (falha fechada)"
+   }
+  },
+  {
+   "posicao": "-62051.56",
+   "valor_contrato": "297761.26",
+   "esperado": {
+    "posicao": "-62051.56",
+    "exposicao": "62051.56",
+    "pct": "20.8394",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "-253349.08",
+   "valor_contrato": "465398.48",
+   "esperado": {
+    "posicao": "-253349.08",
+    "exposicao": "253349.08",
+    "pct": "54.4370",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "-50591.20",
+   "valor_contrato": "294797.15",
+   "esperado": {
+    "posicao": "-50591.2",
+    "exposicao": "50591.2",
+    "pct": "17.1614",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "-69923.83",
+   "valor_contrato": "699238.30",
+   "esperado": {
+    "posicao": "-69923.83",
+    "exposicao": "69923.83",
+    "pct": "10.0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-364997.84",
+   "valor_contrato": "802154.46",
+   "esperado": {
+    "posicao": "-364997.84",
+    "exposicao": "364997.84",
+    "pct": "45.5022",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "101244.46",
+   "valor_contrato": "379165.03",
+   "esperado": {
+    "posicao": "101244.46",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-433984.75",
+   "valor_contrato": "564994.95",
+   "esperado": {
+    "posicao": "-433984.75",
+    "exposicao": "433984.75",
+    "pct": "76.8121",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "185018.05",
+   "valor_contrato": "517191.96",
+   "esperado": {
+    "posicao": "185018.05",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-57724.91",
+   "valor_contrato": "110796.19",
+   "esperado": {
+    "posicao": "-57724.91",
+    "exposicao": "57724.91",
+    "pct": "52.1001",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "281634.53",
+   "valor_contrato": "867066.23",
+   "esperado": {
+    "posicao": "281634.53",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-230416.80",
+   "valor_contrato": null,
+   "esperado": {
+    "posicao": "-230416.8",
+    "exposicao": "230416.8",
+    "pct": null,
+    "gatilho": "NAO RESOLVIDO (falha fechada)"
+   }
+  },
+  {
+   "posicao": "109068.39",
+   "valor_contrato": "676522.52",
+   "esperado": {
+    "posicao": "109068.39",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-440249.34",
+   "valor_contrato": "28491.99",
+   "esperado": {
+    "posicao": "-440249.34",
+    "exposicao": "440249.34",
+    "pct": "1545.1688",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "-272327.65",
+   "valor_contrato": "218378.82",
+   "esperado": {
+    "posicao": "-272327.65",
+    "exposicao": "272327.65",
+    "pct": "124.7042",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "-76205.88",
+   "valor_contrato": "762058.84",
+   "esperado": {
+    "posicao": "-76205.88",
+    "exposicao": "76205.88",
+    "pct": "10.0000",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-145918.13",
+   "valor_contrato": "193948.21",
+   "esperado": {
+    "posicao": "-145918.13",
+    "exposicao": "145918.13",
+    "pct": "75.2356",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "-218261.08",
+   "valor_contrato": "639580.86",
+   "esperado": {
+    "posicao": "-218261.08",
+    "exposicao": "218261.08",
+    "pct": "34.1256",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "394251.60",
+   "valor_contrato": "320086.03",
+   "esperado": {
+    "posicao": "394251.6",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-273352.31",
+   "valor_contrato": "334460.79",
+   "esperado": {
+    "posicao": "-273352.31",
+    "exposicao": "273352.31",
+    "pct": "81.7293",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "123781.40",
+   "valor_contrato": "73487.08",
+   "esperado": {
+    "posicao": "123781.4",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-475614.47",
+   "valor_contrato": "413639.05",
+   "esperado": {
+    "posicao": "-475614.47",
+    "exposicao": "475614.47",
+    "pct": "114.9830",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "-76106.58",
+   "valor_contrato": "391320.96",
+   "esperado": {
+    "posicao": "-76106.58",
+    "exposicao": "76106.58",
+    "pct": "19.4486",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "11658.28",
+   "valor_contrato": "0.00",
+   "esperado": {
+    "posicao": "11658.28",
+    "exposicao": "0",
+    "pct": null,
+    "gatilho": "NAO RESOLVIDO (falha fechada)"
+   }
+  },
+  {
+   "posicao": "419663.39",
+   "valor_contrato": "236112.74",
+   "esperado": {
+    "posicao": "419663.39",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-154909.22",
+   "valor_contrato": "330794.63",
+   "esperado": {
+    "posicao": "-154909.22",
+    "exposicao": "154909.22",
+    "pct": "46.8294",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "-33185.83",
+   "valor_contrato": "331858.31",
+   "esperado": {
+    "posicao": "-33185.83",
+    "exposicao": "33185.83",
+    "pct": "10.0000",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "370082.78",
+   "valor_contrato": "479105.16",
+   "esperado": {
+    "posicao": "370082.78",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-390495.53",
+   "valor_contrato": null,
+   "esperado": {
+    "posicao": "-390495.53",
+    "exposicao": "390495.53",
+    "pct": null,
+    "gatilho": "NAO RESOLVIDO (falha fechada)"
+   }
+  },
+  {
+   "posicao": "114698.11",
+   "valor_contrato": "474267.16",
+   "esperado": {
+    "posicao": "114698.11",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "494273.38",
+   "valor_contrato": "570837.00",
+   "esperado": {
+    "posicao": "494273.38",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "285059.56",
+   "valor_contrato": "213181.14",
+   "esperado": {
+    "posicao": "285059.56",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-246181.29",
+   "valor_contrato": "155109.98",
+   "esperado": {
+    "posicao": "-246181.29",
+    "exposicao": "246181.29",
+    "pct": "158.7140",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "263330.75",
+   "valor_contrato": "465902.04",
+   "esperado": {
+    "posicao": "263330.75",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "288154.90",
+   "valor_contrato": "152579.03",
+   "esperado": {
+    "posicao": "288154.9",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "314568.43",
+   "valor_contrato": "352142.08",
+   "esperado": {
+    "posicao": "314568.43",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-39042.60",
+   "valor_contrato": "885237.57",
+   "esperado": {
+    "posicao": "-39042.6",
+    "exposicao": "39042.6",
+    "pct": "4.4104",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-31223.23",
+   "valor_contrato": "312232.34",
+   "esperado": {
+    "posicao": "-31223.23",
+    "exposicao": "31223.23",
+    "pct": "10.0000",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-17063.05",
+   "valor_contrato": "376495.73",
+   "esperado": {
+    "posicao": "-17063.05",
+    "exposicao": "17063.05",
+    "pct": "4.5321",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "247012.09",
+   "valor_contrato": "266683.12",
+   "esperado": {
+    "posicao": "247012.09",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "20936.09",
+   "valor_contrato": "572502.52",
+   "esperado": {
+    "posicao": "20936.09",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-19508.77",
+   "valor_contrato": "29492.85",
+   "esperado": {
+    "posicao": "-19508.77",
+    "exposicao": "19508.77",
+    "pct": "66.1475",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "319218.59",
+   "valor_contrato": "619235.19",
+   "esperado": {
+    "posicao": "319218.59",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "485647.31",
+   "valor_contrato": "742062.00",
+   "esperado": {
+    "posicao": "485647.31",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-14274.80",
+   "valor_contrato": "685710.88",
+   "esperado": {
+    "posicao": "-14274.8",
+    "exposicao": "14274.8",
+    "pct": "2.0818",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-357140.25",
+   "valor_contrato": null,
+   "esperado": {
+    "posicao": "-357140.25",
+    "exposicao": "357140.25",
+    "pct": null,
+    "gatilho": "NAO RESOLVIDO (falha fechada)"
+   }
+  },
+  {
+   "posicao": "56772.53",
+   "valor_contrato": "0.00",
+   "esperado": {
+    "posicao": "56772.53",
+    "exposicao": "0",
+    "pct": null,
+    "gatilho": "NAO RESOLVIDO (falha fechada)"
+   }
+  },
+  {
+   "posicao": "-320050.34",
+   "valor_contrato": "856321.62",
+   "esperado": {
+    "posicao": "-320050.34",
+    "exposicao": "320050.34",
+    "pct": "37.3750",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "-58517.64",
+   "valor_contrato": "585176.37",
+   "esperado": {
+    "posicao": "-58517.64",
+    "exposicao": "58517.64",
+    "pct": "10.0000",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "243128.20",
+   "valor_contrato": "525121.21",
+   "esperado": {
+    "posicao": "243128.2",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-304960.86",
+   "valor_contrato": "628044.27",
+   "esperado": {
+    "posicao": "-304960.86",
+    "exposicao": "304960.86",
+    "pct": "48.5572",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "399198.26",
+   "valor_contrato": "142188.01",
+   "esperado": {
+    "posicao": "399198.26",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-409214.95",
+   "valor_contrato": "54629.71",
+   "esperado": {
+    "posicao": "-409214.95",
+    "exposicao": "409214.95",
+    "pct": "749.0703",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "470217.40",
+   "valor_contrato": "827289.72",
+   "esperado": {
+    "posicao": "470217.4",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-51759.70",
+   "valor_contrato": "167137.77",
+   "esperado": {
+    "posicao": "-51759.7",
+    "exposicao": "51759.7",
+    "pct": "30.9683",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "-268067.11",
+   "valor_contrato": "658873.92",
+   "esperado": {
+    "posicao": "-268067.11",
+    "exposicao": "268067.11",
+    "pct": "40.6856",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "81768.40",
+   "valor_contrato": "864724.54",
+   "esperado": {
+    "posicao": "81768.4",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-316566.89",
+   "valor_contrato": "273429.58",
+   "esperado": {
+    "posicao": "-316566.89",
+    "exposicao": "316566.89",
+    "pct": "115.7764",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "245525.94",
+   "valor_contrato": "47770.91",
+   "esperado": {
+    "posicao": "245525.94",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-66764.73",
+   "valor_contrato": "667647.26",
+   "esperado": {
+    "posicao": "-66764.73",
+    "exposicao": "66764.73",
+    "pct": "10.0000",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "-74932.77",
+   "valor_contrato": "671776.68",
+   "esperado": {
+    "posicao": "-74932.77",
+    "exposicao": "74932.77",
+    "pct": "11.1544",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "490826.31",
+   "valor_contrato": "46887.27",
+   "esperado": {
+    "posicao": "490826.31",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "108481.49",
+   "valor_contrato": null,
+   "esperado": {
+    "posicao": "108481.49",
+    "exposicao": "0",
+    "pct": null,
+    "gatilho": "NAO RESOLVIDO (falha fechada)"
+   }
+  },
+  {
+   "posicao": "-56324.51",
+   "valor_contrato": "842469.79",
+   "esperado": {
+    "posicao": "-56324.51",
+    "exposicao": "56324.51",
+    "pct": "6.6856",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-250110.89",
+   "valor_contrato": "591202.91",
+   "esperado": {
+    "posicao": "-250110.89",
+    "exposicao": "250110.89",
+    "pct": "42.3054",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "-326565.68",
+   "valor_contrato": "851299.26",
+   "esperado": {
+    "posicao": "-326565.68",
+    "exposicao": "326565.68",
+    "pct": "38.3609",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "158788.76",
+   "valor_contrato": "620491.87",
+   "esperado": {
+    "posicao": "158788.76",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-176468.93",
+   "valor_contrato": "601219.73",
+   "esperado": {
+    "posicao": "-176468.93",
+    "exposicao": "176468.93",
+    "pct": "29.3518",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "486740.90",
+   "valor_contrato": "596329.78",
+   "esperado": {
+    "posicao": "486740.9",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "376886.53",
+   "valor_contrato": "0.00",
+   "esperado": {
+    "posicao": "376886.53",
+    "exposicao": "0",
+    "pct": null,
+    "gatilho": "NAO RESOLVIDO (falha fechada)"
+   }
+  },
+  {
+   "posicao": "-15034.86",
+   "valor_contrato": "150348.55",
+   "esperado": {
+    "posicao": "-15034.86",
+    "exposicao": "15034.86",
+    "pct": "10.0000",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "-126163.49",
+   "valor_contrato": "499145.94",
+   "esperado": {
+    "posicao": "-126163.49",
+    "exposicao": "126163.49",
+    "pct": "25.2759",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "407991.57",
+   "valor_contrato": "266206.87",
+   "esperado": {
+    "posicao": "407991.57",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "277974.62",
+   "valor_contrato": "571722.39",
+   "esperado": {
+    "posicao": "277974.62",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "494479.54",
+   "valor_contrato": "66596.33",
+   "esperado": {
+    "posicao": "494479.54",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-290425.06",
+   "valor_contrato": "568744.79",
+   "esperado": {
+    "posicao": "-290425.06",
+    "exposicao": "290425.06",
+    "pct": "51.0642",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "-263529.11",
+   "valor_contrato": "685892.01",
+   "esperado": {
+    "posicao": "-263529.11",
+    "exposicao": "263529.11",
+    "pct": "38.4214",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "-490015.83",
+   "valor_contrato": "43811.12",
+   "esperado": {
+    "posicao": "-490015.83",
+    "exposicao": "490015.83",
+    "pct": "1118.4736",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "269949.01",
+   "valor_contrato": "113313.55",
+   "esperado": {
+    "posicao": "269949.01",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "492529.63",
+   "valor_contrato": null,
+   "esperado": {
+    "posicao": "492529.63",
+    "exposicao": "0",
+    "pct": null,
+    "gatilho": "NAO RESOLVIDO (falha fechada)"
+   }
+  },
+  {
+   "posicao": "479494.68",
+   "valor_contrato": "253335.11",
+   "esperado": {
+    "posicao": "479494.68",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  },
+  {
+   "posicao": "-58865.19",
+   "valor_contrato": "588651.86",
+   "esperado": {
+    "posicao": "-58865.19",
+    "exposicao": "58865.19",
+    "pct": "10.0000",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "-387975.14",
+   "valor_contrato": "263552.23",
+   "esperado": {
+    "posicao": "-387975.14",
+    "exposicao": "387975.14",
+    "pct": "147.2100",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "-59630.92",
+   "valor_contrato": "323028.55",
+   "esperado": {
+    "posicao": "-59630.92",
+    "exposicao": "59630.92",
+    "pct": "18.4600",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "-59668.91",
+   "valor_contrato": "551897.75",
+   "esperado": {
+    "posicao": "-59668.91",
+    "exposicao": "59668.91",
+    "pct": "10.8116",
+    "gatilho": "ACIONADO"
+   }
+  },
+  {
+   "posicao": "390600.10",
+   "valor_contrato": "167487.21",
+   "esperado": {
+    "posicao": "390600.1",
+    "exposicao": "0",
+    "pct": "0",
+    "gatilho": "NAO ACIONADO"
+   }
+  }
+ ],
+ "cobertura": [
+  {
+   "coberto": "1572.58",
+   "necessidade": "1572.58",
+   "esperado": {
+    "necessidade": "1572.58",
+    "coberto": "1572.58",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "37116.58",
+   "necessidade": "9933.20",
+   "esperado": {
+    "necessidade": "9933.2",
+    "coberto": "37116.58",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "46968.38",
+   "necessidade": "41178.09",
+   "esperado": {
+    "necessidade": "41178.09",
+    "coberto": "46968.38",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "26304.34",
+   "necessidade": "48583.12",
+   "esperado": {
+    "necessidade": "48583.12",
+    "coberto": "26304.34",
+    "cobre": false,
+    "deficit": "22278.78",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "43471.91",
+   "necessidade": "16524.91",
+   "esperado": {
+    "necessidade": "16524.91",
+    "coberto": "43471.91",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "19546.87",
+   "necessidade": "35185.77",
+   "esperado": {
+    "necessidade": "35185.77",
+    "coberto": "19546.87",
+    "cobre": false,
+    "deficit": "15638.90",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "47591.00",
+   "necessidade": "14981.35",
+   "esperado": {
+    "necessidade": "14981.35",
+    "coberto": "47591",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "27793.83",
+   "necessidade": "40264.61",
+   "esperado": {
+    "necessidade": "40264.61",
+    "coberto": "27793.83",
+    "cobre": false,
+    "deficit": "12470.78",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "43492.00",
+   "necessidade": "45906.12",
+   "esperado": {
+    "necessidade": "45906.12",
+    "coberto": "43492",
+    "cobre": false,
+    "deficit": "2414.12",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "19173.77",
+   "necessidade": "19173.77",
+   "esperado": {
+    "necessidade": "19173.77",
+    "coberto": "19173.77",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "7041.65",
+   "necessidade": "13038.75",
+   "esperado": {
+    "necessidade": "13038.75",
+    "coberto": "7041.65",
+    "cobre": false,
+    "deficit": "5997.10",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "20933.24",
+   "necessidade": "2746.70",
+   "esperado": {
+    "necessidade": "2746.7",
+    "coberto": "20933.24",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "12630.63",
+   "necessidade": "49992.05",
+   "esperado": {
+    "necessidade": "49992.05",
+    "coberto": "12630.63",
+    "cobre": false,
+    "deficit": "37361.42",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "8742.78",
+   "necessidade": "33672.40",
+   "esperado": {
+    "necessidade": "33672.4",
+    "coberto": "8742.78",
+    "cobre": false,
+    "deficit": "24929.62",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "20383.09",
+   "necessidade": "28692.83",
+   "esperado": {
+    "necessidade": "28692.83",
+    "coberto": "20383.09",
+    "cobre": false,
+    "deficit": "8309.74",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "18629.70",
+   "necessidade": "17106.30",
+   "esperado": {
+    "necessidade": "17106.3",
+    "coberto": "18629.7",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "42929.48",
+   "necessidade": "19408.43",
+   "esperado": {
+    "necessidade": "19408.43",
+    "coberto": "42929.48",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "15111.95",
+   "necessidade": "14348.46",
+   "esperado": {
+    "necessidade": "14348.46",
+    "coberto": "15111.95",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "5597.10",
+   "necessidade": "5597.10",
+   "esperado": {
+    "necessidade": "5597.1",
+    "coberto": "5597.1",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "46351.78",
+   "necessidade": "14376.07",
+   "esperado": {
+    "necessidade": "14376.07",
+    "coberto": "46351.78",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "41163.85",
+   "necessidade": "44683.12",
+   "esperado": {
+    "necessidade": "44683.12",
+    "coberto": "41163.85",
+    "cobre": false,
+    "deficit": "3519.27",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "21813.73",
+   "necessidade": "1837.11",
+   "esperado": {
+    "necessidade": "1837.11",
+    "coberto": "21813.73",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "28942.12",
+   "necessidade": "13584.95",
+   "esperado": {
+    "necessidade": "13584.95",
+    "coberto": "28942.12",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "44496.26",
+   "necessidade": "27162.68",
+   "esperado": {
+    "necessidade": "27162.68",
+    "coberto": "44496.26",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "11643.28",
+   "necessidade": "37285.13",
+   "esperado": {
+    "necessidade": "37285.13",
+    "coberto": "11643.28",
+    "cobre": false,
+    "deficit": "25641.85",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "6719.05",
+   "necessidade": "48300.43",
+   "esperado": {
+    "necessidade": "48300.43",
+    "coberto": "6719.05",
+    "cobre": false,
+    "deficit": "41581.38",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "29954.35",
+   "necessidade": "43763.26",
+   "esperado": {
+    "necessidade": "43763.26",
+    "coberto": "29954.35",
+    "cobre": false,
+    "deficit": "13808.91",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "18145.54",
+   "necessidade": "18145.54",
+   "esperado": {
+    "necessidade": "18145.54",
+    "coberto": "18145.54",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "38414.22",
+   "necessidade": "24042.69",
+   "esperado": {
+    "necessidade": "24042.69",
+    "coberto": "38414.22",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "13949.84",
+   "necessidade": "29982.20",
+   "esperado": {
+    "necessidade": "29982.2",
+    "coberto": "13949.84",
+    "cobre": false,
+    "deficit": "16032.36",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "35531.51",
+   "necessidade": "3971.61",
+   "esperado": {
+    "necessidade": "3971.61",
+    "coberto": "35531.51",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "20934.62",
+   "necessidade": "949.13",
+   "esperado": {
+    "necessidade": "949.13",
+    "coberto": "20934.62",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "46646.09",
+   "necessidade": "27217.93",
+   "esperado": {
+    "necessidade": "27217.93",
+    "coberto": "46646.09",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "2440.34",
+   "necessidade": "40671.77",
+   "esperado": {
+    "necessidade": "40671.77",
+    "coberto": "2440.34",
+    "cobre": false,
+    "deficit": "38231.43",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "39667.50",
+   "necessidade": "7770.95",
+   "esperado": {
+    "necessidade": "7770.95",
+    "coberto": "39667.5",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "28128.36",
+   "necessidade": "5834.98",
+   "esperado": {
+    "necessidade": "5834.98",
+    "coberto": "28128.36",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "20055.38",
+   "necessidade": "20055.38",
+   "esperado": {
+    "necessidade": "20055.38",
+    "coberto": "20055.38",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "7189.62",
+   "necessidade": "27347.25",
+   "esperado": {
+    "necessidade": "27347.25",
+    "coberto": "7189.62",
+    "cobre": false,
+    "deficit": "20157.63",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "37774.05",
+   "necessidade": "49895.48",
+   "esperado": {
+    "necessidade": "49895.48",
+    "coberto": "37774.05",
+    "cobre": false,
+    "deficit": "12121.43",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "38776.09",
+   "necessidade": "48384.76",
+   "esperado": {
+    "necessidade": "48384.76",
+    "coberto": "38776.09",
+    "cobre": false,
+    "deficit": "9608.67",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "9754.34",
+   "necessidade": "21534.27",
+   "esperado": {
+    "necessidade": "21534.27",
+    "coberto": "9754.34",
+    "cobre": false,
+    "deficit": "11779.93",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "36599.33",
+   "necessidade": "34788.69",
+   "esperado": {
+    "necessidade": "34788.69",
+    "coberto": "36599.33",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "44436.26",
+   "necessidade": "24125.89",
+   "esperado": {
+    "necessidade": "24125.89",
+    "coberto": "44436.26",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "42110.00",
+   "necessidade": "24421.86",
+   "esperado": {
+    "necessidade": "24421.86",
+    "coberto": "42110",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "28308.03",
+   "necessidade": "35071.44",
+   "esperado": {
+    "necessidade": "35071.44",
+    "coberto": "28308.03",
+    "cobre": false,
+    "deficit": "6763.41",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "10009.16",
+   "necessidade": "10009.16",
+   "esperado": {
+    "necessidade": "10009.16",
+    "coberto": "10009.16",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "43079.81",
+   "necessidade": "16724.10",
+   "esperado": {
+    "necessidade": "16724.1",
+    "coberto": "43079.81",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "2967.25",
+   "necessidade": "30286.08",
+   "esperado": {
+    "necessidade": "30286.08",
+    "coberto": "2967.25",
+    "cobre": false,
+    "deficit": "27318.83",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "43705.06",
+   "necessidade": "141.94",
+   "esperado": {
+    "necessidade": "141.94",
+    "coberto": "43705.06",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "7132.57",
+   "necessidade": "4215.68",
+   "esperado": {
+    "necessidade": "4215.68",
+    "coberto": "7132.57",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "26631.12",
+   "necessidade": "42409.79",
+   "esperado": {
+    "necessidade": "42409.79",
+    "coberto": "26631.12",
+    "cobre": false,
+    "deficit": "15778.67",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "46576.02",
+   "necessidade": "4910.84",
+   "esperado": {
+    "necessidade": "4910.84",
+    "coberto": "46576.02",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "2228.65",
+   "necessidade": "10255.94",
+   "esperado": {
+    "necessidade": "10255.94",
+    "coberto": "2228.65",
+    "cobre": false,
+    "deficit": "8027.29",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "42086.61",
+   "necessidade": "7337.84",
+   "esperado": {
+    "necessidade": "7337.84",
+    "coberto": "42086.61",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "10631.91",
+   "necessidade": "10631.91",
+   "esperado": {
+    "necessidade": "10631.91",
+    "coberto": "10631.91",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "22233.45",
+   "necessidade": "1810.84",
+   "esperado": {
+    "necessidade": "1810.84",
+    "coberto": "22233.45",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "43817.54",
+   "necessidade": "38026.54",
+   "esperado": {
+    "necessidade": "38026.54",
+    "coberto": "43817.54",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "3719.68",
+   "necessidade": "37298.90",
+   "esperado": {
+    "necessidade": "37298.9",
+    "coberto": "3719.68",
+    "cobre": false,
+    "deficit": "33579.22",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "45058.97",
+   "necessidade": "27899.23",
+   "esperado": {
+    "necessidade": "27899.23",
+    "coberto": "45058.97",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "45734.89",
+   "necessidade": "49703.54",
+   "esperado": {
+    "necessidade": "49703.54",
+    "coberto": "45734.89",
+    "cobre": false,
+    "deficit": "3968.65",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "32415.15",
+   "necessidade": "29594.43",
+   "esperado": {
+    "necessidade": "29594.43",
+    "coberto": "32415.15",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "46027.78",
+   "necessidade": "32593.89",
+   "esperado": {
+    "necessidade": "32593.89",
+    "coberto": "46027.78",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "16388.63",
+   "necessidade": "3270.58",
+   "esperado": {
+    "necessidade": "3270.58",
+    "coberto": "16388.63",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "6832.39",
+   "necessidade": "6832.39",
+   "esperado": {
+    "necessidade": "6832.39",
+    "coberto": "6832.39",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "27604.07",
+   "necessidade": "4701.19",
+   "esperado": {
+    "necessidade": "4701.19",
+    "coberto": "27604.07",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "42087.70",
+   "necessidade": "14879.17",
+   "esperado": {
+    "necessidade": "14879.17",
+    "coberto": "42087.7",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "35548.39",
+   "necessidade": "31545.95",
+   "esperado": {
+    "necessidade": "31545.95",
+    "coberto": "35548.39",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "20748.41",
+   "necessidade": "17013.14",
+   "esperado": {
+    "necessidade": "17013.14",
+    "coberto": "20748.41",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "5579.78",
+   "necessidade": "22810.51",
+   "esperado": {
+    "necessidade": "22810.51",
+    "coberto": "5579.78",
+    "cobre": false,
+    "deficit": "17230.73",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "29239.16",
+   "necessidade": "13259.70",
+   "esperado": {
+    "necessidade": "13259.7",
+    "coberto": "29239.16",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "32480.31",
+   "necessidade": "10529.26",
+   "esperado": {
+    "necessidade": "10529.26",
+    "coberto": "32480.31",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "42578.50",
+   "necessidade": "10624.23",
+   "esperado": {
+    "necessidade": "10624.23",
+    "coberto": "42578.5",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "42133.28",
+   "necessidade": "42133.28",
+   "esperado": {
+    "necessidade": "42133.28",
+    "coberto": "42133.28",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "41693.61",
+   "necessidade": "42689.77",
+   "esperado": {
+    "necessidade": "42689.77",
+    "coberto": "41693.61",
+    "cobre": false,
+    "deficit": "996.16",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "14386.92",
+   "necessidade": "40267.21",
+   "esperado": {
+    "necessidade": "40267.21",
+    "coberto": "14386.92",
+    "cobre": false,
+    "deficit": "25880.29",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "13803.71",
+   "necessidade": "24354.35",
+   "esperado": {
+    "necessidade": "24354.35",
+    "coberto": "13803.71",
+    "cobre": false,
+    "deficit": "10550.64",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "45631.57",
+   "necessidade": "24909.41",
+   "esperado": {
+    "necessidade": "24909.41",
+    "coberto": "45631.57",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "13685.23",
+   "necessidade": "31908.76",
+   "esperado": {
+    "necessidade": "31908.76",
+    "coberto": "13685.23",
+    "cobre": false,
+    "deficit": "18223.53",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "39765.45",
+   "necessidade": "5429.37",
+   "esperado": {
+    "necessidade": "5429.37",
+    "coberto": "39765.45",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "5440.07",
+   "necessidade": "21696.62",
+   "esperado": {
+    "necessidade": "21696.62",
+    "coberto": "5440.07",
+    "cobre": false,
+    "deficit": "16256.55",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "49906.09",
+   "necessidade": "26428.04",
+   "esperado": {
+    "necessidade": "26428.04",
+    "coberto": "49906.09",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "47886.62",
+   "necessidade": "47886.62",
+   "esperado": {
+    "necessidade": "47886.62",
+    "coberto": "47886.62",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "3125.23",
+   "necessidade": "10236.03",
+   "esperado": {
+    "necessidade": "10236.03",
+    "coberto": "3125.23",
+    "cobre": false,
+    "deficit": "7110.80",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "5939.98",
+   "necessidade": "12238.78",
+   "esperado": {
+    "necessidade": "12238.78",
+    "coberto": "5939.98",
+    "cobre": false,
+    "deficit": "6298.80",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "10897.54",
+   "necessidade": "21354.96",
+   "esperado": {
+    "necessidade": "21354.96",
+    "coberto": "10897.54",
+    "cobre": false,
+    "deficit": "10457.42",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "21246.41",
+   "necessidade": "7438.52",
+   "esperado": {
+    "necessidade": "7438.52",
+    "coberto": "21246.41",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "17728.56",
+   "necessidade": "10391.03",
+   "esperado": {
+    "necessidade": "10391.03",
+    "coberto": "17728.56",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "17666.83",
+   "necessidade": "39270.58",
+   "esperado": {
+    "necessidade": "39270.58",
+    "coberto": "17666.83",
+    "cobre": false,
+    "deficit": "21603.75",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "3546.64",
+   "necessidade": "1682.83",
+   "esperado": {
+    "necessidade": "1682.83",
+    "coberto": "3546.64",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "43202.23",
+   "necessidade": "38098.54",
+   "esperado": {
+    "necessidade": "38098.54",
+    "coberto": "43202.23",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "19117.10",
+   "necessidade": "19117.10",
+   "esperado": {
+    "necessidade": "19117.1",
+    "coberto": "19117.1",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "8995.85",
+   "necessidade": "28304.82",
+   "esperado": {
+    "necessidade": "28304.82",
+    "coberto": "8995.85",
+    "cobre": false,
+    "deficit": "19308.97",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "17454.36",
+   "necessidade": "47781.42",
+   "esperado": {
+    "necessidade": "47781.42",
+    "coberto": "17454.36",
+    "cobre": false,
+    "deficit": "30327.06",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "29575.93",
+   "necessidade": "7145.93",
+   "esperado": {
+    "necessidade": "7145.93",
+    "coberto": "29575.93",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "40589.09",
+   "necessidade": "34244.38",
+   "esperado": {
+    "necessidade": "34244.38",
+    "coberto": "40589.09",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "14881.79",
+   "necessidade": "1722.22",
+   "esperado": {
+    "necessidade": "1722.22",
+    "coberto": "14881.79",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "43325.15",
+   "necessidade": "42063.66",
+   "esperado": {
+    "necessidade": "42063.66",
+    "coberto": "43325.15",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "9754.58",
+   "necessidade": "2611.86",
+   "esperado": {
+    "necessidade": "2611.86",
+    "coberto": "9754.58",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "41827.74",
+   "necessidade": "16276.12",
+   "esperado": {
+    "necessidade": "16276.12",
+    "coberto": "41827.74",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "4486.59",
+   "necessidade": "4486.59",
+   "esperado": {
+    "necessidade": "4486.59",
+    "coberto": "4486.59",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "1854.62",
+   "necessidade": "29319.15",
+   "esperado": {
+    "necessidade": "29319.15",
+    "coberto": "1854.62",
+    "cobre": false,
+    "deficit": "27464.53",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "42157.56",
+   "necessidade": "23159.87",
+   "esperado": {
+    "necessidade": "23159.87",
+    "coberto": "42157.56",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "12674.64",
+   "necessidade": "22331.26",
+   "esperado": {
+    "necessidade": "22331.26",
+    "coberto": "12674.64",
+    "cobre": false,
+    "deficit": "9656.62",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "36979.63",
+   "necessidade": "40343.60",
+   "esperado": {
+    "necessidade": "40343.6",
+    "coberto": "36979.63",
+    "cobre": false,
+    "deficit": "3363.97",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "44879.31",
+   "necessidade": "36406.51",
+   "esperado": {
+    "necessidade": "36406.51",
+    "coberto": "44879.31",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "42624.59",
+   "necessidade": "15299.68",
+   "esperado": {
+    "necessidade": "15299.68",
+    "coberto": "42624.59",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "28809.42",
+   "necessidade": "9977.41",
+   "esperado": {
+    "necessidade": "9977.41",
+    "coberto": "28809.42",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "35520.96",
+   "necessidade": "24471.76",
+   "esperado": {
+    "necessidade": "24471.76",
+    "coberto": "35520.96",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "13679.83",
+   "necessidade": "13679.83",
+   "esperado": {
+    "necessidade": "13679.83",
+    "coberto": "13679.83",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "35605.98",
+   "necessidade": "42055.87",
+   "esperado": {
+    "necessidade": "42055.87",
+    "coberto": "35605.98",
+    "cobre": false,
+    "deficit": "6449.89",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "28840.26",
+   "necessidade": "44516.05",
+   "esperado": {
+    "necessidade": "44516.05",
+    "coberto": "28840.26",
+    "cobre": false,
+    "deficit": "15675.79",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "21284.89",
+   "necessidade": "40901.38",
+   "esperado": {
+    "necessidade": "40901.38",
+    "coberto": "21284.89",
+    "cobre": false,
+    "deficit": "19616.49",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "5084.12",
+   "necessidade": "37885.06",
+   "esperado": {
+    "necessidade": "37885.06",
+    "coberto": "5084.12",
+    "cobre": false,
+    "deficit": "32800.94",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "1595.90",
+   "necessidade": "45113.78",
+   "esperado": {
+    "necessidade": "45113.78",
+    "coberto": "1595.9",
+    "cobre": false,
+    "deficit": "43517.88",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "27977.29",
+   "necessidade": "24922.70",
+   "esperado": {
+    "necessidade": "24922.7",
+    "coberto": "27977.29",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "41335.43",
+   "necessidade": "42546.32",
+   "esperado": {
+    "necessidade": "42546.32",
+    "coberto": "41335.43",
+    "cobre": false,
+    "deficit": "1210.89",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "30650.68",
+   "necessidade": "1458.71",
+   "esperado": {
+    "necessidade": "1458.71",
+    "coberto": "30650.68",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "25967.94",
+   "necessidade": "25967.94",
+   "esperado": {
+    "necessidade": "25967.94",
+    "coberto": "25967.94",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "43041.24",
+   "necessidade": "31241.13",
+   "esperado": {
+    "necessidade": "31241.13",
+    "coberto": "43041.24",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "21768.37",
+   "necessidade": "16260.98",
+   "esperado": {
+    "necessidade": "16260.98",
+    "coberto": "21768.37",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "29450.11",
+   "necessidade": "13464.57",
+   "esperado": {
+    "necessidade": "13464.57",
+    "coberto": "29450.11",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "11672.74",
+   "necessidade": "41624.53",
+   "esperado": {
+    "necessidade": "41624.53",
+    "coberto": "11672.74",
+    "cobre": false,
+    "deficit": "29951.79",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "6340.88",
+   "necessidade": "35720.79",
+   "esperado": {
+    "necessidade": "35720.79",
+    "coberto": "6340.88",
+    "cobre": false,
+    "deficit": "29379.91",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "13978.45",
+   "necessidade": "31755.70",
+   "esperado": {
+    "necessidade": "31755.7",
+    "coberto": "13978.45",
+    "cobre": false,
+    "deficit": "17777.25",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "38331.66",
+   "necessidade": "18767.03",
+   "esperado": {
+    "necessidade": "18767.03",
+    "coberto": "38331.66",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "21765.53",
+   "necessidade": "44465.88",
+   "esperado": {
+    "necessidade": "44465.88",
+    "coberto": "21765.53",
+    "cobre": false,
+    "deficit": "22700.35",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "37033.52",
+   "necessidade": "37033.52",
+   "esperado": {
+    "necessidade": "37033.52",
+    "coberto": "37033.52",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "15515.97",
+   "necessidade": "5562.62",
+   "esperado": {
+    "necessidade": "5562.62",
+    "coberto": "15515.97",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "47306.47",
+   "necessidade": "40474.49",
+   "esperado": {
+    "necessidade": "40474.49",
+    "coberto": "47306.47",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "11743.41",
+   "necessidade": "48536.12",
+   "esperado": {
+    "necessidade": "48536.12",
+    "coberto": "11743.41",
+    "cobre": false,
+    "deficit": "36792.71",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "14423.10",
+   "necessidade": "22714.91",
+   "esperado": {
+    "necessidade": "22714.91",
+    "coberto": "14423.1",
+    "cobre": false,
+    "deficit": "8291.81",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "14903.69",
+   "necessidade": "26583.63",
+   "esperado": {
+    "necessidade": "26583.63",
+    "coberto": "14903.69",
+    "cobre": false,
+    "deficit": "11679.94",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "32116.41",
+   "necessidade": "43075.64",
+   "esperado": {
+    "necessidade": "43075.64",
+    "coberto": "32116.41",
+    "cobre": false,
+    "deficit": "10959.23",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "5685.38",
+   "necessidade": "26140.77",
+   "esperado": {
+    "necessidade": "26140.77",
+    "coberto": "5685.38",
+    "cobre": false,
+    "deficit": "20455.39",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "4576.73",
+   "necessidade": "39116.88",
+   "esperado": {
+    "necessidade": "39116.88",
+    "coberto": "4576.73",
+    "cobre": false,
+    "deficit": "34540.15",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "46274.81",
+   "necessidade": "46274.81",
+   "esperado": {
+    "necessidade": "46274.81",
+    "coberto": "46274.81",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "7059.17",
+   "necessidade": "28863.50",
+   "esperado": {
+    "necessidade": "28863.5",
+    "coberto": "7059.17",
+    "cobre": false,
+    "deficit": "21804.33",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "18808.02",
+   "necessidade": "3934.91",
+   "esperado": {
+    "necessidade": "3934.91",
+    "coberto": "18808.02",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "39042.44",
+   "necessidade": "29440.77",
+   "esperado": {
+    "necessidade": "29440.77",
+    "coberto": "39042.44",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "48959.69",
+   "necessidade": "32084.02",
+   "esperado": {
+    "necessidade": "32084.02",
+    "coberto": "48959.69",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "3305.55",
+   "necessidade": "2391.73",
+   "esperado": {
+    "necessidade": "2391.73",
+    "coberto": "3305.55",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "12223.01",
+   "necessidade": "9627.85",
+   "esperado": {
+    "necessidade": "9627.85",
+    "coberto": "12223.01",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "45184.87",
+   "necessidade": "8696.05",
+   "esperado": {
+    "necessidade": "8696.05",
+    "coberto": "45184.87",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "32724.20",
+   "necessidade": "5592.41",
+   "esperado": {
+    "necessidade": "5592.41",
+    "coberto": "32724.2",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "12473.12",
+   "necessidade": "12473.12",
+   "esperado": {
+    "necessidade": "12473.12",
+    "coberto": "12473.12",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "29026.37",
+   "necessidade": "11286.71",
+   "esperado": {
+    "necessidade": "11286.71",
+    "coberto": "29026.37",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "31179.94",
+   "necessidade": "14396.29",
+   "esperado": {
+    "necessidade": "14396.29",
+    "coberto": "31179.94",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "42911.05",
+   "necessidade": "25890.05",
+   "esperado": {
+    "necessidade": "25890.05",
+    "coberto": "42911.05",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "24939.59",
+   "necessidade": "32714.36",
+   "esperado": {
+    "necessidade": "32714.36",
+    "coberto": "24939.59",
+    "cobre": false,
+    "deficit": "7774.77",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "40119.86",
+   "necessidade": "19299.11",
+   "esperado": {
+    "necessidade": "19299.11",
+    "coberto": "40119.86",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "25957.48",
+   "necessidade": "20029.64",
+   "esperado": {
+    "necessidade": "20029.64",
+    "coberto": "25957.48",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "42252.95",
+   "necessidade": "38443.54",
+   "esperado": {
+    "necessidade": "38443.54",
+    "coberto": "42252.95",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "35181.78",
+   "necessidade": "60.71",
+   "esperado": {
+    "necessidade": "60.71",
+    "coberto": "35181.78",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "4044.22",
+   "necessidade": "4044.22",
+   "esperado": {
+    "necessidade": "4044.22",
+    "coberto": "4044.22",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "25962.73",
+   "necessidade": "22086.13",
+   "esperado": {
+    "necessidade": "22086.13",
+    "coberto": "25962.73",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "33309.07",
+   "necessidade": "34577.76",
+   "esperado": {
+    "necessidade": "34577.76",
+    "coberto": "33309.07",
+    "cobre": false,
+    "deficit": "1268.69",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "43900.20",
+   "necessidade": "5050.59",
+   "esperado": {
+    "necessidade": "5050.59",
+    "coberto": "43900.2",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "33490.73",
+   "necessidade": "2614.51",
+   "esperado": {
+    "necessidade": "2614.51",
+    "coberto": "33490.73",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "17910.42",
+   "necessidade": "23368.94",
+   "esperado": {
+    "necessidade": "23368.94",
+    "coberto": "17910.42",
+    "cobre": false,
+    "deficit": "5458.52",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "31544.79",
+   "necessidade": "33545.67",
+   "esperado": {
+    "necessidade": "33545.67",
+    "coberto": "31544.79",
+    "cobre": false,
+    "deficit": "2000.88",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "6458.72",
+   "necessidade": "9589.26",
+   "esperado": {
+    "necessidade": "9589.26",
+    "coberto": "6458.72",
+    "cobre": false,
+    "deficit": "3130.54",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "48118.89",
+   "necessidade": "37708.28",
+   "esperado": {
+    "necessidade": "37708.28",
+    "coberto": "48118.89",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "40986.21",
+   "necessidade": "40986.21",
+   "esperado": {
+    "necessidade": "40986.21",
+    "coberto": "40986.21",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "48896.82",
+   "necessidade": "5015.49",
+   "esperado": {
+    "necessidade": "5015.49",
+    "coberto": "48896.82",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "2396.05",
+   "necessidade": "31631.49",
+   "esperado": {
+    "necessidade": "31631.49",
+    "coberto": "2396.05",
+    "cobre": false,
+    "deficit": "29235.44",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "12792.64",
+   "necessidade": "3337.79",
+   "esperado": {
+    "necessidade": "3337.79",
+    "coberto": "12792.64",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "44344.00",
+   "necessidade": "9216.46",
+   "esperado": {
+    "necessidade": "9216.46",
+    "coberto": "44344",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "18196.57",
+   "necessidade": "1829.35",
+   "esperado": {
+    "necessidade": "1829.35",
+    "coberto": "18196.57",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "17407.49",
+   "necessidade": "22342.46",
+   "esperado": {
+    "necessidade": "22342.46",
+    "coberto": "17407.49",
+    "cobre": false,
+    "deficit": "4934.97",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "1070.21",
+   "necessidade": "33825.39",
+   "esperado": {
+    "necessidade": "33825.39",
+    "coberto": "1070.21",
+    "cobre": false,
+    "deficit": "32755.18",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "44184.20",
+   "necessidade": "23088.79",
+   "esperado": {
+    "necessidade": "23088.79",
+    "coberto": "44184.2",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "23033.20",
+   "necessidade": "23033.20",
+   "esperado": {
+    "necessidade": "23033.2",
+    "coberto": "23033.2",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "376.81",
+   "necessidade": "32364.66",
+   "esperado": {
+    "necessidade": "32364.66",
+    "coberto": "376.81",
+    "cobre": false,
+    "deficit": "31987.85",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "38731.67",
+   "necessidade": "7974.50",
+   "esperado": {
+    "necessidade": "7974.5",
+    "coberto": "38731.67",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "32364.92",
+   "necessidade": "17662.50",
+   "esperado": {
+    "necessidade": "17662.5",
+    "coberto": "32364.92",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "48130.42",
+   "necessidade": "39954.36",
+   "esperado": {
+    "necessidade": "39954.36",
+    "coberto": "48130.42",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "29420.00",
+   "necessidade": "3718.81",
+   "esperado": {
+    "necessidade": "3718.81",
+    "coberto": "29420",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "40116.72",
+   "necessidade": "17661.33",
+   "esperado": {
+    "necessidade": "17661.33",
+    "coberto": "40116.72",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "23231.21",
+   "necessidade": "19691.95",
+   "esperado": {
+    "necessidade": "19691.95",
+    "coberto": "23231.21",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "9296.50",
+   "necessidade": "29550.84",
+   "esperado": {
+    "necessidade": "29550.84",
+    "coberto": "9296.5",
+    "cobre": false,
+    "deficit": "20254.34",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "41995.75",
+   "necessidade": "41995.75",
+   "esperado": {
+    "necessidade": "41995.75",
+    "coberto": "41995.75",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "35388.14",
+   "necessidade": "33337.20",
+   "esperado": {
+    "necessidade": "33337.2",
+    "coberto": "35388.14",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "884.26",
+   "necessidade": "37352.28",
+   "esperado": {
+    "necessidade": "37352.28",
+    "coberto": "884.26",
+    "cobre": false,
+    "deficit": "36468.02",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "17853.92",
+   "necessidade": "33082.16",
+   "esperado": {
+    "necessidade": "33082.16",
+    "coberto": "17853.92",
+    "cobre": false,
+    "deficit": "15228.24",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "29575.50",
+   "necessidade": "2923.14",
+   "esperado": {
+    "necessidade": "2923.14",
+    "coberto": "29575.5",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "7257.69",
+   "necessidade": "22011.10",
+   "esperado": {
+    "necessidade": "22011.1",
+    "coberto": "7257.69",
+    "cobre": false,
+    "deficit": "14753.41",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "39970.44",
+   "necessidade": "38459.27",
+   "esperado": {
+    "necessidade": "38459.27",
+    "coberto": "39970.44",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "29902.03",
+   "necessidade": "2129.29",
+   "esperado": {
+    "necessidade": "2129.29",
+    "coberto": "29902.03",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "7956.45",
+   "necessidade": "43768.82",
+   "esperado": {
+    "necessidade": "43768.82",
+    "coberto": "7956.45",
+    "cobre": false,
+    "deficit": "35812.37",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "12003.13",
+   "necessidade": "12003.13",
+   "esperado": {
+    "necessidade": "12003.13",
+    "coberto": "12003.13",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "30757.13",
+   "necessidade": "19993.05",
+   "esperado": {
+    "necessidade": "19993.05",
+    "coberto": "30757.13",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "21071.80",
+   "necessidade": "11089.07",
+   "esperado": {
+    "necessidade": "11089.07",
+    "coberto": "21071.8",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "1725.82",
+   "necessidade": "6835.35",
+   "esperado": {
+    "necessidade": "6835.35",
+    "coberto": "1725.82",
+    "cobre": false,
+    "deficit": "5109.53",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "36800.22",
+   "necessidade": "12258.33",
+   "esperado": {
+    "necessidade": "12258.33",
+    "coberto": "36800.22",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "34279.44",
+   "necessidade": "27253.61",
+   "esperado": {
+    "necessidade": "27253.61",
+    "coberto": "34279.44",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "47861.06",
+   "necessidade": "17613.27",
+   "esperado": {
+    "necessidade": "17613.27",
+    "coberto": "47861.06",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "25979.12",
+   "necessidade": "41267.82",
+   "esperado": {
+    "necessidade": "41267.82",
+    "coberto": "25979.12",
+    "cobre": false,
+    "deficit": "15288.70",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "33496.00",
+   "necessidade": "2699.48",
+   "esperado": {
+    "necessidade": "2699.48",
+    "coberto": "33496",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "6217.84",
+   "necessidade": "6217.84",
+   "esperado": {
+    "necessidade": "6217.84",
+    "coberto": "6217.84",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "28344.94",
+   "necessidade": "3131.72",
+   "esperado": {
+    "necessidade": "3131.72",
+    "coberto": "28344.94",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "23250.24",
+   "necessidade": "34269.72",
+   "esperado": {
+    "necessidade": "34269.72",
+    "coberto": "23250.24",
+    "cobre": false,
+    "deficit": "11019.48",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "38556.52",
+   "necessidade": "30215.66",
+   "esperado": {
+    "necessidade": "30215.66",
+    "coberto": "38556.52",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "13178.95",
+   "necessidade": "18555.21",
+   "esperado": {
+    "necessidade": "18555.21",
+    "coberto": "13178.95",
+    "cobre": false,
+    "deficit": "5376.26",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "14916.88",
+   "necessidade": "47844.53",
+   "esperado": {
+    "necessidade": "47844.53",
+    "coberto": "14916.88",
+    "cobre": false,
+    "deficit": "32927.65",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "17827.75",
+   "necessidade": "30939.27",
+   "esperado": {
+    "necessidade": "30939.27",
+    "coberto": "17827.75",
+    "cobre": false,
+    "deficit": "13111.52",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "49348.23",
+   "necessidade": "28079.47",
+   "esperado": {
+    "necessidade": "28079.47",
+    "coberto": "49348.23",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "33620.17",
+   "necessidade": "14355.57",
+   "esperado": {
+    "necessidade": "14355.57",
+    "coberto": "33620.17",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "8149.83",
+   "necessidade": "8149.83",
+   "esperado": {
+    "necessidade": "8149.83",
+    "coberto": "8149.83",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "17916.04",
+   "necessidade": "6945.56",
+   "esperado": {
+    "necessidade": "6945.56",
+    "coberto": "17916.04",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "11413.78",
+   "necessidade": "44052.46",
+   "esperado": {
+    "necessidade": "44052.46",
+    "coberto": "11413.78",
+    "cobre": false,
+    "deficit": "32638.68",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "44983.20",
+   "necessidade": "7239.27",
+   "esperado": {
+    "necessidade": "7239.27",
+    "coberto": "44983.2",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "3099.36",
+   "necessidade": "22046.75",
+   "esperado": {
+    "necessidade": "22046.75",
+    "coberto": "3099.36",
+    "cobre": false,
+    "deficit": "18947.39",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "38702.02",
+   "necessidade": "37755.17",
+   "esperado": {
+    "necessidade": "37755.17",
+    "coberto": "38702.02",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "11254.07",
+   "necessidade": "34518.38",
+   "esperado": {
+    "necessidade": "34518.38",
+    "coberto": "11254.07",
+    "cobre": false,
+    "deficit": "23264.31",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "37821.62",
+   "necessidade": "40761.17",
+   "esperado": {
+    "necessidade": "40761.17",
+    "coberto": "37821.62",
+    "cobre": false,
+    "deficit": "2939.55",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "37754.73",
+   "necessidade": "20219.00",
+   "esperado": {
+    "necessidade": "20219",
+    "coberto": "37754.73",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "49128.87",
+   "necessidade": "49128.87",
+   "esperado": {
+    "necessidade": "49128.87",
+    "coberto": "49128.87",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "6578.50",
+   "necessidade": "12504.17",
+   "esperado": {
+    "necessidade": "12504.17",
+    "coberto": "6578.5",
+    "cobre": false,
+    "deficit": "5925.67",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "9329.10",
+   "necessidade": "36192.19",
+   "esperado": {
+    "necessidade": "36192.19",
+    "coberto": "9329.1",
+    "cobre": false,
+    "deficit": "26863.09",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "1419.17",
+   "necessidade": "38085.01",
+   "esperado": {
+    "necessidade": "38085.01",
+    "coberto": "1419.17",
+    "cobre": false,
+    "deficit": "36665.84",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "17968.53",
+   "necessidade": "48631.52",
+   "esperado": {
+    "necessidade": "48631.52",
+    "coberto": "17968.53",
+    "cobre": false,
+    "deficit": "30662.99",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "35436.00",
+   "necessidade": "14641.06",
+   "esperado": {
+    "necessidade": "14641.06",
+    "coberto": "35436",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "24003.19",
+   "necessidade": "36479.96",
+   "esperado": {
+    "necessidade": "36479.96",
+    "coberto": "24003.19",
+    "cobre": false,
+    "deficit": "12476.77",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "43649.51",
+   "necessidade": "13027.59",
+   "esperado": {
+    "necessidade": "13027.59",
+    "coberto": "43649.51",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "3815.91",
+   "necessidade": "9881.73",
+   "esperado": {
+    "necessidade": "9881.73",
+    "coberto": "3815.91",
+    "cobre": false,
+    "deficit": "6065.82",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "47968.14",
+   "necessidade": "47968.14",
+   "esperado": {
+    "necessidade": "47968.14",
+    "coberto": "47968.14",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "39279.52",
+   "necessidade": "5539.81",
+   "esperado": {
+    "necessidade": "5539.81",
+    "coberto": "39279.52",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "49626.62",
+   "necessidade": "32274.19",
+   "esperado": {
+    "necessidade": "32274.19",
+    "coberto": "49626.62",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "18800.33",
+   "necessidade": "520.93",
+   "esperado": {
+    "necessidade": "520.93",
+    "coberto": "18800.33",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "10527.45",
+   "necessidade": "35350.47",
+   "esperado": {
+    "necessidade": "35350.47",
+    "coberto": "10527.45",
+    "cobre": false,
+    "deficit": "24823.02",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "8951.86",
+   "necessidade": "22802.40",
+   "esperado": {
+    "necessidade": "22802.4",
+    "coberto": "8951.86",
+    "cobre": false,
+    "deficit": "13850.54",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "32012.86",
+   "necessidade": "48875.70",
+   "esperado": {
+    "necessidade": "48875.7",
+    "coberto": "32012.86",
+    "cobre": false,
+    "deficit": "16862.84",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "30276.03",
+   "necessidade": "35137.92",
+   "esperado": {
+    "necessidade": "35137.92",
+    "coberto": "30276.03",
+    "cobre": false,
+    "deficit": "4861.89",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "11567.45",
+   "necessidade": "3956.83",
+   "esperado": {
+    "necessidade": "3956.83",
+    "coberto": "11567.45",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "29493.32",
+   "necessidade": "29493.32",
+   "esperado": {
+    "necessidade": "29493.32",
+    "coberto": "29493.32",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "27075.79",
+   "necessidade": "11260.77",
+   "esperado": {
+    "necessidade": "11260.77",
+    "coberto": "27075.79",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "42167.61",
+   "necessidade": "5147.95",
+   "esperado": {
+    "necessidade": "5147.95",
+    "coberto": "42167.61",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "40698.18",
+   "necessidade": "36054.44",
+   "esperado": {
+    "necessidade": "36054.44",
+    "coberto": "40698.18",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "47422.41",
+   "necessidade": "12075.22",
+   "esperado": {
+    "necessidade": "12075.22",
+    "coberto": "47422.41",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "40657.24",
+   "necessidade": "5627.90",
+   "esperado": {
+    "necessidade": "5627.9",
+    "coberto": "40657.24",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "34743.62",
+   "necessidade": "11944.50",
+   "esperado": {
+    "necessidade": "11944.5",
+    "coberto": "34743.62",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "44682.32",
+   "necessidade": "4123.28",
+   "esperado": {
+    "necessidade": "4123.28",
+    "coberto": "44682.32",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "35745.75",
+   "necessidade": "10840.47",
+   "esperado": {
+    "necessidade": "10840.47",
+    "coberto": "35745.75",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "13934.14",
+   "necessidade": "13934.14",
+   "esperado": {
+    "necessidade": "13934.14",
+    "coberto": "13934.14",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "89.29",
+   "necessidade": "883.95",
+   "esperado": {
+    "necessidade": "883.95",
+    "coberto": "89.29",
+    "cobre": false,
+    "deficit": "794.66",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "35606.14",
+   "necessidade": "10180.67",
+   "esperado": {
+    "necessidade": "10180.67",
+    "coberto": "35606.14",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "12406.09",
+   "necessidade": "42704.80",
+   "esperado": {
+    "necessidade": "42704.8",
+    "coberto": "12406.09",
+    "cobre": false,
+    "deficit": "30298.71",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "14030.41",
+   "necessidade": "24001.85",
+   "esperado": {
+    "necessidade": "24001.85",
+    "coberto": "14030.41",
+    "cobre": false,
+    "deficit": "9971.44",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "34638.08",
+   "necessidade": "6881.03",
+   "esperado": {
+    "necessidade": "6881.03",
+    "coberto": "34638.08",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "33709.16",
+   "necessidade": "49097.59",
+   "esperado": {
+    "necessidade": "49097.59",
+    "coberto": "33709.16",
+    "cobre": false,
+    "deficit": "15388.43",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "24279.12",
+   "necessidade": "42098.06",
+   "esperado": {
+    "necessidade": "42098.06",
+    "coberto": "24279.12",
+    "cobre": false,
+    "deficit": "17818.94",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "41863.00",
+   "necessidade": "46480.92",
+   "esperado": {
+    "necessidade": "46480.92",
+    "coberto": "41863",
+    "cobre": false,
+    "deficit": "4617.92",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "6508.03",
+   "necessidade": "6508.03",
+   "esperado": {
+    "necessidade": "6508.03",
+    "coberto": "6508.03",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "23945.63",
+   "necessidade": "26255.43",
+   "esperado": {
+    "necessidade": "26255.43",
+    "coberto": "23945.63",
+    "cobre": false,
+    "deficit": "2309.80",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "31172.53",
+   "necessidade": "44580.89",
+   "esperado": {
+    "necessidade": "44580.89",
+    "coberto": "31172.53",
+    "cobre": false,
+    "deficit": "13408.36",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "29223.46",
+   "necessidade": "36670.24",
+   "esperado": {
+    "necessidade": "36670.24",
+    "coberto": "29223.46",
+    "cobre": false,
+    "deficit": "7446.78",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "17209.74",
+   "necessidade": "644.65",
+   "esperado": {
+    "necessidade": "644.65",
+    "coberto": "17209.74",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "21688.35",
+   "necessidade": "35795.44",
+   "esperado": {
+    "necessidade": "35795.44",
+    "coberto": "21688.35",
+    "cobre": false,
+    "deficit": "14107.09",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "6777.45",
+   "necessidade": "45098.48",
+   "esperado": {
+    "necessidade": "45098.48",
+    "coberto": "6777.45",
+    "cobre": false,
+    "deficit": "38321.03",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "25781.79",
+   "necessidade": "29070.99",
+   "esperado": {
+    "necessidade": "29070.99",
+    "coberto": "25781.79",
+    "cobre": false,
+    "deficit": "3289.20",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "6758.85",
+   "necessidade": "29392.70",
+   "esperado": {
+    "necessidade": "29392.7",
+    "coberto": "6758.85",
+    "cobre": false,
+    "deficit": "22633.85",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "27188.75",
+   "necessidade": "27188.75",
+   "esperado": {
+    "necessidade": "27188.75",
+    "coberto": "27188.75",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "19273.96",
+   "necessidade": "40256.44",
+   "esperado": {
+    "necessidade": "40256.44",
+    "coberto": "19273.96",
+    "cobre": false,
+    "deficit": "20982.48",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "23657.75",
+   "necessidade": "5267.48",
+   "esperado": {
+    "necessidade": "5267.48",
+    "coberto": "23657.75",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "31905.72",
+   "necessidade": "44854.77",
+   "esperado": {
+    "necessidade": "44854.77",
+    "coberto": "31905.72",
+    "cobre": false,
+    "deficit": "12949.05",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "31934.17",
+   "necessidade": "37643.74",
+   "esperado": {
+    "necessidade": "37643.74",
+    "coberto": "31934.17",
+    "cobre": false,
+    "deficit": "5709.57",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "10167.58",
+   "necessidade": "38843.60",
+   "esperado": {
+    "necessidade": "38843.6",
+    "coberto": "10167.58",
+    "cobre": false,
+    "deficit": "28676.02",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "33680.09",
+   "necessidade": "37774.47",
+   "esperado": {
+    "necessidade": "37774.47",
+    "coberto": "33680.09",
+    "cobre": false,
+    "deficit": "4094.38",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "35072.29",
+   "necessidade": "13383.17",
+   "esperado": {
+    "necessidade": "13383.17",
+    "coberto": "35072.29",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "24876.25",
+   "necessidade": "26151.12",
+   "esperado": {
+    "necessidade": "26151.12",
+    "coberto": "24876.25",
+    "cobre": false,
+    "deficit": "1274.87",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "1811.25",
+   "necessidade": "1811.25",
+   "esperado": {
+    "necessidade": "1811.25",
+    "coberto": "1811.25",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "11048.24",
+   "necessidade": "21.93",
+   "esperado": {
+    "necessidade": "21.93",
+    "coberto": "11048.24",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "40948.34",
+   "necessidade": "32013.01",
+   "esperado": {
+    "necessidade": "32013.01",
+    "coberto": "40948.34",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "5336.97",
+   "necessidade": "32843.38",
+   "esperado": {
+    "necessidade": "32843.38",
+    "coberto": "5336.97",
+    "cobre": false,
+    "deficit": "27506.41",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "44578.02",
+   "necessidade": "12001.74",
+   "esperado": {
+    "necessidade": "12001.74",
+    "coberto": "44578.02",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "3836.34",
+   "necessidade": "12924.69",
+   "esperado": {
+    "necessidade": "12924.69",
+    "coberto": "3836.34",
+    "cobre": false,
+    "deficit": "9088.35",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "43950.11",
+   "necessidade": "19496.97",
+   "esperado": {
+    "necessidade": "19496.97",
+    "coberto": "43950.11",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "30092.26",
+   "necessidade": "10535.35",
+   "esperado": {
+    "necessidade": "10535.35",
+    "coberto": "30092.26",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "32171.05",
+   "necessidade": "35972.65",
+   "esperado": {
+    "necessidade": "35972.65",
+    "coberto": "32171.05",
+    "cobre": false,
+    "deficit": "3801.60",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "35433.42",
+   "necessidade": "35433.42",
+   "esperado": {
+    "necessidade": "35433.42",
+    "coberto": "35433.42",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "19553.06",
+   "necessidade": "6737.99",
+   "esperado": {
+    "necessidade": "6737.99",
+    "coberto": "19553.06",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "16741.96",
+   "necessidade": "49282.06",
+   "esperado": {
+    "necessidade": "49282.06",
+    "coberto": "16741.96",
+    "cobre": false,
+    "deficit": "32540.10",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "16240.51",
+   "necessidade": "779.54",
+   "esperado": {
+    "necessidade": "779.54",
+    "coberto": "16240.51",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "14914.64",
+   "necessidade": "34996.49",
+   "esperado": {
+    "necessidade": "34996.49",
+    "coberto": "14914.64",
+    "cobre": false,
+    "deficit": "20081.85",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "48383.71",
+   "necessidade": "22024.60",
+   "esperado": {
+    "necessidade": "22024.6",
+    "coberto": "48383.71",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "31604.66",
+   "necessidade": "23742.38",
+   "esperado": {
+    "necessidade": "23742.38",
+    "coberto": "31604.66",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "13204.68",
+   "necessidade": "875.92",
+   "esperado": {
+    "necessidade": "875.92",
+    "coberto": "13204.68",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "27562.03",
+   "necessidade": "23484.32",
+   "esperado": {
+    "necessidade": "23484.32",
+    "coberto": "27562.03",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "35947.84",
+   "necessidade": "35947.84",
+   "esperado": {
+    "necessidade": "35947.84",
+    "coberto": "35947.84",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "15052.61",
+   "necessidade": "20621.36",
+   "esperado": {
+    "necessidade": "20621.36",
+    "coberto": "15052.61",
+    "cobre": false,
+    "deficit": "5568.75",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "45012.96",
+   "necessidade": "18163.87",
+   "esperado": {
+    "necessidade": "18163.87",
+    "coberto": "45012.96",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "25497.13",
+   "necessidade": "37150.81",
+   "esperado": {
+    "necessidade": "37150.81",
+    "coberto": "25497.13",
+    "cobre": false,
+    "deficit": "11653.68",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "7582.28",
+   "necessidade": "11310.84",
+   "esperado": {
+    "necessidade": "11310.84",
+    "coberto": "7582.28",
+    "cobre": false,
+    "deficit": "3728.56",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "15064.24",
+   "necessidade": "10520.31",
+   "esperado": {
+    "necessidade": "10520.31",
+    "coberto": "15064.24",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "29678.24",
+   "necessidade": "40602.20",
+   "esperado": {
+    "necessidade": "40602.2",
+    "coberto": "29678.24",
+    "cobre": false,
+    "deficit": "10923.96",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "30010.58",
+   "necessidade": "21270.42",
+   "esperado": {
+    "necessidade": "21270.42",
+    "coberto": "30010.58",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "32642.12",
+   "necessidade": "12751.07",
+   "esperado": {
+    "necessidade": "12751.07",
+    "coberto": "32642.12",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "2806.39",
+   "necessidade": "2806.39",
+   "esperado": {
+    "necessidade": "2806.39",
+    "coberto": "2806.39",
+    "cobre": true,
+    "deficit": "0",
+    "situacao": "COBERTA"
+   }
+  },
+  {
+   "coberto": "29897.46",
+   "necessidade": "43464.40",
+   "esperado": {
+    "necessidade": "43464.4",
+    "coberto": "29897.46",
+    "cobre": false,
+    "deficit": "13566.94",
+    "situacao": "DESCOBERTA"
+   }
+  },
+  {
+   "coberto": "32648.19",
+   "necessidade": "43237.99",
+   "esperado": {
+    "necessidade": "43237.99",
+    "coberto": "32648.19",
+    "cobre": false,
+    "deficit": "10589.80",
+    "situacao": "DESCOBERTA"
+   }
+  }
+ ]
+}

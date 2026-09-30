@@ -103,5 +103,27 @@ def main():
     print(f"{len(saida)} casos ({erros} com erro de validacao) -> {destino.name}; situacoes: {sit}")
 
 
+def caixa():
+    """Casos de exposicao (V1.1) e cobertura por fase (V1 sec.10) do motor Python."""
+    from decimal import Decimal
+    rng = random.Random(20260931)
+    exp, cob = [], []
+    for n in range(500):
+        posicao = Decimal(rng.randint(-50_000_000, 50_000_000)) / 100
+        vc = None if n % 17 == 0 else (Decimal(0) if n % 23 == 0 else Decimal(rng.randint(1, 90_000_000)) / 100)
+        if n % 11 == 0 and vc:  # fronteira exata de 10%
+            posicao = -(vc / 10).quantize(Decimal("0.01"))
+        r = jsonable(cc.exposicao(posicao, vc))
+        exp.append({"posicao": f"{posicao:.2f}", "valor_contrato": None if vc is None else f"{vc:.2f}", "esperado": r})
+    for n in range(300):
+        coberto = Decimal(rng.randint(0, 5_000_000)) / 100
+        nec = coberto if n % 9 == 0 else Decimal(rng.randint(0, 5_000_000)) / 100
+        cob.append({"coberto": f"{coberto:.2f}", "necessidade": f"{nec:.2f}", "esperado": jsonable(cc._cobertura(coberto, nec))})
+    destino = Path(__file__).with_name("paridade-caixa.json")
+    destino.write_text(json.dumps({"exposicao": exp, "cobertura": cob}, indent=1) + "\n", encoding="utf-8")
+    print(f"{len(exp)} casos de exposicao + {len(cob)} de cobertura -> {destino.name}")
+
+
 if __name__ == "__main__":
     main()
+    caixa()
