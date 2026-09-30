@@ -1,6 +1,6 @@
 # Estado atual — 30/09/2026
 
-**Resumo:** nada está online. O portal local funciona com dados TESTE. O vigia (sistema vivo)
+**Resumo:** o vigia (avisos do CFO sobre orçamentos) **está online** no Supabase e o banco tem a base inicial; o portal ainda roda só no PC. O portal local funciona com dados TESTE. O vigia (sistema vivo)
 existe como protótipo para orçamentos. O pipeline V2 do cérebro segue bloqueado na
 classificação do item 30. **Não está 100%.**
 
@@ -23,11 +23,16 @@ classificação do item 30. **Não está 100%.**
 | Writer de produção | nunca executado nesta sequência | item 30 + requisitos W1–W10 (`VOICE360-V2-PLANNING/08-V2-PIPELINE-SPEC.md` §10.1) |
 | Remover `.obsidian` da raiz | cópia arquivada e verificada (6 arquivos, hashes idênticos); a remoção da original foi **bloqueada pelo ambiente de permissões** | Fernando apagar a pasta ou aprovar a remoção |
 
+## Online (Supabase, projeto `veos`, plano Free, us-east-1)
+- Função `vigia`: `https://vkrwxvnfstvriibjwuvw.supabase.co/functions/v1/vigia` (POST, exige chave). **425/425 casos iguais ao Python** chamando a função publicada (mediana 117 ms, p95 174 ms); sem chave → 401.
+- Banco: migração `20260930120000_base_setores_vigia` aplicada. Tabelas setores, diretores, orcamentos, avisos, eventos; 7 setores + 7 diretores; **RLS ativo em todas**, a chave pública não lê (listas vazias) nem grava (401); `db lint` sem erros.
+- Ainda não: o vigia online não grava orçamentos/avisos no banco; sem login de usuários; portal não publicado.
+
 ## GitHub
 - `origin` = https://github.com/voiceambientesinteligentes/VEOS (branch `main`), **público** por decisão do Fernando. Push verificado: commit remoto = local.
 
 ## Não implantado
-- Nenhum servidor MCP próprio, nenhuma conta Cloudflare/Vercel, nenhum domínio configurado.
+- Nenhum servidor MCP próprio, nenhum domínio configurado.
 - Nenhuma IA no servidor (sem orçamento de API definido).
 - Nenhum dado real (Zoho declarado não confiável pelo dono).
 - Setores Pós-venda e Administrativo/Pessoas não têm perfil no portal.

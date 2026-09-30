@@ -24,8 +24,13 @@ Atualize este arquivo ao fim de cada sessão: última ação, resultado e próxi
 - Autonomia técnica total registrada em DECISOES.md e CLAUDE.md.
 - GitHub conectado: `origin/main` em https://github.com/voiceambientesinteligentes/VEOS (push verificado).
 
+**Feito (Supabase, ~11:00)**
+- Login da CLI feito pelo Fernando (`npx.cmd`, porque o PowerShell bloqueia `npx.ps1`).
+- Vigia portado para TypeScript (`supabase/functions/_shared/regras`), paridade 425/425 local e **online**.
+- Migração inicial aplicada com RLS; projeto ligado (`supabase link`).
+
 **Aguardando o Fernando**
-0. GitHub conectado e enviado (público, por decisão do Fernando). Próximo acesso: conta gratuita Cloudflare.
+0. Nada bloqueante agora. Decisões pendentes: P-3 (orçamento de IA) e P-5 (siglas).
 1. Apagar a pasta `VOICE_360\.obsidian` (cópia já arquivada) ou aprovar a remoção.
 2. (Recomendado) Tornar o repositório privado.
 3. Decisões P-1 (hospedagem), P-3 (orçamento de IA) e P-5 (siglas) em [DECISOES.md](DECISOES.md).
