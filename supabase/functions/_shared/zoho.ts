@@ -193,13 +193,13 @@ export async function orcamento(id: string) {
   const itens = (e.line_items ?? []).map((l: Record<string, unknown>) => {
     const custo = l.item_id ? custos.get(String(l.item_id)) ?? null : null;
     return {
-      nome: l.name || l.description || "Item", quantidade: String(l.quantity ?? "1"),
+      item_id: l.item_id ? String(l.item_id) : null, nome: l.name || l.description || "Item", quantidade: String(l.quantity ?? "1"),
       tipo: l.product_type === "service" ? "servico" : "produto",
       venda_unit: reais(l.rate), venda_total: reais(l.item_total), custo_unit: reais(custo),
     };
   });
   return {
-    id: String(e.estimate_id), numero: e.estimate_number, cliente: e.customer_name, data: e.date, status: e.status,
+    id: String(e.estimate_id), numero: e.estimate_number, cliente: e.customer_name, cliente_id: e.customer_id ? String(e.customer_id) : null, data: e.date, status: e.status,
     subtotal: reais(e.sub_total), total: reais(e.total), itens,
     sem_custo: itens.filter((i: { custo_unit: string | null }) => i.custo_unit === null).length,
     fonte: "Zoho Books · orçamento e cadastro de itens (preço de compra)",

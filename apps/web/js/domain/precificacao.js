@@ -94,6 +94,16 @@ export function alcadaDesconto(desc, mc) {
 
 const pctDe = (base, h) => arred(base * h, 10000n); // valor x (h/100)%
 
+// Impostos da VOICE com nota, pelo enquadramento do CNPJ (Lucro Presumido), conforme a tela de
+// negociacao validada pela direcao em 30/09/2026. Editaveis na tela; confirmar com o contador.
+export const IMPOSTOS_PADRAO = {
+  produto: [["PIS", 65n], ["COFINS", 300n], ["IRPJ", 480n], ["CSLL", 288n]],
+  servico: [["ISS", 265n], ["PIS", 0n], ["COFINS", 0n], ["IRPJ", 0n], ["CSLL", 0n]],
+};
+export const OVERHEAD_PADRAO = 2000n; // 20% sobre o custo direto (tela validada pela direcao)
+/** Soma de aliquotas em centesimos de ponto -> Razao de percentual. */
+export const somaAliquotas = (linhas) => ({ num: linhas.reduce((a, [, h_]) => a + h_, 0n), den: 100n });
+
 /**
  * Negociacao ao Vivo.
  * entrada = {
@@ -103,7 +113,7 @@ const pctDe = (base, h) => arred(base * h, 10000n); // valor x (h/100)%
  *   impostos: { produto: Razao %, servico: Razao % } // aliquota efetiva (ex.: aliquotaSimples().efetiva)
  * }
  */
-export function negociacao({ tabela, desconto, custos = [], extras = [], impostos }) {
+export function negociacao({ tabela, desconto, custos = [], extras = [], impostos, overhead = OVERHEAD_PADRAO }) {
   if (tabela < 0n) throw new PrecoError("preço de tabela não pode ser negativo");
   const descontoRs = desconto?.modo === "pct" ? pctDe(tabela, desconto.valor) : (desconto?.valor ?? 0n);
   if (descontoRs < 0n) throw new PrecoError("desconto não pode ser negativo");
@@ -135,7 +145,18 @@ export function negociacao({ tabela, desconto, custos = [], extras = [], imposto
   const m = rl === null ? { rl: null, custos: custoDireto + custoExtras, risco: null, mc: null, pct: null, faixa: "NAO RESOLVIDO" } : margemPolitica(rl, custoDireto + custoExtras);
   const alcada = alcadaDesconto(descPct, m.pct);
   const ticketAbaixo = liquido > 0n && liquido < TICKET_DESEJADO;
+  // Visao da negociacao (tela validada pela direcao): custo total = direto + overhead + adicionais;
+  // margem antes dos impostos e margem com nota.
+  if (overhead < 0n) throw new PrecoError("overhead não pode ser negativo");
+  const custoOverhead = pctDe(custoDireto, overhead);
+  const custoTotal = custoDireto + custoOverhead + custoExtras;
+  const razao = (v) => (liquido > 0n && v !== null ? centesimos({ num: v * 100n, den: liquido }) : null);
+  const lucroAntes = liquido - custoTotal;
+  const lucroComNota = impostoTotal === null ? null : liquido - custoTotal - impostoTotal;
   return {
+    overheadH: overhead, custoOverhead, custoTotal,
+    antesImpostos: { lucro: lucroAntes, margemH: custoDireto > 0n ? razao(lucroAntes) : null },
+    comNota: { impostos: impostoTotal, taxaH: razao(impostoTotal), lucro: lucroComNota, margemH: custoDireto > 0n ? razao(lucroComNota) : null },
     tabela, descontoRs, descPct, descPctH: centesimos(descPct), liquido,
     custoProduto, custoServico, custoDireto, extras: extrasLinhas, custoExtras,
     receitaProduto, receitaServico, impostoTotal, ...m, pctH: centesimos(m.pct), alcada,

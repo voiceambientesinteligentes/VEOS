@@ -147,6 +147,33 @@ export async function rotearFluxo(req: Request, partes: string[], eu: Membro) {
   }
 
   // ---------------------------------------------------------------- escrita
+  if (post && a === "pedidos" && !b && corpo.negociacao) {
+    // Fechar negociacao: o pedido nasce com o preco negociado e os custos da Negociacao ao Vivo.
+    exigir(eu, COMERCIAL);
+    const n = corpo.negociacao as Record<string, any>;
+    const cliente = texto(n.cliente, 200);
+    if (!cliente) throw new HttpError(400, "informe o cliente");
+    if (!MONEY_RE.test(String(n.valor_total)) || num(n.valor_total) <= 0) throw new HttpError(400, "preço negociado inválido");
+    const itens = (Array.isArray(n.itens) ? n.itens : []).map((i: Record<string, any>, k: number) => {
+      if (!["produto", "servico"].includes(i.tipo)) throw new HttpError(400, `item ${k + 1}: tipo inválido`);
+      if (!QTD_RE.test(String(i.quantidade)) || num(i.quantidade) <= 0) throw new HttpError(400, `item ${k + 1}: quantidade inválida`);
+      if (!MONEY_RE.test(String(i.preco_unit ?? "0"))) throw new HttpError(400, `item ${k + 1}: preço inválido`);
+      if (i.custo_unit !== null && i.custo_unit !== undefined && !/^\d{1,12}(\.\d{1,4})?$/.test(String(i.custo_unit))) throw new HttpError(400, `item ${k + 1}: custo inválido`);
+      if (i.item_id && !ZID_RE.test(String(i.item_id))) throw new HttpError(400, `item ${k + 1}: item inválido`);
+      return { item_id: i.item_id ?? null, nome: String(i.nome ?? "Item").slice(0, 300), tipo: i.tipo, quantidade: String(i.quantidade), preco_unit: String(i.preco_unit ?? "0"), custo_unit: i.custo_unit ?? null };
+    });
+    if (!itens.length || itens.length > 300) throw new HttpError(400, "o pedido precisa de 1 a 300 itens");
+    const oid = texto(n.orcamento_zoho_id, 40);
+    if (oid && !ZID_RE.test(oid)) throw new HttpError(400, "orçamento inválido");
+    const resumo = n.resumo && typeof n.resumo === "object" ? JSON.stringify(n.resumo).slice(0, 1500) : "";
+    const r = await servico("/rest/v1/rpc/pedido_criar", { method: "POST", body: JSON.stringify({ p: {
+      chave: `${eu.user_id}:${chave}`, usuario: eu.user_id, orcamento_zoho_id: oid, orcamento_numero: texto(n.orcamento_numero, 40), cliente_zoho_id: texto(n.cliente_zoho_id, 40),
+      cliente_nome: cliente, valor_total: num(n.valor_total).toFixed(2), condicao: texto(n.condicao, 300),
+      observacao: [texto(n.observacao, 1500), resumo ? `Negociação ao Vivo: ${resumo}` : null].filter(Boolean).join(" | "), itens,
+    } }) });
+    await vigiar();
+    return r;
+  }
   if (post && a === "pedidos" && !b) {
     exigir(eu, COMERCIAL);
     const oid = texto(corpo.orcamento_zoho_id, 40);

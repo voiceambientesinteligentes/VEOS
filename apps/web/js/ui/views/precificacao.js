@@ -1,17 +1,20 @@
-// Ferramentas do CFO: Calculadora de Precos e Negociacao ao Vivo. Calculo local, a cada
-// digitacao, pela Politica V1 (MC com provisao de 2%, faixas 35/30/25, alcada de desconto,
-// ticket como meta) e Simples Nacional (LC 123). Nada e gravado nem enviado daqui.
-import { FONTE_POLITICA, FONTE_SIMPLES, aliquotaSimples, anexoPorFatorR, calculadora, negociacao, paraProposta } from "../../domain/precificacao.js";
+// Ferramentas do CFO: Negociacao ao Vivo e Calculadora de Precos. Calculo local, a cada digitacao.
+// Impostos com nota pelo enquadramento do CNPJ (Lucro Presumido, editaveis), overhead de 20% sobre o
+// custo direto, margem antes dos impostos e com nota (como a tela validada pela direcao), mais a
+// conferencia da Politica V1 (MC oficial com provisao de 2%, faixas e alcada de desconto).
+// Destinos: "Salvar como proposta" (Comercial) e "Fechar negociacao" (vira pedido no fluxo:
+// estoque, parcelas, NF e caixa). Nada e enviado ao cliente daqui.
+import { FONTE_POLITICA, IMPOSTOS_PADRAO, OVERHEAD_PADRAO, calculadora, negociacao, paraProposta, somaAliquotas } from "../../domain/precificacao.js";
 import { parseMoneyInput } from "../../domain/controls.js";
 import { formatBRL, toScaled } from "../../domain/format.js";
 import { clear, field, h, method, panel, stamp, stat } from "../dom.js";
 
 const FAIXA = {
-  VERDE: ["Verde · alvo de 35% atingido", "ok"],
-  ACEITAVEL: ["Aceitável · entre 30% e 35%", "ok"],
-  ATENCAO: ["Atenção · entre 25% e 30%: exige direção", "warn"],
-  "NAO APROVADO": ["Não aprovado · abaixo de 25%", "risk"],
-  "NAO RESOLVIDO": ["Não resolvido · faltam dados", "neutral"],
+  VERDE: ["Política V1: verde · MC ≥ 35%", "ok"],
+  ACEITAVEL: ["Política V1: aceitável · MC 30–35%", "ok"],
+  ATENCAO: ["Política V1: atenção · MC 25–30%, exige direção", "warn"],
+  "NAO APROVADO": ["Política V1: não aprovado · MC < 25%", "risk"],
+  "NAO RESOLVIDO": ["Política V1: não resolvido · faltam dados", "neutral"],
 };
 const ALCADA_TOM = { "FLUXO NORMAL": "ok", "AUTONOMIA COMERCIAL": "ok", "NAO RESOLVIDO": "neutral", DIRECAO: "warn", "EXCEPCIONAL - NOVA ANALISE INTEGRAL": "risk", EXTRAORDINARIA: "risk" };
 
@@ -19,326 +22,342 @@ const ALCADA_TOM = { "FLUXO NORMAL": "ok", "AUTONOMIA COMERCIAL": "ok", "NAO RES
 const brl = (c) => (c === null || c === undefined ? "—" : formatBRL(`${c < 0n ? "-" : ""}${(c < 0n ? -c : c) / 100n}.${String((c < 0n ? -c : c) % 100n).padStart(2, "0")}`));
 const pctH = (h_) => (h_ === null || h_ === undefined ? "—" : `${h_ < 0n ? "-" : ""}${(h_ < 0n ? -h_ : h_) / 100n},${String((h_ < 0n ? -h_ : h_) % 100n).padStart(2, "0")}%`);
 const money = (raw) => { const v = parseMoneyInput(raw); return v === null ? null : toScaled(v, 2); };
-const numero = (raw) => { const s = String(raw ?? "").trim().replace(/\./g, "").replace(",", "."); return /^\d{1,9}(\.\d{1,2})?$/.test(s) ? toScaled(s, 2) : null; };
-const decimalBR = (v) => { const [i, f = "00"] = String(v).split("."); return `${i.replace(/\B(?=(\d{3})+(?!\d))/g, ".")},${f.padEnd(2, "0")}`; };
+const numero = (raw) => { const s = String(raw ?? "").trim().replace(/\./g, "").replace(",", "."); return /^\d{1,9}(\.\d{1,3})?$/.test(s) ? toScaled(s, 2) : null; };
+const decimalBR = (v) => { const [i, f = "00"] = String(v).split("."); return `${i.replace(/\B(?=(\d{3})+(?!\d))/g, ".")},${f.padEnd(2, "0").slice(0, 2)}`; };
+const fixo2 = (c) => `${c < 0n ? "-" : ""}${(c < 0n ? -c : c) / 100n}.${String((c < 0n ? -c : c) % 100n).padStart(2, "0")}`;
 const SITUACAO_ZOHO = { draft: "Rascunho", sent: "Enviado", accepted: "Aceito", declined: "Recusado", expired: "Expirado", invoiced: "Faturado" };
 const situacaoZoho = (s) => SITUACAO_ZOHO[s] ?? s;
-const dataBR = (iso) => iso.split("-").reverse().join("/");
+const dataBR = (iso) => String(iso ?? "").split("-").reverse().join("/");
 const inp = (id, attrs = {}) => h("input", { class: "input num", id, type: "text", inputmode: "decimal", autocomplete: "off", ...attrs });
 const sel = (id, opcoes, valor) => h("select", { class: "select", id }, opcoes.map(([v, t]) => h("option", { value: v, selected: v === valor }, t)));
+const botao = (texto, tom = "ghost", attrs = {}) => h("button", { class: `btn btn-${tom}`, type: "button", ...attrs }, texto);
 
-// preferencia do proprio navegador (conveniencia; o calculo funciona sem ela)
-const CHAVE = "veos.impostos";
-function lerPref() { try { return JSON.parse(localStorage.getItem(CHAVE) || "{}"); } catch { return {}; } }
-function gravarPref(p) { try { localStorage.setItem(CHAVE, JSON.stringify(p)); } catch { /* sem armazenamento: segue sem lembrar */ } }
-
-/**
- * Painel de impostos do Simples Nacional. A receita dos ultimos 12 meses (RBT12) define a faixa;
- * quando o Zoho Books estiver conectado ela vem sozinha das faturas. Devolve { el, ler() }.
- */
-function painelImpostos(aoMudar, fontes = null) {
-  const pref = lerPref();
-  const rbt = inp("imp-rbt12", { value: pref.rbt12 ?? "" });
-  const folha = inp("imp-folha", { value: pref.folha ?? "" });
-  const anexoServ = sel("imp-anexo-serv", [["auto", "Pelo Fator R (informe a folha)"], ["III", "Anexo III"], ["V", "Anexo V"]], pref.anexoServ ?? "III");
-  const saida = h("div", { class: "stack-s", role: "status" });
-  const origem = h("p", { class: "field-hint" }, fontes?.rbt12 ? "Buscando a receita dos 12 meses no Zoho Books…" : "Receita digitada.");
-  const el = panel({ title: "Impostos · Simples Nacional", subtitle: "A alíquota efetiva sai da receita bruta dos últimos 12 meses (RBT12). Quando o Zoho Books estiver conectado, ela é puxada das faturas automaticamente." },
-    h("div", { class: "form-grid" },
-      field("imp-rbt12", "Receita bruta dos últimos 12 meses (R$)", rbt, "Vazio ou zero = empresa sem histórico: usa a 1ª faixa."),
-      field("imp-anexo-serv", "Serviços (instalação, programação)", anexoServ, "Confirmar o anexo do CNAE com o contador."),
-      field("imp-folha", "Folha dos últimos 12 meses (R$)", folha, "Só para o Fator R (≥ 28% → Anexo III).")),
-    origem,
-    saida,
-    method("Fonte e método", FONTE_SIMPLES, "Alíquota efetiva = (RBT12 × alíquota nominal − parcela a deduzir) ÷ RBT12.", "Produtos (equipamentos) no Anexo I; serviços no Anexo III ou V conforme o Fator R. O DAS já inclui ICMS/ISS, PIS, COFINS, IRPJ, CSLL e CPP."));
-  function ler() {
-    const r = rbt.value.trim() ? money(rbt.value) : 0n;
-    const f = folha.value.trim() ? money(folha.value) : null;
-    gravarPref({ rbt12: rbt.value, folha: folha.value, anexoServ: anexoServ.value });
-    clear(saida);
-    if (r === null) { saida.append(h("p", { class: "field-error" }, "Receita dos 12 meses: informe um valor em reais.")); return null; }
-    const anexoS = anexoServ.value === "auto" ? anexoPorFatorR(f, r) : anexoServ.value;
-    if (!anexoS) { saida.append(h("p", { class: "field-error" }, "Para escolher pelo Fator R, informe a receita e a folha dos 12 meses.")); return null; }
-    try {
-      const produto = aliquotaSimples(r, "I"), servico = aliquotaSimples(r, anexoS);
-      saida.append(h("div", { class: "row" },
-        stamp(`Produtos: ${pctH(produto.efetivaH)} (Anexo I, ${produto.faixa}ª faixa)`, "live"),
-        stamp(`Serviços: ${pctH(servico.efetivaH)} (Anexo ${anexoS}, ${servico.faixa}ª faixa)`, "live")));
-      return { produto, servico };
-    } catch (e) {
-      saida.append(h("p", { class: "field-error" }, e.message));
-      return null;
-    }
-  }
-  for (const c of [rbt, folha, anexoServ]) c.addEventListener("input", aoMudar);
-  rbt.addEventListener("input", () => { origem.textContent = "Receita digitada (substitui a do Zoho nesta tela)."; });
-  if (fontes?.rbt12) {
-    fontes.rbt12().then((r) => {
-      if (!r.faturas) {
-        origem.textContent = `O Zoho Books não tem faturas emitidas de ${dataBR(r.inicio)} a ${dataBR(r.fim)}: a receita dos 12 meses não pode vir de lá. Digite a receita bruta (ex.: do extrato do Simples/PGDAS).`;
-        return;
-      }
-      rbt.value = decimalBR(r.valor);
-      origem.textContent = `Automático: ${r.fonte}, ${r.faturas} faturas de ${dataBR(r.inicio)} a ${dataBR(r.fim)}.`;
-      aoMudar();
-    }).catch((e) => {
-      origem.textContent = e.status === 409 ? "Zoho não conectado: digite a receita ou peça à direção para conectar em Integrações." : `Não deu para puxar do Zoho (${e.message}). Digite a receita.`;
-    });
-  }
-  return { el, ler };
+// ---------------------------------------------------------------- impostos (com nota), editaveis
+// Lista por bloco em centesimos de ponto; guardada no proprio navegador (conveniencia).
+const CHAVE_IMP = "veos.impostos.v2";
+function lerImpostos() {
+  try {
+    const x = JSON.parse(localStorage.getItem(CHAVE_IMP) || "null");
+    if (x?.produto && x?.servico) return { produto: x.produto.map(([n, v]) => [n, BigInt(v)]), servico: x.servico.map(([n, v]) => [n, BigInt(v)]) };
+  } catch { /* usa o padrao */ }
+  return { produto: IMPOSTOS_PADRAO.produto.map((x) => [...x]), servico: IMPOSTOS_PADRAO.servico.map((x) => [...x]) };
+}
+function gravarImpostos(t) {
+  try { localStorage.setItem(CHAVE_IMP, JSON.stringify({ produto: t.produto.map(([n, v]) => [n, String(v)]), servico: t.servico.map(([n, v]) => [n, String(v)]) })); } catch { /* sem armazenamento */ }
 }
 
-function resultadoMargem(r, extra = []) {
-  const [rotulo, tom] = FAIXA[r.faixa];
-  return [
-    h("div", { class: "row" }, stamp(rotulo, tom), r.alcada ? stamp(`Alçada: ${r.alcada.nivel.toLowerCase()}`, ALCADA_TOM[r.alcada.nivel]) : null),
-    h("div", { class: "form-grid" },
-      ...extra,
-      stat("Impostos (Simples)", brl(r.impostoTotal ?? r.impostoRs)),
-      stat("Receita líquida", brl(r.rl)),
-      stat("Custos diretos", brl(r.custos)),
-      stat("Provisão de risco 2%", brl(r.risco)),
-      stat("Margem de contribuição", brl(r.mc), pctH(r.pctH))),
-    reguaMargem(r.pctH),
-  ];
-}
-
-/** Regua 0-50% com as faixas da politica (25 / 30 / 35) e o ponteiro da margem. */
-function reguaMargem(p) {
-  const regua = h("div", { class: "regua-margem", role: "img", "aria-label": p === null ? "Margem não resolvida" : `Margem de ${pctH(p)} na régua da política: piso 25%, normal 30%, alvo 35%` },
-    h("span", { class: "regua-zona regua-risco" }), h("span", { class: "regua-zona regua-atencao" }), h("span", { class: "regua-zona regua-aceitavel" }), h("span", { class: "regua-zona regua-verde" }),
-    ["25%", "30%", "35%"].map((t, i) => h("span", { class: `regua-marca regua-marca-${i}` }, t)));
-  if (p !== null) {
-    const ponteiro = h("span", { class: "regua-ponteiro" });
-    const pos = Number(p < 0n ? 0n : p > 5000n ? 5000n : p) / 50; // 0..100 (%)
-    ponteiro.style.left = `${pos}%`;
-    regua.append(ponteiro);
+/** Bloco de impostos de um tipo de nota: chips com as aliquotas e edicao inline (editar, remover, adicionar). */
+function blocoImpostos(tabela, chave, titulo, aoMudar) {
+  const el = h("div", { class: `imp-bloco imp-${chave}` });
+  let editando = false;
+  function desenhar(base, valor) {
+    const soma = somaAliquotas(tabela[chave]);
+    const alternar = botao(editando ? "Concluir" : "Editar", "ghost", { class: "btn btn-ghost btn-mini" });
+    alternar.addEventListener("click", () => { editando = !editando; desenhar(base, valor); });
+    clear(el).append(
+      h("div", { class: "row imp-cabeca" }, h("strong", null, titulo), h("span", { class: "field-hint" }, `base ${brl(base)}`), h("span", { class: "imp-total" }, `${pctH(soma.num)} = ${brl(valor)}`), alternar),
+      editando
+        ? h("div", { class: "stack-s" },
+            tabela[chave].map(([nome, v], i) => {
+              const n = h("input", { class: "input", value: nome, "aria-label": "Imposto" });
+              const a = inp(null, { value: pctH(v).replace("%", ""), "aria-label": `Alíquota ${nome} (%)` });
+              const rem = botao("×", "ghost", { "aria-label": `Remover ${nome}` });
+              n.addEventListener("input", () => { tabela[chave][i][0] = n.value.trim() || "Imposto"; gravarImpostos(tabela); });
+              a.addEventListener("input", () => { const x = numero(a.value); if (x !== null && x <= 10000n) { tabela[chave][i][1] = x; gravarImpostos(tabela); aoMudar(); } });
+              rem.addEventListener("click", () => { tabela[chave].splice(i, 1); gravarImpostos(tabela); aoMudar(); });
+              return h("div", { class: "row imp-linha" }, n, a, h("span", { class: "field-hint" }, "%"), rem);
+            }),
+            (() => { const b = botao("+ Imposto"); b.addEventListener("click", () => { tabela[chave].push(["Novo", 0n]); gravarImpostos(tabela); aoMudar(); }); return b; })())
+        : h("div", { class: "row imp-chips" }, tabela[chave].map(([nome, v]) => h("span", { class: "imp-chip" }, `${nome} ${pctH(v)}`))));
   }
-  return regua;
-}
-
-const listaExigencias = (r) => h("ul", { class: "list-plain stack-s" },
-  [...(r.pendencias ?? []).map((p) => h("li", { class: "field-error" }, p)),
-   ...(r.alcada?.exigencias ?? []).map((x) => h("li", null, x)),
-   r.ticket?.texto ? h("li", null, r.ticket.texto) : null]);
-
-// ---------------------------------------------------------------- Calculadora
-export function telaCalculadora(root) {
-  const campos = {
-    materiais: inp("calc-materiais"), horas: inp("calc-horas"), valorHora: inp("calc-hora"),
-    rateio: inp("calc-rateio", { value: "0" }), alvo: inp("calc-alvo", { value: "35" }),
-    tipo: sel("calc-tipo", [["servico", "Serviço (instalação, programação)"], ["produto", "Produto (equipamentos)"]], "servico"),
-  };
-  const saida = h("div", { class: "stack", "aria-live": "polite" });
-  const impostos = painelImpostos(calcular);
-  const restaurar = h("button", { class: "btn btn-ghost", type: "button" }, "Restaurar padrões");
-  restaurar.addEventListener("click", () => { campos.rateio.value = "0"; campos.alvo.value = "35"; calcular(); });
-
-  function calcular() {
-    clear(saida);
-    const erros = [];
-    const v = (c, nome, fn = money) => { const t = c.value.trim(); if (!t) return 0n; const x = fn(t); if (x === null) erros.push(`${nome}: valor inválido.`); return x ?? 0n; };
-    const entrada = { materiais: v(campos.materiais, "Materiais"), horas: v(campos.horas, "Horas", numero), valorHora: v(campos.valorHora, "Valor/hora"), rateioFixo: v(campos.rateio, "Rateio fixo", numero), alvo: v(campos.alvo, "Margem alvo", numero) };
-    const imp = impostos.ler();
-    if (!imp) erros.push("Defina os impostos do Simples acima.");
-    if (erros.length) return saida.append(h("ul", { class: "list-plain" }, erros.map((e) => h("li", { class: "field-error" }, e))));
-    try {
-      const r = calculadora({ ...entrada, imposto: (campos.tipo.value === "produto" ? imp.produto : imp.servico).efetiva });
-      if (r.pendencias.length) return saida.append(panel({ title: "Preço mínimo pela política" }, h("p", { class: "result-empty" }, r.pendencias[0])));
-      saida.append(panel({ title: "Preço mínimo pela política", subtitle: `Menor preço em que a margem de contribuição chega a ${pctH(entrada.alvo)} depois do Simples e da provisão de risco de 2%.` },
-        h("p", { class: "preco-destaque" }, brl(r.preco)),
-        ...resultadoMargem(r, [stat("Custo total", brl(r.custo), `mão de obra ${brl(r.maoDeObra)}${r.fixo ? ` · fixo ${brl(r.fixo)}` : ""}`), stat("Markup sobre o custo", `${pctH(r.markupH).replace("%", "")}×`)]),
-        entrada.alvo < 3000n ? h("p", { class: "notice notice-risk" }, "Alvo abaixo de 30%: a política exige autorização da direção (sec.9).") : null,
-        method("Fórmula e fonte", "Preço = custo ÷ ((1 − alíquota) × (1 − 2% − margem alvo)).", "MC = receita líquida − custos diretos − 2% da receita líquida (V1 sec.4 e 6).", FONTE_POLITICA,
-          "Rateio de custo fixo: não consta da Política V1 (a MC oficial não inclui custo fixo). Use só como folga, se quiser.")));
-    } catch (e) {
-      saida.append(h("p", { class: "field-error" }, e.message));
-    }
-  }
-  for (const c of Object.values(campos)) c.addEventListener("input", calcular);
-  root.append(
-    h("div", { class: "split" },
-      h("div", { class: "stack" },
-        panel({ title: "Custos do projeto", subtitle: "O resultado atualiza a cada digitação.", actions: restaurar },
-          h("div", { class: "form-grid" },
-            field("calc-materiais", "Materiais e equipamentos (R$)", campos.materiais),
-            field("calc-horas", "Horas de trabalho", campos.horas),
-            field("calc-hora", "Valor da hora (R$)", campos.valorHora, "Custo da hora da equipe."),
-            field("calc-tipo", "Imposto como", campos.tipo),
-            field("calc-rateio", "Rateio de custo fixo (%)", campos.rateio, "Proposta: fora da Política V1."),
-            field("calc-alvo", "Margem de contribuição alvo (%)", campos.alvo, "Política V1: alvo 35%, mínimo normal 30%."))),
-        impostos.el),
-      saida));
-  calcular();
+  return { el, desenhar };
 }
 
 // ---------------------------------------------------------------- Negociacao ao Vivo
 export function telaNegociacao(root, fontes = null) {
+  const impostos = lerImpostos();
   const cliente = h("input", { class: "input", id: "neg-cliente", type: "text", autocomplete: "off" });
   const tabela = inp("neg-tabela");
   const referencia = h("input", { class: "input", id: "neg-ref", type: "text", autocomplete: "off", placeholder: "Ex.: EST-000123" });
   const condicao = h("input", { class: "input", id: "neg-condicao", type: "text", autocomplete: "off", placeholder: "Ex.: 30% na assinatura, 70% por fase" });
-  const descModo = sel("neg-desc-modo", [["pct", "%"], ["rs", "R$"]], "pct");
-  const descValor = inp("neg-desc", { value: "0" });
-  const linhasCusto = h("tbody");
-  const linhasExtra = h("tbody");
-  const saida = h("div", { class: "stack", "aria-live": "polite" });
-  const impostos = painelImpostos(calcular, fontes);
-  const origem = h("p", { class: "field-hint" }, "Digitado na tela.");
-
-  function linha(corpo, celulas) {
-    const remover = h("button", { class: "btn btn-ghost", type: "button", "aria-label": "Remover linha" }, "×");
-    const tr = h("tr", null, celulas.map((c) => h("td", null, c)), h("td", null, remover));
-    remover.addEventListener("click", () => { tr.remove(); calcular(); });
-    for (const c of celulas) if (c instanceof HTMLElement) c.addEventListener("input", calcular);
-    corpo.append(tr);
+  const descModo = h("div", { class: "segmented", role: "radiogroup", "aria-label": "Desconto em" });
+  let modoDesc = "pct";
+  for (const [v, t] of [["pct", "%"], ["rs", "R$"]]) {
+    const r = h("input", { type: "radio", name: "neg-desc-modo", value: v, checked: v === "pct" });
+    r.addEventListener("change", () => { modoDesc = v; calcular(); });
+    descModo.append(h("label", null, r, t));
   }
-  const novoCusto = (d = {}) => linha(linhasCusto, [
-    sel(null, [["produto", "Produto"], ["servico", "Serviço"]], d.tipo ?? "produto"),
-    h("input", { class: "input", type: "text", "aria-label": "Descrição", autocomplete: "off", value: d.nome ?? "" }),
-    inp(null, { value: d.qtd ?? "1", "aria-label": "Quantidade" }), inp(null, { "aria-label": "Custo unitário (R$)", value: d.custo ?? "" })]);
-  const novoExtra = () => linha(linhasExtra, [
-    h("input", { class: "input", type: "text", "aria-label": "Descrição", placeholder: "Ex.: comissão do arquiteto", autocomplete: "off" }),
-    sel(null, [["pct", "% do negociado"], ["rs", "R$"]], "pct"), inp(null, { "aria-label": "Valor" })]);
-  const botao = (texto, fn) => { const b = h("button", { class: "btn btn-ghost", type: "button" }, texto); b.addEventListener("click", () => { fn(); calcular(); }); return b; };
+  const descValor = inp("neg-desc", { placeholder: "Ex.: 5" });
+  const overhead = inp("neg-overhead", { value: pctH(OVERHEAD_PADRAO).replace("%", "") });
+  const linhasCusto = h("tbody"), linhasExtra = h("tbody");
+  const origem = h("p", { class: "field-hint" }, "Escolha um orçamento à esquerda ou preencha à mão.");
+  const status = h("div", { class: "stack", "aria-live": "polite" });
+  const resumoCustos = h("div", { class: "stack-s" });
+  const acoes = h("div", { class: "stack-s" });
+  const blocoProd = blocoImpostos(impostos, "produto", "Produtos (NF-e)", () => calcular());
+  const blocoServ = blocoImpostos(impostos, "servico", "Serviços / mão de obra (NFS-e)", () => calcular());
+  let orcamento = null; // { zoho_id, numero, cliente_zoho_id }
+  let ultimo = null;    // ultimo calculo valido (para os botoes)
 
-  // Importar orcamento do Zoho Books: cliente, preco, desconto e itens com preco de compra.
-  function painelZoho() {
-    const busca = h("input", { class: "input", id: "zoho-busca", type: "search", autocomplete: "off", placeholder: "Cliente, número ou referência" });
-    const status = sel("zoho-status", [["", "Todos"], ["draft", "Rascunho"], ["sent", "Enviado"], ["accepted", "Aceito"], ["declined", "Recusado"], ["expired", "Expirado"]], "");
-    const lista = h("div", { class: "zoho-lista", "aria-live": "polite" });
-    const buscar = h("button", { class: "btn btn-ghost", type: "button" }, "Buscar");
-    async function carregar() {
-      buscar.disabled = true;
-      clear(lista).append(h("p", { class: "muted" }, "Buscando no Zoho Books…"));
+  // linhas de custo: tipo, descricao, qtd (fixa quando vem do orcamento), custo total da linha
+  function novoCusto(d = {}) {
+    const tipo = sel(null, [["produto", "Prod"], ["servico", "Serv"]], d.tipo ?? "produto");
+    const desc = h("input", { class: "input", type: "text", "aria-label": "Descrição", autocomplete: "off", value: d.nome ?? "" });
+    const qtd = inp(null, { value: d.qtd ?? "1", "aria-label": "Quantidade", readonly: Boolean(d.fixo) });
+    const total = inp(null, { "aria-label": "Custo total da linha (R$)", value: d.total ?? "" });
+    const rem = botao("×", "ghost", { "aria-label": "Remover linha" });
+    const tr = h("tr", null, [tipo, desc, qtd, total, rem].map((c) => h("td", null, c)));
+    tr.dados = { item_id: d.item_id ?? null, preco_unit: d.preco_unit ?? "0" };
+    rem.addEventListener("click", () => { tr.remove(); calcular(); });
+    for (const c of [tipo, desc, qtd, total]) c.addEventListener("input", calcular);
+    linhasCusto.append(tr);
+  }
+  function novoExtra() {
+    const desc = h("input", { class: "input", type: "text", "aria-label": "Descrição", placeholder: "Ex.: RT do arquiteto, comissão, frete", autocomplete: "off" });
+    const modo = sel(null, [["pct", "% do negociado"], ["rs", "R$"]], "pct");
+    const valor = inp(null, { "aria-label": "Valor" });
+    const rem = botao("×", "ghost", { "aria-label": "Remover custo adicional" });
+    const tr = h("tr", null, [desc, modo, valor, rem].map((c) => h("td", null, c)));
+    rem.addEventListener("click", () => { tr.remove(); calcular(); });
+    for (const c of [desc, modo, valor]) c.addEventListener("input", calcular);
+    linhasExtra.append(tr);
+  }
+
+  function lerLinhas(erros) {
+    const semCusto = [];
+    const custos = [], itensPedido = [];
+    [...linhasCusto.rows].forEach((tr, i) => {
+      const [tipo, desc, qtd, total] = tr.querySelectorAll("select, input");
+      const q = numero(qtd.value);
+      if (q === null || q <= 0n) { erros.push(`Custo ${i + 1}: quantidade inválida.`); return; }
+      if (!total.value.trim()) { if (desc.value.trim()) semCusto.push(desc.value.trim()); return; }
+      const t = money(total.value);
+      if (t === null) { erros.push(`Custo ${i + 1}: valor inválido.`); return; }
+      custos.push({ tipo: tipo.value, total: t });
+      itensPedido.push({ item_id: tr.dados.item_id, nome: desc.value.trim() || "Item", tipo: tipo.value, quantidade: String(Number(q) / 100), preco_unit: tr.dados.preco_unit, custo_unit: (Number(t) / 100 / (Number(q) / 100)).toFixed(4) });
+    });
+    const extras = [...linhasExtra.rows].map((tr, i) => {
+      const [desc, modo, valor] = tr.querySelectorAll("select, input");
+      const v = valor.value.trim() ? (modo.value === "pct" ? numero(valor.value) : money(valor.value)) : 0n;
+      if (v === null) { erros.push(`Custo adicional ${i + 1}: valor inválido.`); return null; }
+      return { descricao: desc.value.trim(), modo: modo.value, valor: v };
+    }).filter(Boolean);
+    return { custos, extras, semCusto, itensPedido };
+  }
+
+  function calcular() {
+    ultimo = null;
+    clear(status); clear(resumoCustos); clear(acoes);
+    const erros = [];
+    const tab = tabela.value.trim() ? money(tabela.value) : null;
+    if (tabela.value.trim() && tab === null) erros.push("Preço de venda inválido.");
+    const dv = descValor.value.trim() ? (modoDesc === "pct" ? numero(descValor.value) : money(descValor.value)) : 0n;
+    if (dv === null) erros.push("Desconto inválido.");
+    if (modoDesc === "pct" && dv > 10000n) erros.push("Desconto acima de 100%.");
+    const ov = numero(overhead.value);
+    if (ov === null) erros.push("Overhead inválido.");
+    const { custos, extras, semCusto, itensPedido } = lerLinhas(erros);
+    const impostosCalc = { produto: somaAliquotas(impostos.produto), servico: somaAliquotas(impostos.servico) };
+    if (erros.length) { blocoProd.desenhar(0n, 0n); blocoServ.desenhar(0n, 0n); return status.append(panel({ title: "Status de viabilidade" }, h("ul", { class: "list-plain" }, erros.map((e) => h("li", { class: "field-error" }, e))))); }
+    let r = null;
+    try { r = negociacao({ tabela: tab ?? 0n, desconto: { modo: modoDesc, valor: dv }, custos, extras, impostos: impostosCalc, overhead: ov }); } catch (e) { return status.append(panel({ title: "Status de viabilidade" }, h("p", { class: "field-error" }, e.message))); }
+    blocoProd.desenhar(r.receitaProduto ?? 0n, r.receitaProduto !== null ? (r.receitaProduto * impostosCalc.produto.num + 5000n) / 10000n : 0n);
+    blocoServ.desenhar(r.receitaServico ?? 0n, r.receitaServico !== null ? (r.receitaServico * impostosCalc.servico.num + 5000n) / 10000n : 0n);
+    // resumo dos custos (painel de custos de compra)
+    resumoCustos.append(h("dl", { class: "zoho-grade custos-resumo" },
+      h("div", { class: "zoho-campo" }, h("dt", null, `Produtos NF-e (${custos.filter((c) => c.tipo === "produto").length})`), h("dd", null, brl(r.custoProduto))),
+      h("div", { class: "zoho-campo" }, h("dt", null, `Serviços NFS-e (${custos.filter((c) => c.tipo === "servico").length})`), h("dd", null, brl(r.custoServico))),
+      h("div", { class: "zoho-campo" }, h("dt", null, "Custo direto total"), h("dd", null, brl(r.custoDireto))),
+      h("div", { class: "zoho-campo" }, h("dt", null, `Overhead (${pctH(r.overheadH)})`), h("dd", null, brl(r.custoOverhead))),
+      r.custoExtras ? h("div", { class: "zoho-campo" }, h("dt", null, "Custos adicionais"), h("dd", null, brl(r.custoExtras))) : null,
+      h("div", { class: "zoho-campo" }, h("dt", null, "Custo total com overhead"), h("dd", null, h("strong", null, brl(r.custoTotal))))));
+    if (!tab) return status.append(panel({ title: "Status de viabilidade" }, h("p", { class: "result-empty" }, "Escolha um orçamento ou informe o preço de venda.")));
+    if (semCusto.length) {
+      return status.append(panel({ title: "Status de viabilidade" }, stamp("Não resolvido · faltam custos", "neutral"),
+        h("p", { class: "field-error" }, `${semCusto.length} item(ns) sem custo: ${semCusto.slice(0, 5).join(", ")}${semCusto.length > 5 ? "…" : ""}. Preencha o custo total da linha ou remova; sem isso a margem ficaria inflada.`)));
+    }
+    ultimo = { r, itensPedido };
+    const [rot, tom] = FAIXA[r.faixa];
+    status.append(panel({ title: "Status de viabilidade", subtitle: cliente.value.trim() ? `Cliente: ${cliente.value.trim()}` : "Cliente não informado" },
+      h("div", { class: "form-grid" }, stat("Preço de tabela", brl(r.tabela)), stat("Preço negociado", brl(r.liquido), r.descontoRs ? `desconto ${brl(r.descontoRs)} (${pctH(r.descPctH)})` : "sem desconto")),
+      h("div", { class: "grid-2 cenarios" },
+        h("div", { class: "panel panel-tight cenario" }, h("span", { class: "stat-label" }, "Antes dos impostos"),
+          h("dl", { class: "cenario-linhas" }, h("dt", null, "Margem"), h("dd", null, pctH(r.antesImpostos.margemH)), h("dt", null, "Lucro"), h("dd", null, brl(r.antesImpostos.lucro)), h("dt", null, "Impostos"), h("dd", null, brl(0n)))),
+        h("div", { class: "panel panel-tight cenario cenario-nota" }, h("span", { class: "stat-label" }, `Com nota · ${pctH(r.comNota.taxaH)}`),
+          h("dl", { class: "cenario-linhas" }, h("dt", null, "Margem"), h("dd", null, pctH(r.comNota.margemH)), h("dt", null, "Lucro"), h("dd", null, brl(r.comNota.lucro)), h("dt", null, "Impostos"), h("dd", null, `−${brl(r.comNota.impostos)}`)))),
+      h("div", { class: "row" }, stamp(rot, tom), stamp(`Alçada: ${r.alcada.nivel.toLowerCase()}`, ALCADA_TOM[r.alcada.nivel])),
+      h("ul", { class: "list-plain stack-s" },
+        r.alcada.exigencias.map((x) => h("li", null, x)),
+        r.ticket.texto ? h("li", null, r.ticket.texto) : null,
+        h("li", { class: "field-hint" }, `MC oficial (Política V1): ${brl(r.mc)} = ${pctH(r.pctH)} · receita líquida ${brl(r.rl)} − custos diretos e adicionais ${brl(r.custos)} − provisão de risco 2% ${brl(r.risco)} (sem overhead).`)),
+      method("Fórmulas e fonte",
+        "Preço negociado = tabela − desconto. Custo adicional em % incide sobre o preço negociado.",
+        "Overhead = custo direto × %. Custo total = direto + overhead + adicionais.",
+        "Impostos: a receita é rateada entre produtos e serviços pela participação de cada um no custo direto; cada parte paga as alíquotas do seu bloco (NF-e ou NFS-e).",
+        "Margem antes dos impostos = (negociado − custo total) ÷ negociado. Com nota = (negociado − custo total − impostos) ÷ negociado.",
+        `Conferência: ${FONTE_POLITICA}.`, "Alíquotas: enquadramento do CNPJ (Lucro Presumido) informado pela direção; editáveis; confirmar com o contador.")));
+    montarAcoes(r);
+  }
+
+  function montarAcoes(r) {
+    const saida = h("div", { role: "status" });
+    const proposta = botao("Salvar como proposta no Comercial");
+    proposta.addEventListener("click", async () => {
+      clear(saida);
+      let reg;
+      try { reg = paraProposta(r, { cliente: cliente.value, referencia: referencia.value, condicao: condicao.value }); } catch (e) { return saida.append(h("p", { class: "field-error" }, e.message)); }
+      proposta.disabled = true;
       try {
-        const { orcamentos } = await fontes.orcamentos(busca.value.trim(), status.value);
-        clear(lista).append(orcamentos.length
-          ? h("ul", { class: "list-plain stack-s" }, orcamentos.map((o) => {
-              const usar = h("button", { class: "btn btn-ghost", type: "button" }, "Usar");
-              usar.addEventListener("click", () => importar(o.id, usar));
-              return h("li", { class: "panel panel-tight row" }, h("div", { class: "stack-s" }, h("strong", null, `${o.numero} · ${o.cliente}`), h("span", { class: "field-hint" }, `${dataBR(o.data)} · ${o.total ? brl(money(o.total.replace(".", ","))) : "—"} · ${situacaoZoho(o.status)}`)), usar);
-            }))
-          : h("p", { class: "result-empty" }, "Nenhum orçamento encontrado."));
+        const res = await fontes.salvarProposta(reg);
+        const al = res.alertas_do_registro ?? [];
+        saida.append(h("p", { class: "notice notice-ok" }, `Proposta salva no Comercial (${reg.estado === "aguardando_direcao" ? "aguardando a direção" : "rascunho"}). `, h("a", { href: "#/setor/vendas/registros" }, "Abrir no Comercial")),
+          al.length ? h("ul", { class: "list-plain stack-s" }, al.map((a) => h("li", null, h("strong", null, a.titulo), h("p", { class: "field-hint" }, a.mensagem)))) : null);
+      } catch (e) { proposta.disabled = false; saida.append(h("p", { class: "field-error" }, `Não foi possível salvar: ${e.message}`)); }
+    });
+    const fechar = botao("Fechar negociação e lançar no fluxo de caixa", "primary");
+    fechar.addEventListener("click", async () => {
+      clear(saida);
+      if (!cliente.value.trim()) return saida.append(h("p", { class: "field-error" }, "Informe o cliente."));
+      if (!ultimo?.itensPedido.length) return saida.append(h("p", { class: "field-error" }, "Inclua os itens (custos de compra) do pedido."));
+      if (!confirm(`Criar o pedido de ${cliente.value.trim()} por ${brl(r.liquido)}? Em seguida você define as parcelas, que entram na previsão de caixa.`)) return;
+      fechar.disabled = true;
+      try {
+        const res = await fontes.criarPedido({ negociacao: {
+          cliente: cliente.value.trim(), cliente_zoho_id: orcamento?.cliente_zoho_id ?? null, orcamento_zoho_id: orcamento?.zoho_id ?? null, orcamento_numero: referencia.value.trim() || orcamento?.numero || null,
+          valor_total: fixo2(r.liquido), condicao: condicao.value.trim() || null, itens: ultimo.itensPedido,
+          resumo: { tabela: fixo2(r.tabela), desconto: fixo2(r.descontoRs), impostos: r.comNota.impostos === null ? null : fixo2(r.comNota.impostos), custo_total: fixo2(r.custoTotal), margem_com_nota: pctH(r.comNota.margemH), mc_politica: pctH(r.pctH), alcada: r.alcada.nivel },
+        } });
+        location.hash = `#/pedidos/${res.id}`;
+      } catch (e) { fechar.disabled = false; saida.append(h("p", { class: "field-error" }, `Não foi possível criar o pedido: ${e.message}`)); }
+    });
+    if (fontes?.salvarProposta || fontes?.criarPedido) acoes.append(h("div", { class: "row" }, fontes.salvarProposta ? proposta : null, fontes.criarPedido ? fechar : null), saida);
+  }
+
+  // lista de orcamentos do Zoho (esquerda), carregada ao abrir
+  function painelOrcamentos() {
+    const busca = h("input", { class: "input", id: "zoho-busca", type: "search", autocomplete: "off", placeholder: "Buscar por cliente ou número" });
+    const situacao = sel("zoho-status", [["", "Todos os status"], ["draft", "Rascunho"], ["sent", "Enviado"], ["accepted", "Aceito"], ["declined", "Recusado"], ["expired", "Expirado"]], "");
+    const atualizar = botao("↻", "ghost", { "aria-label": "Atualizar lista", title: "Atualizar" });
+    const lista = h("div", { class: "zoho-lista orc-lista", "aria-live": "polite" });
+    let t;
+    async function carregar() {
+      clear(lista).append(h("p", { class: "muted" }, "Carregando orçamentos do Zoho Books…"));
+      try {
+        const { orcamentos } = await fontes.orcamentos(busca.value.trim(), situacao.value);
+        clear(lista).append(h("p", { class: "field-hint" }, `${orcamentos.length} orçamento(s)`),
+          orcamentos.length ? h("ul", { class: "list-plain orc-itens" }, orcamentos.map((o) => {
+            const b = h("button", { class: `orc-item${orcamento?.zoho_id === o.id ? " ativo" : ""}`, type: "button" },
+              h("span", { class: "orc-nome" }, o.cliente), h("span", { class: "orc-valor num" }, o.total ? brl(money(o.total.replace(".", ","))) : "—"),
+              h("span", { class: "field-hint" }, `${o.numero} · ${dataBR(o.data)}`), stamp(situacaoZoho(o.status), o.status === "accepted" ? "ok" : o.status === "declined" ? "risk" : "neutral"));
+            b.addEventListener("click", () => importar(o.id, b));
+            return h("li", null, b);
+          })) : h("p", { class: "result-empty" }, "Nenhum orçamento encontrado."));
       } catch (e) {
         clear(lista).append(h("p", { class: "field-hint" }, e.status === 409 ? "Zoho não conectado. A direção conecta em Integrações." : `Não deu para ler o Zoho: ${e.message}`));
-      } finally { buscar.disabled = false; }
+      }
     }
     async function importar(id, b) {
       b.disabled = true;
       try {
         const o = await fontes.orcamento(id);
+        orcamento = { zoho_id: o.id, numero: o.numero, cliente_zoho_id: o.cliente_id ?? null };
         cliente.value = o.cliente ?? "";
-        const sub = money((o.subtotal ?? o.total ?? "0").replace(".", ",")), tot = money((o.total ?? "0").replace(".", ","));
         tabela.value = decimalBR(o.subtotal ?? o.total ?? "0");
         referencia.value = o.numero ?? "";
-        descModo.value = "rs";
-        descValor.value = sub > tot ? brl(sub - tot).replace("R$", "").trim() : "0";
+        const sub = money(decimalBR(o.subtotal ?? o.total ?? "0")), tot = money(decimalBR(o.total ?? "0"));
+        if (sub > tot) { descValor.value = decimalBR(fixo2(sub - tot)); modoDesc = "rs"; descModo.querySelector('input[value="rs"]').checked = true; } else { descValor.value = ""; }
         clear(linhasCusto);
-        for (const i of o.itens) novoCusto({ tipo: i.tipo, nome: i.nome, qtd: String(i.quantidade).replace(".", ","), custo: i.custo_unit ? decimalBR(i.custo_unit) : "" });
-        origem.textContent = `Importado do Zoho Books: orçamento ${o.numero} (${situacaoZoho(o.status)}).${o.sem_custo ? ` Atenção: ${o.sem_custo} item(ns) sem preço de compra no Zoho — preencha para a margem ser calculada.` : ""}`;
+        for (const i of o.itens) {
+          const q = Number(i.quantidade || 1);
+          novoCusto({ tipo: i.tipo, nome: i.nome, item_id: i.item_id ?? null, fixo: true, qtd: String(i.quantidade).replace(".", ","), total: i.custo_unit ? decimalBR((Number(i.custo_unit) * q).toFixed(2)) : "", preco_unit: i.venda_unit ?? "0" });
+        }
+        origem.textContent = `Importado do Zoho Books: ${o.numero} (${situacaoZoho(o.status)}).${o.sem_custo ? ` Atenção: ${o.sem_custo} item(ns) sem preço de compra no cadastro — preencha o custo.` : ""}`;
         calcular();
-      } catch (e) {
-        origem.textContent = `Falha ao importar: ${e.message}`;
-      } finally { b.disabled = false; }
+        for (const x of lista.querySelectorAll(".orc-item")) x.classList.toggle("ativo", x === b);
+      } catch (e) { origem.textContent = `Falha ao importar: ${e.message}`; } finally { b.disabled = false; }
     }
-    buscar.addEventListener("click", carregar);
-    busca.addEventListener("keydown", (e) => { if (e.key === "Enter") { e.preventDefault(); carregar(); } });
-    return panel({ title: "Orçamentos do Zoho Books", subtitle: "Importa cliente, preço, desconto e itens com o preço de compra do cadastro. Nada é alterado no Zoho.", actions: buscar },
-      h("div", { class: "form-grid" }, field("zoho-busca", "Buscar", busca), field("zoho-status", "Situação", status)), lista);
+    busca.addEventListener("input", () => { clearTimeout(t); t = setTimeout(carregar, 350); });
+    situacao.addEventListener("change", carregar);
+    atualizar.addEventListener("click", carregar);
+    carregar();
+    return panel({ title: "Orçamentos e estimativas", subtitle: "Zoho Books. Ao escolher, cliente, preço e itens com o custo de compra do cadastro entram na negociação. Nada é alterado no Zoho." },
+      h("div", { class: "row orc-filtros" }, busca, situacao, atualizar), lista);
   }
 
-  function botaoSalvar(r) {
-    if (!fontes?.salvarProposta) return null;
-    const out = h("div", { class: "stack-s", role: "status" });
-    const b = h("button", { class: "btn btn-primary", type: "button" }, "Salvar como proposta no Comercial");
-    b.addEventListener("click", async () => {
-      clear(out);
-      let reg;
-      try { reg = paraProposta(r, { cliente: cliente.value, referencia: referencia.value, condicao: condicao.value }); } catch (e) { return out.append(h("p", { class: "field-error" }, e.message)); }
-      b.disabled = true;
-      try {
-        const res = await fontes.salvarProposta(reg);
-        const al = res.alertas_do_registro ?? [];
-        out.append(h("p", { class: "notice notice-ok" }, `Proposta salva no Comercial (${reg.estado === "aguardando_direcao" ? "aguardando a direção" : "rascunho"}). `, h("a", { href: "#/setor/vendas/registros" }, "Abrir no Comercial")),
-          al.length ? h("ul", { class: "list-plain stack-s" }, al.map((a) => h("li", null, stamp(a.severidade, a.severidade === "CRITICO" || a.severidade === "ALTO" ? "risk" : "warn"), " ", h("strong", null, a.titulo), h("p", { class: "field-hint" }, a.mensagem)))) : null,
-          reg.estado === "aguardando_direcao" ? h("p", { class: "field-hint" }, "O Radar avisa a direção: a alçada desta proposta exige aprovação.") : null);
-      } catch (e) {
-        b.disabled = false;
-        out.append(h("p", { class: "field-error" }, `Não foi possível salvar: ${e.message}`));
-      }
-    });
-    return h("div", { class: "stack-s" }, h("div", { class: "row" }, b), out);
-  }
+  const limpar = botao("Limpar tudo");
+  limpar.addEventListener("click", () => {
+    orcamento = null; clear(linhasCusto); clear(linhasExtra);
+    for (const c of [cliente, tabela, referencia, condicao, descValor]) c.value = "";
+    origem.textContent = "Escolha um orçamento à esquerda ou preencha à mão.";
+    novoCusto(); calcular();
+  });
+  const addCusto = botao("+ Adicionar"); addCusto.addEventListener("click", () => { novoCusto(); calcular(); });
+  const addExtra = botao("+ Adicionar"); addExtra.addEventListener("click", () => { novoExtra(); calcular(); });
+  const restaurarImp = botao("Restaurar alíquotas padrão");
+  restaurarImp.addEventListener("click", () => { const p = { produto: IMPOSTOS_PADRAO.produto.map((x) => [...x]), servico: IMPOSTOS_PADRAO.servico.map((x) => [...x]) }; impostos.produto = p.produto; impostos.servico = p.servico; gravarImpostos(impostos); calcular(); });
+  for (const c of [cliente, tabela, descValor, overhead]) c.addEventListener("input", calcular);
+  novoCusto();
 
+  root.append(h("div", { class: "negociacao" },
+    fontes?.orcamentos ? h("div", { class: "negociacao-esq" }, painelOrcamentos()) : null,
+    h("div", { class: "stack negociacao-dir" },
+      status,
+      panel({ title: "Dados da negociação" }, origem,
+        h("div", { class: "form-grid" },
+          field("neg-cliente", "Cliente", cliente), field("neg-tabela", "Preço de venda (R$) — total do orçamento", tabela),
+          field("neg-ref", "Referência (orçamento)", referencia), field("neg-condicao", "Condição de pagamento", condicao))),
+      panel({ title: "Ajustes financeiros", subtitle: "Desconto concedido, impostos com nota e custos adicionais (RT, comissão, frete)." },
+        h("div", { class: "form-grid" }, h("div", { class: "field" }, h("span", { class: "field-label" }, "Desconto em"), descModo), field("neg-desc", "Desconto", descValor, "Política V1: até 2% com MC ≥ 32% é autonomia comercial; acima disso, direção.")),
+        h("div", { class: "stack-s" }, h("div", { class: "row" }, h("strong", null, "Impostos (com nota)"), restaurarImp), blocoProd.el, blocoServ.el),
+        h("div", { class: "stack-s" }, h("div", { class: "row" }, h("strong", null, "Custos adicionais"), addExtra),
+          h("div", { class: "table-wrap" }, h("table", { class: "table" }, h("thead", null, h("tr", null, ["Descrição", "Modo", "Valor", ""].map((x) => h("th", { scope: "col" }, x)))), linhasExtra)),
+          h("p", { class: "field-hint" }, "Em %, incide sobre o preço já com desconto."))),
+      panel({ title: "Custos de compra dos produtos", subtitle: "Custo total de cada linha (preço de compra do cadastro × quantidade). Quantidade vem do orçamento.", actions: addCusto },
+        h("div", { class: "table-wrap" }, h("table", { class: "table" }, h("thead", null, h("tr", null, ["Tipo", "Descrição", "Qtd", "Custo total (R$)", ""].map((x) => h("th", { scope: "col" }, x)))), linhasCusto)),
+        h("div", { class: "form-grid" }, field("neg-overhead", "Overhead sobre o custo direto (%)", overhead)),
+        resumoCustos, h("div", { class: "row" }, limpar)),
+      acoes)));
+  calcular();
+}
+
+// ---------------------------------------------------------------- Calculadora
+export function telaCalculadora(root) {
+  const impostos = lerImpostos();
+  const campos = {
+    materiais: inp("calc-materiais"), horas: inp("calc-horas"), valorHora: inp("calc-hora"),
+    rateio: inp("calc-rateio", { value: pctH(OVERHEAD_PADRAO).replace("%", "") }), alvo: inp("calc-alvo", { value: "35" }),
+    tipo: sel("calc-tipo", [["produto", "Produto (NF-e)"], ["servico", "Serviço (NFS-e)"]], "produto"),
+  };
+  const saida = h("div", { class: "stack", "aria-live": "polite" });
+  const restaurar = botao("Restaurar padrões");
+  restaurar.addEventListener("click", () => { campos.rateio.value = pctH(OVERHEAD_PADRAO).replace("%", ""); campos.alvo.value = "35"; calcular(); });
   function calcular() {
     clear(saida);
     const erros = [];
-    const tab = money(tabela.value);
-    if (tabela.value.trim() && tab === null) erros.push("Preço de tabela inválido.");
-    const dv = descValor.value.trim() ? (descModo.value === "pct" ? numero(descValor.value) : money(descValor.value)) : 0n;
-    if (dv === null) erros.push("Desconto inválido.");
-    if (descModo.value === "pct" && dv > 10000n) erros.push("Desconto acima de 100%.");
-    const semCusto = [];
-    const custos = [...linhasCusto.rows].map((tr, i) => {
-      const [tipo, desc, qtd, unit] = tr.querySelectorAll("select, input");
-      if (!unit.value.trim()) { if (desc.value.trim()) semCusto.push(desc.value.trim()); return null; }
-      const q = numero(qtd.value), u = money(unit.value);
-      if (q === null || u === null) { erros.push(`Custo ${i + 1}: quantidade ou valor inválido.`); return null; }
-      return { tipo: tipo.value, total: (q * u + 50n) / 100n };
-    }).filter(Boolean);
-    const extras = [...linhasExtra.rows].map((tr, i) => {
-      const [, modo, valor] = tr.querySelectorAll("select, input");
-      const v = valor.value.trim() ? (modo.value === "pct" ? numero(valor.value) : money(valor.value)) : 0n;
-      if (v === null) { erros.push(`Custo adicional ${i + 1}: valor inválido.`); return null; }
-      return { modo: modo.value, valor: v };
-    }).filter(Boolean);
-    const imp = impostos.ler();
+    const v = (c, nome, fn = money) => { const t = c.value.trim(); if (!t) return 0n; const x = fn(t); if (x === null) erros.push(`${nome}: valor inválido.`); return x ?? 0n; };
+    const entrada = { materiais: v(campos.materiais, "Materiais"), horas: v(campos.horas, "Horas", numero), valorHora: v(campos.valorHora, "Valor/hora"), rateioFixo: v(campos.rateio, "Overhead", numero), alvo: v(campos.alvo, "Margem alvo", numero) };
     if (erros.length) return saida.append(h("ul", { class: "list-plain" }, erros.map((e) => h("li", { class: "field-error" }, e))));
-    if (!tab) return saida.append(panel({ title: "Status de viabilidade" }, h("p", { class: "result-empty" }, "Informe o preço de tabela para começar.")));
+    const aliq = somaAliquotas(impostos[campos.tipo.value]);
     try {
-      if (semCusto.length) {
-        return saida.append(panel({ title: "Status de viabilidade" }, stamp(FAIXA["NAO RESOLVIDO"][0], "neutral"),
-          h("p", { class: "field-error" }, `${semCusto.length} item(ns) sem custo: ${semCusto.slice(0, 5).join(", ")}${semCusto.length > 5 ? "…" : ""}. Preencha o custo ou remova a linha; sem isso a margem ficaria inflada.`)));
-      }
-      const r = negociacao({ tabela: tab, desconto: { modo: descModo.value, valor: dv }, custos, extras, impostos: imp ? { produto: imp.produto.efetiva, servico: imp.servico.efetiva } : null });
-      saida.append(panel({ title: "Status de viabilidade", subtitle: cliente.value.trim() ? `Cliente: ${cliente.value.trim()}` : "Cliente não informado" },
-        ...resultadoMargem(r, [
-          stat("Preço de tabela", brl(r.tabela)),
-          stat("Desconto", brl(r.descontoRs), pctH(r.descPctH)),
-          stat("Preço negociado", brl(r.liquido)),
-          stat("Custos adicionais", brl(r.custoExtras), "% sobre o preço já com desconto")]),
-        listaExigencias(r),
-        botaoSalvar(r),
-        method("Fórmulas e fonte",
-          "Preço negociado = tabela − desconto. Custo adicional em % incide sobre o preço negociado.",
-          "Receita de produtos e de serviços é rateada pela participação de cada um no custo direto; cada parte paga a alíquota do seu anexo.",
-          "MC = receita líquida − custos (diretos + adicionais) − 2% da receita líquida.", FONTE_POLITICA, FONTE_SIMPLES)));
-    } catch (e) {
-      saida.append(h("p", { class: "field-error" }, e.message));
-    }
+      const r = calculadora({ ...entrada, imposto: aliq });
+      if (r.pendencias.length) return saida.append(panel({ title: "Preço mínimo pela política" }, h("p", { class: "result-empty" }, r.pendencias[0])));
+      saida.append(panel({ title: "Preço mínimo pela política", subtitle: `Menor preço em que a margem de contribuição chega a ${pctH(entrada.alvo)} depois dos impostos com nota (${pctH(aliq.num)}) e da provisão de risco de 2%.` },
+        h("p", { class: "preco-destaque" }, brl(r.preco)),
+        h("div", { class: "form-grid" },
+          stat("Custo total", brl(r.custo), `mão de obra ${brl(r.maoDeObra)}${r.fixo ? ` · overhead ${brl(r.fixo)}` : ""}`), stat("Markup sobre o custo", `${pctH(r.markupH).replace("%", "")}×`),
+          stat("Impostos com nota", brl(r.impostoRs), pctH(aliq.num)), stat("Receita líquida", brl(r.rl)), stat("Provisão de risco 2%", brl(r.risco)), stat("Margem de contribuição", brl(r.mc), pctH(r.pctH))),
+        h("div", { class: "row" }, stamp(FAIXA[r.faixa][0], FAIXA[r.faixa][1])),
+        entrada.alvo < 3000n ? h("p", { class: "notice notice-risk" }, "Alvo abaixo de 30%: a política exige autorização da direção (sec.9).") : null,
+        method("Fórmula e fonte", "Preço = custo ÷ ((1 − alíquota) × (1 − 2% − margem alvo)).", "Custo = materiais + mão de obra + overhead.", FONTE_POLITICA, "Alíquotas: as mesmas da Negociação ao Vivo (editáveis lá).")));
+    } catch (e) { saida.append(h("p", { class: "field-error" }, e.message)); }
   }
-  for (const c of [cliente, tabela, descModo, descValor]) c.addEventListener("input", calcular);
-  novoCusto();
-  for (const c of [cliente, tabela, descValor]) c.addEventListener("input", () => { if (origem.textContent.startsWith("Importado")) origem.textContent = "Importado do Zoho e ajustado na tela."; });
-  root.append(
-    h("div", { class: "split" },
-      h("div", { class: "stack" },
-        fontes?.orcamentos ? painelZoho() : null,
-        panel({ title: "Dados da negociação" },
-          origem,
-          h("div", { class: "form-grid" },
-            field("neg-cliente", "Cliente", cliente),
-            field("neg-tabela", "Preço de tabela (R$)", tabela),
-            field("neg-desc-modo", "Desconto em", descModo),
-            field("neg-desc", "Desconto", descValor, "Política V1: até 2% com MC ≥ 32% é autonomia comercial; acima disso, direção."),
-            field("neg-ref", "Referência da oportunidade", referencia, "Número do orçamento ou da oportunidade."),
-            field("neg-condicao", "Condição de pagamento", condicao))),
-        panel({ title: "Custos de compra e execução", subtitle: "Custo direto de cada item (sem imposto de venda).", actions: botao("+ Custo", () => novoCusto()) },
-          h("div", { class: "table-wrap" }, h("table", { class: "table" }, h("thead", null, h("tr", null, ["Tipo", "Descrição", "Qtd", "Custo unit. (R$)", ""].map((t) => h("th", { scope: "col" }, t)))), linhasCusto))),
-        panel({ title: "Custos adicionais", subtitle: "Comissões, frete, deslocamento. Em %, incide sobre o preço já com desconto.", actions: botao("+ Adicional", novoExtra) },
-          h("div", { class: "table-wrap" }, h("table", { class: "table" }, h("thead", null, h("tr", null, ["Descrição", "Modo", "Valor", ""].map((t) => h("th", { scope: "col" }, t)))), linhasExtra))),
-        impostos.el),
-      saida));
+  for (const c of Object.values(campos)) c.addEventListener("input", calcular);
+  root.append(h("div", { class: "split" },
+    panel({ title: "Custos do projeto", subtitle: "O resultado atualiza a cada digitação.", actions: restaurar },
+      h("div", { class: "form-grid" },
+        field("calc-materiais", "Materiais e equipamentos (R$)", campos.materiais), field("calc-horas", "Horas de trabalho", campos.horas),
+        field("calc-hora", "Valor da hora (R$)", campos.valorHora, "Custo da hora da equipe."), field("calc-tipo", "Nota fiscal", campos.tipo),
+        field("calc-rateio", "Overhead (%)", campos.rateio, "Mesmo padrão da Negociação ao Vivo."), field("calc-alvo", "Margem de contribuição alvo (%)", campos.alvo, "Política V1: alvo 35%, mínimo normal 30%."))),
+    saida));
   calcular();
 }

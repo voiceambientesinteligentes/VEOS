@@ -116,3 +116,20 @@ test("salvar como proposta: campos que as regras vivas do Comercial vigiam", asy
   assert.throws(() => paraProposta(negociacao({ tabela: R(1000), custos: [], impostos: base.impostos }), { cliente: "a", referencia: "b", condicao: "c" }), /não resolvida/);
   assert.throws(() => paraProposta(negociacao({ tabela: R(120000), ...base }), { cliente: "a", referencia: "", condicao: "c" }), /referência/);
 });
+
+test("aceite com a tela validada (EST-000962): Lucro Presumido 11,33%, overhead 20%", async () => {
+  const { IMPOSTOS_PADRAO, somaAliquotas } = await import("../../apps/web/js/domain/precificacao.js");
+  const r = negociacao({
+    tabela: R(4794.60), desconto: { modo: "pct", valor: 0n },
+    custos: [{ tipo: "produto", total: R(1952) }],
+    impostos: { produto: somaAliquotas(IMPOSTOS_PADRAO.produto), servico: somaAliquotas(IMPOSTOS_PADRAO.servico) },
+  });
+  assert.equal(r.custoOverhead, R(390.40));
+  assert.equal(r.custoTotal, R(2342.40));
+  assert.equal(r.antesImpostos.lucro, R(2452.20));
+  assert.equal(r.antesImpostos.margemH, 5115n); // 51,15% (a tela mostra 51,1%)
+  assert.equal(r.comNota.impostos, R(543.23));
+  assert.equal(r.comNota.taxaH, 1133n);
+  assert.equal(r.comNota.lucro, R(1908.97));
+  assert.equal(r.comNota.margemH, 3982n); // 39,82% (a tela mostra 39,8%)
+});

@@ -146,3 +146,34 @@
 .zoho-secao-titulo { margin: 0; font-size: 0.95rem; color: var(--gold-2); font-weight: 600; }
 .zoho-texto { margin: 0; white-space: pre-line; }
 .zoho-tecnico { opacity: 0.85; }
+
+/* Negociacao ao Vivo (disposicao da tela validada: orcamentos a esquerda, analise a direita) */
+.negociacao { display: grid; grid-template-columns: minmax(280px, 0.85fr) minmax(0, 1.15fr); gap: var(--s4); align-items: start; }
+.negociacao-esq { position: sticky; top: var(--s3); }
+.orc-filtros { gap: var(--s2); flex-wrap: nowrap; }
+.orc-filtros .input { min-width: 0; flex: 1; }
+.orc-lista { max-height: calc(100vh - 220px); overflow-y: auto; }
+.orc-itens { display: flex; flex-direction: column; gap: 4px; margin: 0; padding: 0; }
+.orc-item { width: 100%; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px var(--s2); align-items: center; text-align: left; padding: 10px 12px; border-radius: var(--radius-s, 8px); border: 1px solid var(--line); background: transparent; color: var(--text-0); cursor: pointer; }
+.orc-item:hover { background: var(--bg-3, rgba(255,255,255,0.04)); }
+.orc-item.ativo { border-color: var(--gold-line); background: var(--gold-dim); }
+.orc-nome { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.orc-valor { text-align: right; }
+.cenarios { gap: var(--s3); }
+.cenario-linhas { display: grid; grid-template-columns: auto 1fr; gap: 4px var(--s3); margin: var(--s2) 0 0; }
+.cenario-linhas dd { margin: 0; text-align: right; font-variant-numeric: tabular-nums; }
+.cenario-nota { box-shadow: inset 0 0 0 1px var(--gold-line); }
+.imp-bloco { border: 1px solid var(--line); border-radius: var(--radius-s, 8px); padding: var(--s2) var(--s3); display: flex; flex-direction: column; gap: var(--s2); }
+.imp-produto { border-left: 3px solid var(--warn); }
+.imp-servico { border-left: 3px solid var(--cyan, #6cc4d8); }
+.imp-cabeca { gap: var(--s3); flex-wrap: wrap; }
+.imp-total { margin-left: auto; font-variant-numeric: tabular-nums; }
+.imp-chips { gap: 6px; flex-wrap: wrap; }
+.imp-chip { font-size: 0.78rem; padding: 2px 8px; border-radius: 999px; border: 1px solid var(--line); color: var(--text-1); }
+.imp-linha { gap: var(--s2); }
+.imp-linha .input { max-width: 140px; }
+.btn-mini { padding: 4px 10px; font-size: 0.8rem; }
+@media (max-width: 1100px) { .negociacao { grid-template-columns: minmax(0, 1fr); } .negociacao-esq { position: static; } .orc-lista { max-height: 360px; } }
+.orc-filtros .input { flex: 1 1 160px; width: auto; }
+.orc-filtros .select { flex: 0 0 150px; width: 150px; }
+.orc-filtros .btn { flex: 0 0 auto; }
