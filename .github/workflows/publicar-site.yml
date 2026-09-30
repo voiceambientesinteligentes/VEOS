@@ -1,4 +1,4 @@
-# Publica o portal (dist/) no GitHub Pages a cada push em main. Gratuito e sem limite de
+# Publica o portal (dist/) no GitHub Pages a cada push em main (Pages ativado em 30/09). Gratuito e sem limite de
 # creditos (a Netlify pausou as publicacoes do plano gratuito). Build sem dependencias.
 name: publicar-site
 on:
