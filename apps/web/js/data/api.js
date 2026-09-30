@@ -33,6 +33,12 @@ export const api = {
   me: () => request("GET", "me"),
   setores: () => request("GET", "setores"),
   orcamentos: () => request("GET", "orcamentos"),
+  projetos: () => request("GET", "projetos"),
+  projeto: (id) => request("GET", `projetos/${encodeURIComponent(id)}`),
+  criarProjeto: (dados) => request("POST", "projetos", dados, { "Idempotency-Key": crypto.randomUUID() }),
+  // tipo: fases | recebimentos | compromissos
+  lancar: (id, tipo, dados) => request("POST", `projetos/${encodeURIComponent(id)}/${tipo}`, dados, { "Idempotency-Key": crypto.randomUUID() }),
+  compraProposta: (id, dados) => request("POST", `projetos/${encodeURIComponent(id)}/compra-proposta`, dados, { "Idempotency-Key": crypto.randomUUID() }),
   // Salvar = vigia avalia e o servidor grava orcamento + avisos. Uma chave por clique:
   // se a rede repetir o envio, o servidor nao duplica o registro.
   vigiaOrcamento: (entrada) =>

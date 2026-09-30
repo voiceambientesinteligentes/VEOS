@@ -32,6 +32,14 @@ classificação do item 30. **Não está 100%.**
 - **Portal publicado: https://veos-voice.netlify.app** (Netlify, deploy automático a cada push em `main`). Testado no endereço público com o usuário TESTE: login, 7 setores, aviso do CFO gravado, histórico, celular sem rolagem lateral. A Netlify injeta o script `/.netlify/scripts/hud`, cujo código embutido é bloqueado pela nossa CSP (esperado; não é do VEOS).
 - **Login real verificado (30/09):** Fernando entrou pelo link mágico no endereço público e abriu o histórico.
 
+## Setor Financeiro online (30/09)
+- Regras de caixa em TypeScript (`_shared/regras/caixa.ts`): posição/exposição e gatilho >10% (V1.1), cobertura por fase (V1 sec.10), cenário de compra proposta. **Paridade com Python: 500 + 300 casos**; cenários à mão (fronteira exata de 10%).
+- Banco: projetos, fases, recebimentos efetivos, compromissos (RLS; fase do mesmo projeto por FK; pago ≤ valor; lançamentos append-only; registro idempotente).
+- API `/projetos` (direção e finanças): cada lançamento devolve a reavaliação e os avisos do CFO. **E2E online 12/12.**
+- Tela **Projetos e caixa**: lista com exposição e situação; detalhe com indicadores, avisos, cobertura por fase, lançamentos e simulação de compra. Testada no navegador (lançamento pelo formulário muda os avisos na hora).
+- Manter ativo: função `saude` + GitHub Actions diário (`manter-supabase-ativo`, ativo).
+- Ainda não: correção/estorno de lançamentos; importação de dados reais; demais setores.
+
 ## GitHub
 - `origin` = https://github.com/voiceambientesinteligentes/VEOS (branch `main`), **público** por decisão do Fernando. Push verificado: commit remoto = local.
 

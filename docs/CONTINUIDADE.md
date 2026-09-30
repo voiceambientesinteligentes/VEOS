@@ -34,6 +34,11 @@ Atualize este arquivo ao fim de cada sessão: última ação, resultado e próxi
 - Função `api` + migração `membros`/`registrar_orcamento`; E2E 15/15; Fernando cadastrado (direção).
 - Portal online em `apps/web`, build `node scripts/build-web.mjs`, teste local `node scripts/serve-web.mjs` (porta 8878).
 
+**Feito (Financeiro, ~13:00)**
+- Keep-alive do Supabase (função `saude` + Actions diário).
+- Setor Financeiro online: regras de caixa com paridade, banco, API e tela Projetos e caixa.
+- Testes: `npm test` (regras + portal) e, online, `tests/online/e2e_api.mjs` (15) e `tests/online/e2e_financeiro.mjs` (12), com as chaves obtidas pela CLI.
+
 **Aguardando o Fernando**
 0. Site no ar e login real do Fernando verificado. Próximas etapas: personalidade dos diretores, mais regras do vigia, MCP, keep-alive do Supabase. Decisões pendentes: P-3 (orçamento de IA) e P-5 (siglas).
 1. Apagar a pasta `VOICE_360\.obsidian` (cópia já arquivada) ou aprovar a remoção.

@@ -9,6 +9,7 @@ import { markActive, setupDrawer } from "./ui/shell.js";
 import { renderVigia } from "./ui/views/cfo_vigia.js";
 import { renderOrbita } from "./ui/views/orbita.js";
 import { renderIA } from "./ui/views/ia.js";
+import { telaProjeto, telaProjetos } from "./ui/views/projetos.js";
 
 const el = {
   view: document.getElementById("view"),
@@ -81,6 +82,7 @@ const TELAS = {
   "#/orbita": { fn: telaOrbita, titulo: ["Órbita", "Os setores em órbita do VEOS"] },
   "#/visao": { fn: telaVisao, titulo: ["Visão geral", "VEOS online · VOICE Ambientes Inteligentes"] },
   "#/cfo": { fn: telaAvisos, titulo: ["Sala CFO — Avisos", "Vigia: orçamento salvo → avisos do CFO com regra e fonte"] },
+  "#/projetos": { fn: telaProjetos, titulo: ["Projetos e caixa", "Setor Financeiro · exposição e cobertura por fase"] },
   "#/historico": { fn: telaHistorico, titulo: ["Histórico", "Orçamentos TESTE gravados e seus avisos"] },
 };
 
@@ -124,6 +126,7 @@ function montarMenu() {
     h("div", { class: "nav-group" }, link("#/orbita", "◉", "Órbita"), link("#/ia", "✦", "IA VEOS"), link("#/visao", "◎", "Visão geral")),
     h("div", { class: "nav-group", role: "group", "aria-labelledby": "nav-cfo" },
       h("span", { class: "nav-label", id: "nav-cfo" }, "Finanças"),
+      link("#/projetos", "PRJ", "Projetos e caixa"),
       link("#/cfo", "CFO", "Avisos do CFO"),
       link("#/historico", "HIST", "Histórico de orçamentos")),
   );
@@ -132,8 +135,9 @@ function montarMenu() {
 
 async function navegar() {
   if (!eu) return;
-  const rota = TELAS[location.hash] ? location.hash : "#/orbita";
-  const def = TELAS[rota];
+  const detalhe = /^#\/projetos\/([0-9a-f-]{36})$/.exec(location.hash);
+  const rota = detalhe ? "#/projetos" : TELAS[location.hash] ? location.hash : "#/orbita";
+  const def = detalhe ? { fn: (root) => telaProjeto(root, detalhe[1]), titulo: ["Projeto", "Caixa, fases e lançamentos · avisos do CFO"] } : TELAS[rota];
   atual?.abort();
   const controle = new AbortController();
   atual = controle;
@@ -163,7 +167,7 @@ async function iniciar(mensagem) {
     return telaLogin(e.status === 403 ? "Este e-mail não tem acesso ao VEOS. Fale com a direção." : e.message);
   }
   montarMenu();
-  if (!TELAS[location.hash]) history.replaceState(null, "", "#/orbita");
+  if (!TELAS[location.hash] && !/^#\/projetos\//.test(location.hash)) history.replaceState(null, "", "#/orbita");
   navegar();
 }
 
