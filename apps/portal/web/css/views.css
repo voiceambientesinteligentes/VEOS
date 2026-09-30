@@ -1,0 +1,258 @@
+/* Camada 5 - telas especificas. */
+@layer views {
+  .view-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--s4);
+    margin-bottom: var(--s5);
+  }
+  .view-head h1 { font-size: clamp(1.6rem, 1.2rem + 1.4vw, 2.3rem); }
+  .view-head p { margin-top: var(--s2); max-width: 70ch; color: var(--text-1); }
+
+  /* ---------------- Visao geral: hero orbital */
+  .hero {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+    align-items: center;
+    gap: var(--s6);
+    min-height: 360px;
+    padding: var(--s7) var(--s6);
+    border: 1px solid var(--line);
+    border-radius: 24px;
+    background:
+      linear-gradient(180deg, rgba(20, 23, 27, 0.9), rgba(10, 11, 13, 0.9)),
+      var(--bg-1);
+    overflow: hidden;
+  }
+  .hero::before {
+    /* grade geometrica discreta */
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(var(--line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size: 48px 48px;
+    mask-image: radial-gradient(ellipse at 75% 50%, #000 0%, transparent 65%);
+    opacity: 0.45;
+    pointer-events: none;
+  }
+  .hero-copy { position: relative; display: flex; flex-direction: column; gap: var(--s4); }
+  .hero-copy h1 { max-width: 16ch; }
+  .hero-copy h1 em { font-style: normal; color: var(--gold-2); }
+  .hero-copy p { max-width: 52ch; color: var(--text-1); font-size: var(--fs-l); line-height: 1.6; }
+  .hero-actions { display: flex; flex-wrap: wrap; gap: var(--s3); margin-top: var(--s2); }
+
+  .orbit {
+    position: relative;
+    justify-self: center;
+    width: min(340px, 70vw);
+    aspect-ratio: 1;
+  }
+  .orbit-ring {
+    position: absolute;
+    inset: 0;
+    border: 1px solid var(--line-2);
+    border-radius: 50%;
+  }
+  .orbit-ring.r2 { inset: 14%; border-color: var(--gold-line); }
+  .orbit-ring.r3 { inset: 30%; border-style: dashed; border-color: var(--cyan-line); }
+  .orbit-ring.r4 { inset: 44%; border-color: var(--line-2); background: radial-gradient(circle, rgba(201, 165, 76, 0.18), transparent 70%); }
+  .orbit-core {
+    position: absolute;
+    inset: 46.5%;
+    border-radius: 50%;
+    background: var(--gold);
+    box-shadow: 0 0 0 6px rgba(201, 165, 76, 0.12);
+  }
+  .orbit-arm { position: absolute; inset: 0; }
+  .orbit-arm.a2 { inset: 14%; }
+  .orbit-arm.a3 { inset: 30%; }
+  .orbit-node {
+    position: absolute;
+    top: -5px;
+    left: calc(50% - 5px);
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--bg-0);
+    border: 2px solid var(--gold);
+  }
+  .orbit-arm.a3 .orbit-node { border-color: var(--cyan); width: 8px; height: 8px; top: -4px; left: calc(50% - 4px); }
+  .orbit-cross {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(transparent calc(50% - 0.5px), var(--line) calc(50% - 0.5px), var(--line) calc(50% + 0.5px), transparent calc(50% + 0.5px)),
+      linear-gradient(90deg, transparent calc(50% - 0.5px), var(--line) calc(50% - 0.5px), var(--line) calc(50% + 0.5px), transparent calc(50% + 0.5px));
+    border-radius: 50%;
+    opacity: 0.8;
+  }
+
+  .room-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s3);
+    padding: var(--s4) var(--s5);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-l);
+    background: var(--bg-2);
+    color: inherit;
+    text-decoration: none;
+    transition: border-color var(--dur-1) var(--ease), transform var(--dur-2) var(--ease);
+  }
+  .room-card:hover { border-color: var(--gold-line); }
+  .room-card-top { display: flex; align-items: center; justify-content: space-between; gap: var(--s2); }
+  .room-card .sigla { font-family: var(--font-display); font-size: 1.35rem; font-weight: 600; letter-spacing: 0.08em; color: var(--gold-2); }
+  .room-card p { color: var(--text-2); font-size: var(--fs-s); }
+  .room-card-foot { display: flex; justify-content: space-between; font-size: var(--fs-xs); color: var(--text-2); }
+
+  .status-list { display: grid; grid-template-columns: auto 1fr; gap: var(--s2) var(--s4); font-size: var(--fs-s); }
+  .status-list dt { color: var(--text-2); }
+  .status-list dd { margin: 0; overflow-wrap: anywhere; }
+
+  /* ---------------- Sala */
+  .room-head {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: var(--s4);
+    align-items: center;
+    margin-bottom: var(--s5);
+  }
+  .room-emblem {
+    display: grid;
+    place-items: center;
+    width: 64px;
+    height: 64px;
+    border: 1px solid var(--gold-line);
+    border-radius: 50%;
+    font-family: var(--font-display);
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    color: var(--gold-2);
+    background: radial-gradient(circle at 30% 30%, rgba(201, 165, 76, 0.18), transparent 70%);
+  }
+  .room-head p { color: var(--text-1); margin-top: var(--s1); }
+
+  /* ---------------- Secretaria */
+  .flow {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--s2);
+    counter-reset: flow;
+  }
+  .flow li {
+    position: relative;
+    list-style: none;
+    padding: var(--s3) var(--s3) var(--s3) 40px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--bg-1);
+    font-size: var(--fs-s);
+    color: var(--text-1);
+    counter-increment: flow;
+  }
+  .flow li::before {
+    content: counter(flow);
+    position: absolute;
+    left: 12px;
+    top: 12px;
+    display: grid;
+    place-items: center;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 1px solid var(--gold-line);
+    font-size: 0.66rem;
+    color: var(--gold-2);
+  }
+  .flow strong { display: block; color: var(--text-0); font-weight: 600; }
+  .route-preview { min-height: 1.5em; font-size: var(--fs-s); color: var(--text-1); }
+  .route-preview b { color: var(--gold-2); }
+
+  /* ---------------- Reuniao */
+  .meeting-block { display: flex; flex-direction: column; gap: var(--s3); padding-top: var(--s4); border-top: 1px solid var(--line); }
+  .meeting-block:first-child { border-top: 0; padding-top: 0; }
+  .meeting-meta { display: flex; flex-wrap: wrap; gap: var(--s2); align-items: center; font-size: var(--fs-xs); color: var(--text-2); }
+
+  /* ---------------- CFO */
+  .chart { width: 100%; height: auto; display: block; }
+  .chart .axis { stroke: var(--line-2); stroke-width: 1; }
+  .chart .zero { stroke: var(--risk); stroke-dasharray: 4 4; stroke-width: 1; opacity: 0.7; }
+  .chart .grid { stroke: var(--line); stroke-width: 1; }
+  .chart .tick { fill: var(--text-2); font-size: 11px; font-family: var(--font); }
+  .chart .series-a { fill: none; stroke: var(--gold); stroke-width: 2.2; }
+  .chart .series-b { fill: none; stroke: var(--cyan); stroke-width: 2; stroke-dasharray: 6 5; }
+  .chart .pt-a { fill: var(--bg-0); stroke: var(--gold); stroke-width: 2; }
+  .chart .pt-b { fill: var(--bg-0); stroke: var(--cyan); stroke-width: 2; }
+  .chart .area-a { fill: url(#veos-grad-a); }
+  .legend { display: flex; flex-wrap: wrap; gap: var(--s4); font-size: var(--fs-xs); color: var(--text-1); }
+  .legend i { display: inline-block; width: 18px; height: 2px; margin-right: 6px; vertical-align: middle; background: var(--gold); }
+  .legend i.b { background: repeating-linear-gradient(90deg, var(--cyan) 0 6px, transparent 6px 10px); }
+
+  .controls { display: flex; flex-wrap: wrap; gap: var(--s4); align-items: flex-end; }
+  .controls .field { width: auto; }
+
+  .param-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1.6fr) minmax(110px, 0.6fr) minmax(90px, 0.5fr);
+    gap: var(--s4);
+    align-items: start;
+    padding: var(--s4) 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .param-row:last-of-type { border-bottom: 0; }
+  .param-base { font-size: var(--fs-s); color: var(--text-2); padding-top: 10px; }
+  .param-base b { color: var(--text-1); font-weight: 500; }
+
+  @media (max-width: 960px) {
+    .hero { grid-template-columns: minmax(0, 1fr); padding: var(--s6) var(--s5); }
+    .orbit { width: min(240px, 60vw); order: -1; }
+    .flow { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (max-width: 640px) {
+    .flow { grid-template-columns: minmax(0, 1fr); }
+    .param-row { grid-template-columns: minmax(0, 1fr); gap: var(--s2); }
+    .param-base { padding-top: 0; }
+    .msg { max-width: 100%; }
+  }
+}
+
+@layer views {
+  .menu-toggle { display: none; }
+  @media (max-width: 960px) { .menu-toggle { display: inline-flex; flex: none; } }
+  @media (max-width: 640px) { #engine-pill { display: none; } }
+  .panel > summary { cursor: pointer; color: var(--text-1); font-weight: 600; }
+  .panel[open] > summary { margin-bottom: var(--s5); }
+}
+
+@layer views {
+  @media (max-width: 640px) {
+    .chat-log:has(.chat-empty) { height: 160px; min-height: 160px; }
+  }
+}
+
+/* Sala CFO (briefing, controles, indicadores, decisoes) e integracoes. */
+@layer views {
+  .tabs { overflow-x: auto; scrollbar-width: thin; }
+  .tab { white-space: nowrap; }
+  .briefing-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--s3); }
+  .briefing-head p { color: var(--text-1); }
+  .tldr { margin: 0; padding-left: 1.1em; display: flex; flex-direction: column; gap: var(--s2); font-size: var(--fs-m); color: var(--text-0); }
+  .control-switch { margin-bottom: var(--s4); }
+  .phase-row { display: grid; grid-template-columns: 70px minmax(0, 1.6fr) repeat(4, minmax(90px, 1fr)); gap: var(--s2); align-items: end; }
+  .alloc-row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr) minmax(0, 1fr) auto; gap: var(--s2); align-items: end; }
+  .app-name { font-weight: 600; color: var(--text-0); }
+  .hash { font-family: var(--mono); font-size: var(--fs-xs); color: var(--text-2); }
+  @media (max-width: 960px) {
+    .count-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .phase-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .alloc-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (max-width: 640px) {
+    .count-list { grid-template-columns: minmax(0, 1fr); }
+  }
+}

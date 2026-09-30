@@ -1,0 +1,162 @@
+/* Camada 3 - layout: sidebar, gaveta mobile, barra superior, grade de conteudo. */
+@layer layout {
+  .app {
+    display: grid;
+    grid-template-columns: var(--sidebar-w) minmax(0, 1fr);
+    min-height: 100vh;
+  }
+
+  /* ---------------- Sidebar */
+  .sidebar {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    gap: var(--s5);
+    padding: var(--s5) var(--s4) var(--s4);
+    background: linear-gradient(180deg, var(--bg-1), var(--bg-0));
+    border-right: 1px solid var(--line);
+    overflow-y: auto;
+    z-index: 40;
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: var(--s3);
+    padding: 0 var(--s2);
+    color: var(--text-0);
+    text-decoration: none;
+  }
+  .brand-mark {
+    width: 36px;
+    height: 36px;
+    flex: none;
+  }
+  .brand-name {
+    font-family: var(--font-display);
+    font-weight: 600;
+    letter-spacing: 0.28em;
+    font-size: 0.95rem;
+  }
+  .brand-sub {
+    display: block;
+    font-size: var(--fs-xs);
+    letter-spacing: 0.08em;
+    color: var(--text-2);
+  }
+
+  .nav { display: flex; flex-direction: column; gap: var(--s5); }
+  .nav-group { display: flex; flex-direction: column; gap: 2px; }
+  .nav-label {
+    padding: 0 var(--s3) var(--s2);
+    font-size: var(--fs-xs);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-2);
+  }
+
+  .sidebar-foot {
+    margin-top: auto;
+    padding: var(--s3);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--bg-2);
+    font-size: var(--fs-s);
+  }
+
+  /* ---------------- Area principal */
+  .main {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 30;
+    display: flex;
+    align-items: center;
+    gap: var(--s4);
+    height: var(--topbar-h);
+    padding: 0 var(--s6);
+    background: rgba(10, 11, 13, 0.86);
+    border-bottom: 1px solid var(--line);
+    backdrop-filter: blur(8px);
+  }
+  .topbar-title {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+  .topbar-title strong {
+    font-family: var(--font-display);
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .topbar-title span { font-size: var(--fs-xs); color: var(--text-2); }
+  .topbar-spacer { flex: 1; }
+  .menu-toggle { display: none; }
+
+  .content {
+    width: 100%;
+    max-width: var(--content-max);
+    margin: 0 auto;
+    padding: var(--s6) var(--s6) var(--s8);
+  }
+
+  .grow { flex: 1; }
+  figure { margin: 0; }
+  .stack { display: flex; flex-direction: column; gap: var(--s5); }
+  .stack-s { display: flex; flex-direction: column; gap: var(--s3); }
+  .row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s3); }
+  .grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s4); }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s4); }
+  .grid-4 { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--s4); }
+  .split { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: var(--s5); align-items: start; }
+
+  .backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 35;
+    background: rgba(0, 0, 0, 0.55);
+  }
+  .backdrop[hidden] { display: none; }
+
+  @media (max-width: 1100px) {
+    .grid-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .grid-3 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .split { grid-template-columns: minmax(0, 1fr); }
+  }
+
+  @media (max-width: 960px) {
+    .app { grid-template-columns: minmax(0, 1fr); }
+    .sidebar {
+      position: fixed;
+      inset: 0 auto 0 0;
+      width: min(86vw, var(--sidebar-w));
+      transform: translateX(-102%);
+      visibility: hidden;
+      transition: transform var(--dur-2) var(--ease), visibility 0s linear var(--dur-2);
+      box-shadow: 20px 0 60px rgba(0, 0, 0, 0.5);
+    }
+    .sidebar.is-open {
+      transform: none;
+      visibility: visible;
+      transition: transform var(--dur-2) var(--ease);
+    }
+    .menu-toggle { display: inline-flex; }
+    .topbar { padding: 0 var(--s4); }
+    .content { padding: var(--s5) var(--s4) var(--s7); }
+  }
+
+  @media (max-width: 640px) {
+    .grid-2,
+    .grid-3,
+    .grid-4 { grid-template-columns: minmax(0, 1fr); }
+  }
+}

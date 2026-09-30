@@ -1,0 +1,20 @@
+# Nunca publicar: estado local, bancos, segredos, dados reais, evidencias
+**/runtime/
+*.sqlite3
+*.sqlite3-*
+*.db
+.env
+.env.*
+*.key
+*.pem
+secrets/
+**/verification/
+*.log
+__pycache__/
+*.py[cod]
+node_modules/
+.wrangler/
+.vercel/
+# Acervo canonico e evidencias ficam no VOICE_360, fora deste repositorio
+04 - PADROES/
+*Politica de Saude Financeira*.md

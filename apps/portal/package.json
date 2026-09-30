@@ -1,0 +1,9 @@
+{
+  "name": "veos-portal",
+  "private": true,
+  "type": "module",
+  "description": "VEOS Portal - frontend vanilla sem dependencias; este arquivo existe apenas para rodar os testes JS com o runner nativo do Node.",
+  "scripts": {
+    "test": "node --test tests/js/domain.test.mjs tests/js/controls.test.mjs"
+  }
+}

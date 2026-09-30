@@ -1,0 +1,40 @@
+/* Camada 6 - movimento. Tudo desligado em prefers-reduced-motion. */
+@layer motion {
+  @keyframes veos-spin { to { transform: rotate(360deg); } }
+  @keyframes veos-spin-rev { to { transform: rotate(-360deg); } }
+  @keyframes veos-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.35; }
+  }
+  @keyframes veos-enter {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: none; }
+  }
+
+  .orbit-arm.a1 { animation: veos-spin 64s linear infinite; }
+  .orbit-arm.a2 { animation: veos-spin-rev 44s linear infinite; }
+  .orbit-arm.a3 { animation: veos-spin 28s linear infinite; }
+  .tone-live .dot,
+  .step.is-running .dot { animation: veos-pulse 1.6s ease-in-out infinite; }
+
+  [data-parallax] { will-change: transform; }
+
+  .reveal { opacity: 0; transform: translateY(10px); transition: opacity var(--dur-3) var(--ease), transform var(--dur-3) var(--ease); }
+  .reveal.is-visible { opacity: 1; transform: none; }
+
+  .view-enter { animation: veos-enter var(--dur-2) var(--ease) both; }
+  .msg { animation: veos-enter var(--dur-2) var(--ease) both; }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+    }
+    .reveal { opacity: 1; transform: none; }
+    [data-parallax] { transform: none !important; }
+  }
+}

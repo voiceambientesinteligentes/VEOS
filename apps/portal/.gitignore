@@ -1,0 +1,41 @@
+# Estado de execucao local (historicos, jobs, rascunhos) - nunca publicar
+runtime/
+*.sqlite3
+*.sqlite3-wal
+*.sqlite3-shm
+*.db
+
+# Logs e saidas
+*.log
+out/
+out-*/
+
+# Python / Node
+__pycache__/
+*.py[cod]
+node_modules/
+
+# Segredos e configuracao local
+.env
+.env.*
+*.key
+*.pem
+secrets/
+
+# Dados reais nunca entram neste repositorio (somente fixture sintetica TESTE)
+data/
+engine/fixtures/*
+!engine/fixtures/*TESTE*.json
+!engine/fixtures/cfo-demo.json
+
+# Verificacao local: screenshots, perfis isolados do navegador e resultados temporarios
+verification/
+
+# Registros locais (decisoes, verificacoes de integracao) vivem no SQLite de runtime/
+*.jsonl
+
+# Politicas canonicas originais do VOICE_360 e clones de skills nunca entram aqui
+04 - PADROES/
+*Politica de Saude Financeira*.md
+references/
+knowledge-work-plugins/

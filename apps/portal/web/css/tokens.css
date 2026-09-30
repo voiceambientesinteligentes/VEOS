@@ -1,0 +1,75 @@
+/* Camada 1 - tokens de design. A ordem das camadas e declarada aqui, uma vez. */
+@layer tokens, base, layout, components, views, motion;
+
+@layer tokens {
+  :root {
+    color-scheme: dark;
+
+    /* Superficies: obsidiana -> grafite */
+    --bg-0: #0a0b0d;
+    --bg-1: #0f1114;
+    --bg-2: #14171b;
+    --bg-3: #1b1f24;
+    --bg-4: #232830;
+    --line: #262b32;
+    --line-2: #343a44;
+
+    /* Texto */
+    --text-0: #ece8df;
+    --text-1: #c3beb2;
+    --text-2: #8f8a80;
+
+    /* Acentos: ouro principal, ciano sutil para estado/foco */
+    --gold: #c9a54c;
+    --gold-2: #e3c67d;
+    --gold-ink: #16130b;
+    --gold-dim: rgba(201, 165, 76, 0.12);
+    --gold-line: rgba(201, 165, 76, 0.35);
+    --cyan: #6ec8d4;
+    --cyan-dim: rgba(110, 200, 212, 0.10);
+    --cyan-line: rgba(110, 200, 212, 0.35);
+
+    /* Semantica */
+    --ok: #86c49a;
+    --warn: #dcb561;
+    --risk: #e08476;
+    --neutral: #8f99a6;
+
+    /* Geometria */
+    --radius-s: 6px;
+    --radius: 10px;
+    --radius-l: 18px;
+    --s1: 4px;
+    --s2: 8px;
+    --s3: 12px;
+    --s4: 16px;
+    --s5: 24px;
+    --s6: 32px;
+    --s7: 48px;
+    --s8: 72px;
+
+    --sidebar-w: 276px;
+    --topbar-h: 64px;
+    --content-max: 1180px;
+
+    /* Tipografia */
+    --font: "Segoe UI Variable Text", "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+    --font-display: "Segoe UI Variable Display", "Segoe UI", system-ui, -apple-system, sans-serif;
+    --mono: "Cascadia Mono", "Cascadia Code", Consolas, ui-monospace, monospace;
+    --fs-xs: 0.75rem;
+    --fs-s: 0.8125rem;
+    --fs-m: 0.9375rem;
+    --fs-l: 1.125rem;
+    --fs-xl: 1.5rem;
+    --fs-2xl: clamp(1.9rem, 1.2rem + 2.4vw, 3rem);
+
+    /* Movimento */
+    --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+    --dur-1: 140ms;
+    --dur-2: 260ms;
+    --dur-3: 520ms;
+
+    --shadow-1: 0 1px 0 rgba(255, 255, 255, 0.03) inset, 0 12px 32px -18px rgba(0, 0, 0, 0.7);
+    --focus-ring: 0 0 0 2px var(--bg-0), 0 0 0 4px var(--cyan);
+  }
+}
