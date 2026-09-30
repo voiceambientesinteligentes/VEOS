@@ -3,27 +3,20 @@
 //   GET  /api/setores     -> setores e diretores
 //   GET  /api/orcamentos  -> ultimos orcamentos com avisos
 //   POST /api/orcamentos  -> vigia avalia e grava orcamento + avisos + evento
-//                            (header Idempotency-Key obrigatorio; repetir nao duplica)
+//   /api/projetos...      -> setor Financeiro (ver financeiro.ts; direcao e financas)
+// Escritas exigem header Idempotency-Key (repetir nao duplica).
 // Identidade: token do Supabase Auth validado no servidor + cadastro ativo em `membros`.
 // Nunca confia em papel/setor enviado pelo cliente.
 import { avaliarOrcamento, RegraError } from "../_shared/regras/vigia.ts";
+import { ANON, HttpError, lerCorpo, type Membro, SERVICE, servico, URL_BASE } from "./comum.ts";
+import { rotearFinanceiro } from "./financeiro.ts";
 
-const URL_BASE = Deno.env.get("SUPABASE_URL") ?? "";
-const ANON = Deno.env.get("SUPABASE_ANON_KEY") ?? "";
-const SERVICE = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
-const MAX_BODY = 64 * 1024;
 const ORIGENS = [
   /^https:\/\/veos-voice\.netlify\.app$/,
   /^https:\/\/[a-z0-9-]+--veos-voice\.netlify\.app$/,
   /^http:\/\/127\.0\.0\.1:8878$/,
 ];
 const CHAVE_RE = /^[A-Za-z0-9-]{16,64}$/;
-
-class HttpError extends Error {
-  constructor(public status: number, msg: string) {
-    super(msg);
-  }
-}
 
 function cors(req: Request): Record<string, string> {
   const o = req.headers.get("Origin") ?? "";
@@ -42,20 +35,7 @@ const json = (req: Request, status: number, body: unknown) =>
     headers: { ...cors(req), "Content-Type": "application/json; charset=utf-8", "Cache-Control": "no-store" },
   });
 
-async function servico(path: string, init: RequestInit = {}) {
-  const r = await fetch(`${URL_BASE}${path}`, {
-    ...init,
-    headers: { apikey: SERVICE, Authorization: `Bearer ${SERVICE}`, "Content-Type": "application/json", ...(init.headers ?? {}) },
-  });
-  const texto = await r.text();
-  if (!r.ok) {
-    console.error("banco", r.status, texto.slice(0, 500));
-    throw new HttpError(502, "falha ao acessar o banco");
-  }
-  return texto ? JSON.parse(texto) : null;
-}
-
-async function membro(req: Request) {
+async function membro(req: Request): Promise<Membro> {
   const token = (req.headers.get("Authorization") ?? "").replace(/^Bearer\s+/i, "");
   if (!token) throw new HttpError(401, "login necessario");
   const r = await fetch(`${URL_BASE}/auth/v1/user`, { headers: { apikey: ANON, Authorization: `Bearer ${token}` } });
@@ -67,18 +47,10 @@ async function membro(req: Request) {
   return { ...rows[0], email: user.email as string };
 }
 
-async function lerCorpo(req: Request) {
-  const raw = await req.text();
-  if (new TextEncoder().encode(raw).length > MAX_BODY) throw new HttpError(413, "corpo acima de 64 KB");
-  try {
-    return JSON.parse(raw);
-  } catch {
-    throw new HttpError(400, "JSON invalido");
-  }
-}
-
 async function rotear(req: Request, rota: string) {
   const eu = await membro(req);
+  const partes = rota.split("/");
+  if (partes[0] === "projetos") return await rotearFinanceiro(req, partes, eu);
   if (req.method === "GET" && rota === "me") return eu;
   if (req.method === "GET" && rota === "setores") {
     const [setores, diretores] = await Promise.all([
