@@ -1,0 +1,495 @@
+{
+  "id": "direcao",
+  "sigla": "CEO",
+  "nome": "Direção Geral",
+  "missao": "Dar rumo, ritmo e disciplina à VOICE: poucas prioridades claras por trimestre, decisões de alçada tomadas rápido e registradas, riscos sob controle e crescimento que preserve margem e caixa conforme a Política de Saúde Financeira.",
+  "cor": "gold",
+  "diretor": {
+    "titulo": "Diretora Geral (CEO)",
+    "nome": "Helena Vasconcellos",
+    "perfil": "Persona fictícia. Executiva com trajetória em empresas de engenharia e integração de sistemas para o mercado de alto padrão, acostumada a conduzir empresas de serviço por projeto na passagem de fundador-operador para gestão por sistema. Estilo calmo, direto e orientado a números: cobra clareza de dono, prazo e medida antes de discutir opinião.",
+    "especialidades": [
+      "Planejamento estratégico trimestral e anual para empresas de projeto",
+      "Governança de alçadas e registro de decisões",
+      "Gestão de riscos operacionais, financeiros e reputacionais",
+      "Condução da reunião semanal de direção com os diretores de setor",
+      "Leitura integrada de margem, caixa e capacidade de execução"
+    ],
+    "metodos": [
+      {
+        "nome": "EOS / Traction (V/TO, Rocks, Scorecard, Reunião Nível 10, IDS)",
+        "autor": "Gino Wickman",
+        "uso": "Visão da VOICE em uma página (V/TO), 3 a 7 Rocks trimestrais por diretor, scorecard semanal de 5 a 15 números e a reunião semanal de 90 minutos com os diretores, em que a maior parte do tempo vai para identificar, discutir e resolver (IDS) os problemas da lista."
+      },
+      {
+        "nome": "OKR (Objetivos e Resultados-Chave)",
+        "autor": "John Doerr (Measure What Matters), a partir de Andy Grove",
+        "uso": "Usado para metas anuais que atravessam setores, por exemplo: elevar o ticket médio rumo aos R$ 100 mil desejados pela política sem sacrificar margem, com resultados-chave mensuráveis por setor."
+      },
+      {
+        "nome": "Balanced Scorecard",
+        "autor": "Robert Kaplan e David Norton",
+        "uso": "Garante que as metas cubram as quatro perspectivas: financeira (margem, caixa, reserva), clientes e parceiros (satisfação, arquitetos indicadores), processos (obra no prazo, retrabalho) e aprendizado (certificações técnicas, pessoas)."
+      },
+      {
+        "nome": "Gestão de riscos com matriz probabilidade × impacto",
+        "autor": "ABNT NBR ISO 31000",
+        "uso": "Registro de riscos com dono, nível, plano de tratamento e data de revisão; riscos altos e críticos passam pela reunião de direção."
+      },
+      {
+        "nome": "Registro de decisões (decision log)",
+        "autor": "Prática de governança corporativa",
+        "uso": "Toda exceção à Política de Saúde Financeira vira um registro com responsável pela autorização, justificativa, impacto financeiro conhecido e data, como exige a Política V1 sec.14."
+      }
+    ],
+    "principios": [
+      "Exceção não deve se transformar em regra (Política V1 sec.14).",
+      "A aprovação comercial de um projeto não substitui sua aprovação financeira (Política V1 sec.14).",
+      "Crescimento de faturamento não pode ocorrer às custas da saúde financeira (Política V1 sec.1).",
+      "Poucas prioridades por trimestre, cada uma com um único dono.",
+      "Problema que aparece no scorecard vai para a lista de IDS, não para o corredor.",
+      "Posição corrente e pro forma de caixa nunca se misturam na mesma conversa (Política V1.1 sec.10)."
+    ],
+    "como_aconselha": "Responde em tom sereno e objetivo, sempre começando pelo número e pela regra aplicável (citando a seção da política quando existir), depois pelas opções e pela recomendação. Separa claramente o que é política aprovada do que é proposta dela, e termina com dono, prazo e o que precisa ser registrado.",
+    "perguntas_chave": [
+      "Qual é a margem de contribuição final deste projeto depois do desconto, pela fórmula da Política V1 sec.4?",
+      "A exposição de caixa do projeto, no estado corrente e no pro forma, passa de 10% do valor do contrato?",
+      "Quem é o dono desta prioridade e qual número mostra que ela foi cumprida no fim do trimestre?",
+      "Esta exceção está virando regra? Quantas aprovamos parecidas nos últimos 90 dias?",
+      "Qual o impacto desta decisão na capacidade de obra e na agenda dos técnicos certificados?",
+      "Que parceiro ou arquiteto está por trás desta oportunidade e quanto do faturamento já depende dele?"
+    ],
+    "limites": [
+      "Não altera a Política de Saúde Financeira sozinha: mudanças exigem nova versão formal, preservando o histórico (Política V1 sec.15).",
+      "Não aprova exceção de margem, desconto ou exposição sem justificativa e impacto financeiro registrados (Política V1 sec.14).",
+      "Não assume compromisso que leve a exposição pro forma acima de 10% sem análise do CFO (Política V1.1 sec.10).",
+      "Decisões societárias, trabalhistas e tributárias relevantes são validadas com contador e advogado antes de executadas."
+    ]
+  },
+  "equipe": [
+    {
+      "papel": "assessor_estrategia",
+      "nome": "Assessor de estratégia e prioridades",
+      "reporta_a": "CEO",
+      "responsabilidades": [
+        "Manter a V/TO da VOICE e o quadro de metas e Rocks trimestrais de todos os setores",
+        "Preparar a pauta e o scorecard da reunião semanal de direção",
+        "Cobrar atualização semanal de status das metas junto aos donos",
+        "Consolidar o relatório trimestral de metas para a revisão de planejamento"
+      ],
+      "indicadores": ["rocks_no_prazo", "scorecard_no_alvo"]
+    },
+    {
+      "papel": "relator_direcao",
+      "nome": "Relator de decisões da direção",
+      "reporta_a": "CEO",
+      "responsabilidades": [
+        "Registrar cada decisão e cada pedido de alçada com tipo, justificativa, autorizador e impacto financeiro",
+        "Garantir que exceções da política tenham o registro completo exigido pela Política V1 sec.14",
+        "Redigir a ata da reunião de direção e distribuir as tarefas decididas",
+        "Controlar o prazo de resposta dos pedidos de alçada"
+      ],
+      "indicadores": ["excecoes_registradas", "tempo_decisao_alcada"]
+    },
+    {
+      "papel": "gestor_riscos",
+      "nome": "Gestor de riscos e controles",
+      "reporta_a": "CEO",
+      "responsabilidades": [
+        "Manter o registro de riscos com dono, nível e plano de tratamento",
+        "Conduzir a revisão mensal de riscos com os diretores",
+        "Acompanhar riscos típicos da VOICE: atraso de obra do cliente, dependência de um arquiteto, importação e câmbio de equipamentos, técnico-chave único por marca, segurança da informação de clientes"
+      ],
+      "indicadores": ["riscos_criticos_sem_plano"]
+    },
+    {
+      "papel": "analista_indicadores",
+      "nome": "Analista de indicadores da direção",
+      "reporta_a": "CEO",
+      "responsabilidades": [
+        "Montar o painel mensal consolidado a partir dos setores (Financeiro, Comercial, Operações, Pós-venda, Pessoas)",
+        "Acompanhar margem operacional, reserva de caixa e participação de projetos abaixo de 30% de margem no faturamento",
+        "Sinalizar desvios para a lista de IDS da reunião semanal"
+      ],
+      "indicadores": ["faturamento_abaixo_margem", "margem_operacional", "reserva_caixa_meses", "scorecard_no_alvo"]
+    }
+  ],
+  "processos": [
+    {
+      "id": "planejamento_estrategico",
+      "nome": "Planejamento e desdobramento de metas",
+      "descricao": "Ciclo EOS adaptado à VOICE: visão em uma página, metas anuais (com OKR quando atravessam setores) e Rocks de 90 dias por diretor, acompanhados semanalmente.",
+      "etapas": [
+        { "id": "visao", "nome": "Revisar a visão (V/TO)", "responsavel": "assessor_estrategia", "criterio_saida": "V/TO atualizada com foco de nicho (automação premium), metas de 3 anos e de 1 ano aprovadas pela CEO" },
+        { "id": "metas_anuais", "nome": "Definir metas anuais", "responsavel": "assessor_estrategia", "criterio_saida": "Metas anuais registradas cobrindo as quatro perspectivas do Balanced Scorecard, cada uma com dono e número" },
+        { "id": "rocks", "nome": "Definir Rocks trimestrais", "responsavel": "assessor_estrategia", "criterio_saida": "3 a 7 Rocks por diretor registrados como meta, com data limite no fim do trimestre" },
+        { "id": "acompanhamento", "nome": "Acompanhar semanalmente", "responsavel": "assessor_estrategia", "criterio_saida": "Status no prazo/em risco atualizado toda semana antes da reunião de direção" },
+        { "id": "fechamento_trimestre", "nome": "Fechar o trimestre", "responsavel": "assessor_estrategia", "criterio_saida": "Cada Rock marcado como concluído ou descartado, com aprendizado registrado" }
+      ]
+    },
+    {
+      "id": "decisao_alcada",
+      "nome": "Decisão de alçada e exceções à política",
+      "descricao": "Fluxo para tudo o que a Política de Saúde Financeira reserva à direção: margem entre 25% e 29,99%, margem abaixo de 25%, desconto acima de 2%, desconto que leve a margem abaixo de 30%, exposição de caixa ou pro forma acima de 10% do valor do contrato e projeto abaixo do ticket desejado com exceção registrada.",
+      "etapas": [
+        { "id": "pedido", "nome": "Pedido de alçada", "responsavel": "relator_direcao", "criterio_saida": "Decisão registrada com tipo, projeto, margem ou exposição calculada e justificativa" },
+        { "id": "analise_financeira", "nome": "Análise financeira", "responsavel": "relator_direcao", "criterio_saida": "CFO confirmou margem pela fórmula da Política V1 sec.4 e, quando aplicável, exposição corrente e pro forma pela Política V1.1; impacto financeiro preenchido" },
+        { "id": "decisao", "nome": "Decisão da direção", "responsavel": "relator_direcao", "criterio_saida": "Decisão aprovada ou reprovada com autorizador identificado e data" },
+        { "id": "comunicacao", "nome": "Comunicação e acompanhamento", "responsavel": "relator_direcao", "criterio_saida": "Setores envolvidos avisados e data de revisão definida quando a decisão tem condição" }
+      ]
+    },
+    {
+      "id": "gestao_riscos",
+      "nome": "Gestão de riscos",
+      "descricao": "Identificar, avaliar, tratar e monitorar riscos com matriz probabilidade × impacto, segundo a ISO 31000.",
+      "etapas": [
+        { "id": "identificar", "nome": "Identificar", "responsavel": "gestor_riscos", "criterio_saida": "Risco registrado com categoria, descrição e dono" },
+        { "id": "avaliar", "nome": "Avaliar", "responsavel": "gestor_riscos", "criterio_saida": "Probabilidade, impacto e nível preenchidos" },
+        { "id": "tratar", "nome": "Tratar", "responsavel": "gestor_riscos", "criterio_saida": "Plano de mitigação com ações e data de próxima revisão" },
+        { "id": "monitorar", "nome": "Monitorar", "responsavel": "gestor_riscos", "criterio_saida": "Risco revisado na data prevista; encerrado quando deixa de existir" }
+      ]
+    }
+  ],
+  "registros": [
+    {
+      "tipo": "meta",
+      "nome": "Meta / Rock",
+      "descricao": "Meta anual, Rock trimestral ou OKR da VOICE, com dono, número-alvo e prazo. O título diz o resultado esperado (ex.: 'Fechar 3 projetos acima de R$ 100 mil com margem ≥ 35% no 4º trimestre').",
+      "responsavel": "assessor_estrategia",
+      "estados": ["rascunho", "no_prazo", "em_risco", "atrasada", "concluida", "descartada"],
+      "estado_inicial": "rascunho",
+      "estados_finais": ["concluida", "descartada"],
+      "campos": [
+        { "id": "tipo_meta", "rotulo": "Tipo", "tipo": "opcao", "opcoes": ["Meta anual", "Rock trimestral", "OKR - objetivo", "OKR - resultado-chave"], "obrigatorio": true },
+        { "id": "setor", "rotulo": "Setor dono", "tipo": "opcao", "opcoes": ["Direção Geral", "Financeiro", "Comercial", "Marketing", "Operações", "Tecnologia", "Pós-venda", "Administrativo e Pessoas", "Secretaria"], "obrigatorio": true },
+        { "id": "perspectiva", "rotulo": "Perspectiva (Balanced Scorecard)", "tipo": "opcao", "opcoes": ["Financeira", "Clientes e parceiros", "Processos internos", "Aprendizado e crescimento"], "obrigatorio": true },
+        { "id": "periodo", "rotulo": "Período (ex.: 2026-T4)", "tipo": "texto", "obrigatorio": true },
+        { "id": "medida", "rotulo": "Como será medido", "tipo": "texto", "obrigatorio": true },
+        { "id": "valor_alvo", "rotulo": "Valor-alvo", "tipo": "numero", "obrigatorio": false },
+        { "id": "valor_atual", "rotulo": "Valor atual", "tipo": "numero", "obrigatorio": false },
+        { "id": "data_limite", "rotulo": "Data limite", "tipo": "data", "obrigatorio": true },
+        { "id": "status_politica", "rotulo": "Origem da meta", "tipo": "opcao", "opcoes": ["POLITICA", "PROPOSTA"], "obrigatorio": true },
+        { "id": "observacoes", "rotulo": "Observações e aprendizados", "tipo": "texto_longo", "obrigatorio": false }
+      ]
+    },
+    {
+      "tipo": "decisao",
+      "nome": "Decisão / alçada",
+      "descricao": "Decisão da direção ou pedido de alçada previsto na política. Todo registro de exceção guarda responsável pela autorização, justificativa, impacto financeiro conhecido e a decisão (Política V1 sec.14).",
+      "responsavel": "relator_direcao",
+      "estados": ["solicitada", "em_analise", "aprovada", "reprovada", "cancelada"],
+      "estado_inicial": "solicitada",
+      "estados_finais": ["aprovada", "reprovada", "cancelada"],
+      "campos": [
+        { "id": "tipo_decisao", "rotulo": "Tipo de decisão", "tipo": "opcao", "opcoes": [
+          "Margem entre 25% e 29,99%",
+          "Margem abaixo de 25% (extraordinária)",
+          "Desconto acima de 2% e até 5%",
+          "Desconto acima de 5% (excepcional)",
+          "Desconto que leva margem abaixo de 30%",
+          "Exposição de caixa acima de 10%",
+          "Exposição pro forma acima de 10%",
+          "Projeto abaixo do ticket desejado",
+          "Decisão estratégica",
+          "Outra"
+        ], "obrigatorio": true },
+        { "id": "projeto_ref", "rotulo": "Projeto / cliente relacionado", "tipo": "texto", "obrigatorio": false },
+        { "id": "margem_pct", "rotulo": "Margem de contribuição final (%)", "tipo": "numero", "obrigatorio": false },
+        { "id": "desconto_pct", "rotulo": "Desconto concedido (%)", "tipo": "numero", "obrigatorio": false },
+        { "id": "exposicao_pct", "rotulo": "Exposição de caixa (%) — informar se corrente ou pro forma", "tipo": "numero", "obrigatorio": false },
+        { "id": "justificativa", "rotulo": "Justificativa", "tipo": "texto_longo", "obrigatorio": true },
+        { "id": "impacto_financeiro", "rotulo": "Impacto financeiro conhecido (R$)", "tipo": "dinheiro", "obrigatorio": false },
+        { "id": "autorizador", "rotulo": "Responsável pela autorização", "tipo": "texto", "obrigatorio": false },
+        { "id": "data_decisao", "rotulo": "Data da decisão", "tipo": "data", "obrigatorio": false },
+        { "id": "condicoes", "rotulo": "Condições e data de revisão", "tipo": "texto_longo", "obrigatorio": false }
+      ]
+    },
+    {
+      "tipo": "risco",
+      "nome": "Risco",
+      "descricao": "Risco relevante para a VOICE, avaliado por probabilidade × impacto, com dono e plano de tratamento.",
+      "responsavel": "gestor_riscos",
+      "estados": ["identificado", "avaliado", "em_tratamento", "monitorado", "aceito", "encerrado"],
+      "estado_inicial": "identificado",
+      "estados_finais": ["encerrado"],
+      "campos": [
+        { "id": "categoria", "rotulo": "Categoria", "tipo": "opcao", "opcoes": [
+          "Financeiro / caixa",
+          "Obra e cronograma do cliente",
+          "Técnico / integração de sistemas",
+          "Fornecedor, importação e câmbio",
+          "Pessoas-chave e certificações",
+          "Comercial / concentração em cliente ou arquiteto",
+          "Reputacional",
+          "Legal e contratual",
+          "Segurança da informação e LGPD"
+        ], "obrigatorio": true },
+        { "id": "probabilidade", "rotulo": "Probabilidade", "tipo": "opcao", "opcoes": ["Baixa", "Média", "Alta"], "obrigatorio": true },
+        { "id": "impacto", "rotulo": "Impacto", "tipo": "opcao", "opcoes": ["Baixo", "Médio", "Alto"], "obrigatorio": true },
+        { "id": "nivel", "rotulo": "Nível (matriz)", "tipo": "opcao", "opcoes": ["Baixo", "Médio", "Alto", "Crítico"], "obrigatorio": true },
+        { "id": "dono_risco", "rotulo": "Dono do risco", "tipo": "texto", "obrigatorio": true },
+        { "id": "plano_mitigacao", "rotulo": "Plano de tratamento", "tipo": "texto_longo", "obrigatorio": false },
+        { "id": "sinal_alerta", "rotulo": "Sinal de alerta (o que indica que está acontecendo)", "tipo": "texto", "obrigatorio": false },
+        { "id": "proxima_revisao", "rotulo": "Próxima revisão", "tipo": "data", "obrigatorio": false }
+      ]
+    }
+  ],
+  "rotinas": [
+    {
+      "id": "reuniao_direcao_semanal",
+      "nome": "Reunião semanal de direção (formato Nível 10)",
+      "frequencia": "semanal",
+      "responsavel": "CEO",
+      "passos": [
+        "Abertura: uma boa notícia pessoal e uma profissional de cada diretor (5 min)",
+        "Scorecard: cada dono diz se seu número está no alvo ou fora; o que estiver fora vai para a lista de IDS (5 min)",
+        "Rocks: no prazo ou fora do prazo, sem discussão (5 min)",
+        "Destaques de clientes, parceiros e equipe (5 min)",
+        "Tarefas da semana anterior: feita ou não feita (5 min)",
+        "IDS: resolver os problemas mais importantes, começando por pedidos de alçada pendentes (60 min)",
+        "Conclusão: recapitular tarefas, registrar decisões e dar nota à reunião (5 min)"
+      ]
+    },
+    {
+      "id": "fila_alcadas",
+      "nome": "Revisão da fila de alçadas",
+      "frequencia": "semanal",
+      "responsavel": "relator_direcao",
+      "passos": [
+        "Listar decisões em 'solicitada' e 'em_analise'",
+        "Confirmar com o CFO margem final (Política V1 sec.4) e exposição corrente/pro forma (Política V1.1) de cada pedido",
+        "Levar à CEO os pedidos prontos para decisão",
+        "Registrar autorizador, data e impacto financeiro nas decisões tomadas"
+      ]
+    },
+    {
+      "id": "acompanhamento_setores",
+      "nome": "Conversa individual com os diretores de setor",
+      "frequencia": "quinzenal",
+      "responsavel": "CEO",
+      "passos": [
+        "Revisar metas e Rocks do setor",
+        "Ouvir bloqueios e necessidades de decisão",
+        "Checar indicadores do setor fora do alvo",
+        "Combinar próximos passos e registrar tarefas"
+      ]
+    },
+    {
+      "id": "conselho_mensal",
+      "nome": "Reunião mensal de saúde da empresa (conselho consultivo com os diretores)",
+      "frequencia": "mensal",
+      "responsavel": "CEO",
+      "passos": [
+        "Receber do Financeiro o fechamento do mês e os indicadores da Política V1 sec.13",
+        "Checar margem operacional frente à meta inicial de 12% a 15% ou superior (Política V1 sec.13)",
+        "Checar reserva de caixa frente a 3 meses de custos fixos (Política V1 sec.12)",
+        "Checar se projetos abaixo de 30% de margem passaram de 10% do faturamento do período (Política V1 sec.13)",
+        "Revisar exceções aprovadas no mês e decidir se algum padrão está virando regra (Política V1 sec.14)",
+        "Registrar decisões e encaminhar tarefas"
+      ]
+    },
+    {
+      "id": "revisao_riscos",
+      "nome": "Revisão mensal de riscos",
+      "frequencia": "mensal",
+      "responsavel": "gestor_riscos",
+      "passos": [
+        "Atualizar probabilidade e impacto dos riscos abertos",
+        "Cobrar planos de tratamento de riscos altos e críticos",
+        "Incluir riscos novos trazidos pelos setores (obras, fornecedores, pessoas, parceiros)",
+        "Levar os riscos críticos para a reunião de direção"
+      ]
+    },
+    {
+      "id": "planejamento_trimestral",
+      "nome": "Planejamento trimestral",
+      "frequencia": "trimestral",
+      "responsavel": "CEO",
+      "passos": [
+        "Fechar os Rocks do trimestre (concluída ou descartada) e registrar aprendizados",
+        "Revisar V/TO e metas anuais; no último trimestre do ano, definir as metas do ano seguinte",
+        "Definir 3 a 7 Rocks por diretor para o próximo trimestre",
+        "Revisar o scorecard semanal (manter de 5 a 15 números)",
+        "Avaliar se algum parâmetro da política merece revisão formal a partir de dados reais (Política V1 sec.15)"
+      ]
+    }
+  ],
+  "indicadores": [
+    { "id": "rocks_no_prazo", "nome": "Rocks concluídos no trimestre", "formula": "Rocks concluídos no trimestre / Rocks definidos no trimestre × 100", "meta": "≥ 80%", "frequencia": "trimestral", "status": "PROPOSTA" },
+    { "id": "scorecard_no_alvo", "nome": "Números do scorecard no alvo", "formula": "Números do scorecard semanal no alvo / total de números do scorecard × 100", "meta": "≥ 80% das semanas com ao menos 80% dos números no alvo", "frequencia": "semanal", "status": "PROPOSTA" },
+    { "id": "excecoes_registradas", "nome": "Exceções com registro completo", "formula": "Decisões de exceção com autorizador, justificativa, impacto financeiro e data preenchidos / total de exceções decididas × 100", "meta": "100% (Política V1 sec.14)", "frequencia": "mensal", "status": "POLITICA" },
+    { "id": "tempo_decisao_alcada", "nome": "Tempo de resposta de alçada", "formula": "Média de dias entre a criação do pedido de alçada e a data da decisão", "meta": "≤ 2 dias úteis", "frequencia": "semanal", "status": "PROPOSTA" },
+    { "id": "faturamento_abaixo_margem", "nome": "Faturamento de projetos abaixo de 30% de margem", "formula": "Faturamento de projetos com margem de contribuição < 30% / faturamento total do período × 100", "meta": "≤ 10% do faturamento no período (Política V1 sec.13)", "frequencia": "mensal", "status": "POLITICA" },
+    { "id": "margem_operacional", "nome": "Margem operacional da empresa", "formula": "Resultado operacional / receita líquida × 100 (a política fixa a meta; o detalhamento da fórmula é PROPOSTA a validar com o contador)", "meta": "12% a 15% ou superior (Política V1 sec.13)", "frequencia": "mensal", "status": "POLITICA" },
+    { "id": "reserva_caixa_meses", "nome": "Reserva de caixa em meses de custo fixo", "formula": "Reserva financeira disponível / custo fixo médio mensal", "meta": "≥ 3 meses (Política V1 sec.12)", "frequencia": "mensal", "status": "POLITICA" },
+    { "id": "riscos_criticos_sem_plano", "nome": "Riscos altos ou críticos sem plano", "formula": "Quantidade de riscos de nível Alto ou Crítico, não encerrados, sem plano de tratamento", "meta": "0", "frequencia": "mensal", "status": "PROPOSTA" }
+  ],
+  "sentinelas": [
+    {
+      "id": "DIR_ALCADA_PARADA",
+      "titulo": "Pedido de alçada sem decisão",
+      "severidade": "ALTO",
+      "status": "PROPOSTA",
+      "gatilho": { "tipo": "parado", "registro": "decisao", "filtros": [ { "campo": "estado", "em": ["solicitada", "em_analise"] } ], "dias": 2, "data_campo": "atualizado_em" },
+      "mensagem": "O pedido de alçada '{{titulo}}' está sem movimentação há {{dias}} dias. Projeto e cliente esperam resposta; a política exige decisão expressa da direção.",
+      "acoes": [
+        { "tipo": "tarefa", "titulo": "Levar pedido de alçada à CEO com análise do CFO", "papel": "relator_direcao", "prazo_dias": 1 },
+        { "tipo": "rascunho", "modelo": "pedido_analise_cfo" },
+        { "tipo": "notificar", "para": "CEO" }
+      ],
+      "fonte": "PROPOSTA — padrão de mercado (EOS/Traction, IDS semanal); alçada definida na Política V1 sec.8 e sec.9"
+    },
+    {
+      "id": "DIR_APROVACAO_SEM_AUTORIZADOR",
+      "titulo": "Exceção aprovada sem responsável pela autorização",
+      "severidade": "ALTO",
+      "status": "POLITICA",
+      "gatilho": { "tipo": "faltando", "registro": "decisao", "campo": "autorizador", "filtros": [ { "campo": "estado", "igual": "aprovada" } ] },
+      "mensagem": "A decisão '{{titulo}}' foi aprovada sem o responsável pela autorização registrado.",
+      "acoes": [
+        { "tipo": "tarefa", "titulo": "Registrar quem autorizou a exceção", "papel": "relator_direcao", "prazo_dias": 1 }
+      ],
+      "fonte": "Política V1 sec.14"
+    },
+    {
+      "id": "DIR_EXCECAO_SEM_IMPACTO",
+      "titulo": "Exceção sem impacto financeiro conhecido",
+      "severidade": "ALTO",
+      "status": "POLITICA",
+      "gatilho": { "tipo": "faltando", "registro": "decisao", "campo": "impacto_financeiro", "filtros": [ { "campo": "estado", "em": ["em_analise", "aprovada"] }, { "campo": "tipo_decisao", "nao_em": ["Decisão estratégica", "Outra"] } ] },
+      "mensagem": "A exceção '{{titulo}}' não tem impacto financeiro registrado. Sem esse número a direção não deve decidir.",
+      "acoes": [
+        { "tipo": "tarefa", "titulo": "Calcular e registrar o impacto financeiro da exceção com o CFO", "papel": "relator_direcao", "prazo_dias": 1 },
+        { "tipo": "rascunho", "modelo": "pedido_analise_cfo" }
+      ],
+      "fonte": "Política V1 sec.14"
+    },
+    {
+      "id": "DIR_EXCECOES_RECORRENTES",
+      "titulo": "Exceções de margem ou desconto se repetindo",
+      "severidade": "MEDIO",
+      "status": "PROPOSTA",
+      "gatilho": { "tipo": "contagem", "registro": "decisao", "filtros": [ { "campo": "estado", "igual": "aprovada" }, { "campo": "tipo_decisao", "em": ["Margem entre 25% e 29,99%", "Margem abaixo de 25% (extraordinária)", "Desconto acima de 2% e até 5%", "Desconto acima de 5% (excepcional)", "Desconto que leva margem abaixo de 30%"] } ], "janela_dias": 90, "data_campo": "data_decisao", "operador": ">=", "valor": 3 },
+      "mensagem": "{{total}} exceções de margem ou desconto aprovadas nos últimos 90 dias. Verificar se a exceção está virando regra.",
+      "acoes": [
+        { "tipo": "tarefa", "titulo": "Incluir análise das exceções recorrentes na próxima reunião de direção", "papel": "analista_indicadores", "prazo_dias": 7 },
+        { "tipo": "notificar", "para": "CEO" }
+      ],
+      "fonte": "PROPOSTA — padrão de mercado (limite de 3 em 90 dias a calibrar); princípio da Política V1 sec.14"
+    },
+    {
+      "id": "DIR_META_EM_RISCO_PARADA",
+      "titulo": "Meta em risco sem atualização",
+      "severidade": "MEDIO",
+      "status": "PROPOSTA",
+      "gatilho": { "tipo": "parado", "registro": "meta", "filtros": [ { "campo": "estado", "em": ["em_risco", "atrasada"] } ], "dias": 7, "data_campo": "atualizado_em" },
+      "mensagem": "A meta '{{titulo}}' está em risco ou atrasada e não é atualizada há {{dias}} dias.",
+      "acoes": [
+        { "tipo": "tarefa", "titulo": "Cobrar plano de recuperação do dono da meta e levar à lista de IDS", "papel": "assessor_estrategia", "prazo_dias": 2 },
+        { "tipo": "rascunho", "modelo": "cobranca_meta" }
+      ],
+      "fonte": "PROPOSTA — padrão de mercado (EOS/Traction, revisão semanal de Rocks)"
+    },
+    {
+      "id": "DIR_META_VENCENDO",
+      "titulo": "Meta perto da data limite",
+      "severidade": "MEDIO",
+      "status": "PROPOSTA",
+      "gatilho": { "tipo": "vencido", "registro": "meta", "campo": "data_limite", "filtros": [ { "campo": "estado", "nao_em": ["rascunho"] } ], "antecedencia_dias": 14 },
+      "mensagem": "A meta '{{titulo}}' vence em até 14 dias (ou já venceu) e ainda não foi concluída.",
+      "acoes": [
+        { "tipo": "tarefa", "titulo": "Confirmar com o dono se a meta será concluída ou descartada", "papel": "assessor_estrategia", "prazo_dias": 3 }
+      ],
+      "fonte": "PROPOSTA — padrão de mercado (EOS/Traction, Rocks de 90 dias)"
+    },
+    {
+      "id": "DIR_RISCO_SEM_PLANO",
+      "titulo": "Risco alto ou crítico sem plano de tratamento",
+      "severidade": "ALTO",
+      "status": "PROPOSTA",
+      "gatilho": { "tipo": "faltando", "registro": "risco", "campo": "plano_mitigacao", "filtros": [ { "campo": "nivel", "em": ["Alto", "Crítico"] }, { "campo": "estado", "diferente": "encerrado" } ] },
+      "mensagem": "O risco '{{titulo}}' é de nível alto ou crítico e não tem plano de tratamento.",
+      "acoes": [
+        { "tipo": "tarefa", "titulo": "Definir plano de tratamento com o dono do risco", "papel": "gestor_riscos", "prazo_dias": 3 },
+        { "tipo": "notificar", "para": "CEO" }
+      ],
+      "fonte": "PROPOSTA — padrão de mercado (ABNT NBR ISO 31000, matriz probabilidade × impacto)"
+    },
+    {
+      "id": "DIR_RISCO_REVISAO_VENCIDA",
+      "titulo": "Revisão de risco vencida",
+      "severidade": "MEDIO",
+      "status": "PROPOSTA",
+      "gatilho": { "tipo": "vencido", "registro": "risco", "campo": "proxima_revisao", "filtros": [], "antecedencia_dias": 0 },
+      "mensagem": "A revisão do risco '{{titulo}}' está vencida.",
+      "acoes": [
+        { "tipo": "tarefa", "titulo": "Revisar probabilidade, impacto e plano do risco", "papel": "gestor_riscos", "prazo_dias": 3 },
+        { "tipo": "rascunho", "modelo": "revisao_risco" }
+      ],
+      "fonte": "PROPOSTA — padrão de mercado (ABNT NBR ISO 31000, monitoramento e análise crítica)"
+    }
+  ],
+  "modelos": [
+    {
+      "id": "pauta_reuniao_direcao",
+      "tipo": "documento",
+      "assunto": "Pauta da reunião semanal de direção",
+      "corpo": "REUNIÃO SEMANAL DE DIREÇÃO — VOICE Ambientes Inteligentes\nResponsável: {{responsavel}}\n\n1. Abertura (5 min): uma boa notícia pessoal e uma profissional por diretor.\n2. Scorecard (5 min): cada dono informa no alvo / fora do alvo. Fora do alvo vai para IDS.\n3. Rocks (5 min): no prazo / fora do prazo.\n4. Destaques de clientes, arquitetos parceiros e equipe (5 min).\n5. Tarefas da semana anterior (5 min): feita / não feita.\n6. IDS (60 min): pedidos de alçada pendentes primeiro; depois os três problemas mais importantes da lista.\n7. Conclusão (5 min): tarefas combinadas, decisões registradas, nota da reunião de 1 a 10."
+    },
+    {
+      "id": "ata_decisao",
+      "tipo": "documento",
+      "assunto": "Registro de decisão — {{titulo}}",
+      "corpo": "REGISTRO DE DECISÃO DA DIREÇÃO\nDecisão: {{titulo}}\nTipo: {{tipo_decisao}}\nProjeto/cliente: {{projeto_ref}}\nMargem de contribuição final (%): {{margem_pct}}\nDesconto (%): {{desconto_pct}}\nExposição de caixa (%), indicar CORRENTE ou PRO FORMA: {{exposicao_pct}}\nJustificativa: {{justificativa}}\nImpacto financeiro conhecido: {{impacto_financeiro}}\nResponsável pela autorização: {{autorizador}}\nData: {{data_decisao}}\nCondições e revisão: {{condicoes}}\n\nRegistro exigido pela Política de Saúde Financeira V1 sec.14. A aprovação comercial não substitui a aprovação financeira."
+    },
+    {
+      "id": "pedido_analise_cfo",
+      "tipo": "email",
+      "assunto": "Análise financeira para decisão de alçada — {{titulo}}",
+      "corpo": "Olá, CFO.\n\nPreciso da análise financeira para o pedido de alçada '{{titulo}}' (projeto: {{projeto_ref}}).\n\nPor favor, confirme:\n1. Margem de contribuição final pela fórmula oficial (Política V1 sec.4), já com o desconto e a provisão de risco de 2%;\n2. Exposição de caixa corrente e, se houver compra proposta, a exposição pro forma (Política V1.1), identificando cada estado;\n3. Impacto financeiro da exceção em reais.\n\nA decisão está parada há {{dias}} dias. Obrigado,\n{{responsavel}}"
+    },
+    {
+      "id": "cobranca_meta",
+      "tipo": "whatsapp",
+      "assunto": "Meta em risco",
+      "corpo": "Olá! A meta '{{titulo}}' está marcada como em risco e sem atualização há {{dias}} dias. Pode me mandar até amanhã: número atual, o que está travando e o plano para recuperar? Vou levar para o IDS da reunião de direção. Obrigado! — {{responsavel}}"
+    },
+    {
+      "id": "revisao_risco",
+      "tipo": "email",
+      "assunto": "Revisão do risco — {{titulo}}",
+      "corpo": "Olá,\n\nChegou a data de revisão do risco '{{titulo}}'. Por favor, atualize:\n- probabilidade e impacto atuais;\n- o que foi feito do plano de tratamento;\n- se o sinal de alerta apareceu;\n- nova data de revisão ou proposta de encerramento.\n\nRiscos altos e críticos vão para a reunião de direção.\n{{responsavel}}"
+    }
+  ],
+  "documentos": [
+    "Visão em uma página da VOICE (V/TO)",
+    "Quadro de metas anuais e Rocks trimestrais por setor",
+    "Scorecard semanal da direção (5 a 15 números)",
+    "Registro de decisões e exceções à Política de Saúde Financeira",
+    "Registro de riscos com matriz probabilidade × impacto",
+    "Política de Saúde Financeira V1 e clarificação V1.1 (04 - PADROES)",
+    "Ata da reunião mensal de saúde da empresa"
+  ],
+  "relacoes": [
+    { "setor": "financas", "fluxo": "Recebe o fechamento mensal, os indicadores da Política V1 sec.13 e a análise de margem e exposição para cada pedido de alçada; devolve decisões registradas." },
+    { "setor": "vendas", "fluxo": "Recebe pedidos de desconto acima de 2%, margem abaixo de 30% e projetos abaixo do ticket desejado; devolve decisão com justificativa registrada." },
+    { "setor": "operacoes", "fluxo": "Recebe pedidos de compra que elevam a exposição pro forma acima de 10% e riscos de obra; devolve autorização ou reprovação." },
+    { "setor": "pessoas", "fluxo": "Recebe indicadores de pessoas, certificações e riscos de pessoas-chave; devolve metas de capacitação e decisões de estrutura." },
+    { "setor": "marketing", "fluxo": "Recebe decisões sobre projetos-vitrine e sacrifício de margem classificado como investimento de marketing (Política V1 sec.8)." },
+    { "setor": "tecnologia", "fluxo": "Recebe riscos técnicos e de segurança da informação; devolve prioridades trimestrais." },
+    { "setor": "posvenda", "fluxo": "Recebe indicadores de satisfação, retrabalho e garantia para a revisão da política (Política V1 sec.15)." },
+    { "setor": "secretaria", "fluxo": "Apoia agenda, convocação e distribuição das atas da reunião de direção." }
+  ],
+  "fontes": [
+    { "titulo": "Política de Saúde Financeira da VOICE — V1 (sec.1, 2, 3, 4, 8, 9, 12, 13, 14, 15)", "tipo": "norma", "ref": "04 - PADROES/VOICE - Politica de Saude Financeira - V1.md" },
+    { "titulo": "Política de Saúde Financeira da VOICE — V1.1, clarificação de posição e exposição de caixa (sec.9, 10)", "tipo": "norma", "ref": "04 - PADROES/VOICE - Politica de Saude Financeira - V1.1 - Clarificacao de posicao e exposicao de caixa.md" },
+    { "titulo": "Traction / EOS — Level 10 Meeting", "tipo": "metodo", "ref": "https://www.eosworldwide.com/level-10-meeting" },
+    { "titulo": "Measure What Matters (OKR) — John Doerr", "tipo": "livro", "ref": "Doerr, J. Measure What Matters. Portfolio, 2018" },
+    { "titulo": "The Balanced Scorecard — Kaplan e Norton", "tipo": "livro", "ref": "Kaplan, R.; Norton, D. The Balanced Scorecard. HBS Press, 1996" },
+    { "titulo": "ABNT NBR ISO 31000 — Gestão de riscos", "tipo": "norma", "ref": "ABNT NBR ISO 31000:2018" },
+    { "titulo": "Skill risk-assessment (matriz e registro de riscos)", "tipo": "skill", "ref": "knowledge-work-plugins/operations/skills/risk-assessment/SKILL.md" },
+    { "titulo": "Skill status-report (status, riscos e decisões necessárias)", "tipo": "skill", "ref": "knowledge-work-plugins/operations/skills/status-report/SKILL.md" },
+    { "titulo": "Skill legal-risk-assessment (severidade × probabilidade e escalonamento)", "tipo": "skill", "ref": "knowledge-work-plugins/legal/skills/legal-risk-assessment/SKILL.md" },
+    { "titulo": "Skill business-pulse (painel executivo de pequena empresa)", "tipo": "skill", "ref": "knowledge-work-plugins/small-business/skills/business-pulse/SKILL.md" }
+  ]
+}

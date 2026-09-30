@@ -1,0 +1,1285 @@
+{
+  "id": "posvenda",
+  "sigla": "CXO",
+  "nome": "Pós-venda e Experiência do Cliente",
+  "missao": "Garantir que cada casa e cada empresa atendida pela VOICE funcione sem esforço depois da entrega: suporte rápido, manutenção preventiva, garantia cumprida e clientes tão satisfeitos que indicam e voltam a comprar.",
+  "cor": "green",
+  "diretor": {
+    "titulo": "Diretora de Experiência do Cliente (CXO)",
+    "nome": "Juliana Castro Lacerda",
+    "perfil": "Persona fictícia criada para o VEOS — não representa pessoa real. Construiu carreira em atendimento de alto padrão (hotelaria de luxo e serviços técnicos residenciais), onde aprendeu que o cliente premium lembra mais de como o problema foi resolvido do que do problema. Estilo acolhedor com o cliente e exigente com prazos e causa raiz.",
+    "especialidades": [
+      "Suporte técnico residencial e corporativo para automação, redes, áudio e vídeo e segurança",
+      "Gestão de SLA, triagem por prioridade e escalonamento",
+      "Contratos de suporte e manutenção preventiva recorrentes",
+      "NPS com ciclo fechado e programas de indicação"
+    ],
+    "metodos": [
+      {
+        "nome": "Net Promoter System (NPS com ciclo fechado)",
+        "autor": "Fred Reichheld / Bain & Company",
+        "uso": "Pesquisa após a entrega, após chamados e anual. Ciclo interno: retorno pessoal a todo detrator em até 48 horas e reconhecimento da equipe. Ciclo externo: causas recorrentes viram mudança de processo, equipamento padrão ou treinamento, levadas à direção."
+      },
+      {
+        "nome": "Customer Success (gestão proativa da base)",
+        "autor": "Lincoln Murphy e Nick Mehta (Customer Success, 2016)",
+        "uso": "A VOICE não espera o chamado: visita de acompanhamento em 30 e 90 dias após a entrega, preventivas programadas e revisão anual do sistema com recomendações de atualização."
+      },
+      {
+        "nome": "Triagem por prioridade P1–P4 com SLA",
+        "autor": "Prática consolidada de service desk (ITIL e suporte técnico)",
+        "uso": "P1: casa sem rede, sem acesso ou segurança inoperante; P2: sistema principal degradado; P3: falha pontual com contorno; P4: dúvida, ajuste de cena ou melhoria."
+      },
+      {
+        "nome": "Análise de causa raiz (5 Porquês)",
+        "autor": "Taiichi Ohno / Sistema Toyota de Produção",
+        "uso": "Todo chamado fechado tem causa registrada; chamados reincidentes geram análise e ação com Operações."
+      }
+    ],
+    "principios": [
+      "Cliente de alto padrão não deve precisar pedir duas vezes.",
+      "Resolver remotamente quando possível; ir até o cliente quando necessário, sem hesitar.",
+      "Todo detrator recebe ligação pessoal, nunca só uma mensagem automática.",
+      "Garantia cumprida com elegância é marketing: a próxima venda nasce do suporte.",
+      "Indicação e oportunidade de ampliação percebidas no atendimento vão para o Comercial no mesmo dia.",
+      "Custo de garantia e assistência é acompanhado contra a provisão de 2% da Política V1 sec.6."
+    ],
+    "como_aconselha": "Começa pelo cliente afetado e pelo prazo, depois pela causa. Responde com o plano de contenção, o responsável e quando o cliente terá notícia. Separa claramente o que é Política oficial do que é proposta.",
+    "perguntas_chave": [
+      "Há algum cliente com P1 aberto agora? Quem está com ele e quando é a próxima atualização?",
+      "Quais detratores ainda não receberam retorno pessoal?",
+      "Quais garantias e contratos vencem nos próximos 60 dias e já oferecemos continuidade?",
+      "Quais causas se repetem nos chamados e o que Operações vai mudar?",
+      "Quantas indicações e oportunidades de ampliação repassamos ao Comercial neste mês?"
+    ],
+    "limites": [
+      "Não concede atendimento gratuito fora da garantia ou do contrato acima do valor combinado com a direção; cortesias são registradas.",
+      "Não altera preço ou escopo de contrato de suporte sem a direção e Finanças.",
+      "Não publica nem autoriza uso de imagem do cliente — encaminha a autorização ao Marketing.",
+      "Não promete troca de equipamento fora da garantia do fabricante sem aprovação da direção."
+    ]
+  },
+  "equipe": [
+    {
+      "papel": "atendimento_cx",
+      "nome": "Atendimento e triagem (N1)",
+      "reporta_a": "CXO",
+      "responsabilidades": [
+        "Receber chamados por WhatsApp, telefone, e-mail e aplicativo e registrar no VEOS.",
+        "Classificar prioridade P1–P4, cobertura (garantia, contrato, avulso) e definir prazos de resposta e solução.",
+        "Resolver remotamente dúvidas e ajustes simples (cenas, aplicativo, reinício de equipamentos).",
+        "Manter o cliente informado até o fechamento."
+      ],
+      "indicadores": [
+        "tempo_primeira_resposta",
+        "resolucao_remota",
+        "cumprimento_sla"
+      ]
+    },
+    {
+      "papel": "tecnico_campo",
+      "nome": "Técnico de campo (N2)",
+      "reporta_a": "CXO",
+      "responsabilidades": [
+        "Atender chamados que exigem visita e executar preventivas.",
+        "Registrar causa raiz, solução e peças utilizadas.",
+        "Enviar relatório de visita e identificar oportunidades de melhoria no sistema do cliente."
+      ],
+      "indicadores": [
+        "preventivas_no_prazo",
+        "chamados_reincidentes"
+      ]
+    },
+    {
+      "papel": "gestor_contratos",
+      "nome": "Gestor de contratos de suporte",
+      "reporta_a": "CXO",
+      "responsabilidades": [
+        "Criar o registro de garantia de cada projeto entregue e oferecer contrato de suporte antes do fim da garantia.",
+        "Conduzir renovações e reajustes com Finanças.",
+        "Planejar o calendário anual de preventivas por contrato."
+      ],
+      "indicadores": [
+        "taxa_renovacao",
+        "receita_recorrente"
+      ]
+    },
+    {
+      "papel": "coord_cx",
+      "nome": "Coordenador(a) de experiência do cliente",
+      "reporta_a": "CXO",
+      "responsabilidades": [
+        "Enviar pesquisas de satisfação e fechar o ciclo com cada detrator.",
+        "Conduzir o huddle semanal e a análise mensal de causas recorrentes.",
+        "Repassar indicações e oportunidades de ampliação ao Comercial e promotores ao Marketing."
+      ],
+      "indicadores": [
+        "nps",
+        "indicacoes_repassadas",
+        "custo_garantia"
+      ]
+    }
+  ],
+  "processos": [
+    {
+      "id": "atendimento_chamado",
+      "nome": "Atendimento de chamado",
+      "descricao": "Do contato do cliente à confirmação de que o problema foi resolvido, com prioridade, SLA e causa raiz.",
+      "etapas": [
+        {
+          "id": "abertura",
+          "nome": "Abertura",
+          "responsavel": "atendimento_cx",
+          "criterio_saida": "Chamado registrado com cliente, sistema afetado, descrição nas palavras do cliente e canal."
+        },
+        {
+          "id": "triagem",
+          "nome": "Triagem",
+          "responsavel": "atendimento_cx",
+          "criterio_saida": "Prioridade P1–P4, cobertura (garantia, contrato, avulso ou cortesia) e prazos de resposta e solução definidos; primeira resposta enviada."
+        },
+        {
+          "id": "diagnostico_remoto",
+          "nome": "Diagnóstico remoto",
+          "responsavel": "atendimento_cx",
+          "criterio_saida": "Resolvido remotamente ou decidido que precisa de visita, com visita agendada."
+        },
+        {
+          "id": "visita",
+          "nome": "Atendimento em campo",
+          "responsavel": "tecnico_campo",
+          "criterio_saida": "Problema resolvido ou contido; causa raiz e solução registradas; peças/orçamento informados se fora de cobertura."
+        },
+        {
+          "id": "confirmacao",
+          "nome": "Confirmação e fechamento",
+          "responsavel": "atendimento_cx",
+          "criterio_saida": "Cliente confirma que está funcionando; chamado fechado; pesquisa pós-chamado enviada."
+        }
+      ]
+    },
+    {
+      "id": "garantia_contratos",
+      "nome": "Garantia, contratos de suporte e preventivas",
+      "descricao": "Todo projeto entregue entra em garantia registrada; antes do fim da garantia, oferta de contrato de suporte com preventivas programadas e renovação.",
+      "etapas": [
+        {
+          "id": "registro_garantia",
+          "nome": "Registro da garantia",
+          "responsavel": "gestor_contratos",
+          "criterio_saida": "Contrato modalidade garantia_entrega criado com data de início (entrega técnica), data de fim e sistemas cobertos."
+        },
+        {
+          "id": "acompanhamento",
+          "nome": "Acompanhamento pós-entrega",
+          "responsavel": "tecnico_campo",
+          "criterio_saida": "Visitas de acompanhamento de 30 e 90 dias realizadas com relatório."
+        },
+        {
+          "id": "oferta_contrato",
+          "nome": "Oferta de contrato de suporte",
+          "responsavel": "gestor_contratos",
+          "criterio_saida": "Proposta de contrato enviada pelo menos 60 dias antes do fim da garantia."
+        },
+        {
+          "id": "preventivas",
+          "nome": "Execução de preventivas",
+          "responsavel": "tecnico_campo",
+          "criterio_saida": "Preventivas do contrato realizadas no mês previsto com checklist e relatório."
+        },
+        {
+          "id": "renovacao",
+          "nome": "Renovação",
+          "responsavel": "gestor_contratos",
+          "criterio_saida": "Contrato renovado, alterado ou encerrado com motivo, 30 dias antes do vencimento."
+        }
+      ]
+    },
+    {
+      "id": "ciclo_satisfacao",
+      "nome": "Satisfação, ciclo fechado e indicações",
+      "descricao": "NPS em momentos definidos, retorno pessoal, melhoria de processo e devolução de indicações e oportunidades ao Comercial.",
+      "etapas": [
+        {
+          "id": "envio",
+          "nome": "Envio da pesquisa",
+          "responsavel": "coord_cx",
+          "criterio_saida": "Pesquisa enviada 30 dias após a entrega, após chamados fechados e anualmente a toda a base."
+        },
+        {
+          "id": "retorno",
+          "nome": "Retorno ao cliente (ciclo interno)",
+          "responsavel": "coord_cx",
+          "criterio_saida": "Detrator contatado pessoalmente em até 48 horas; neutro em até 7 dias; promotor agradecido e convidado a indicar."
+        },
+        {
+          "id": "melhoria",
+          "nome": "Melhoria estrutural (ciclo externo)",
+          "responsavel": "CXO",
+          "criterio_saida": "Causas recorrentes levadas à direção e a Operações com ação e responsável."
+        },
+        {
+          "id": "repasse",
+          "nome": "Repasse de indicação e ampliação",
+          "responsavel": "coord_cx",
+          "criterio_saida": "Indicação ou oportunidade de ampliação registrada e repassada ao Comercial no mesmo dia; promotor com autorização de case repassado ao Marketing."
+        }
+      ]
+    }
+  ],
+  "registros": [
+    {
+      "tipo": "chamado",
+      "nome": "Chamado de suporte",
+      "descricao": "Solicitação de suporte, falha ou ajuste em sistema instalado pela VOICE.",
+      "responsavel": "atendimento_cx",
+      "estados": [
+        "aberto",
+        "triagem",
+        "em_atendimento",
+        "aguardando_cliente",
+        "aguardando_peca",
+        "visita_agendada",
+        "resolvido",
+        "fechado",
+        "cancelado"
+      ],
+      "estado_inicial": "aberto",
+      "estados_finais": [
+        "fechado",
+        "cancelado"
+      ],
+      "campos": [
+        {
+          "id": "cliente_nome",
+          "rotulo": "Cliente",
+          "tipo": "texto",
+          "obrigatorio": true
+        },
+        {
+          "id": "telefone",
+          "rotulo": "Telefone / WhatsApp",
+          "tipo": "telefone",
+          "obrigatorio": true
+        },
+        {
+          "id": "sistema",
+          "rotulo": "Sistema afetado",
+          "tipo": "opcao",
+          "opcoes": [
+            "rede_wifi",
+            "automacao_iluminacao",
+            "audio_video",
+            "cftv_seguranca",
+            "controle_acesso",
+            "climatizacao_integracao",
+            "cortinas_persianas",
+            "aplicativo_controle",
+            "outro"
+          ],
+          "obrigatorio": true
+        },
+        {
+          "id": "prioridade",
+          "rotulo": "Prioridade",
+          "tipo": "opcao",
+          "opcoes": [
+            "P1_critico",
+            "P2_alto",
+            "P3_medio",
+            "P4_baixo"
+          ],
+          "obrigatorio": true
+        },
+        {
+          "id": "descricao",
+          "rotulo": "Descrição (palavras do cliente)",
+          "tipo": "texto_longo",
+          "obrigatorio": true
+        },
+        {
+          "id": "canal_abertura",
+          "rotulo": "Canal de abertura",
+          "tipo": "opcao",
+          "opcoes": [
+            "whatsapp",
+            "telefone",
+            "email",
+            "aplicativo",
+            "visita",
+            "monitoramento_remoto"
+          ],
+          "obrigatorio": true
+        },
+        {
+          "id": "cobertura",
+          "rotulo": "Cobertura",
+          "tipo": "opcao",
+          "opcoes": [
+            "garantia_instalacao",
+            "garantia_fabricante",
+            "contrato_suporte",
+            "avulso_faturavel",
+            "cortesia"
+          ],
+          "obrigatorio": true
+        },
+        {
+          "id": "data_limite_resposta",
+          "rotulo": "Prazo de primeira resposta",
+          "tipo": "data",
+          "obrigatorio": true
+        },
+        {
+          "id": "data_limite_solucao",
+          "rotulo": "Prazo de solução",
+          "tipo": "data",
+          "obrigatorio": true
+        },
+        {
+          "id": "data_primeira_resposta",
+          "rotulo": "Data da primeira resposta",
+          "tipo": "data",
+          "obrigatorio": false
+        },
+        {
+          "id": "causa_raiz",
+          "rotulo": "Causa raiz",
+          "tipo": "opcao",
+          "opcoes": [
+            "defeito_equipamento",
+            "configuracao_programacao",
+            "infraestrutura_rede",
+            "provedor_internet",
+            "energia_eletrica",
+            "uso_do_cliente",
+            "intervencao_terceiros",
+            "falha_instalacao",
+            "atualizacao_fabricante"
+          ],
+          "obrigatorio": false
+        },
+        {
+          "id": "solucao",
+          "rotulo": "Solução aplicada",
+          "tipo": "texto_longo",
+          "obrigatorio": false
+        },
+        {
+          "id": "reincidente",
+          "rotulo": "Reincidente (mesmo problema em 90 dias)",
+          "tipo": "opcao",
+          "opcoes": [
+            "nao",
+            "sim"
+          ],
+          "obrigatorio": false
+        }
+      ]
+    },
+    {
+      "tipo": "contrato_suporte",
+      "nome": "Garantia / contrato de suporte",
+      "descricao": "Cobertura pós-entrega de um cliente: período de garantia da instalação ou contrato de suporte recorrente com preventivas e SLA.",
+      "responsavel": "gestor_contratos",
+      "estados": [
+        "proposta",
+        "ativo",
+        "em_renovacao",
+        "encerrado",
+        "cancelado"
+      ],
+      "estado_inicial": "proposta",
+      "estados_finais": [
+        "encerrado",
+        "cancelado"
+      ],
+      "campos": [
+        {
+          "id": "cliente_nome",
+          "rotulo": "Cliente",
+          "tipo": "texto",
+          "obrigatorio": true
+        },
+        {
+          "id": "projeto_ref",
+          "rotulo": "Projeto de origem",
+          "tipo": "texto",
+          "obrigatorio": false
+        },
+        {
+          "id": "modalidade",
+          "rotulo": "Modalidade",
+          "tipo": "opcao",
+          "opcoes": [
+            "garantia_entrega",
+            "suporte_essencial",
+            "suporte_premium",
+            "suporte_corporativo"
+          ],
+          "obrigatorio": true
+        },
+        {
+          "id": "sistemas_cobertos",
+          "rotulo": "Sistemas cobertos",
+          "tipo": "texto_longo",
+          "obrigatorio": true
+        },
+        {
+          "id": "data_inicio",
+          "rotulo": "Início",
+          "tipo": "data",
+          "obrigatorio": true
+        },
+        {
+          "id": "data_fim",
+          "rotulo": "Fim / vencimento",
+          "tipo": "data",
+          "obrigatorio": true
+        },
+        {
+          "id": "valor_mensal",
+          "rotulo": "Valor mensal",
+          "tipo": "dinheiro",
+          "obrigatorio": false
+        },
+        {
+          "id": "preventivas_ano",
+          "rotulo": "Preventivas por ano",
+          "tipo": "numero",
+          "obrigatorio": false
+        },
+        {
+          "id": "sla_resposta_horas",
+          "rotulo": "SLA de resposta P1 (horas)",
+          "tipo": "numero",
+          "obrigatorio": false
+        },
+        {
+          "id": "data_oferta_continuidade",
+          "rotulo": "Data da oferta de continuidade/renovação",
+          "tipo": "data",
+          "obrigatorio": false
+        }
+      ]
+    },
+    {
+      "tipo": "visita_manutencao",
+      "nome": "Visita de manutenção",
+      "descricao": "Visita técnica pós-venda: preventiva de contrato, acompanhamento pós-entrega, corretiva ou treinamento do cliente.",
+      "responsavel": "tecnico_campo",
+      "estados": [
+        "planejada",
+        "agendada",
+        "realizada",
+        "relatorio_enviado",
+        "cancelada"
+      ],
+      "estado_inicial": "planejada",
+      "estados_finais": [
+        "relatorio_enviado",
+        "cancelada"
+      ],
+      "campos": [
+        {
+          "id": "cliente_nome",
+          "rotulo": "Cliente",
+          "tipo": "texto",
+          "obrigatorio": true
+        },
+        {
+          "id": "contrato_ref",
+          "rotulo": "Contrato / garantia",
+          "tipo": "texto",
+          "obrigatorio": false
+        },
+        {
+          "id": "tipo_visita",
+          "rotulo": "Tipo de visita",
+          "tipo": "opcao",
+          "opcoes": [
+            "preventiva",
+            "acompanhamento_30_dias",
+            "acompanhamento_90_dias",
+            "corretiva",
+            "treinamento_cliente",
+            "revisao_anual"
+          ],
+          "obrigatorio": true
+        },
+        {
+          "id": "data_prevista",
+          "rotulo": "Data prevista",
+          "tipo": "data",
+          "obrigatorio": true
+        },
+        {
+          "id": "data_realizada",
+          "rotulo": "Data realizada",
+          "tipo": "data",
+          "obrigatorio": false
+        },
+        {
+          "id": "checklist",
+          "rotulo": "Checklist executado",
+          "tipo": "texto_longo",
+          "obrigatorio": false
+        },
+        {
+          "id": "pendencias",
+          "rotulo": "Pendências encontradas",
+          "tipo": "texto_longo",
+          "obrigatorio": false
+        },
+        {
+          "id": "oportunidade_identificada",
+          "rotulo": "Oportunidade identificada",
+          "tipo": "opcao",
+          "opcoes": [
+            "nenhuma",
+            "atualizacao_equipamento",
+            "expansao_ambientes",
+            "novo_sistema",
+            "contrato_suporte"
+          ],
+          "obrigatorio": false
+        }
+      ]
+    },
+    {
+      "tipo": "pesquisa_satisfacao",
+      "nome": "Pesquisa de satisfação (NPS)",
+      "descricao": "Resposta de NPS de um cliente em um momento definido, com retorno, ação e eventual indicação ou oportunidade.",
+      "responsavel": "coord_cx",
+      "estados": [
+        "enviada",
+        "respondida",
+        "retorno_feito",
+        "encerrada"
+      ],
+      "estado_inicial": "enviada",
+      "estados_finais": [
+        "encerrada"
+      ],
+      "campos": [
+        {
+          "id": "cliente_nome",
+          "rotulo": "Cliente",
+          "tipo": "texto",
+          "obrigatorio": true
+        },
+        {
+          "id": "momento",
+          "rotulo": "Momento",
+          "tipo": "opcao",
+          "opcoes": [
+            "pos_entrega_30_dias",
+            "pos_chamado",
+            "relacional_anual"
+          ],
+          "obrigatorio": true
+        },
+        {
+          "id": "nota_nps",
+          "rotulo": "Nota (0 a 10)",
+          "tipo": "numero",
+          "obrigatorio": false
+        },
+        {
+          "id": "classificacao",
+          "rotulo": "Classificação",
+          "tipo": "opcao",
+          "opcoes": [
+            "promotor",
+            "neutro",
+            "detrator"
+          ],
+          "obrigatorio": false
+        },
+        {
+          "id": "comentario",
+          "rotulo": "Comentário do cliente",
+          "tipo": "texto_longo",
+          "obrigatorio": false
+        },
+        {
+          "id": "data_resposta",
+          "rotulo": "Data da resposta",
+          "tipo": "data",
+          "obrigatorio": false
+        },
+        {
+          "id": "data_retorno_cliente",
+          "rotulo": "Data do retorno pessoal ao cliente",
+          "tipo": "data",
+          "obrigatorio": false
+        },
+        {
+          "id": "acao_interna",
+          "rotulo": "Ação interna (ciclo externo)",
+          "tipo": "texto_longo",
+          "obrigatorio": false
+        },
+        {
+          "id": "indicacao_ou_ampliacao",
+          "rotulo": "Indicação ou ampliação",
+          "tipo": "opcao",
+          "opcoes": [
+            "nenhuma",
+            "indicacao",
+            "ampliacao",
+            "ambas"
+          ],
+          "obrigatorio": false
+        },
+        {
+          "id": "data_repasse_comercial",
+          "rotulo": "Data do repasse ao Comercial",
+          "tipo": "data",
+          "obrigatorio": false
+        },
+        {
+          "id": "autoriza_case",
+          "rotulo": "Aceita ser case?",
+          "tipo": "opcao",
+          "opcoes": [
+            "nao_perguntado",
+            "sim",
+            "nao"
+          ],
+          "obrigatorio": false
+        }
+      ]
+    }
+  ],
+  "rotinas": [
+    {
+      "id": "triagem_diaria",
+      "nome": "Triagem diária de chamados",
+      "frequencia": "diaria",
+      "responsavel": "atendimento_cx",
+      "passos": [
+        "Revisar chamados abertos por prioridade, começando pelos P1 e P2.",
+        "Conferir prazos de resposta e solução que vencem hoje.",
+        "Atualizar clientes aguardando retorno.",
+        "Confirmar a agenda de visitas do dia com os técnicos."
+      ]
+    },
+    {
+      "id": "huddle_semanal",
+      "nome": "Huddle semanal de experiência (ciclo interno)",
+      "frequencia": "semanal",
+      "responsavel": "coord_cx",
+      "passos": [
+        "Ler em voz alta 3 comentários de clientes da semana (1 promotor, 1 neutro, 1 detrator).",
+        "Conferir retorno de todos os detratores.",
+        "Reconhecer atendimentos elogiados.",
+        "Registrar o que a equipe muda por conta própria e o que precisa subir à direção."
+      ]
+    },
+    {
+      "id": "agenda_preventivas",
+      "nome": "Agenda de preventivas e acompanhamentos",
+      "frequencia": "mensal",
+      "responsavel": "gestor_contratos",
+      "passos": [
+        "Gerar as visitas preventivas do mês a partir dos contratos ativos.",
+        "Gerar visitas de 30 e 90 dias dos projetos entregues recentemente.",
+        "Agendar com os clientes respeitando a rotina da casa.",
+        "Conferir garantias e contratos que vencem nos próximos 60 dias."
+      ]
+    },
+    {
+      "id": "analise_causa_raiz",
+      "nome": "Análise mensal de causas (ciclo externo)",
+      "frequencia": "mensal",
+      "responsavel": "CXO",
+      "passos": [
+        "Agrupar chamados fechados por sistema e causa raiz.",
+        "Aplicar 5 Porquês nos 3 problemas mais frequentes e nos reincidentes.",
+        "Definir ação com Operações (padrão de instalação, equipamento, programação, treinamento do cliente).",
+        "Comparar custo de garantia e assistência com a provisão de 2% da receita líquida dos projetos (Política V1 sec.6)."
+      ]
+    },
+    {
+      "id": "repasse_comercial",
+      "nome": "Repasse de oportunidades ao Comercial",
+      "frequencia": "semanal",
+      "responsavel": "coord_cx",
+      "passos": [
+        "Listar indicações e oportunidades de ampliação vindas de pesquisas e visitas.",
+        "Confirmar que cada uma foi registrada como lead no Comercial.",
+        "Enviar promotores que aceitam ser case ao Marketing."
+      ]
+    },
+    {
+      "id": "revisao_contratos",
+      "nome": "Revisão trimestral da carteira de contratos",
+      "frequencia": "trimestral",
+      "responsavel": "gestor_contratos",
+      "passos": [
+        "Revisar receita recorrente, renovações e cancelamentos com motivo.",
+        "Verificar se o volume de chamados de cada contrato é compatível com o preço.",
+        "Propor à direção e a Finanças ajustes de modalidade e reajuste."
+      ]
+    }
+  ],
+  "indicadores": [
+    {
+      "id": "nps",
+      "nome": "NPS",
+      "formula": "% promotores (9–10) − % detratores (0–6) nas respostas do período",
+      "meta": "≥ 70",
+      "frequencia": "trimestral",
+      "status": "PROPOSTA"
+    },
+    {
+      "id": "tempo_primeira_resposta",
+      "nome": "Tempo de primeira resposta P1",
+      "formula": "Mediana do tempo entre abertura e primeira resposta dos chamados P1",
+      "meta": "≤ 1 hora",
+      "frequencia": "mensal",
+      "status": "PROPOSTA"
+    },
+    {
+      "id": "cumprimento_sla",
+      "nome": "Cumprimento de SLA de solução",
+      "formula": "Chamados fechados dentro do prazo de solução ÷ chamados fechados × 100",
+      "meta": "≥ 90%",
+      "frequencia": "mensal",
+      "status": "PROPOSTA"
+    },
+    {
+      "id": "resolucao_remota",
+      "nome": "Resolução remota",
+      "formula": "Chamados fechados sem visita ÷ chamados fechados × 100",
+      "meta": "≥ 50%",
+      "frequencia": "mensal",
+      "status": "PROPOSTA"
+    },
+    {
+      "id": "chamados_reincidentes",
+      "nome": "Chamados reincidentes",
+      "formula": "Chamados marcados como reincidentes ÷ chamados fechados × 100",
+      "meta": "≤ 10%",
+      "frequencia": "mensal",
+      "status": "PROPOSTA"
+    },
+    {
+      "id": "preventivas_no_prazo",
+      "nome": "Preventivas no prazo",
+      "formula": "Preventivas realizadas até a data prevista ÷ preventivas previstas × 100",
+      "meta": "≥ 95%",
+      "frequencia": "mensal",
+      "status": "PROPOSTA"
+    },
+    {
+      "id": "taxa_renovacao",
+      "nome": "Renovação e conversão de garantia em contrato",
+      "formula": "Contratos renovados ou garantias convertidas em contrato ÷ vencimentos do período × 100",
+      "meta": "≥ 60%",
+      "frequencia": "trimestral",
+      "status": "PROPOSTA"
+    },
+    {
+      "id": "receita_recorrente",
+      "nome": "Receita recorrente de suporte",
+      "formula": "Soma do valor mensal dos contratos de suporte ativos",
+      "meta": "Crescimento trimestral; valor-alvo a definir pela direção",
+      "frequencia": "mensal",
+      "status": "PROPOSTA"
+    },
+    {
+      "id": "indicacoes_repassadas",
+      "nome": "Indicações e ampliações repassadas ao Comercial",
+      "formula": "Pesquisas e visitas com indicação ou ampliação repassadas no período",
+      "meta": "≥ 4 por mês",
+      "frequencia": "mensal",
+      "status": "PROPOSTA"
+    },
+    {
+      "id": "custo_garantia",
+      "nome": "Custo de garantia e assistência x provisão",
+      "formula": "Custo real de garantia, assistência e retrabalho dos projetos ÷ receita líquida dos mesmos projetos × 100",
+      "meta": "Dentro da provisão de 2% da receita líquida do projeto — PROPOSTA: usa como referência a provisão de risco de 2% (Política V1 sec.6); a política não fixa meta para este custo (sec.15 prevê revisar com dados reais)",
+      "frequencia": "trimestral",
+      "status": "PROPOSTA"
+    }
+  ],
+  "sentinelas": [
+    {
+      "id": "CX_P1_SEM_RESPOSTA",
+      "titulo": "Chamado P1 com prazo de resposta vencido",
+      "severidade": "CRITICO",
+      "status": "PROPOSTA",
+      "gatilho": {
+        "tipo": "vencido",
+        "registro": "chamado",
+        "campo": "data_limite_resposta",
+        "filtros": [
+          {
+            "campo": "prioridade",
+            "igual": "P1_critico"
+          },
+          {
+            "campo": "estado",
+            "em": [
+              "aberto",
+              "triagem"
+            ]
+          }
+        ],
+        "antecedencia_dias": 0
+      },
+      "mensagem": "Chamado crítico {{titulo}} sem primeira resposta no prazo. Cliente possivelmente sem rede, acesso ou segurança.",
+      "acoes": [
+        {
+          "tipo": "tarefa",
+          "titulo": "Ligar para o cliente agora, conter o problema e agendar visita se necessário",
+          "papel": "atendimento_cx",
+          "prazo_dias": 0
+        },
+        {
+          "tipo": "rascunho",
+          "modelo": "resposta_abertura_chamado"
+        },
+        {
+          "tipo": "notificar",
+          "para": "CXO"
+        }
+      ],
+      "fonte": "PROPOSTA — padrão de mercado (triagem P1–P4 com SLA de 1 hora para P1)"
+    },
+    {
+      "id": "CX_CHAMADO_SLA_VENCIDO",
+      "titulo": "Chamado com prazo de solução vencido",
+      "severidade": "ALTO",
+      "status": "PROPOSTA",
+      "gatilho": {
+        "tipo": "vencido",
+        "registro": "chamado",
+        "campo": "data_limite_solucao",
+        "filtros": [
+          {
+            "campo": "estado",
+            "nao_em": [
+              "resolvido"
+            ]
+          }
+        ],
+        "antecedencia_dias": 0
+      },
+      "mensagem": "O chamado {{titulo}} passou do prazo de solução. Escalonar e informar o cliente com nova previsão.",
+      "acoes": [
+        {
+          "tipo": "tarefa",
+          "titulo": "Escalonar para técnico de campo e dar nova previsão ao cliente",
+          "papel": "tecnico_campo",
+          "prazo_dias": 1
+        },
+        {
+          "tipo": "notificar",
+          "para": "coord_cx"
+        }
+      ],
+      "fonte": "PROPOSTA — padrão de mercado (escalonamento por violação de SLA)"
+    },
+    {
+      "id": "CX_CHAMADO_PARADO",
+      "titulo": "Chamado parado sem atualização",
+      "severidade": "MEDIO",
+      "status": "PROPOSTA",
+      "gatilho": {
+        "tipo": "parado",
+        "registro": "chamado",
+        "filtros": [
+          {
+            "campo": "estado",
+            "nao_em": [
+              "fechado",
+              "cancelado"
+            ]
+          }
+        ],
+        "dias": 3,
+        "data_campo": "atualizado_em"
+      },
+      "mensagem": "O chamado {{titulo}} está sem atualização há {{dias}} dias. Cliente de alto padrão não deve precisar perguntar pelo andamento.",
+      "acoes": [
+        {
+          "tipo": "tarefa",
+          "titulo": "Atualizar o cliente sobre o andamento e registrar o próximo passo",
+          "papel": "atendimento_cx",
+          "prazo_dias": 1
+        }
+      ],
+      "fonte": "PROPOSTA — padrão de mercado (atualização proativa de chamados)"
+    },
+    {
+      "id": "CX_CHAMADO_SEM_CAUSA",
+      "titulo": "Chamado fechado sem causa raiz",
+      "severidade": "INFO",
+      "status": "PROPOSTA",
+      "gatilho": {
+        "tipo": "faltando",
+        "registro": "chamado",
+        "campo": "causa_raiz",
+        "filtros": [
+          {
+            "campo": "estado",
+            "igual": "fechado"
+          }
+        ]
+      },
+      "mensagem": "O chamado {{titulo}} foi fechado sem causa raiz. Sem causa, o ciclo externo de melhoria fica cego.",
+      "acoes": [
+        {
+          "tipo": "tarefa",
+          "titulo": "Registrar a causa raiz do chamado",
+          "papel": "tecnico_campo",
+          "prazo_dias": 2
+        }
+      ],
+      "fonte": "PROPOSTA — padrão de mercado (5 Porquês / Net Promoter System, ciclo externo)"
+    },
+    {
+      "id": "CX_DETRATOR_SEM_RETORNO",
+      "titulo": "Detrator sem retorno pessoal",
+      "severidade": "CRITICO",
+      "status": "PROPOSTA",
+      "gatilho": {
+        "tipo": "faltando",
+        "registro": "pesquisa_satisfacao",
+        "campo": "data_retorno_cliente",
+        "filtros": [
+          {
+            "campo": "classificacao",
+            "igual": "detrator"
+          }
+        ]
+      },
+      "mensagem": "O cliente da pesquisa {{titulo}} deu nota de detrator e ainda não recebeu retorno pessoal. Prazo proposto: 48 horas.",
+      "acoes": [
+        {
+          "tipo": "tarefa",
+          "titulo": "Ligar pessoalmente para o cliente, ouvir, pedir desculpas e combinar plano de ação",
+          "papel": "coord_cx",
+          "prazo_dias": 1
+        },
+        {
+          "tipo": "rascunho",
+          "modelo": "roteiro_retorno_detrator"
+        },
+        {
+          "tipo": "notificar",
+          "para": "CXO"
+        }
+      ],
+      "fonte": "PROPOSTA — padrão de mercado (Net Promoter System, ciclo interno)"
+    },
+    {
+      "id": "CX_DETRATORES_RECORRENTES",
+      "titulo": "Vários detratores no mês",
+      "severidade": "ALTO",
+      "status": "PROPOSTA",
+      "gatilho": {
+        "tipo": "contagem",
+        "registro": "pesquisa_satisfacao",
+        "filtros": [
+          {
+            "campo": "classificacao",
+            "igual": "detrator"
+          }
+        ],
+        "janela_dias": 30,
+        "data_campo": "data_resposta",
+        "operador": ">=",
+        "valor": 2
+      },
+      "mensagem": "{{total}} detratores nos últimos 30 dias. Levar causas à direção (ciclo externo).",
+      "acoes": [
+        {
+          "tipo": "tarefa",
+          "titulo": "Preparar análise das causas dos detratores do mês para a direção",
+          "papel": "coord_cx",
+          "prazo_dias": 5
+        },
+        {
+          "tipo": "notificar",
+          "para": "direcao"
+        }
+      ],
+      "fonte": "PROPOSTA — padrão de mercado (Net Promoter System, ciclo externo)"
+    },
+    {
+      "id": "CX_INDICACAO_NAO_REPASSADA",
+      "titulo": "Indicação ou ampliação não repassada ao Comercial",
+      "severidade": "ALTO",
+      "status": "PROPOSTA",
+      "gatilho": {
+        "tipo": "faltando",
+        "registro": "pesquisa_satisfacao",
+        "campo": "data_repasse_comercial",
+        "filtros": [
+          {
+            "campo": "indicacao_ou_ampliacao",
+            "em": [
+              "indicacao",
+              "ampliacao",
+              "ambas"
+            ]
+          }
+        ]
+      },
+      "mensagem": "A pesquisa {{titulo}} gerou indicação ou oportunidade de ampliação que ainda não foi repassada ao Comercial.",
+      "acoes": [
+        {
+          "tipo": "tarefa",
+          "titulo": "Registrar a indicação/ampliação como lead no Comercial e anotar a data do repasse",
+          "papel": "coord_cx",
+          "prazo_dias": 1
+        },
+        {
+          "tipo": "rascunho",
+          "modelo": "repasse_oportunidade_comercial"
+        }
+      ],
+      "fonte": "PROPOSTA — padrão de mercado (Customer Success: expansão e indicação)"
+    },
+    {
+      "id": "CX_GARANTIA_TERMINANDO",
+      "titulo": "Garantia termina em até 60 dias",
+      "severidade": "MEDIO",
+      "status": "PROPOSTA",
+      "gatilho": {
+        "tipo": "vencido",
+        "registro": "contrato_suporte",
+        "campo": "data_fim",
+        "filtros": [
+          {
+            "campo": "modalidade",
+            "igual": "garantia_entrega"
+          },
+          {
+            "campo": "estado",
+            "igual": "ativo"
+          }
+        ],
+        "antecedencia_dias": 60
+      },
+      "mensagem": "A garantia {{titulo}} termina em breve. Oferecer contrato de suporte antes do vencimento.",
+      "acoes": [
+        {
+          "tipo": "tarefa",
+          "titulo": "Enviar proposta de contrato de suporte e registrar a data da oferta",
+          "papel": "gestor_contratos",
+          "prazo_dias": 5
+        },
+        {
+          "tipo": "rascunho",
+          "modelo": "oferta_contrato_fim_garantia"
+        }
+      ],
+      "fonte": "PROPOSTA — padrão de mercado (Customer Success: renovação proativa)"
+    },
+    {
+      "id": "CX_CONTRATO_VENCENDO",
+      "titulo": "Contrato de suporte vence em até 45 dias",
+      "severidade": "ALTO",
+      "status": "PROPOSTA",
+      "gatilho": {
+        "tipo": "vencido",
+        "registro": "contrato_suporte",
+        "campo": "data_fim",
+        "filtros": [
+          {
+            "campo": "modalidade",
+            "diferente": "garantia_entrega"
+          },
+          {
+            "campo": "estado",
+            "em": [
+              "ativo",
+              "em_renovacao"
+            ]
+          }
+        ],
+        "antecedencia_dias": 45
+      },
+      "mensagem": "O contrato {{titulo}} vence em até 45 dias. Conduzir a renovação com Finanças.",
+      "acoes": [
+        {
+          "tipo": "tarefa",
+          "titulo": "Preparar renovação com histórico de chamados e preventivas do período",
+          "papel": "gestor_contratos",
+          "prazo_dias": 5
+        },
+        {
+          "tipo": "rascunho",
+          "modelo": "renovacao_contrato"
+        },
+        {
+          "tipo": "notificar",
+          "para": "CXO"
+        }
+      ],
+      "fonte": "PROPOSTA — padrão de mercado (radar de renovações)"
+    },
+    {
+      "id": "CX_PREVENTIVA_ATRASADA",
+      "titulo": "Visita de manutenção atrasada",
+      "severidade": "MEDIO",
+      "status": "PROPOSTA",
+      "gatilho": {
+        "tipo": "vencido",
+        "registro": "visita_manutencao",
+        "campo": "data_prevista",
+        "filtros": [
+          {
+            "campo": "estado",
+            "em": [
+              "planejada",
+              "agendada"
+            ]
+          }
+        ],
+        "antecedencia_dias": 0
+      },
+      "mensagem": "A visita {{titulo}} passou da data prevista sem ser realizada.",
+      "acoes": [
+        {
+          "tipo": "tarefa",
+          "titulo": "Reagendar a visita com o cliente e justificar o atraso",
+          "papel": "tecnico_campo",
+          "prazo_dias": 2
+        },
+        {
+          "tipo": "notificar",
+          "para": "gestor_contratos"
+        }
+      ],
+      "fonte": "PROPOSTA — padrão de mercado (manutenção preventiva contratada)"
+    }
+  ],
+  "modelos": [
+    {
+      "id": "resposta_abertura_chamado",
+      "tipo": "whatsapp",
+      "assunto": "Confirmação de abertura de chamado",
+      "corpo": "Olá, {{cliente_nome}}! Aqui é {{responsavel}}, do suporte VOICE. Recebemos seu chamado sobre {{titulo}} e já estamos cuidando disso. Próxima atualização até {{data_limite_resposta}}. Se for urgente, pode me ligar diretamente."
+    },
+    {
+      "id": "roteiro_retorno_detrator",
+      "tipo": "roteiro",
+      "assunto": "Roteiro de ligação para detrator",
+      "corpo": "1. Agradecer a sinceridade da avaliação.\n2. Pedir que conte o que aconteceu, sem interromper. Anotar nas palavras do cliente.\n3. Reconhecer o impacto na rotina da casa ou da empresa e pedir desculpas pelo que foi nossa responsabilidade.\n4. Propor ação concreta com data e responsável (visita, ajuste, treinamento).\n5. Combinar o próximo contato para confirmar que ficou resolvido.\n6. Registrar data do retorno e ação interna na pesquisa {{titulo}}."
+    },
+    {
+      "id": "pesquisa_nps_pos_entrega",
+      "tipo": "whatsapp",
+      "assunto": "Pesquisa de satisfação 30 dias após a entrega",
+      "corpo": "Olá, {{cliente_nome}}! Já faz um mês que entregamos seu projeto. Em uma escala de 0 a 10, quanto você recomendaria a VOICE a um amigo ou ao seu arquiteto? E o que podemos melhorar? Sua resposta vai direto para a nossa diretora de experiência."
+    },
+    {
+      "id": "oferta_contrato_fim_garantia",
+      "tipo": "email",
+      "assunto": "Seu sistema VOICE continua protegido depois da garantia",
+      "corpo": "Olá, {{cliente_nome}},\n\nA garantia da instalação do seu projeto termina em {{data_fim}}. Para que tudo continue funcionando como no primeiro dia, oferecemos o contrato de suporte VOICE com visitas preventivas programadas, atendimento prioritário e acompanhamento das atualizações dos fabricantes.\n\nPosso apresentar as modalidades em uma conversa de 15 minutos?\n\n{{responsavel}}\nVOICE Ambientes Inteligentes"
+    },
+    {
+      "id": "renovacao_contrato",
+      "tipo": "email",
+      "assunto": "Renovação do seu contrato de suporte VOICE",
+      "corpo": "Olá, {{cliente_nome}},\n\nSeu contrato de suporte vence em {{data_fim}}. Preparamos um resumo do período: chamados atendidos, preventivas realizadas e recomendações para o próximo ano.\n\nPodemos agendar a renovação e conversar sobre ajustes na cobertura?\n\n{{responsavel}}\nVOICE Ambientes Inteligentes"
+    },
+    {
+      "id": "relatorio_visita",
+      "tipo": "documento",
+      "assunto": "Relatório de visita — {{titulo}}",
+      "corpo": "Cliente: {{cliente_nome}}\nTipo de visita: {{tipo_visita}}\nData: {{data_realizada}}\nChecklist executado: {{checklist}}\nPendências encontradas: {{pendencias}}\nRecomendações: \nOportunidade identificada: {{oportunidade_identificada}}\nTécnico: {{responsavel}}"
+    },
+    {
+      "id": "repasse_oportunidade_comercial",
+      "tipo": "documento",
+      "assunto": "Repasse ao Comercial — {{titulo}}",
+      "corpo": "Cliente: {{cliente_nome}}\nTipo: {{indicacao_ou_ampliacao}}\nContexto (comentário do cliente / visita): {{comentario}}\nNota NPS: {{nota_nps}}\nContato indicado (se houver):\nRegistrado por: {{responsavel}}\nPedido ao Comercial: contato em até 1 dia útil e retorno ao Pós-venda sobre o resultado."
+    }
+  ],
+  "documentos": [
+    "Tabela de prioridades P1–P4 e prazos de resposta e solução",
+    "Termo de garantia da instalação VOICE",
+    "Modelos de contrato de suporte (essencial, premium, corporativo)",
+    "Checklist de manutenção preventiva por sistema",
+    "Relatório de visita técnica",
+    "Roteiro de retorno ao detrator"
+  ],
+  "relacoes": [
+    {
+      "setor": "vendas",
+      "fluxo": "Devolve indicações e oportunidades de ampliação/upsell; recebe o que foi vendido e prometido a cada cliente."
+    },
+    {
+      "setor": "operacoes",
+      "fluxo": "Recebe o projeto na entrega técnica (as built, senhas, documentação) e devolve causas recorrentes para melhoria de instalação."
+    },
+    {
+      "setor": "marketing",
+      "fluxo": "Entrega promotores que aceitam ser case e comentários de clientes; recebe conteúdo educativo para a base."
+    },
+    {
+      "setor": "financas",
+      "fluxo": "Envia contratos de suporte para faturamento recorrente e custo de garantia para comparação com a provisão de 2% (Política V1 sec.6)."
+    },
+    {
+      "setor": "direcao",
+      "fluxo": "Reporta NPS, detratores, renovações e causas estruturais (ciclo externo)."
+    }
+  ],
+  "fontes": [
+    {
+      "titulo": "Política de Saúde Financeira da VOICE — V1 (sec.5 e sec.6: provisão de garantia e assistência)",
+      "tipo": "norma",
+      "ref": "04 - PADROES/VOICE - Politica de Saude Financeira - V1.md"
+    },
+    {
+      "titulo": "Skill ticket-triage (P1–P4 e SLA)",
+      "tipo": "skill",
+      "ref": "knowledge-work-plugins/customer-support/skills/ticket-triage/SKILL.md"
+    },
+    {
+      "titulo": "Skill customer-escalation",
+      "tipo": "skill",
+      "ref": "knowledge-work-plugins/customer-support/skills/customer-escalation/SKILL.md"
+    },
+    {
+      "titulo": "Skill customer-health",
+      "tipo": "skill",
+      "ref": "knowledge-work-plugins/sales/skills/customer-health/SKILL.md"
+    },
+    {
+      "titulo": "Skill renewal-radar",
+      "tipo": "skill",
+      "ref": "knowledge-work-plugins/sales/skills/renewal-radar/SKILL.md"
+    },
+    {
+      "titulo": "Skill review-reputation",
+      "tipo": "skill",
+      "ref": "knowledge-work-plugins/small-business/skills/review-reputation/SKILL.md"
+    },
+    {
+      "titulo": "Net Promoter System — ciclo interno (Bain & Company)",
+      "tipo": "metodo",
+      "ref": "https://www.netpromotersystem.com/about/net-promoter-system-framework/inner-loop/"
+    },
+    {
+      "titulo": "Net Promoter System — ciclo externo (Bain & Company)",
+      "tipo": "metodo",
+      "ref": "https://www.netpromotersystem.com/about/net-promoter-system-framework/outer-loop/"
+    },
+    {
+      "titulo": "Customer Success — Nick Mehta, Dan Steinman e Lincoln Murphy",
+      "tipo": "livro",
+      "ref": "Customer Success (Wiley, 2016)"
+    }
+  ]
+}

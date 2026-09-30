@@ -55,7 +55,7 @@ const outra = await req("/functions/v1/api/me", { token, headers: { Origin: "htt
 assert.equal(outra.headers.get("access-control-allow-origin"), null); ok("CORS nega origem desconhecida");
 
 const st = await req("/functions/v1/api/setores", { token });
-assert.equal(st.status, 200); assert.equal(st.dados.setores.length, 7); assert.equal(st.dados.diretores.length, 7); ok("GET /api/setores -> 7 setores e 7 diretores");
+assert.equal(st.status, 200); assert.equal(st.dados.setores.length, 9); assert.equal(st.dados.diretores.length, 9); ok("GET /api/setores -> 9 setores e 9 diretores");
 
 // 4. gravar orcamento: idempotencia
 const orc = {

@@ -13,6 +13,18 @@ const normalizar = (t) =>
 
 // Ordem importa: o primeiro que casar vence.
 const NAVEGACAO = [
+  { rota: "#/radar", fala: "Abrindo o radar de alertas e tarefas.", termos: ["radar", "alertas", "pendencias", "tarefas"] },
+  { rota: "#/conselho", fala: "Abrindo o conselho consultivo.", termos: ["conselho", "diretores"] },
+  { rota: "#/projetos", fala: "Abrindo projetos e caixa.", termos: ["projetos", "caixa", "exposicao"] },
+  { rota: "#/setor/vendas", fala: "Abrindo o setor Comercial.", termos: ["comercial", "setor comercial", "vendas"] },
+  { rota: "#/setor/marketing", fala: "Abrindo o setor de Marketing.", termos: ["setor de marketing", "marketing"] },
+  { rota: "#/setor/operacoes", fala: "Abrindo o setor de Operações.", termos: ["operacoes", "setor de operacoes", "obras"] },
+  { rota: "#/setor/tecnologia", fala: "Abrindo Tecnologia e Engenharia.", termos: ["tecnologia", "engenharia"] },
+  { rota: "#/setor/posvenda", fala: "Abrindo Pós-venda.", termos: ["pos venda", "posvenda", "chamados"] },
+  { rota: "#/setor/pessoas", fala: "Abrindo Administrativo e Pessoas.", termos: ["pessoas", "administrativo", "rh"] },
+  { rota: "#/setor/secretaria", fala: "Abrindo a Secretaria Executiva.", termos: ["secretaria"] },
+  { rota: "#/setor/direcao", fala: "Abrindo a Direção Geral.", termos: ["direcao", "direcao geral"] },
+  { rota: "#/setor/financas", fala: "Abrindo o Financeiro.", termos: ["financeiro", "setor financeiro"] },
   { rota: "#/historico", fala: "Abrindo o histórico de orçamentos.", termos: ["historico", "orcamentos salvos", "orcamentos registrados"] },
   { rota: "#/cfo", fala: "Abrindo os avisos do CFO.", termos: ["avisos", "aviso do cfo", "vigia", "novo orcamento", "conferir orcamento"] },
   { rota: "#/orbita", fala: "Abrindo a órbita dos setores.", termos: ["orbita", "setores em orbita", "inicio", "tela inicial"] },

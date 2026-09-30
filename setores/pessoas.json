@@ -1,0 +1,554 @@
+{
+  "id": "pessoas",
+  "sigla": "CHRO",
+  "nome": "Administrativo e Pessoas",
+  "missao": "Ter na VOICE pessoas certas, certificadas e seguras em cada obra: integração bem feita, capacitação técnica nas marcas que integramos, NR-10 e NR-35 sempre em dia, conversas de desenvolvimento frequentes e documentos administrativos e societários vigentes, com dados pessoais protegidos.",
+  "cor": "violet",
+  "diretor": {
+    "titulo": "Diretora Administrativa e de Pessoas (CHRO)",
+    "nome": "Mariana Figueiredo Lins",
+    "perfil": "Persona fictícia. Gestora de pessoas com experiência em empresas de serviços técnicos de campo, onde segurança do trabalho e certificação de fabricante definem quem pode ir para a obra. Estilo próximo e franco: elogia em público, corrige em particular e não deixa prazo legal para a última hora.",
+    "especialidades": [
+      "Integração (onboarding) de técnicos e instaladores com plano de 30/60/90 dias",
+      "Trilhas de certificação de fabricantes de automação, redes, áudio e vídeo e segurança eletrônica",
+      "Controle de NR-10, NR-35 e aptidão ocupacional para equipes de campo",
+      "Conversas individuais (1:1) e avaliação de desempenho",
+      "Gestão de documentos administrativos, societários e de prestadores, com LGPD"
+    ],
+    "metodos": [
+      {
+        "nome": "Radical Candor (Franqueza Radical)",
+        "autor": "Kim Scott",
+        "uso": "Feedback que combina cuidado pessoal e desafio direto: elogio específico sobre a obra entregue, correção objetiva e rápida sobre acabamento, organização de rack ou documentação de programação."
+      },
+      {
+        "nome": "Reunião individual (1:1)",
+        "autor": "Andy Grove (High Output Management)",
+        "uso": "Conversa quinzenal de 30 minutos, pauta do colaborador: obstáculos nas obras, aprendizado técnico, carga de trabalho e carreira."
+      },
+      {
+        "nome": "Plano de integração 30/60/90 dias",
+        "autor": "Prática de gestão de pessoas (onboarding estruturado)",
+        "uso": "Pré-início com documentos, EPI e acessos; primeira semana com padrões técnicos e acompanhamento de um técnico experiente em obra; metas de 30, 60 e 90 dias por função."
+      },
+      {
+        "nome": "Gestão de segurança do trabalho por norma regulamentadora",
+        "autor": "Ministério do Trabalho e Emprego (NR-10 e NR-35)",
+        "uso": "Mapa de quem trabalha com eletricidade e em altura (forros, fachadas, postes de CFTV, telhados), com treinamento, reciclagem bienal, aptidão no ASO e autorização formal; validação sempre com técnico de segurança."
+      },
+      {
+        "nome": "Privacidade por padrão e minimização de dados",
+        "autor": "Lei Geral de Proteção de Dados (Lei 13.709/2018)",
+        "uso": "O VEOS guarda só o necessário para a gestão; documentos pessoais, dados de saúde e dados bancários ficam no repositório restrito do Departamento Pessoal, e aqui aparecem apenas referências."
+      }
+    ],
+    "principios": [
+      "Ninguém sobe em escada, andaime ou telhado, nem mexe em quadro elétrico, sem treinamento válido e aptidão registrada.",
+      "Certificação de fabricante é ativo da empresa: acompanhar validade como se fosse estoque.",
+      "Feedback cedo e específico vale mais que avaliação tardia.",
+      "Dado pessoal só entra no sistema se for necessário, e com acesso restrito.",
+      "Regra trabalhista, previdenciária ou fiscal não se presume: valida-se com contador e advogado."
+    ],
+    "como_aconselha": "Fala de forma acolhedora e objetiva. Começa pelo risco para a pessoa e para a obra, diz o que a norma ou a prática recomenda e deixa claro quando algo é PROPOSTA que precisa de validação do contador, do advogado ou do técnico de segurança. Sempre termina com responsável e prazo.",
+    "perguntas_chave": [
+      "Quem da equipe escalada para as obras desta semana está com NR-10, NR-35 e ASO válidos?",
+      "Temos pelo menos dois técnicos certificados em cada marca principal que integramos, para não depender de uma só pessoa?",
+      "Os novos colaboradores concluíram a integração e sabem os padrões técnicos da VOICE?",
+      "As conversas 1:1 estão acontecendo, ou só conversamos quando há problema?",
+      "Algum contrato com prestador, certidão ou documento societário vence nos próximos 30 dias?",
+      "Quem tem acesso aos dados pessoais da equipe, e precisa mesmo ter?"
+    ],
+    "limites": [
+      "Não define vínculo de trabalho, enquadramento de prestador, verbas ou obrigações fiscais: valida com contador e advogado.",
+      "Não libera trabalho em altura ou com eletricidade sem parecer do técnico de segurança.",
+      "Não contrata, desliga nem altera remuneração sem aprovação da direção.",
+      "Não compartilha dados pessoais de colaboradores fora do necessário à finalidade."
+    ]
+  },
+  "equipe": [
+    {
+      "papel": "analista_adm",
+      "nome": "Analista administrativo e de departamento pessoal",
+      "reporta_a": "CHRO",
+      "responsabilidades": [
+        "Cadastrar colaboradores e prestadores com o mínimo de dados necessários",
+        "Conduzir a documentação de admissão e de contratação de prestadores com o contador",
+        "Controlar férias, ausências e envio mensal das variáveis ao contador",
+        "Manter documentos administrativos e societários vigentes e arquivados"
+      ],
+      "indicadores": ["documentos_vigentes", "absenteismo", "turnover"]
+    },
+    {
+      "papel": "coordenador_capacitacao",
+      "nome": "Coordenador de capacitação e certificações",
+      "reporta_a": "CHRO",
+      "responsabilidades": [
+        "Manter a matriz de certificações por função e por marca integrada",
+        "Planejar treinamentos de fabricantes, internos e normativos",
+        "Arquivar certificados e controlar validades",
+        "Conduzir a trilha de integração técnica dos novos colaboradores"
+      ],
+      "indicadores": ["certificacoes_fabricante", "horas_treinamento", "integracao_no_prazo"]
+    },
+    {
+      "papel": "tecnico_seguranca",
+      "nome": "Técnico de segurança do trabalho (próprio ou terceirizado)",
+      "reporta_a": "CHRO",
+      "responsabilidades": [
+        "Definir quais funções exigem NR-10 e NR-35 e validar os treinamentos",
+        "Acompanhar aptidão ocupacional (ASO) de quem trabalha em altura e com eletricidade",
+        "Orientar EPI, análise de risco e permissão de trabalho em obras",
+        "Checar semanalmente a aptidão da equipe escalada para as obras"
+      ],
+      "indicadores": ["conformidade_nr"]
+    },
+    {
+      "papel": "lider_equipe",
+      "nome": "Líder de equipe técnica",
+      "reporta_a": "CHRO",
+      "responsabilidades": [
+        "Fazer 1:1 quinzenal com cada liderado",
+        "Dar feedback específico após cada entrega de obra",
+        "Acompanhar o plano 30/60/90 dos novos técnicos",
+        "Informar ausências e necessidades de cobertura na agenda de obras"
+      ],
+      "indicadores": ["cadencia_1a1", "integracao_no_prazo"]
+    },
+    {
+      "papel": "encarregado_dados",
+      "nome": "Encarregado de dados pessoais (LGPD)",
+      "reporta_a": "CHRO",
+      "responsabilidades": [
+        "Definir quem acessa dados pessoais de colaboradores e prestadores",
+        "Classificar o nível de acesso dos documentos administrativos",
+        "Responder a pedidos de titulares e registrar incidentes com dados pessoais"
+      ],
+      "indicadores": ["documentos_vigentes"]
+    }
+  ],
+  "processos": [
+    {
+      "id": "integracao",
+      "nome": "Integração de colaboradores e prestadores",
+      "descricao": "Da pré-admissão à efetivação, com trilha técnica específica para funções de campo.",
+      "etapas": [
+        { "id": "pre_inicio", "nome": "Pré-início", "responsavel": "analista_adm", "criterio_saida": "Documentação conferida com o contador, contrato assinado, EPI e uniforme separados, acessos criados" },
+        { "id": "primeira_semana", "nome": "Primeira semana", "responsavel": "lider_equipe", "criterio_saida": "Apresentação da VOICE e dos padrões técnicos, padrinho definido, acompanhamento de obra com técnico experiente" },
+        { "id": "seguranca", "nome": "Aptidão de segurança", "responsavel": "tecnico_seguranca", "criterio_saida": "Para funções de campo: ASO com aptidão exigida, NR-10 e/ou NR-35 válidos e autorização formal registrados" },
+        { "id": "plano_30_60_90", "nome": "Plano 30/60/90", "responsavel": "lider_equipe", "criterio_saida": "Metas de 30, 60 e 90 dias registradas e revisadas em 1:1" },
+        { "id": "efetivacao", "nome": "Efetivação", "responsavel": "analista_adm", "criterio_saida": "Avaliação de 90 dias concluída e colaborador marcado como ativo" }
+      ]
+    },
+    {
+      "id": "capacitacao_seguranca",
+      "nome": "Capacitação técnica e segurança",
+      "descricao": "Ciclo de certificações de fabricantes e de treinamentos normativos, com controle de validade e reciclagem.",
+      "etapas": [
+        { "id": "necessidade", "nome": "Levantar a necessidade", "responsavel": "coordenador_capacitacao", "criterio_saida": "Treinamento registrado para o colaborador a partir da matriz por função e marca" },
+        { "id": "agendamento", "nome": "Agendar", "responsavel": "coordenador_capacitacao", "criterio_saida": "Data, carga horária e custo definidos, sem conflito com a agenda de obras" },
+        { "id": "realizacao", "nome": "Realizar e comprovar", "responsavel": "coordenador_capacitacao", "criterio_saida": "Certificado arquivado e validade registrada" },
+        { "id": "reciclagem", "nome": "Reciclar", "responsavel": "tecnico_seguranca", "criterio_saida": "Reciclagem feita antes do vencimento, ou antecipada quando houver mudança de procedimento, afastamento longo ou evento que a justifique" }
+      ]
+    },
+    {
+      "id": "desempenho",
+      "nome": "Acompanhamento de desempenho",
+      "descricao": "1:1 quinzenal, feedback após cada obra e revisão trimestral de desenvolvimento.",
+      "etapas": [
+        { "id": "um_a_um", "nome": "1:1 quinzenal", "responsavel": "lider_equipe", "criterio_saida": "Conversa realizada e próxima data registrada" },
+        { "id": "feedback_obra", "nome": "Feedback de obra", "responsavel": "lider_equipe", "criterio_saida": "Feedback específico registrado após a entrega técnica" },
+        { "id": "revisao_trimestral", "nome": "Revisão trimestral", "responsavel": "lider_equipe", "criterio_saida": "Autoavaliação, avaliação do líder e plano de desenvolvimento com próximas certificações" }
+      ]
+    }
+  ],
+  "registros": [
+    {
+      "tipo": "colaborador",
+      "nome": "Colaborador / prestador",
+      "descricao": "Pessoa que trabalha para a VOICE, com ou sem vínculo empregatício. Guarda só o necessário à gestão; documentos pessoais, dados de saúde e bancários ficam no repositório restrito do DP (LGPD). O enquadramento do vínculo é validado com contador e advogado.",
+      "responsavel": "analista_adm",
+      "estados": ["pre_admissao", "integracao", "ativo", "afastado", "desligado"],
+      "estado_inicial": "pre_admissao",
+      "estados_finais": ["desligado"],
+      "campos": [
+        { "id": "vinculo", "rotulo": "Vínculo (validar com contador/advogado)", "tipo": "opcao", "opcoes": ["CLT", "Sócio", "Estagiário", "Prestador PJ", "Autônomo", "Outro"], "obrigatorio": true },
+        { "id": "funcao", "rotulo": "Função", "tipo": "opcao", "opcoes": [
+          "Instalador de infraestrutura",
+          "Técnico de automação e programação",
+          "Técnico de redes e TI",
+          "Técnico de áudio e vídeo",
+          "Técnico de segurança eletrônica e controle de acesso",
+          "Projetista / engenharia",
+          "Consultor comercial",
+          "Administrativo e financeiro",
+          "Coordenação e gestão",
+          "Outro"
+        ], "obrigatorio": true },
+        { "id": "data_inicio", "rotulo": "Data de início", "tipo": "data", "obrigatorio": true },
+        { "id": "gestor", "rotulo": "Líder imediato", "tipo": "texto", "obrigatorio": true },
+        { "id": "email", "rotulo": "E-mail corporativo", "tipo": "email", "obrigatorio": false },
+        { "id": "telefone", "rotulo": "Telefone corporativo", "tipo": "telefone", "obrigatorio": false },
+        { "id": "trabalho_altura", "rotulo": "Trabalha em altura (acima de 2 m)?", "tipo": "sim_nao", "obrigatorio": true },
+        { "id": "trabalho_eletrico", "rotulo": "Trabalha com instalações elétricas?", "tipo": "sim_nao", "obrigatorio": true },
+        { "id": "aso_validade", "rotulo": "Validade do ASO (sem dados de saúde)", "tipo": "data", "obrigatorio": false },
+        { "id": "proxima_1a1", "rotulo": "Próxima 1:1", "tipo": "data", "obrigatorio": false },
+        { "id": "contrato_fim", "rotulo": "Fim do contrato (prestadores)", "tipo": "data", "obrigatorio": false },
+        { "id": "dossie_ref", "rotulo": "Pasta restrita do DP (referência)", "tipo": "texto", "obrigatorio": false }
+      ]
+    },
+    {
+      "tipo": "treinamento",
+      "nome": "Treinamento / certificação",
+      "descricao": "Treinamento normativo, certificação de fabricante ou capacitação interna de um colaborador, com certificado e validade. Fica 'válido' até ser substituído pela reciclagem, para que o vencimento seja vigiado.",
+      "responsavel": "coordenador_capacitacao",
+      "estados": ["necessario", "agendado", "valido", "reciclagem_pendente", "substituido", "cancelado"],
+      "estado_inicial": "necessario",
+      "estados_finais": ["substituido", "cancelado"],
+      "campos": [
+        { "id": "categoria", "rotulo": "Categoria", "tipo": "opcao", "opcoes": [
+          "NR-10 básico",
+          "NR-10 reciclagem",
+          "NR-35 inicial",
+          "NR-35 reciclagem",
+          "Certificação de fabricante",
+          "Integração e padrões técnicos VOICE",
+          "Primeiros socorros",
+          "LGPD e segurança da informação",
+          "Outro"
+        ], "obrigatorio": true },
+        { "id": "colaborador_ref", "rotulo": "Colaborador", "tipo": "texto", "obrigatorio": true },
+        { "id": "fabricante", "rotulo": "Fabricante / entidade (ex.: marca de automação, rede ou áudio e vídeo integrada)", "tipo": "texto", "obrigatorio": false },
+        { "id": "carga_horaria", "rotulo": "Carga horária (h)", "tipo": "numero", "obrigatorio": false },
+        { "id": "data_realizacao", "rotulo": "Data de realização", "tipo": "data", "obrigatorio": false },
+        { "id": "validade", "rotulo": "Validade", "tipo": "data", "obrigatorio": false },
+        { "id": "certificado_ref", "rotulo": "Certificado arquivado (link ou caminho)", "tipo": "texto", "obrigatorio": false }
+      ]
+    },
+    {
+      "tipo": "ausencia",
+      "nome": "Férias e ausências",
+      "descricao": "Férias, folgas, licenças, afastamentos e faltas, com cobertura definida na agenda de obras. Atestados: registrar só o período; nenhum diagnóstico ou CID no VEOS (LGPD).",
+      "responsavel": "analista_adm",
+      "estados": ["solicitada", "aprovada", "em_curso", "concluida", "recusada", "cancelada"],
+      "estado_inicial": "solicitada",
+      "estados_finais": ["concluida", "recusada", "cancelada"],
+      "campos": [
+        { "id": "tipo_ausencia", "rotulo": "Tipo", "tipo": "opcao", "opcoes": ["Férias", "Folga / compensação", "Atestado médico", "Licença", "Falta", "Treinamento externo", "Outro"], "obrigatorio": true },
+        { "id": "colaborador_ref", "rotulo": "Colaborador", "tipo": "texto", "obrigatorio": true },
+        { "id": "data_inicio", "rotulo": "Início", "tipo": "data", "obrigatorio": true },
+        { "id": "data_fim", "rotulo": "Fim", "tipo": "data", "obrigatorio": true },
+        { "id": "dias", "rotulo": "Dias", "tipo": "numero", "obrigatorio": false },
+        { "id": "cobertura", "rotulo": "Cobertura (quem assume obras, plantão ou atendimentos)", "tipo": "texto", "obrigatorio": false },
+        { "id": "aprovado_por", "rotulo": "Aprovado por", "tipo": "texto", "obrigatorio": false }
+      ]
+    },
+    {
+      "tipo": "documento_adm",
+      "nome": "Documento administrativo ou societário",
+      "descricao": "Contrato social e alterações, procurações, certidões, alvarás, seguros, contratos com prestadores e políticas internas, com validade e nível de acesso.",
+      "responsavel": "analista_adm",
+      "estados": ["vigente", "em_renovacao", "substituido", "arquivado"],
+      "estado_inicial": "vigente",
+      "estados_finais": ["substituido", "arquivado"],
+      "campos": [
+        { "id": "categoria", "rotulo": "Categoria", "tipo": "opcao", "opcoes": [
+          "Contrato social e alterações",
+          "Procuração",
+          "Certidão negativa",
+          "Alvará, licença ou registro profissional",
+          "Contrato com prestador de serviço",
+          "Seguro (responsabilidade civil, equipamentos, vida)",
+          "Política interna",
+          "Outro"
+        ], "obrigatorio": true },
+        { "id": "orgao_contraparte", "rotulo": "Órgão emissor ou contraparte", "tipo": "texto", "obrigatorio": true },
+        { "id": "validade", "rotulo": "Validade", "tipo": "data", "obrigatorio": false },
+        { "id": "arquivo_ref", "rotulo": "Arquivo (link ou caminho)", "tipo": "texto", "obrigatorio": false },
+        { "id": "acesso", "rotulo": "Nível de acesso", "tipo": "opcao", "opcoes": ["Interno geral", "Restrito à direção", "Restrito ao DP (contém dados pessoais)"], "obrigatorio": false },
+        { "id": "observacoes", "rotulo": "Observações", "tipo": "texto_longo", "obrigatorio": false }
+      ]
+    }
+  ],
+  "rotinas": [
+    {
+      "id": "aptidao_obras_semana",
+      "nome": "Checagem de aptidão da equipe escalada",
+      "frequencia": "semanal",
+      "responsavel": "tecnico_seguranca",
+      "passos": [
+        "Receber de Operações a escala de obras da semana",
+        "Conferir, para cada técnico escalado em altura ou com eletricidade, NR-35/NR-10, ASO e autorização válidos",
+        "Bloquear e comunicar substituição quando houver pendência",
+        "Registrar a checagem"
+      ]
+    },
+    {
+      "id": "integracao_semanal",
+      "nome": "Acompanhamento das integrações",
+      "frequencia": "semanal",
+      "responsavel": "coordenador_capacitacao",
+      "passos": [
+        "Listar colaboradores em pré-admissão e integração",
+        "Checar etapas do checklist de integração",
+        "Confirmar metas de 30/60/90 com o líder",
+        "Escalar à CHRO integrações paradas"
+      ]
+    },
+    {
+      "id": "um_a_um",
+      "nome": "Ciclo de 1:1",
+      "frequencia": "quinzenal",
+      "responsavel": "lider_equipe",
+      "passos": [
+        "Conduzir 30 minutos com pauta do colaborador",
+        "Falar de obstáculos, aprendizado técnico, carga de trabalho e carreira",
+        "Dar ao menos um feedback específico (elogio ou correção) no estilo Radical Candor",
+        "Registrar próximos passos e a data da próxima 1:1"
+      ]
+    },
+    {
+      "id": "vencimentos_mensal",
+      "nome": "Revisão mensal de vencimentos",
+      "frequencia": "mensal",
+      "responsavel": "analista_adm",
+      "passos": [
+        "Listar certificações, NR, ASO, contratos de prestadores e documentos que vencem em 60 dias",
+        "Agendar reciclagens e renovações",
+        "Atualizar certidões negativas usadas em cadastros de construtoras e condomínios",
+        "Reportar à CHRO o que não tiver data garantida"
+      ]
+    },
+    {
+      "id": "variaveis_contador",
+      "nome": "Envio mensal de informações ao contador",
+      "frequencia": "mensal",
+      "responsavel": "analista_adm",
+      "passos": [
+        "Consolidar férias, ausências, admissões e desligamentos do mês",
+        "Conferir contratos e notas de prestadores do mês com o Financeiro",
+        "Enviar ao contador pelo canal combinado, sem expor dados pessoais em canais abertos",
+        "Registrar dúvidas trabalhistas ou fiscais para validação do contador ou advogado"
+      ]
+    },
+    {
+      "id": "revisao_trimestral",
+      "nome": "Revisão trimestral de desenvolvimento e férias",
+      "frequencia": "trimestral",
+      "responsavel": "CHRO",
+      "passos": [
+        "Revisar desempenho com cada líder (autoavaliação e avaliação do líder)",
+        "Atualizar a matriz de certificações por marca e evitar dependência de uma só pessoa",
+        "Planejar férias do trimestre seguinte fora dos picos de entrega de obra",
+        "Revisar acessos a dados pessoais com o encarregado de dados"
+      ]
+    }
+  ],
+  "indicadores": [
+    { "id": "conformidade_nr", "nome": "Conformidade NR-10 / NR-35 da equipe de campo", "formula": "Colaboradores que trabalham em altura ou com eletricidade com treinamento, reciclagem e ASO válidos / total desses colaboradores × 100", "meta": "100% (exigência normativa; validar com técnico de segurança)", "frequencia": "semanal", "status": "PROPOSTA" },
+    { "id": "certificacoes_fabricante", "nome": "Cobertura de certificações por marca integrada", "formula": "Marcas principais com ao menos 2 técnicos certificados válidos / total de marcas principais × 100", "meta": "100% das marcas principais com 2 ou mais certificados", "frequencia": "trimestral", "status": "PROPOSTA" },
+    { "id": "horas_treinamento", "nome": "Horas de treinamento por colaborador", "formula": "Soma da carga horária de treinamentos concluídos nos últimos 12 meses / colaboradores ativos", "meta": "≥ 40 h/ano para funções técnicas", "frequencia": "trimestral", "status": "PROPOSTA" },
+    { "id": "integracao_no_prazo", "nome": "Integrações concluídas no prazo", "formula": "Integrações concluídas em até 30 dias do início / integrações iniciadas × 100", "meta": "≥ 90%", "frequencia": "mensal", "status": "PROPOSTA" },
+    { "id": "cadencia_1a1", "nome": "Cadência de 1:1", "formula": "1:1 realizadas até a data prevista / 1:1 previstas × 100", "meta": "≥ 90%", "frequencia": "mensal", "status": "PROPOSTA" },
+    { "id": "absenteismo", "nome": "Absenteísmo não planejado", "formula": "Dias de falta e atestado / dias úteis previstos da equipe × 100", "meta": "≤ 3%", "frequencia": "mensal", "status": "PROPOSTA" },
+    { "id": "turnover", "nome": "Rotatividade em 12 meses", "formula": "Desligamentos nos últimos 12 meses / média de colaboradores ativos × 100", "meta": "≤ 15% ao ano", "frequencia": "trimestral", "status": "PROPOSTA" },
+    { "id": "documentos_vigentes", "nome": "Documentos administrativos vigentes", "formula": "Documentos com validade futura ou em renovação antes do vencimento / documentos controlados × 100", "meta": "100%", "frequencia": "mensal", "status": "PROPOSTA" }
+  ],
+  "sentinelas": [
+    {
+      "id": "PES_CERTIFICACAO_VENCENDO",
+      "titulo": "Treinamento ou certificação vencendo",
+      "severidade": "ALTO",
+      "status": "PROPOSTA",
+      "gatilho": { "tipo": "vencido", "registro": "treinamento", "campo": "validade", "filtros": [ { "campo": "estado", "em": ["valido", "reciclagem_pendente"] } ], "antecedencia_dias": 60 },
+      "mensagem": "O treinamento '{{titulo}}' vence em até 60 dias (ou já venceu). Agendar reciclagem antes que o técnico fique impedido de ir à obra.",
+      "acoes": [
+        { "tipo": "tarefa", "titulo": "Agendar reciclagem ou renovação da certificação", "papel": "coordenador_capacitacao", "prazo_dias": 7 },
+        { "tipo": "rascunho", "modelo": "aviso_reciclagem" }
+      ],
+      "fonte": "PROPOSTA — padrão de mercado (NR-10 e NR-35 com reciclagem bienal; antecedência de 60 dias a calibrar)"
+    },
+    {
+      "id": "PES_NR_PENDENTE",
+      "titulo": "Treinamento NR necessário e não agendado",
+      "severidade": "CRITICO",
+      "status": "PROPOSTA",
+      "gatilho": { "tipo": "parado", "registro": "treinamento", "filtros": [ { "campo": "estado", "igual": "necessario" }, { "campo": "categoria", "em": ["NR-10 básico", "NR-10 reciclagem", "NR-35 inicial", "NR-35 reciclagem"] } ], "dias": 5, "data_campo": "atualizado_em" },
+      "mensagem": "O treinamento normativo '{{titulo}}' está marcado como necessário há {{dias}} dias sem agendamento. O colaborador não deve executar a atividade até regularizar.",
+      "acoes": [
+        { "tipo": "tarefa", "titulo": "Agendar o treinamento NR e comunicar restrição de atividade a Operações", "papel": "tecnico_seguranca", "prazo_dias": 2 },
+        { "tipo": "notificar", "para": "CHRO" }
+      ],
+      "fonte": "PROPOSTA — padrão de mercado (NR-10 e NR-35 do MTE; validar com técnico de segurança)"
+    },
+    {
+      "id": "PES_TREINAMENTO_SEM_CERTIFICADO",
+      "titulo": "Treinamento válido sem certificado arquivado",
+      "severidade": "MEDIO",
+      "status": "PROPOSTA",
+      "gatilho": { "tipo": "faltando", "registro": "treinamento", "campo": "certificado_ref", "filtros": [ { "campo": "estado", "igual": "valido" } ] },
+      "mensagem": "O treinamento '{{titulo}}' está como válido, mas sem certificado arquivado. Sem comprovante, não há como demonstrar a capacitação em fiscalização ou para a construtora.",
+      "acoes": [
+        { "tipo": "tarefa", "titulo": "Arquivar o certificado e registrar a validade", "papel": "coordenador_capacitacao", "prazo_dias": 3 }
+      ],
+      "fonte": "PROPOSTA — padrão de mercado (evidência de treinamento em compliance)"
+    },
+    {
+      "id": "PES_ASO_VENCENDO",
+      "titulo": "ASO vencendo para equipe de campo",
+      "severidade": "ALTO",
+      "status": "PROPOSTA",
+      "gatilho": { "tipo": "vencido", "registro": "colaborador", "campo": "aso_validade", "filtros": [ { "campo": "estado", "em": ["integracao", "ativo"] } ], "antecedencia_dias": 30 },
+      "mensagem": "O ASO de '{{titulo}}' vence em até 30 dias (ou já venceu).",
+      "acoes": [
+        { "tipo": "tarefa", "titulo": "Agendar exame periódico com a clínica de saúde ocupacional", "papel": "analista_adm", "prazo_dias": 5 },
+        { "tipo": "notificar", "para": "tecnico_seguranca" }
+      ],
+      "fonte": "PROPOSTA — padrão de mercado (PCMSO/ASO; periodicidade definida pelo médico do trabalho)"
+    },
+    {
+      "id": "PES_INTEGRACAO_PARADA",
+      "titulo": "Integração parada",
+      "severidade": "MEDIO",
+      "status": "PROPOSTA",
+      "gatilho": { "tipo": "parado", "registro": "colaborador", "filtros": [ { "campo": "estado", "em": ["pre_admissao", "integracao"] } ], "dias": 7, "data_campo": "atualizado_em" },
+      "mensagem": "A integração de '{{titulo}}' não avança há {{dias}} dias.",
+      "acoes": [
+        { "tipo": "tarefa", "titulo": "Revisar checklist de integração com o líder", "papel": "coordenador_capacitacao", "prazo_dias": 2 },
+        { "tipo": "rascunho", "modelo": "checklist_integracao" }
+      ],
+      "fonte": "PROPOSTA — padrão de mercado (onboarding 30/60/90)"
+    },
+    {
+      "id": "PES_1A1_ATRASADA",
+      "titulo": "1:1 atrasada",
+      "severidade": "INFO",
+      "status": "PROPOSTA",
+      "gatilho": { "tipo": "vencido", "registro": "colaborador", "campo": "proxima_1a1", "filtros": [ { "campo": "estado", "em": ["integracao", "ativo"] } ], "antecedencia_dias": 0 },
+      "mensagem": "A 1:1 com '{{titulo}}' passou da data prevista.",
+      "acoes": [
+        { "tipo": "tarefa", "titulo": "Realizar a 1:1 e registrar a próxima data", "papel": "lider_equipe", "prazo_dias": 3 },
+        { "tipo": "rascunho", "modelo": "roteiro_1a1" }
+      ],
+      "fonte": "PROPOSTA — padrão de mercado (Andy Grove, High Output Management; Kim Scott, Radical Candor)"
+    },
+    {
+      "id": "PES_AUSENCIA_SEM_APROVACAO",
+      "titulo": "Ausência próxima sem aprovação",
+      "severidade": "MEDIO",
+      "status": "PROPOSTA",
+      "gatilho": { "tipo": "vencido", "registro": "ausencia", "campo": "data_inicio", "filtros": [ { "campo": "estado", "igual": "solicitada" } ], "antecedencia_dias": 7 },
+      "mensagem": "A ausência '{{titulo}}' começa em até 7 dias e ainda não foi aprovada.",
+      "acoes": [
+        { "tipo": "tarefa", "titulo": "Aprovar ou recusar a ausência com o líder e checar a agenda de obras", "papel": "analista_adm", "prazo_dias": 1 }
+      ],
+      "fonte": "PROPOSTA — padrão de mercado (antecedência de 7 dias a calibrar; prazos legais de férias a validar com o contador)"
+    },
+    {
+      "id": "PES_AUSENCIA_SEM_COBERTURA",
+      "titulo": "Ausência aprovada sem cobertura",
+      "severidade": "MEDIO",
+      "status": "PROPOSTA",
+      "gatilho": { "tipo": "faltando", "registro": "ausencia", "campo": "cobertura", "filtros": [ { "campo": "estado", "em": ["aprovada", "em_curso"] } ] },
+      "mensagem": "A ausência '{{titulo}}' foi aprovada sem definição de quem cobre as obras e atendimentos.",
+      "acoes": [
+        { "tipo": "tarefa", "titulo": "Definir cobertura com Operações e registrar", "papel": "lider_equipe", "prazo_dias": 2 }
+      ],
+      "fonte": "PROPOSTA — padrão de mercado (planejamento de capacidade)"
+    },
+    {
+      "id": "PES_DOCUMENTO_VENCENDO",
+      "titulo": "Documento administrativo ou societário vencendo",
+      "severidade": "ALTO",
+      "status": "PROPOSTA",
+      "gatilho": { "tipo": "vencido", "registro": "documento_adm", "campo": "validade", "filtros": [ { "campo": "estado", "igual": "vigente" } ], "antecedencia_dias": 30 },
+      "mensagem": "O documento '{{titulo}}' vence em até 30 dias (ou já venceu). Certidões e seguros vencidos podem travar cadastros em construtoras e condomínios.",
+      "acoes": [
+        { "tipo": "tarefa", "titulo": "Iniciar renovação e marcar como em renovação", "papel": "analista_adm", "prazo_dias": 5 }
+      ],
+      "fonte": "PROPOSTA — padrão de mercado (controle de vencimentos em compliance)"
+    },
+    {
+      "id": "PES_CONTRATO_PRESTADOR_VENCENDO",
+      "titulo": "Contrato de prestador vencendo",
+      "severidade": "MEDIO",
+      "status": "PROPOSTA",
+      "gatilho": { "tipo": "vencido", "registro": "colaborador", "campo": "contrato_fim", "filtros": [ { "campo": "vinculo", "em": ["Prestador PJ", "Autônomo"] }, { "campo": "estado", "em": ["integracao", "ativo"] } ], "antecedencia_dias": 30 },
+      "mensagem": "O contrato do prestador '{{titulo}}' termina em até 30 dias (ou já terminou).",
+      "acoes": [
+        { "tipo": "tarefa", "titulo": "Decidir renovação ou encerramento com a direção e revisar o contrato com o advogado", "papel": "analista_adm", "prazo_dias": 7 },
+        { "tipo": "rascunho", "modelo": "checklist_prestador" }
+      ],
+      "fonte": "PROPOSTA — padrão de mercado (gestão de contratos com prestadores; validar com advogado)"
+    }
+  ],
+  "modelos": [
+    {
+      "id": "boas_vindas",
+      "tipo": "email",
+      "assunto": "Bem-vindo(a) à VOICE Ambientes Inteligentes",
+      "corpo": "Olá, {{titulo}}!\n\nÉ uma alegria ter você na VOICE. No seu primeiro dia vamos apresentar a empresa, nossos padrões técnicos e a forma como cuidamos de clientes e arquitetos parceiros.\n\nTraga os documentos solicitados pelo DP. Uniforme e EPI estarão separados para você. Seu líder e seu padrinho vão acompanhar sua primeira semana, inclusive em obra.\n\nQualquer dúvida, fale comigo.\n{{responsavel}}"
+    },
+    {
+      "id": "checklist_integracao",
+      "tipo": "documento",
+      "assunto": "Checklist de integração — {{titulo}}",
+      "corpo": "INTEGRAÇÃO — {{titulo}}\n\nPRÉ-INÍCIO\n[ ] Documentação conferida com o contador\n[ ] Contrato assinado (vínculo validado)\n[ ] E-mail, sistemas e grupos de trabalho criados\n[ ] Uniforme, EPI e ferramentas separados\n[ ] Padrinho definido\n\nPRIMEIRA SEMANA\n[ ] Apresentação da VOICE, clientes e parceiros\n[ ] Padrões técnicos: infraestrutura, rack, identificação de cabos, documentação de programação\n[ ] Postura em obra de alto padrão: discrição, limpeza e proteção do ambiente\n[ ] Acompanhamento de obra com técnico experiente\n[ ] LGPD: cuidado com dados, senhas e imagens de clientes\n\nSEGURANÇA (funções de campo)\n[ ] ASO com aptidão exigida\n[ ] NR-10 e/ou NR-35 válidos\n[ ] Autorização formal registrada\n\nMETAS 30/60/90 DIAS\n30: ______  60: ______  90: ______\n\nResponsável: {{responsavel}}"
+    },
+    {
+      "id": "roteiro_1a1",
+      "tipo": "roteiro",
+      "assunto": "Roteiro de 1:1",
+      "corpo": "1:1 com {{titulo}} (30 min, pauta do colaborador)\n\n1. Como você está? O que mais tomou sua energia nestas duas semanas?\n2. Alguma obra ou cliente travando seu trabalho? O que eu posso destravar?\n3. O que você aprendeu de novo (marca, protocolo, integração)?\n4. Feedback: um ponto forte específico e um ponto a ajustar, com exemplo concreto.\n5. Próxima certificação ou desafio que você quer assumir.\n6. Combinados e data da próxima 1:1.\n\nLíder: {{responsavel}}"
+    },
+    {
+      "id": "aviso_reciclagem",
+      "tipo": "whatsapp",
+      "assunto": "Reciclagem de treinamento",
+      "corpo": "Olá! Seu treinamento '{{titulo}}' está perto de vencer. Vamos agendar a reciclagem para você continuar liberado para as obras. Me passe duas datas possíveis nesta semana, que eu alinho com a agenda de Operações. Obrigado! — {{responsavel}}"
+    },
+    {
+      "id": "checklist_prestador",
+      "tipo": "documento",
+      "assunto": "Checklist de renovação de prestador — {{titulo}}",
+      "corpo": "PRESTADOR — {{titulo}}\n\n[ ] Avaliação de qualidade das obras realizadas (com Operações)\n[ ] Escopo, valores e forma de medição revisados\n[ ] Treinamentos NR-10/NR-35 e seguro do prestador válidos\n[ ] Cláusulas de confidencialidade e de proteção de dados de clientes (LGPD)\n[ ] Documentos fiscais e cadastrais do prestador em dia (validar com o contador)\n[ ] Revisão contratual pelo advogado\n[ ] Decisão da direção: renovar ou encerrar\n\nResponsável: {{responsavel}}"
+    },
+    {
+      "id": "envio_contador",
+      "tipo": "email",
+      "assunto": "VOICE — informações de pessoal da competência",
+      "corpo": "Olá,\n\nSeguem, pelo canal seguro combinado, as informações de pessoal do mês: admissões, desligamentos, férias, ausências e contratos de prestadores.\n\nTemos também dúvidas para sua validação antes de qualquer providência:\n- ______\n\nObrigado,\n{{responsavel}}\nAdministrativo e Pessoas — VOICE Ambientes Inteligentes"
+    }
+  ],
+  "documentos": [
+    "Checklist de integração por função (campo e escritório)",
+    "Matriz de certificações por função e por marca integrada",
+    "Controle de NR-10, NR-35, ASO e autorizações da equipe de campo",
+    "Roteiro de 1:1 e modelo de revisão trimestral",
+    "Calendário de férias e ausências com cobertura",
+    "Pasta de documentos societários, certidões, alvarás e seguros",
+    "Modelo de contrato com prestador (revisado por advogado)",
+    "Registro de acessos a dados pessoais (LGPD)"
+  ],
+  "relacoes": [
+    { "setor": "direcao", "fluxo": "Entrega indicadores de pessoas e riscos de pessoas-chave; recebe metas de capacitação e decisões de contratação, desligamento e remuneração." },
+    { "setor": "operacoes", "fluxo": "Recebe a escala de obras para checar aptidão NR e cobertura de ausências; devolve restrições e técnicos liberados." },
+    { "setor": "financas", "fluxo": "Envia variáveis de folha, contratos e notas de prestadores e custos de treinamento; recebe programação de pagamentos." },
+    { "setor": "tecnologia", "fluxo": "Recebe padrões técnicos para a integração e define junto as trilhas de certificação por marca." },
+    { "setor": "posvenda", "fluxo": "Recebe necessidades de capacitação vindas de retornos técnicos e garantias." },
+    { "setor": "secretaria", "fluxo": "Apoia arquivo de documentos, correspondência de órgãos e agenda de treinamentos e exames." }
+  ],
+  "fontes": [
+    { "titulo": "Skill onboarding (pré-início, primeira semana, metas 30/60/90)", "tipo": "skill", "ref": "knowledge-work-plugins/human-resources/skills/onboarding/SKILL.md" },
+    { "titulo": "Skill performance-review (autoavaliação, avaliação do líder, calibração)", "tipo": "skill", "ref": "knowledge-work-plugins/human-resources/skills/performance-review/SKILL.md" },
+    { "titulo": "Skill people-report (rotatividade, tempo de casa, engajamento)", "tipo": "skill", "ref": "knowledge-work-plugins/human-resources/skills/people-report/SKILL.md" },
+    { "titulo": "Skill org-planning (estrutura e pontos únicos de falha)", "tipo": "skill", "ref": "knowledge-work-plugins/human-resources/skills/org-planning/SKILL.md" },
+    { "titulo": "Skill compliance-tracking (inventário de controles, evidências e calendário)", "tipo": "skill", "ref": "knowledge-work-plugins/operations/skills/compliance-tracking/SKILL.md" },
+    { "titulo": "Skill vendor-check (situação de contratos com fornecedores e prestadores)", "tipo": "skill", "ref": "knowledge-work-plugins/legal/skills/vendor-check/SKILL.md" },
+    { "titulo": "Skill payroll-prep (preparação de informações de folha)", "tipo": "skill", "ref": "knowledge-work-plugins/small-business/skills/payroll-prep/SKILL.md" },
+    { "titulo": "NR-35 — Trabalho em Altura (texto oficial)", "tipo": "norma", "ref": "https://www.gov.br/trabalho-e-emprego/pt-br/acesso-a-informacao/participacao-social/conselhos-e-orgaos-colegiados/comissao-tripartite-partitaria-permanente/arquivos/normas-regulamentadoras/nr-35.pdf" },
+    { "titulo": "NR-10 — Segurança em Instalações e Serviços em Eletricidade", "tipo": "norma", "ref": "https://www.gov.br/trabalho-e-emprego/pt-br/acesso-a-informacao/participacao-social/conselhos-e-orgaos-colegiados/comissao-tripartite-partitaria-permanente/normas-regulamentadora/normas-regulamentadoras-vigentes" },
+    { "titulo": "Lei Geral de Proteção de Dados (Lei 13.709/2018)", "tipo": "norma", "ref": "https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/l13709.htm" },
+    { "titulo": "Radical Candor — Kim Scott", "tipo": "livro", "ref": "Scott, K. Radical Candor. St. Martin's Press, 2017" },
+    { "titulo": "High Output Management — Andy Grove", "tipo": "livro", "ref": "Grove, A. High Output Management. Random House, 1983" }
+  ]
+}

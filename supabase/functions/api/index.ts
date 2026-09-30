@@ -4,12 +4,14 @@
 //   GET  /api/orcamentos  -> ultimos orcamentos com avisos
 //   POST /api/orcamentos  -> vigia avalia e grava orcamento + avisos + evento
 //   /api/projetos...      -> setor Financeiro (ver financeiro.ts; direcao e financas)
+//   /api/radar, /setor, /registros, /tarefas, /alertas -> setores vivos (ver setores.ts)
 // Escritas exigem header Idempotency-Key (repetir nao duplica).
 // Identidade: token do Supabase Auth validado no servidor + cadastro ativo em `membros`.
 // Nunca confia em papel/setor enviado pelo cliente.
 import { avaliarOrcamento, RegraError } from "../_shared/regras/vigia.ts";
-import { ANON, HttpError, lerCorpo, type Membro, SERVICE, servico, URL_BASE } from "./comum.ts";
+import { ANON, HttpError, lerCorpo, type Membro, SERVICE, servico, URL_BASE } from "../_shared/banco.ts";
 import { rotearFinanceiro } from "./financeiro.ts";
+import { rotearSetores } from "./setores.ts";
 
 const ORIGENS = [
   /^https:\/\/veos-voice\.netlify\.app$/,
@@ -51,6 +53,7 @@ async function rotear(req: Request, rota: string) {
   const eu = await membro(req);
   const partes = rota.split("/");
   if (partes[0] === "projetos") return await rotearFinanceiro(req, partes, eu);
+  if (["radar", "setor", "registros", "tarefas", "alertas"].includes(partes[0])) return await rotearSetores(req, partes, eu);
   if (req.method === "GET" && rota === "me") return eu;
   if (req.method === "GET" && rota === "setores") {
     const [setores, diretores] = await Promise.all([

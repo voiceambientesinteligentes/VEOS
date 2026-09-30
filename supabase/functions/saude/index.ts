@@ -1,22 +1,34 @@
 // Edge Function "saude": verificacao de disponibilidade + atividade no banco.
-// Chamada diariamente pelo GitHub Actions (.github/workflows/manter-ativo.yml) para o
-// projeto gratuito nao ser pausado por inatividade. Nao revela dados nem segredos.
-const URL_BASE = Deno.env.get("SUPABASE_URL") ?? "";
-const SERVICE = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
+// Chamada diariamente pelo GitHub Actions (.github/workflows/manter-ativo.yml): mantem o
+// projeto gratuito ativo e roda a varredura das sentinelas de todos os setores (no maximo
+// uma a cada 10 minutos, para chamadas repetidas nao gerarem carga). Nao revela dados.
+import { SERVICE, servico, URL_BASE } from "../_shared/banco.ts";
+import { CATALOGO } from "../_shared/setores/catalogo.ts";
+import type { Setor } from "../_shared/setores/motor.ts";
+import { varrer } from "../_shared/setores/varredura.ts";
+
+const INTERVALO_MS = 10 * 60 * 1000;
 
 Deno.serve(async (req) => {
   if (req.method !== "GET") return new Response(null, { status: 405 });
   const inicio = Date.now();
   let banco = "erro";
+  let varredura: unknown = "nao executada";
   try {
-    const r = await fetch(`${URL_BASE}/rest/v1/setores?select=id&limit=1`, {
-      headers: { apikey: SERVICE, Authorization: `Bearer ${SERVICE}` },
-    });
-    banco = r.ok ? "ok" : `erro ${r.status}`;
-  } catch {
-    banco = "sem conexao";
+    if (!URL_BASE || !SERVICE) throw new Error("configuracao");
+    const [ultima] = await servico("/rest/v1/varreduras?select=em&order=em.desc&limit=1");
+    banco = "ok";
+    if (!ultima || Date.now() - Date.parse(ultima.em) > INTERVALO_MS) {
+      const r = await varrer(CATALOGO as unknown as Setor[], null, "automatica");
+      varredura = { novos: r.novos, resolvidos: r.resolvidos, ativos: r.ativos };
+    } else {
+      varredura = "recente (pulada)";
+    }
+  } catch (e) {
+    console.error("saude:", e);
+    if (banco === "ok") varredura = "falhou";
   }
-  return new Response(JSON.stringify({ servico: "veos", banco, ms: Date.now() - inicio, em: new Date().toISOString() }), {
+  return new Response(JSON.stringify({ servico: "veos", banco, varredura, ms: Date.now() - inicio, em: new Date().toISOString() }), {
     status: banco === "ok" ? 200 : 503,
     headers: { "Content-Type": "application/json", "Cache-Control": "no-store" },
   });

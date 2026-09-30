@@ -8,15 +8,17 @@ import { clear, h } from "../dom.js";
 // Fluxos entre setores (quem entrega trabalho a quem). Direcao e Secretaria
 // coordenam todos.
 const FLUXOS = {
-  financas: ["vendas", "operacoes", "direcao"],
-  vendas: ["financas", "marketing", "operacoes"],
-  marketing: ["vendas", "direcao"],
-  operacoes: ["vendas", "financas", "tecnologia"],
-  tecnologia: ["operacoes", "direcao"],
-  direcao: ["financas", "vendas", "marketing", "operacoes", "tecnologia", "secretaria"],
-  secretaria: ["direcao", "financas", "vendas", "marketing", "operacoes", "tecnologia"],
+  financas: ["vendas", "operacoes", "direcao", "pessoas"],
+  vendas: ["financas", "marketing", "operacoes", "posvenda"],
+  marketing: ["vendas", "posvenda", "direcao"],
+  operacoes: ["vendas", "financas", "tecnologia", "posvenda"],
+  tecnologia: ["operacoes", "posvenda", "direcao"],
+  posvenda: ["operacoes", "tecnologia", "vendas", "marketing"],
+  pessoas: ["financas", "operacoes", "direcao"],
+  direcao: ["financas", "vendas", "marketing", "operacoes", "tecnologia", "posvenda", "pessoas", "secretaria"],
+  secretaria: ["direcao", "financas", "vendas", "marketing", "operacoes", "tecnologia", "posvenda", "pessoas"],
 };
-const ORDEM = ["direcao", "financas", "vendas", "marketing", "operacoes", "tecnologia", "secretaria"];
+const ORDEM = ["direcao", "financas", "vendas", "marketing", "operacoes", "tecnologia", "posvenda", "pessoas", "secretaria"];
 const CELULAS_POR_SETOR = 26;
 const CELULAS_NUCLEO = 60;
 const POEIRA = 120;
@@ -25,14 +27,16 @@ const TAU = Math.PI * 2;
 
 const reduzido = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-export function renderOrbita(root, { setores, diretores, avisosCfo, signal }) {
+export function renderOrbita(root, { setores, diretores, atividade = {}, signal }) {
   const porId = Object.fromEntries(setores.map((s) => [s.id, s]));
   const diretorDe = Object.fromEntries(diretores.map((d) => [d.setor_id, d]));
   const lista = ORDEM.filter((id) => porId[id]).concat(setores.map((s) => s.id).filter((id) => !ORDEM.includes(id)));
-  const status = (id) =>
-    id === "financas"
-      ? { rotulo: "Vigia ativo", tom: "live", energia: Math.min(100, 20 + avisosCfo * 5), texto: `${avisosCfo} avisos registrados` }
-      : { rotulo: "Estrutura criada", tom: "neutral", energia: 8, texto: "Regras do setor a definir" };
+  const status = (id) => {
+    const a = atividade[id];
+    if (!a || !a.acessivel) return { rotulo: "Acesso restrito", tom: "neutral", energia: 4, texto: "Dados sensíveis do setor" };
+    const tom = a.alertas ? "warn" : "live";
+    return { rotulo: a.alertas ? "Pede atenção" : "Vigiando", tom, energia: Math.min(100, 12 + a.alertas * 9 + a.tarefas * 3), texto: `${a.alertas} alertas · ${a.tarefas} tarefas` };
+  };
 
   // ------------------------------------------------ estrutura
   const canvas = h("canvas", { class: "orbita-canvas", "aria-hidden": "true" });
@@ -139,7 +143,7 @@ export function renderOrbita(root, { setores, diretores, avisosCfo, signal }) {
         h("span", { class: "orbita-conexoes-rotulo" }, "Conectado a"),
         h("div", { class: "orbita-conexoes-lista" },
           relacionados(id).map((r) => h("button", { class: "orbita-chip", type: "button", onclick: (e) => { e.stopPropagation(); ativar(r); } }, porId[r]?.sigla ?? r)))),
-      id === "financas" ? h("a", { class: "btn btn-primary orbita-acao", href: "#/cfo" }, "Abrir avisos do CFO") : null,
+      h("a", { class: "btn btn-primary orbita-acao", href: `#/setor/${id}` }, `Abrir ${s.nome}`),
     );
     cartao.hidden = false;
   }

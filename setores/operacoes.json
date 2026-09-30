@@ -1,0 +1,1352 @@
+{
+  "id": "operacoes",
+  "sigla": "COO",
+  "nome": "Operações",
+  "missao": "Transformar cada contrato vendido em uma entrega impecável na obra de alto padrão — no prazo, no escopo, com qualidade verificada e sem que a VOICE financie o projeto do cliente com o próprio caixa.",
+  "cor": "cyan",
+  "diretor": {
+    "titulo": "Diretor de Operações (COO)",
+    "nome": "Rogério Tavares Mendonça",
+    "perfil": "Persona fictícia. Engenheiro eletricista com cerca de 18 anos em implantação de sistemas integrados (automação, redes, AV e segurança) em residências e corporativos de alto padrão, convivendo diariamente com construtoras, arquitetos e outras disciplinas de obra. Estilo calmo e metódico: planeja por fases, protege a restrição da obra e não aceita 'pronto' sem checklist assinado.",
+    "especialidades": [
+      "Planejamento e controle de obras de integração de sistemas por fases (infraestrutura, equipamentos, instalação, programação/comissionamento, entrega)",
+      "Compras técnicas e logística de equipamentos importados e de alto valor",
+      "Coordenação de equipes próprias e terceirizadas em canteiro de obra",
+      "Gestão da qualidade de campo: checklists, certificação de cabeamento, punch list e aceite",
+      "Interface com construtora, arquiteto e demais disciplinas (elétrica, marcenaria, gesso, ar-condicionado)"
+    ],
+    "metodos": [
+      {
+        "nome": "Guia PMBOK — domínios de desempenho (planejamento, entrega, medição, incerteza)",
+        "autor": "Project Management Institute (PMI)",
+        "uso": "Kickoff formal com termo de abertura, EAP por fases do projeto VOICE, linha de base de cronograma e controle de mudanças de escopo (aditivos) antes de executar."
+      },
+      {
+        "nome": "Last Planner System (planejamento puxado e PPC)",
+        "autor": "Glenn Ballard e Greg Howell (Lean Construction Institute)",
+        "uso": "Planejamento semanal com a equipe de campo: só entra no plano da semana a atividade cujas restrições (tubulação liberada, parede fechada, energia no rack, equipamento em estoque) já foram removidas; mede-se o PPC (percentual de planos concluídos)."
+      },
+      {
+        "nome": "Teoria das Restrições / Corrente Crítica",
+        "autor": "Eliyahu M. Goldratt",
+        "uso": "Identifica a restrição de cada obra (normalmente a liberação da construtora ou o prazo de importação) e protege o prazo com pulmão de projeto em vez de folgas escondidas em cada tarefa."
+      },
+      {
+        "nome": "Ciclo PDCA e análise de causa raiz (5 porquês)",
+        "autor": "W. Edwards Deming / Taiichi Ohno (Sistema Toyota)",
+        "uso": "Toda ocorrência de retrabalho gera causa raiz e ação corretiva; as lições alimentam os padrões técnicos do CIO e os checklists de campo."
+      },
+      {
+        "nome": "Avaliação de fornecedores por custo total (TCO) e desempenho (OTIF)",
+        "autor": "Prática de gestão de suprimentos (skill vendor-review)",
+        "uso": "Fornecedores e distribuidores são avaliados por custo total (frete, seguro, prazo, garantia, suporte técnico no Brasil) e por entrega no prazo e completa."
+      }
+    ],
+    "principios": [
+      "Contrato sem kickoff não entra em campo: escopo, cronograma por fases e responsáveis definidos antes da primeira visita técnica.",
+      "Compra relevante de equipamentos só com a fase financeiramente coberta (Política V1 sec.10): valores recebidos devem cobrir os desembolsos da fase, incluindo custos e encargos diretos.",
+      "Exposição de caixa por obra preferencialmente zero ou positiva; acima de 10% do contrato só com autorização expressa da direção (Política V1 sec.11).",
+      "Não existe 'pronto' sem checklist: cabeamento certificado, rack identificado, sistemas testados e punch list zerado antes de chamar o cliente para o aceite.",
+      "Obra de cliente premium é também a casa do cliente: limpeza, proteção de acabamentos e pontualidade fazem parte da qualidade.",
+      "Retrabalho é custo do projeto e consome a provisão de risco de 2% (Política V1 sec.6); cada ocorrência é analisada sem caça a culpados.",
+      "Exceção não vira regra: toda saída de parâmetro tem responsável, justificativa, impacto financeiro e registro (Política V1 sec.14)."
+    ],
+    "como_aconselha": "Direto e orientado a fatos de campo. Responde com o status da obra em verde/amarelo/vermelho, a restrição atual, o impacto em prazo e caixa e uma recomendação clara com responsável e data. Traz números (PPC, dias de atraso, valor comprometido versus recebido) antes de opiniões.",
+    "perguntas_chave": [
+      "Qual é a restrição que hoje impede esta obra de avançar — e quem remove?",
+      "O que já recebemos deste contrato cobre os desembolsos da próxima fase?",
+      "A construtora confirmou a data de liberação das áreas (tubulação, forro, marcenaria)?",
+      "Algum equipamento crítico tem prazo de entrega maior que a folga do cronograma?",
+      "Quantas horas de retrabalho tivemos no mês e qual a causa mais frequente?",
+      "O cliente e o arquiteto receberam o status semanal da obra?",
+      "O que falta para o aceite e para a passagem ao Pós-venda?"
+    ],
+    "limites": [
+      "Não autoriza compra relevante com a fase sem cobertura financeira: exige autorização expressa da direção e registro (Política V1 sec.10 e sec.14).",
+      "Não aceita exposição de caixa acima de 10% do contrato sem autorização expressa da direção (Política V1 sec.11).",
+      "Não altera escopo, preço ou prazo contratual com o cliente sem aditivo aprovado pelo Comercial e pela direção.",
+      "Não substitui equipamento especificado por outro não homologado pelo CIO.",
+      "Não contrata terceiro novo sem documentação de segurança do trabalho (NR-10/NR-35 quando aplicável) e sem aprovação da direção."
+    ]
+  },
+  "equipe": [
+    {
+      "papel": "gerente_obra",
+      "nome": "Gerente de projetos de obra",
+      "reporta_a": "COO",
+      "responsabilidades": [
+        "Conduzir o kickoff com o Comercial, o cliente e o arquiteto/construtora e emitir o termo de abertura",
+        "Montar e manter o cronograma por fases e a lista de restrições de cada obra",
+        "Enviar o status semanal ao cliente e ao arquiteto parceiro",
+        "Controlar mudanças de escopo (aditivos) e acionar Comercial/Finanças",
+        "Conduzir o aceite do cliente e a passagem formal para o Pós-venda"
+      ],
+      "indicadores": [
+        "entregas_no_prazo",
+        "tempo_kickoff",
+        "ppc_semanal"
+      ]
+    },
+    {
+      "papel": "coordenador_campo",
+      "nome": "Coordenador de campo",
+      "reporta_a": "COO",
+      "responsabilidades": [
+        "Distribuir e acompanhar diariamente as equipes próprias e terceirizadas",
+        "Garantir segurança do trabalho (EPI, NR-10, NR-35) e proteção dos acabamentos do cliente",
+        "Aplicar os checklists de instalação e registrar evidências fotográficas",
+        "Registrar ocorrências e retrabalhos no mesmo dia"
+      ],
+      "indicadores": [
+        "ppc_semanal",
+        "horas_retrabalho",
+        "aprovacao_primeira_inspecao"
+      ]
+    },
+    {
+      "papel": "comprador",
+      "nome": "Comprador técnico e logística",
+      "reporta_a": "COO",
+      "responsabilidades": [
+        "Cotar com no mínimo três fornecedores quando possível e registrar o custo total (frete, seguro, prazo, garantia)",
+        "Verificar com Finanças a cobertura financeira da fase antes de emitir pedido relevante",
+        "Acompanhar prazos de entrega, importação e transporte até a obra ou o almoxarifado",
+        "Conferir recebimento (quantidade, modelo, número de série, nota fiscal) e registrar avarias"
+      ],
+      "indicadores": [
+        "compras_com_cobertura",
+        "otif_fornecedores"
+      ]
+    },
+    {
+      "papel": "tecnico_campo",
+      "nome": "Técnico instalador / líder de equipe",
+      "reporta_a": "coordenador_campo",
+      "responsabilidades": [
+        "Executar infraestrutura, passagem e terminação de cabos, montagem de racks e instalação de equipamentos conforme projeto executivo",
+        "Certificar o cabeamento e identificar pontos e patch panels conforme o padrão técnico",
+        "Preencher os checklists de instalação com fotos"
+      ],
+      "indicadores": [
+        "aprovacao_primeira_inspecao",
+        "horas_retrabalho"
+      ]
+    },
+    {
+      "papel": "inspetor_qualidade",
+      "nome": "Inspetor de qualidade e comissionamento",
+      "reporta_a": "COO",
+      "responsabilidades": [
+        "Inspecionar cada fase antes de liberar a seguinte (inspeção independente de quem executou)",
+        "Conduzir o comissionamento integrado (rede, Wi-Fi, AV, segurança, automação) e a punch list",
+        "Preparar a documentação de entrega para o aceite e para o Pós-venda"
+      ],
+      "indicadores": [
+        "aprovacao_primeira_inspecao",
+        "aceite_sem_pendencias"
+      ]
+    }
+  ],
+  "processos": [
+    {
+      "id": "execucao_obra",
+      "nome": "Execução da obra por fases",
+      "descricao": "Do contrato recebido do Comercial até o aceite do cliente e a passagem para o Pós-venda, com portões de qualidade entre as fases.",
+      "etapas": [
+        {
+          "id": "kickoff",
+          "nome": "Kickoff e termo de abertura",
+          "responsavel": "gerente_obra",
+          "criterio_saida": "Contrato, escopo vendido e projeto executivo recebidos; reunião de kickoff realizada com cliente/arquiteto; cronograma por fases, responsáveis e condições de pagamento por fase registrados."
+        },
+        {
+          "id": "infraestrutura",
+          "nome": "Infraestrutura e cabeamento",
+          "responsavel": "coordenador_campo",
+          "criterio_saida": "Tubulação e eletrocalhas conferidas, cabos passados, terminados, identificados e certificados; checklist de cabeamento aprovado pelo inspetor."
+        },
+        {
+          "id": "equipamentos",
+          "nome": "Equipamentos (compra e recebimento)",
+          "responsavel": "comprador",
+          "criterio_saida": "Equipamentos da fase comprados com cobertura financeira confirmada, recebidos e conferidos (modelo, série, NF)."
+        },
+        {
+          "id": "instalacao",
+          "nome": "Instalação",
+          "responsavel": "tecnico_campo",
+          "criterio_saida": "Racks montados, equipamentos instalados e energizados, checklist de instalação aprovado com fotos."
+        },
+        {
+          "id": "comissionamento",
+          "nome": "Programação e comissionamento",
+          "responsavel": "inspetor_qualidade",
+          "criterio_saida": "Sistemas programados e testados de forma integrada; punch list interna zerada; as-built solicitado à Tecnologia."
+        },
+        {
+          "id": "entrega",
+          "nome": "Entrega técnica e aceite",
+          "responsavel": "gerente_obra",
+          "criterio_saida": "Demonstração ao cliente realizada, termo de aceite assinado, pendências residuais com data acordada."
+        },
+        {
+          "id": "passagem_posvenda",
+          "nome": "Passagem para o Pós-venda",
+          "responsavel": "gerente_obra",
+          "criterio_saida": "Dossiê de entrega (as-built, garantias, contatos, referência do cofre de credenciais) transferido ao Pós-venda e obra encerrada."
+        }
+      ]
+    },
+    {
+      "id": "compras_logistica",
+      "nome": "Compras e logística",
+      "descricao": "Da requisição da obra à conferência do material, com verificação obrigatória de cobertura financeira antes de compra relevante (Política V1 sec.10).",
+      "etapas": [
+        {
+          "id": "requisicao",
+          "nome": "Requisição",
+          "responsavel": "gerente_obra",
+          "criterio_saida": "Itens, quantidades, fase e data de necessidade na obra definidos a partir do projeto executivo."
+        },
+        {
+          "id": "cotacao",
+          "nome": "Cotação e custo total",
+          "responsavel": "comprador",
+          "criterio_saida": "Cotações comparadas por custo total (preço, frete, seguro, prazo, garantia) e somente itens homologados."
+        },
+        {
+          "id": "cobertura",
+          "nome": "Verificação de cobertura financeira",
+          "responsavel": "comprador",
+          "criterio_saida": "Finanças confirma que o recebido cobre os desembolsos da fase, ou a direção autoriza exceção por escrito."
+        },
+        {
+          "id": "pedido",
+          "nome": "Pedido e acompanhamento",
+          "responsavel": "comprador",
+          "criterio_saida": "Pedido emitido com prazo de entrega confirmado pelo fornecedor e acompanhado até a chegada."
+        },
+        {
+          "id": "recebimento",
+          "nome": "Recebimento e conferência",
+          "responsavel": "comprador",
+          "criterio_saida": "Material conferido contra pedido e NF, números de série registrados, avarias reportadas."
+        }
+      ]
+    },
+    {
+      "id": "qualidade_ocorrencias",
+      "nome": "Qualidade, ocorrências e retrabalho",
+      "descricao": "Checklists por fase, registro de ocorrências de campo e ciclo PDCA de correção e prevenção.",
+      "etapas": [
+        {
+          "id": "registro",
+          "nome": "Registro da ocorrência",
+          "responsavel": "coordenador_campo",
+          "criterio_saida": "Ocorrência registrada no mesmo dia com obra, categoria, gravidade e fotos."
+        },
+        {
+          "id": "analise",
+          "nome": "Análise de causa raiz",
+          "responsavel": "inspetor_qualidade",
+          "criterio_saida": "Causa raiz (5 porquês) e origem (equipe, terceiro, fornecedor, outra disciplina, projeto) definidas."
+        },
+        {
+          "id": "correcao",
+          "nome": "Correção",
+          "responsavel": "coordenador_campo",
+          "criterio_saida": "Ação corretiva executada e custo/horas de retrabalho apurados."
+        },
+        {
+          "id": "verificacao",
+          "nome": "Verificação e prevenção",
+          "responsavel": "inspetor_qualidade",
+          "criterio_saida": "Correção verificada; se aplicável, checklist ou padrão técnico atualizado com a lição aprendida."
+        }
+      ]
+    }
+  ],
+  "registros": [
+    {
+      "tipo": "obra",
+      "nome": "Obra",
+      "descricao": "Projeto contratado em execução, do kickoff à passagem para o Pós-venda.",
+      "responsavel": "gerente_obra",
+      "estados": [
+        "kickoff",
+        "infraestrutura",
+        "equipamentos",
+        "instalacao",
+        "comissionamento",
+        "aceite",
+        "concluida",
+        "suspensa",
+        "cancelada"
+      ],
+      "estado_inicial": "kickoff",
+      "estados_finais": [
+        "concluida",
+        "cancelada"
+      ],
+      "campos": [
+        {
+          "id": "cliente",
+          "rotulo": "Cliente",
+          "tipo": "texto",
+          "obrigatorio": true
+        },
+        {
+          "id": "contrato_ref",
+          "rotulo": "Referência do contrato (Comercial)",
+          "tipo": "texto",
+          "obrigatorio": true
+        },
+        {
+          "id": "endereco_obra",
+          "rotulo": "Endereço da obra",
+          "tipo": "texto",
+          "obrigatorio": true
+        },
+        {
+          "id": "arquiteto_parceiro",
+          "rotulo": "Arquiteto / designer / construtora parceira",
+          "tipo": "texto",
+          "obrigatorio": false
+        },
+        {
+          "id": "escopo_resumo",
+          "rotulo": "Escopo contratado (sistemas e ambientes)",
+          "tipo": "texto_longo",
+          "obrigatorio": true
+        },
+        {
+          "id": "valor_contrato",
+          "rotulo": "Valor do contrato",
+          "tipo": "dinheiro",
+          "obrigatorio": true
+        },
+        {
+          "id": "valor_recebido",
+          "rotulo": "Valor recebido até agora",
+          "tipo": "dinheiro",
+          "obrigatorio": false
+        },
+        {
+          "id": "faixa_exposicao",
+          "rotulo": "Exposição de caixa da obra (recebido x comprometido)",
+          "tipo": "opcao",
+          "opcoes": [
+            "Zero ou positiva",
+            "Negativa até 10% do contrato",
+            "Negativa acima de 10% — autorizada pela direção",
+            "Negativa acima de 10% — sem autorização"
+          ],
+          "obrigatorio": false
+        },
+        {
+          "id": "data_kickoff",
+          "rotulo": "Data do kickoff",
+          "tipo": "data",
+          "obrigatorio": false
+        },
+        {
+          "id": "liberacao_construtora",
+          "rotulo": "Próxima liberação de área pela construtora",
+          "tipo": "data",
+          "obrigatorio": false
+        },
+        {
+          "id": "data_entrega_prevista",
+          "rotulo": "Entrega técnica prevista (linha de base)",
+          "tipo": "data",
+          "obrigatorio": false
+        },
+        {
+          "id": "restricao_atual",
+          "rotulo": "Restrição atual da obra",
+          "tipo": "texto",
+          "obrigatorio": false
+        },
+        {
+          "id": "pct_avanco",
+          "rotulo": "Avanço físico (%)",
+          "tipo": "numero",
+          "obrigatorio": false
+        },
+        {
+          "id": "data_aceite",
+          "rotulo": "Data do aceite do cliente",
+          "tipo": "data",
+          "obrigatorio": false
+        },
+        {
+          "id": "termo_aceite_assinado",
+          "rotulo": "Termo de aceite assinado",
+          "tipo": "sim_nao",
+          "obrigatorio": false
+        },
+        {
+          "id": "passagem_posvenda",
+          "rotulo": "Dossiê entregue ao Pós-venda",
+          "tipo": "sim_nao",
+          "obrigatorio": false
+        }
+      ]
+    },
+    {
+      "tipo": "compra",
+      "nome": "Compra",
+      "descricao": "Requisição e pedido de equipamentos, materiais ou serviços de terceiros para uma obra, com controle de cobertura financeira da fase.",
+      "responsavel": "comprador",
+      "estados": [
+        "requisicao",
+        "cotacao",
+        "aguardando_cobertura",
+        "aprovada",
+        "pedido_emitido",
+        "em_transito",
+        "recebida",
+        "conferida",
+        "cancelada"
+      ],
+      "estado_inicial": "requisicao",
+      "estados_finais": [
+        "conferida",
+        "cancelada"
+      ],
+      "campos": [
+        {
+          "id": "obra_ref",
+          "rotulo": "Obra",
+          "tipo": "texto",
+          "obrigatorio": true
+        },
+        {
+          "id": "fase",
+          "rotulo": "Fase da obra",
+          "tipo": "opcao",
+          "opcoes": [
+            "Infraestrutura/cabeamento",
+            "Equipamentos",
+            "Instalação",
+            "Programação/comissionamento",
+            "Entrega"
+          ],
+          "obrigatorio": true
+        },
+        {
+          "id": "itens",
+          "rotulo": "Itens e quantidades (somente homologados)",
+          "tipo": "texto_longo",
+          "obrigatorio": true
+        },
+        {
+          "id": "fornecedor",
+          "rotulo": "Fornecedor / distribuidor",
+          "tipo": "texto",
+          "obrigatorio": false
+        },
+        {
+          "id": "qtd_cotacoes",
+          "rotulo": "Número de cotações",
+          "tipo": "numero",
+          "obrigatorio": false
+        },
+        {
+          "id": "compra_relevante",
+          "rotulo": "Compra relevante de equipamentos",
+          "tipo": "sim_nao",
+          "obrigatorio": true
+        },
+        {
+          "id": "cobertura_financeira",
+          "rotulo": "Cobertura financeira da fase (Política V1 sec.10)",
+          "tipo": "opcao",
+          "opcoes": [
+            "Coberta — recebido cobre os desembolsos da fase",
+            "Exceção autorizada pela direção",
+            "Não coberta"
+          ],
+          "obrigatorio": false
+        },
+        {
+          "id": "data_necessidade",
+          "rotulo": "Data de necessidade na obra",
+          "tipo": "data",
+          "obrigatorio": true
+        },
+        {
+          "id": "data_prevista_entrega",
+          "rotulo": "Entrega prometida pelo fornecedor",
+          "tipo": "data",
+          "obrigatorio": false
+        },
+        {
+          "id": "nota_fiscal",
+          "rotulo": "Número da nota fiscal",
+          "tipo": "texto",
+          "obrigatorio": false
+        },
+        {
+          "id": "conferencia_ok",
+          "rotulo": "Conferência sem divergência",
+          "tipo": "sim_nao",
+          "obrigatorio": false
+        }
+      ]
+    },
+    {
+      "tipo": "ocorrencia",
+      "nome": "Ocorrência de obra",
+      "descricao": "Problema de campo: retrabalho, avaria, material com defeito, interferência de outra disciplina, falha de programação ou reclamação do cliente/arquiteto.",
+      "responsavel": "coordenador_campo",
+      "estados": [
+        "aberta",
+        "em_analise",
+        "em_correcao",
+        "verificacao",
+        "encerrada",
+        "cancelada"
+      ],
+      "estado_inicial": "aberta",
+      "estados_finais": [
+        "encerrada",
+        "cancelada"
+      ],
+      "campos": [
+        {
+          "id": "obra_ref",
+          "rotulo": "Obra",
+          "tipo": "texto",
+          "obrigatorio": true
+        },
+        {
+          "id": "categoria",
+          "rotulo": "Categoria",
+          "tipo": "opcao",
+          "opcoes": [
+            "Retrabalho de instalação",
+            "Dano ou avaria em acabamento",
+            "Material com defeito",
+            "Interferência de outra disciplina",
+            "Falha de programação",
+            "Segurança do trabalho",
+            "Reclamação do cliente ou arquiteto"
+          ],
+          "obrigatorio": true
+        },
+        {
+          "id": "gravidade",
+          "rotulo": "Gravidade",
+          "tipo": "opcao",
+          "opcoes": [
+            "Baixa",
+            "Média",
+            "Alta",
+            "Crítica"
+          ],
+          "obrigatorio": true
+        },
+        {
+          "id": "descricao",
+          "rotulo": "Descrição e evidências",
+          "tipo": "texto_longo",
+          "obrigatorio": true
+        },
+        {
+          "id": "origem",
+          "rotulo": "Origem",
+          "tipo": "opcao",
+          "opcoes": [
+            "Equipe própria",
+            "Terceiro contratado",
+            "Fornecedor",
+            "Outra disciplina da obra",
+            "Projeto executivo"
+          ],
+          "obrigatorio": false
+        },
+        {
+          "id": "causa_raiz",
+          "rotulo": "Causa raiz (5 porquês)",
+          "tipo": "texto_longo",
+          "obrigatorio": false
+        },
+        {
+          "id": "acao_corretiva",
+          "rotulo": "Ação corretiva e preventiva",
+          "tipo": "texto_longo",
+          "obrigatorio": false
+        },
+        {
+          "id": "horas_retrabalho",
+          "rotulo": "Horas de retrabalho",
+          "tipo": "numero",
+          "obrigatorio": false
+        },
+        {
+          "id": "custo_retrabalho",
+          "rotulo": "Custo do retrabalho",
+          "tipo": "dinheiro",
+          "obrigatorio": false
+        }
+      ]
+    },
+    {
+      "tipo": "checklist",
+      "nome": "Checklist de instalação e qualidade",
+      "descricao": "Inspeção de uma fase da obra (portão de qualidade) com itens verificados, não conformidades e evidências.",
+      "responsavel": "inspetor_qualidade",
+      "estados": [
+        "pendente",
+        "em_execucao",
+        "reprovado",
+        "aprovado",
+        "dispensado"
+      ],
+      "estado_inicial": "pendente",
+      "estados_finais": [
+        "aprovado",
+        "dispensado"
+      ],
+      "campos": [
+        {
+          "id": "obra_ref",
+          "rotulo": "Obra",
+          "tipo": "texto",
+          "obrigatorio": true
+        },
+        {
+          "id": "tipo_checklist",
+          "rotulo": "Tipo de checklist",
+          "tipo": "opcao",
+          "opcoes": [
+            "Pré-infraestrutura (tubulação e eletrocalhas)",
+            "Cabeamento e certificação",
+            "Rack, energia e aterramento",
+            "Instalação de equipamentos",
+            "Programação e comissionamento",
+            "Qualidade pré-entrega (punch list)",
+            "Aceite do cliente"
+          ],
+          "obrigatorio": true
+        },
+        {
+          "id": "tentativa",
+          "rotulo": "Inspeção nº",
+          "tipo": "numero",
+          "obrigatorio": false
+        },
+        {
+          "id": "itens_nao_conformes",
+          "rotulo": "Itens não conformes",
+          "tipo": "numero",
+          "obrigatorio": false
+        },
+        {
+          "id": "evidencias_fotos",
+          "rotulo": "Evidências fotográficas anexadas",
+          "tipo": "sim_nao",
+          "obrigatorio": false
+        },
+        {
+          "id": "executado_por",
+          "rotulo": "Equipe que executou",
+          "tipo": "texto",
+          "obrigatorio": false
+        },
+        {
+          "id": "observacoes",
+          "rotulo": "Observações e pendências",
+          "tipo": "texto_longo",
+          "obrigatorio": false
+        }
+      ]
+    }
+  ],
+  "rotinas": [
+    {
+      "id": "reuniao_diaria_campo",
+      "nome": "Alinhamento diário de campo (15 minutos)",
+      "frequencia": "diaria",
+      "responsavel": "coordenador_campo",
+      "passos": [
+        "Confirmar equipes, veículos e materiais de cada obra do dia",
+        "Verificar restrições do dia (área liberada, energia, acesso ao condomínio)",
+        "Lembrar EPI e requisitos NR-10/NR-35 das atividades do dia",
+        "Registrar no VEOS ocorrências do dia anterior ainda não lançadas"
+      ]
+    },
+    {
+      "id": "planejamento_semanal",
+      "nome": "Planejamento semanal puxado (Last Planner)",
+      "frequencia": "semanal",
+      "responsavel": "gerente_obra",
+      "passos": [
+        "Medir o PPC da semana anterior e registrar as causas de não cumprimento",
+        "Revisar o plano de médio prazo (4 a 6 semanas) e a lista de restrições por obra",
+        "Remover restrições: cobrar liberações da construtora, compras e projetos pendentes",
+        "Comprometer com a equipe apenas as atividades sem restrição para a semana seguinte"
+      ]
+    },
+    {
+      "id": "revisao_compras_cobertura",
+      "nome": "Revisão de compras e cobertura financeira",
+      "frequencia": "semanal",
+      "responsavel": "comprador",
+      "passos": [
+        "Listar compras relevantes previstas para os próximos 30 dias por obra e fase",
+        "Conferir com Finanças o recebido de cada contrato versus os desembolsos da fase (Política V1 sec.10)",
+        "Encaminhar à direção apenas as exceções, com justificativa e impacto financeiro (sec.14)",
+        "Cobrar fornecedores com entregas atrasadas e reprogramar a obra se necessário"
+      ]
+    },
+    {
+      "id": "status_cliente",
+      "nome": "Status semanal para cliente e arquiteto",
+      "frequencia": "semanal",
+      "responsavel": "gerente_obra",
+      "passos": [
+        "Atualizar avanço físico, fase atual e restrição de cada obra",
+        "Enviar status (verde/amarelo/vermelho) ao cliente e ao arquiteto parceiro",
+        "Registrar pedidos de mudança recebidos e encaminhar ao Comercial como aditivo"
+      ]
+    },
+    {
+      "id": "auditoria_qualidade",
+      "nome": "Auditoria de qualidade em campo",
+      "frequencia": "quinzenal",
+      "responsavel": "inspetor_qualidade",
+      "passos": [
+        "Visitar sem aviso ao menos duas obras em andamento",
+        "Verificar identificação de cabos, organização de rack, limpeza e proteção de acabamentos",
+        "Registrar não conformidades como ocorrência e orientar a equipe no local"
+      ]
+    },
+    {
+      "id": "revisao_operacional_mensal",
+      "nome": "Revisão operacional mensal (PDCA)",
+      "frequencia": "mensal",
+      "responsavel": "COO",
+      "passos": [
+        "Apresentar à direção os indicadores do setor e a carteira de obras",
+        "Analisar ocorrências do mês por categoria e origem; escolher uma causa para eliminar",
+        "Comparar o custo de retrabalho com a provisão de risco de 2% (Política V1 sec.6)",
+        "Avaliar fornecedores (OTIF, avarias, suporte) e terceiros de campo",
+        "Enviar lições aprendidas à Tecnologia para atualização de padrões"
+      ]
+    }
+  ],
+  "indicadores": [
+    {
+      "id": "entregas_no_prazo",
+      "nome": "Entregas técnicas no prazo",
+      "formula": "Obras com entrega técnica até a data de linha de base ÷ obras entregues no mês × 100",
+      "meta": "≥ 90%",
+      "frequencia": "mensal",
+      "status": "PROPOSTA"
+    },
+    {
+      "id": "tempo_kickoff",
+      "nome": "Tempo até o kickoff",
+      "formula": "Dias úteis entre o contrato assinado recebido do Comercial e a reunião de kickoff (média)",
+      "meta": "≤ 5 dias úteis",
+      "frequencia": "mensal",
+      "status": "PROPOSTA"
+    },
+    {
+      "id": "ppc_semanal",
+      "nome": "PPC — percentual de planos concluídos",
+      "formula": "Atividades comprometidas e concluídas na semana ÷ atividades comprometidas × 100",
+      "meta": "≥ 80%",
+      "frequencia": "semanal",
+      "status": "PROPOSTA"
+    },
+    {
+      "id": "compras_com_cobertura",
+      "nome": "Compras relevantes com fase coberta",
+      "formula": "Compras relevantes emitidas com cobertura confirmada ou exceção autorizada ÷ compras relevantes emitidas × 100",
+      "meta": "100%",
+      "frequencia": "mensal",
+      "status": "POLITICA"
+    },
+    {
+      "id": "exposicao_caixa_obras",
+      "nome": "Obras com exposição acima de 10% sem autorização",
+      "formula": "Quantidade de obras ativas com exposição negativa acima de 10% do contrato sem autorização expressa da direção",
+      "meta": "0 (exposição preferencialmente zero ou positiva)",
+      "frequencia": "semanal",
+      "status": "POLITICA"
+    },
+    {
+      "id": "custo_retrabalho_provisao",
+      "nome": "Retrabalho frente à provisão de risco",
+      "formula": "Custo de retrabalho, assistência e perdas da obra ÷ receita líquida da obra × 100",
+      "meta": "≤ 2% (provisão de risco) — PROPOSTA: usa como referência a provisão de risco de 2% (Política V1 sec.6); a política não fixa meta para este custo (sec.15 prevê revisar com dados reais)",
+      "frequencia": "mensal",
+      "status": "PROPOSTA"
+    },
+    {
+      "id": "horas_retrabalho",
+      "nome": "Horas de retrabalho",
+      "formula": "Horas de retrabalho ÷ horas totais de campo × 100",
+      "meta": "≤ 5%",
+      "frequencia": "mensal",
+      "status": "PROPOSTA"
+    },
+    {
+      "id": "aprovacao_primeira_inspecao",
+      "nome": "Aprovação na primeira inspeção",
+      "formula": "Checklists aprovados na inspeção nº 1 ÷ checklists concluídos × 100",
+      "meta": "≥ 90%",
+      "frequencia": "mensal",
+      "status": "PROPOSTA"
+    },
+    {
+      "id": "otif_fornecedores",
+      "nome": "OTIF de fornecedores",
+      "formula": "Pedidos entregues no prazo prometido e completos, sem avaria ÷ pedidos recebidos × 100",
+      "meta": "≥ 95%",
+      "frequencia": "mensal",
+      "status": "PROPOSTA"
+    },
+    {
+      "id": "aceite_sem_pendencias",
+      "nome": "Aceite sem pendências",
+      "formula": "Termos de aceite assinados sem punch list residual ÷ aceites do mês × 100",
+      "meta": "≥ 80%",
+      "frequencia": "mensal",
+      "status": "PROPOSTA"
+    }
+  ],
+  "sentinelas": [
+    {
+      "id": "OPS_COMPRA_SEM_COBERTURA",
+      "titulo": "Compra aguardando confirmação de cobertura financeira",
+      "severidade": "ALTO",
+      "status": "POLITICA",
+      "gatilho": {
+        "tipo": "faltando",
+        "registro": "compra",
+        "campo": "cobertura_financeira",
+        "filtros": [
+          {
+            "campo": "estado",
+            "em": [
+              "aguardando_cobertura",
+              "aprovada",
+              "pedido_emitido"
+            ]
+          }
+        ]
+      },
+      "mensagem": "A compra {{titulo}} está sem verificação de cobertura financeira da fase. Compra relevante só com os valores recebidos cobrindo os desembolsos da fase.",
+      "acoes": [
+        {
+          "tipo": "tarefa",
+          "titulo": "Confirmar com Finanças a cobertura da fase antes do pedido",
+          "papel": "comprador",
+          "prazo_dias": 1
+        },
+        {
+          "tipo": "rascunho",
+          "modelo": "solicitacao_cobertura"
+        }
+      ],
+      "fonte": "Política V1 sec.10"
+    },
+    {
+      "id": "OPS_PEDIDO_NAO_COBERTO",
+      "titulo": "Pedido emitido com fase não coberta",
+      "severidade": "CRITICO",
+      "status": "POLITICA",
+      "gatilho": {
+        "tipo": "contagem",
+        "registro": "compra",
+        "filtros": [
+          {
+            "campo": "cobertura_financeira",
+            "igual": "Não coberta"
+          },
+          {
+            "campo": "estado",
+            "em": [
+              "pedido_emitido",
+              "em_transito",
+              "recebida"
+            ]
+          }
+        ],
+        "janela_dias": 30,
+        "data_campo": "atualizado_em",
+        "operador": ">=",
+        "valor": 1
+      },
+      "mensagem": "{{total}} pedido(s) emitido(s) nos últimos 30 dias com a fase sem cobertura financeira e sem autorização da direção. A VOICE não deve financiar a execução com caixa próprio.",
+      "acoes": [
+        {
+          "tipo": "notificar",
+          "para": "direcao"
+        },
+        {
+          "tipo": "tarefa",
+          "titulo": "Registrar justificativa, impacto financeiro e responsável pela exceção",
+          "papel": "comprador",
+          "prazo_dias": 1
+        }
+      ],
+      "fonte": "Política V1 sec.10 e sec.14"
+    },
+    {
+      "id": "OPS_EXPOSICAO_ACIMA_10",
+      "titulo": "Obra com exposição de caixa acima de 10% sem autorização",
+      "severidade": "CRITICO",
+      "status": "POLITICA",
+      "gatilho": {
+        "tipo": "contagem",
+        "registro": "obra",
+        "filtros": [
+          {
+            "campo": "faixa_exposicao",
+            "igual": "Negativa acima de 10% — sem autorização"
+          },
+          {
+            "campo": "estado",
+            "nao_em": [
+              "concluida",
+              "cancelada"
+            ]
+          }
+        ],
+        "janela_dias": 60,
+        "data_campo": "atualizado_em",
+        "operador": ">=",
+        "valor": 1
+      },
+      "mensagem": "{{total}} obra(s) com exposição financeira acima de 10% do contrato sem autorização expressa da direção.",
+      "acoes": [
+        {
+          "tipo": "notificar",
+          "para": "direcao"
+        },
+        {
+          "tipo": "notificar",
+          "para": "COO"
+        },
+        {
+          "tipo": "tarefa",
+          "titulo": "Suspender novas compras da obra até regularizar recebimentos ou obter autorização",
+          "papel": "gerente_obra",
+          "prazo_dias": 1
+        }
+      ],
+      "fonte": "Política V1 sec.11"
+    },
+    {
+      "id": "OPS_KICKOFF_ATRASADO",
+      "titulo": "Contrato recebido sem kickoff",
+      "severidade": "MEDIO",
+      "status": "PROPOSTA",
+      "gatilho": {
+        "tipo": "parado",
+        "registro": "obra",
+        "filtros": [
+          {
+            "campo": "estado",
+            "igual": "kickoff"
+          }
+        ],
+        "dias": 7,
+        "data_campo": "criado_em"
+      },
+      "mensagem": "A obra {{titulo}} foi recebida do Comercial há {{dias}} dias e ainda não teve kickoff. O cliente premium espera ver o início organizado.",
+      "acoes": [
+        {
+          "tipo": "tarefa",
+          "titulo": "Agendar kickoff com cliente, arquiteto e Comercial",
+          "papel": "gerente_obra",
+          "prazo_dias": 2
+        },
+        {
+          "tipo": "rascunho",
+          "modelo": "convite_kickoff"
+        }
+      ],
+      "fonte": "PROPOSTA — padrão de mercado (PMBOK: termo de abertura antes da execução)"
+    },
+    {
+      "id": "OPS_ENTREGA_EM_RISCO",
+      "titulo": "Entrega técnica vencendo ou vencida",
+      "severidade": "ALTO",
+      "status": "PROPOSTA",
+      "gatilho": {
+        "tipo": "vencido",
+        "registro": "obra",
+        "campo": "data_entrega_prevista",
+        "filtros": [
+          {
+            "campo": "estado",
+            "nao_em": [
+              "aceite",
+              "suspensa"
+            ]
+          }
+        ],
+        "antecedencia_dias": 10
+      },
+      "mensagem": "A entrega técnica da obra {{titulo}} está a {{dias}} dia(s) da linha de base (ou já passou) e a obra ainda não chegou ao aceite.",
+      "acoes": [
+        {
+          "tipo": "tarefa",
+          "titulo": "Reavaliar restrição e caminho crítico; propor plano de recuperação",
+          "papel": "gerente_obra",
+          "prazo_dias": 2
+        },
+        {
+          "tipo": "rascunho",
+          "modelo": "status_semanal_cliente"
+        },
+        {
+          "tipo": "notificar",
+          "para": "COO"
+        }
+      ],
+      "fonte": "PROPOSTA — padrão de mercado (Corrente Crítica: consumo do pulmão de projeto)"
+    },
+    {
+      "id": "OPS_FORNECEDOR_ATRASADO",
+      "titulo": "Entrega de fornecedor atrasada",
+      "severidade": "MEDIO",
+      "status": "PROPOSTA",
+      "gatilho": {
+        "tipo": "vencido",
+        "registro": "compra",
+        "campo": "data_prevista_entrega",
+        "filtros": [
+          {
+            "campo": "estado",
+            "em": [
+              "pedido_emitido",
+              "em_transito"
+            ]
+          }
+        ],
+        "antecedencia_dias": 0
+      },
+      "mensagem": "O pedido {{titulo}} passou da data de entrega prometida pelo fornecedor ({{dias}} dia(s)).",
+      "acoes": [
+        {
+          "tipo": "rascunho",
+          "modelo": "cobranca_fornecedor"
+        },
+        {
+          "tipo": "tarefa",
+          "titulo": "Obter nova data do fornecedor e avaliar impacto no cronograma da obra",
+          "papel": "comprador",
+          "prazo_dias": 1
+        }
+      ],
+      "fonte": "PROPOSTA — padrão de mercado (OTIF, skill vendor-review)"
+    },
+    {
+      "id": "OPS_COMPRA_PRAZO_CURTO",
+      "titulo": "Material sem pedido perto da data de necessidade",
+      "severidade": "ALTO",
+      "status": "PROPOSTA",
+      "gatilho": {
+        "tipo": "vencido",
+        "registro": "compra",
+        "campo": "data_necessidade",
+        "filtros": [
+          {
+            "campo": "estado",
+            "em": [
+              "requisicao",
+              "cotacao",
+              "aguardando_cobertura",
+              "aprovada"
+            ]
+          }
+        ],
+        "antecedencia_dias": 15
+      },
+      "mensagem": "A compra {{titulo}} ainda não tem pedido e o material é necessário na obra em {{dias}} dia(s). Prazo de entrega pode virar a restrição da obra.",
+      "acoes": [
+        {
+          "tipo": "tarefa",
+          "titulo": "Fechar cotação e cobertura ou replanejar a atividade com a equipe",
+          "papel": "comprador",
+          "prazo_dias": 1
+        },
+        {
+          "tipo": "notificar",
+          "para": "gerente_obra"
+        }
+      ],
+      "fonte": "PROPOSTA — padrão de mercado (Last Planner: remoção de restrições no médio prazo)"
+    },
+    {
+      "id": "OPS_OCORRENCIA_GRAVE_PARADA",
+      "titulo": "Ocorrência grave sem andamento",
+      "severidade": "ALTO",
+      "status": "PROPOSTA",
+      "gatilho": {
+        "tipo": "parado",
+        "registro": "ocorrencia",
+        "filtros": [
+          {
+            "campo": "gravidade",
+            "em": [
+              "Alta",
+              "Crítica"
+            ]
+          },
+          {
+            "campo": "estado",
+            "nao_em": [
+              "encerrada",
+              "cancelada"
+            ]
+          }
+        ],
+        "dias": 2
+      },
+      "mensagem": "A ocorrência {{titulo}} (gravidade alta/crítica) está sem atualização há {{dias}} dias.",
+      "acoes": [
+        {
+          "tipo": "tarefa",
+          "titulo": "Definir ação corretiva e comunicar o cliente se houver impacto visível",
+          "papel": "coordenador_campo",
+          "prazo_dias": 1
+        },
+        {
+          "tipo": "rascunho",
+          "modelo": "comunicado_ocorrencia"
+        },
+        {
+          "tipo": "notificar",
+          "para": "COO"
+        }
+      ],
+      "fonte": "PROPOSTA — padrão de mercado (PDCA / gestão de não conformidades)"
+    },
+    {
+      "id": "OPS_RETRABALHO_RECORRENTE",
+      "titulo": "Retrabalho recorrente no mês",
+      "severidade": "MEDIO",
+      "status": "PROPOSTA",
+      "gatilho": {
+        "tipo": "contagem",
+        "registro": "ocorrencia",
+        "filtros": [
+          {
+            "campo": "categoria",
+            "igual": "Retrabalho de instalação"
+          }
+        ],
+        "janela_dias": 30,
+        "data_campo": "criado_em",
+        "operador": ">=",
+        "valor": 3
+      },
+      "mensagem": "{{total}} ocorrências de retrabalho de instalação nos últimos 30 dias. Retrabalho consome a provisão de risco de 2% do projeto.",
+      "acoes": [
+        {
+          "tipo": "tarefa",
+          "titulo": "Analisar causa comum (5 porquês) e atualizar checklist ou treinamento",
+          "papel": "inspetor_qualidade",
+          "prazo_dias": 5
+        },
+        {
+          "tipo": "notificar",
+          "para": "COO"
+        }
+      ],
+      "fonte": "PROPOSTA — padrão de mercado (Lean: eliminação de desperdício de retrabalho); referência Política V1 sec.6"
+    },
+    {
+      "id": "OPS_ACEITE_PENDENTE",
+      "titulo": "Obra parada aguardando aceite",
+      "severidade": "MEDIO",
+      "status": "PROPOSTA",
+      "gatilho": {
+        "tipo": "parado",
+        "registro": "obra",
+        "filtros": [
+          {
+            "campo": "estado",
+            "igual": "aceite"
+          }
+        ],
+        "dias": 7
+      },
+      "mensagem": "A obra {{titulo}} está há {{dias}} dias aguardando aceite. Sem aceite não há parcela final (10%) nem passagem ao Pós-venda.",
+      "acoes": [
+        {
+          "tipo": "tarefa",
+          "titulo": "Agendar demonstração final e coletar o termo de aceite",
+          "papel": "gerente_obra",
+          "prazo_dias": 3
+        },
+        {
+          "tipo": "rascunho",
+          "modelo": "termo_aceite"
+        }
+      ],
+      "fonte": "PROPOSTA — padrão de mercado (PMBOK: encerramento formal); referência Política V1 sec.10 (parcela na entrega técnica)"
+    }
+  ],
+  "modelos": [
+    {
+      "id": "convite_kickoff",
+      "tipo": "email",
+      "assunto": "VOICE | Início do projeto {{titulo}} — reunião de kickoff",
+      "corpo": "Olá, {{cliente}}.\n\nObrigado pela confiança na VOICE Ambientes Inteligentes. Para iniciarmos o projeto {{titulo}} com organização, propomos uma reunião de kickoff de 45 minutos com você e com o escritório {{arquiteto_parceiro}}.\n\nPauta:\n1. Escopo contratado e ambientes atendidos\n2. Cronograma por fases (infraestrutura, equipamentos, instalação, programação/comissionamento e entrega)\n3. Interfaces com a construtora e demais disciplinas\n4. Pontos de contato, horários de acesso à obra e regras do condomínio\n5. Marcos de pagamento vinculados às fases\n\nSeu gerente de projeto será {{responsavel}}. Sugerimos as datas abaixo — fique à vontade para indicar outra.\n\nAtenciosamente,\nVOICE Ambientes Inteligentes"
+    },
+    {
+      "id": "status_semanal_cliente",
+      "tipo": "email",
+      "assunto": "VOICE | Status semanal — {{titulo}}",
+      "corpo": "Olá, {{cliente}}.\n\nSegue o status do projeto {{titulo}}:\n\nSituação geral: [verde / amarelo / vermelho]\nFase atual: {{estado}}\nAvanço físico: {{pct_avanco}}%\nEntrega técnica prevista: {{data_entrega_prevista}}\n\nConcluído nesta semana:\n- ...\n\nPróxima semana:\n- ...\n\nDependências de terceiros: {{restricao_atual}}\n\nQualquer dúvida, estou à disposição.\n{{responsavel}} — VOICE Ambientes Inteligentes"
+    },
+    {
+      "id": "solicitacao_cobertura",
+      "tipo": "documento",
+      "assunto": "Verificação de cobertura financeira — {{titulo}}",
+      "corpo": "Solicitação de verificação de cobertura (Política V1 sec.10)\n\nObra: {{obra_ref}}\nFase: {{fase}}\nCompra: {{titulo}}\nFornecedor: {{fornecedor}}\nValor da compra: {{valor}}\nData de necessidade na obra: {{data_necessidade}}\n\nPara Finanças preencher:\n- Valor já recebido do contrato: R$ ...\n- Desembolsos da fase (equipamentos, frete, seguro, mão de obra, encargos): R$ ...\n- Resultado: [ ] Coberta  [ ] Não coberta\n\nSe não coberta, exceção somente com autorização expressa da direção, contendo: responsável pela autorização, justificativa, impacto financeiro conhecido e registro da decisão (sec.14).\n\nSolicitante: {{responsavel}}"
+    },
+    {
+      "id": "cobranca_fornecedor",
+      "tipo": "whatsapp",
+      "assunto": "Cobrança de entrega",
+      "corpo": "Olá! Aqui é da VOICE Ambientes Inteligentes. O pedido {{titulo}} (NF/pedido {{nota_fiscal}}) tinha entrega prometida para {{data_prevista_entrega}} e ainda não recebemos. O material é necessário na obra em {{data_necessidade}}. Pode nos confirmar hoje a nova data e o código de rastreio? Obrigado."
+    },
+    {
+      "id": "comunicado_ocorrencia",
+      "tipo": "email",
+      "assunto": "VOICE | Ocorrência na obra — {{titulo}}",
+      "corpo": "Olá.\n\nQueremos informar com transparência uma ocorrência na obra {{obra_ref}}:\n\nO que aconteceu: {{descricao}}\nO que já fizemos: ...\nO que faremos e quando: {{acao_corretiva}}\nImpacto no cronograma: [nenhum / X dias]\n\nA correção é de responsabilidade da VOICE e não gera custo adicional para você quando a origem for nossa. Seguimos à disposição.\n\n{{responsavel}} — VOICE Ambientes Inteligentes"
+    },
+    {
+      "id": "termo_aceite",
+      "tipo": "documento",
+      "assunto": "Termo de aceite — {{titulo}}",
+      "corpo": "TERMO DE ACEITE DE ENTREGA TÉCNICA\n\nCliente: {{cliente}}\nObra: {{titulo}} — {{endereco_obra}}\nContrato: {{contrato_ref}}\n\nDeclaro que os sistemas abaixo foram demonstrados e estão em funcionamento:\n[ ] Rede e Wi-Fi  [ ] Áudio e vídeo  [ ] Automação e iluminação  [ ] Segurança eletrônica  [ ] Controle de acesso  [ ] Outros: ...\n\nPendências residuais (com data acordada):\n- ...\n\nRecebi: orientações de uso, contatos de suporte e informações de garantia. As credenciais administrativas ficam sob custódia da VOICE em cofre digital e serão fornecidas conforme contrato.\n\nData: ____/____/______\nCliente: __________________   VOICE: {{responsavel}}"
+    },
+    {
+      "id": "passagem_posvenda",
+      "tipo": "documento",
+      "assunto": "Passagem para o Pós-venda — {{titulo}}",
+      "corpo": "DOSSIÊ DE PASSAGEM PARA O PÓS-VENDA\n\nObra: {{titulo}}\nCliente: {{cliente}}\nParceiro: {{arquiteto_parceiro}}\nData do aceite: {{data_aceite}}\n\n1. Escopo entregue: {{escopo_resumo}}\n2. As-built (link fornecido pela Tecnologia): ...\n3. Referência do item no cofre de credenciais (nunca a senha): ...\n4. Equipamentos, números de série e garantias: ...\n5. Pendências residuais e datas: ...\n6. Preferências do cliente e observações de relacionamento: ...\n7. Ocorrências relevantes durante a obra: ...\n\nEntregue por: {{responsavel}}"
+    }
+  ],
+  "documentos": [
+    "Termo de abertura da obra (kickoff) com escopo, cronograma por fases e contatos",
+    "Cronograma por fases e lista de restrições (plano de médio prazo)",
+    "Mapa de fornecedores homologados e comparativo de custo total",
+    "Checklist de pré-infraestrutura (tubulação, eletrocalhas, caixas)",
+    "Checklist de cabeamento com relatórios de certificação",
+    "Checklist de rack, energia e aterramento",
+    "Checklist de comissionamento integrado e punch list",
+    "Termo de aceite de entrega técnica",
+    "Dossiê de passagem para o Pós-venda",
+    "Procedimento de segurança do trabalho em obra (NR-10, NR-35, EPI) e integração de terceiros"
+  ],
+  "relacoes": [
+    {
+      "setor": "vendas",
+      "fluxo": "Recebe o contrato assinado, o escopo vendido e as condições de pagamento por fase para o kickoff; devolve pedidos de mudança do cliente para virar aditivo."
+    },
+    {
+      "setor": "financas",
+      "fluxo": "Consulta a cobertura financeira da fase antes de compras relevantes e informa exposição de caixa por obra; informa marcos concluídos para faturamento das parcelas (50/40/10)."
+    },
+    {
+      "setor": "tecnologia",
+      "fluxo": "Recebe projeto executivo, padrões técnicos e lista de produtos homologados; envia lições aprendidas e solicita o as-built e o registro de credenciais no cofre."
+    },
+    {
+      "setor": "posvenda",
+      "fluxo": "Entrega o dossiê de passagem após o aceite; recebe retorno de chamados causados por falhas de instalação."
+    },
+    {
+      "setor": "pessoas",
+      "fluxo": "Solicita capacitação técnica, integração de terceiros e comprovação de NR-10/NR-35 das equipes."
+    },
+    {
+      "setor": "secretaria",
+      "fluxo": "Recebe ordens da direção distribuídas pela Secretaria e devolve o retorno no prazo combinado."
+    },
+    {
+      "setor": "direcao",
+      "fluxo": "Reporta carteira de obras, exceções de cobertura e exposição de caixa para autorização."
+    }
+  ],
+  "fontes": [
+    {
+      "titulo": "VOICE — Política de Saúde Financeira V1 (sec.6, 10, 11 e 14)",
+      "tipo": "site",
+      "ref": "VOICE_360/04 - PADROES/VOICE - Politica de Saude Financeira - V1.md"
+    },
+    {
+      "titulo": "Skill vendor-review (custo total e risco de fornecedores)",
+      "tipo": "skill",
+      "ref": "operations/skills/vendor-review/SKILL.md"
+    },
+    {
+      "titulo": "Skill capacity-plan (utilização de equipes e caminho crítico)",
+      "tipo": "skill",
+      "ref": "operations/skills/capacity-plan/SKILL.md"
+    },
+    {
+      "titulo": "Skill status-report (status verde/amarelo/vermelho, riscos e decisões)",
+      "tipo": "skill",
+      "ref": "operations/skills/status-report/SKILL.md"
+    },
+    {
+      "titulo": "Skill process-doc (RACI e procedimentos)",
+      "tipo": "skill",
+      "ref": "operations/skills/process-doc/SKILL.md"
+    },
+    {
+      "titulo": "Skill process-optimization (desperdícios: espera, retrabalho, repasses)",
+      "tipo": "skill",
+      "ref": "operations/skills/process-optimization/SKILL.md"
+    },
+    {
+      "titulo": "Skill risk-assessment (matriz probabilidade × impacto)",
+      "tipo": "skill",
+      "ref": "operations/skills/risk-assessment/SKILL.md"
+    },
+    {
+      "titulo": "Skill inventory-planner (prazo de reposição versus cobertura)",
+      "tipo": "skill",
+      "ref": "small-business/skills/inventory-planner/SKILL.md"
+    },
+    {
+      "titulo": "Guia PMBOK — 7ª edição",
+      "tipo": "livro",
+      "ref": "https://www.pmi.org/standards/pmbok"
+    },
+    {
+      "titulo": "Last Planner System — Lean Construction Institute",
+      "tipo": "metodo",
+      "ref": "https://leanconstruction.org/lean-topics/last-planner-system/"
+    },
+    {
+      "titulo": "Corrente Crítica — Eliyahu M. Goldratt",
+      "tipo": "livro",
+      "ref": "Goldratt, E. M. Critical Chain. North River Press, 1997"
+    },
+    {
+      "titulo": "NR-10 — Segurança em instalações e serviços em eletricidade",
+      "tipo": "norma",
+      "ref": "https://www.gov.br/trabalho-e-emprego/pt-br/acesso-a-informacao/participacao-social/conselhos-e-orgaos-colegiados/comissao-tripartite-partitaria-permanente/normas-regulamentadora/normas-regulamentadoras-vigentes/norma-regulamentadora-no-10-nr-10"
+    },
+    {
+      "titulo": "NR-35 — Trabalho em altura",
+      "tipo": "norma",
+      "ref": "https://www.gov.br/trabalho-e-emprego/pt-br/acesso-a-informacao/participacao-social/conselhos-e-orgaos-colegiados/comissao-tripartite-partitaria-permanente/normas-regulamentadora/normas-regulamentadoras-vigentes/norma-regulamentadora-no-35-nr-35"
+    }
+  ]
+}

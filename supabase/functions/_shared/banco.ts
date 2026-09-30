@@ -1,4 +1,4 @@
-// Utilitarios da funcao "api": erro HTTP, acesso ao banco com service role, corpo JSON.
+// Utilitarios compartilhados das Edge Functions: erro HTTP, banco com service role, corpo JSON.
 export const URL_BASE = Deno.env.get("SUPABASE_URL") ?? "";
 export const ANON = Deno.env.get("SUPABASE_ANON_KEY") ?? "";
 export const SERVICE = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";

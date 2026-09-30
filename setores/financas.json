@@ -1,0 +1,537 @@
+{
+  "id": "financas",
+  "sigla": "CFO",
+  "nome": "Financeiro",
+  "missao": "Proteger margem e caixa da VOICE: pagar e receber no prazo, com documento fiscal correto e comprovante bancário, conciliar tudo, fechar o mês em até 5 dias úteis e entregar à direção os indicadores da Política de Saúde Financeira.",
+  "cor": "cyan",
+  "diretor": {
+    "titulo": "Diretor Financeiro (CFO)",
+    "nome": "Ricardo Menezes Prado",
+    "perfil": "Persona fictícia. Controller com experiência em empresas de engenharia e integração que vendem por projeto, com recebimento em parcelas atreladas a fases de obra. Metódico e conservador com caixa, explica números em linguagem de dono e não aceita decisão sem conta feita.",
+    "especialidades": [
+      "Fluxo de caixa semanal de 13 semanas e necessidade de caixa em 30, 60 e 90 dias",
+      "Contas a pagar com conferência de três vias (pedido, recebimento e nota)",
+      "Régua de cobrança discreta para clientes de alto padrão",
+      "Conciliação bancária e fechamento mensal",
+      "Margem de contribuição e exposição de caixa por projeto conforme a Política V1/V1.1"
+    ],
+    "metodos": [
+      {
+        "nome": "Fluxo de caixa de 13 semanas",
+        "autor": "Prática de tesouraria e reestruturação (13-week cash flow)",
+        "uso": "Projeção semanal rolante de entradas (parcelas de projeto, contratos de suporte) e saídas (fornecedores, folha, impostos, custos fixos), sempre partindo do saldo bancário real e separando o que é recebível agendado do que é valor efetivamente recebido (Política V1.1 sec.5)."
+      },
+      {
+        "nome": "Fechamento mensal em D+5",
+        "autor": "Prática de controladoria (checklist de close por dia útil)",
+        "uso": "Pré-fechamento nos últimos dias do mês, conciliação bancária e de contas a pagar/receber em D+1 e D+2, revisão de variações em D+3, pacote de indicadores em D+4 e fechamento travado em D+5."
+      },
+      {
+        "nome": "Conciliação bancária com classificação de diferenças",
+        "autor": "Prática contábil",
+        "uso": "Toda diferença classificada como temporária (depósito em trânsito, compensação), ajuste necessário (tarifa, juros, lançamento duplicado) ou em investigação, com dono e prazo."
+      },
+      {
+        "nome": "Conferência de três vias e dois portões de aprovação",
+        "autor": "Prática de contas a pagar",
+        "uso": "Nota do fornecedor conferida contra pedido e recebimento do equipamento; aprovar o lançamento e aprovar o pagamento são decisões separadas; nada é pago automaticamente e duplicidades são checadas antes."
+      },
+      {
+        "nome": "Aging de recebíveis e régua de cobrança",
+        "autor": "Prática de crédito e cobrança",
+        "uso": "Lembrete cordial antes do vencimento, contato no D+1, reforço no D+7 e escalonamento ao CFO no D+15, com tom ajustado ao histórico de pagamento de cada cliente."
+      }
+    ],
+    "principios": [
+      "Nota fiscal não comprova pagamento nem recebimento: só o extrato ou comprovante bancário liquida um título.",
+      "Recebíveis agendados não reduzem a exposição corrente (Política V1.1 sec.5).",
+      "Estado corrente e estado pro forma nunca se misturam em um relatório (Política V1.1 sec.10).",
+      "A VOICE não financia a obra do cliente com caixa próprio como prática normal (Política V1 sec.10).",
+      "Faturamento futuro não substitui a reserva de 3 meses de custos fixos (Política V1 sec.12).",
+      "Custos fixos não são rateados arbitrariamente nos projetos (Política V1 sec.7).",
+      "Nenhum número é inventado: o que falta é apontado como faltando."
+    ],
+    "como_aconselha": "Responde com o número primeiro, a regra da política que se aplica em seguida (com a seção) e a recomendação por último. Deixa explícito se fala do estado corrente ou pro forma, e marca como PROPOSTA tudo que a política não define. Evita jargão com a direção e mostra a conta.",
+    "perguntas_chave": [
+      "Qual é o saldo bancário real hoje e o que vence nas próximas duas semanas?",
+      "Quanto do que chamamos de 'a receber' já está vencido e com quem?",
+      "Esta compra de equipamentos está coberta pelo que o cliente já pagou nesta fase (Política V1 sec.10)?",
+      "A reserva cobre 3 meses de custos fixos médios (Política V1 sec.12)?",
+      "Todas as notas do mês têm XML arquivado e título financeiro vinculado?",
+      "Algum cliente ou arquiteto concentra parte grande demais do faturamento?"
+    ],
+    "limites": [
+      "Não autoriza exceção de margem, desconto acima de 2% ou exposição acima de 10%: calcula e encaminha à direção (Política V1 sec.8, sec.9; V1.1 sec.9).",
+      "Não altera regras da política; propõe recalibração com dados reais (Política V1 sec.13 e sec.15).",
+      "Não define enquadramento tributário, retenções nem obrigações acessórias: valida com o contador.",
+      "Não paga título sem aprovação separada do lançamento e não paga automaticamente título recorrente."
+    ]
+  },
+  "equipe": [
+    {
+      "papel": "analista_pagar",
+      "nome": "Analista de contas a pagar",
+      "reporta_a": "CFO",
+      "responsabilidades": [
+        "Registrar títulos a pagar de fornecedores, prestadores, impostos, folha e custos fixos",
+        "Conferir nota contra pedido e recebimento (três vias) e checar duplicidade antes de lançar",
+        "Montar a proposta semanal de pagamentos para aprovação do CFO",
+        "Liquidar títulos somente com comprovante bancário anexado"
+      ],
+      "indicadores": ["recebiveis_pagaveis"]
+    },
+    {
+      "papel": "analista_receber",
+      "nome": "Analista de contas a receber e cobrança",
+      "reporta_a": "CFO",
+      "responsabilidades": [
+        "Registrar títulos a receber fora das parcelas de projeto (contratos de suporte e monitoramento, assistências avulsas, revendas)",
+        "Enviar lembretes antes do vencimento e conduzir a régua de cobrança com tom adequado ao cliente de alto padrão",
+        "Baixar recebimentos somente pelo extrato bancário",
+        "Informar o Comercial e a direção sobre clientes com atraso recorrente"
+      ],
+      "indicadores": ["inadimplencia", "recebiveis_pagaveis", "concentracao"]
+    },
+    {
+      "papel": "analista_fiscal",
+      "nome": "Analista fiscal e de documentos",
+      "reporta_a": "CFO",
+      "responsabilidades": [
+        "Receber, conferir e arquivar XML e PDF de notas emitidas e recebidas (NF-e, NFS-e, CT-e)",
+        "Vincular cada nota ao título financeiro e, quando houver, ao projeto",
+        "Tratar divergências com fornecedores e enviar ao contador a documentação do mês"
+      ],
+      "indicadores": ["faturamento_receita"]
+    },
+    {
+      "papel": "controller",
+      "nome": "Controller",
+      "reporta_a": "CFO",
+      "responsabilidades": [
+        "Conciliar bancos e contas a pagar/receber",
+        "Manter o fluxo de caixa de 13 semanas e a necessidade de caixa em 30/60/90 dias",
+        "Conduzir o fechamento mensal e montar o pacote de indicadores da Política V1 sec.13",
+        "Calcular a reserva de caixa frente a 3 meses de custos fixos"
+      ],
+      "indicadores": ["margem_contribuicao", "margem_operacional", "ticket_medio", "exposicao_projetos", "necessidade_caixa_reserva", "faturamento_abaixo_margem"]
+    }
+  ],
+  "processos": [
+    {
+      "id": "contas_pagar",
+      "nome": "Contas a pagar",
+      "descricao": "Do documento do fornecedor ao pagamento conciliado, com dois portões de aprovação (lançamento e pagamento). Compromissos de projeto continuam nas telas de projeto; este fluxo registra o título financeiro.",
+      "etapas": [
+        { "id": "recepcao", "nome": "Recepção do documento", "responsavel": "analista_fiscal", "criterio_saida": "Nota com XML e PDF registrada; duplicidade verificada por número, emitente e valor" },
+        { "id": "conferencia", "nome": "Conferência de três vias", "responsavel": "analista_pagar", "criterio_saida": "Nota confere com pedido e recebimento, ou divergência aberta com o fornecedor" },
+        { "id": "lancamento", "nome": "Lançamento e aprovação do título", "responsavel": "analista_pagar", "criterio_saida": "Título registrado com vencimento, categoria e projeto (se houver) e aprovado pelo CFO" },
+        { "id": "agendamento", "nome": "Aprovação do pagamento e agendamento", "responsavel": "analista_pagar", "criterio_saida": "Pagamento incluído na proposta semanal aprovada e agendado no banco" },
+        { "id": "liquidacao", "nome": "Liquidação e conciliação", "responsavel": "controller", "criterio_saida": "Comprovante bancário vinculado e lançamento conciliado com o extrato" }
+      ]
+    },
+    {
+      "id": "contas_receber_cobranca",
+      "nome": "Contas a receber e cobrança",
+      "descricao": "Títulos a receber fora das parcelas de projeto e régua de cobrança discreta, adequada a clientes de alto padrão e ao relacionamento com arquitetos parceiros.",
+      "etapas": [
+        { "id": "emissao", "nome": "Emissão", "responsavel": "analista_receber", "criterio_saida": "Título registrado com vencimento e nota fiscal emitida e vinculada" },
+        { "id": "lembrete", "nome": "Lembrete antes do vencimento", "responsavel": "analista_receber", "criterio_saida": "Lembrete cordial enviado 3 dias antes do vencimento" },
+        { "id": "cobranca", "nome": "Régua de cobrança", "responsavel": "analista_receber", "criterio_saida": "Contatos no D+1 e D+7 registrados; no D+15 o caso sobe ao CFO" },
+        { "id": "baixa", "nome": "Baixa pelo extrato", "responsavel": "analista_receber", "criterio_saida": "Recebimento identificado no extrato e comprovante referenciado no título" }
+      ]
+    },
+    {
+      "id": "fechamento_mensal",
+      "nome": "Fechamento mensal",
+      "descricao": "Fechamento em até 5 dias úteis, com conciliação, pacote de indicadores da Política V1 sec.13 e parecer para a direção.",
+      "etapas": [
+        { "id": "pre_fechamento", "nome": "Pré-fechamento", "responsavel": "controller", "criterio_saida": "Pendências de notas, comprovantes e lançamentos listadas nos últimos 2 dias úteis do mês" },
+        { "id": "conciliacao", "nome": "Conciliação (D+1 a D+2)", "responsavel": "controller", "criterio_saida": "Bancos, contas a pagar e contas a receber conciliados; diferenças classificadas" },
+        { "id": "indicadores", "nome": "Indicadores (D+3 a D+4)", "responsavel": "controller", "criterio_saida": "Os 15 indicadores da Política V1 sec.13 calculados e comparados às metas" },
+        { "id": "fechado", "nome": "Fechamento e envio (D+5)", "responsavel": "controller", "criterio_saida": "Mês travado, parecer escrito e pacote enviado à direção e ao contador" }
+      ]
+    }
+  ],
+  "registros": [
+    {
+      "tipo": "conta",
+      "nome": "Conta a pagar / a receber",
+      "descricao": "Título financeiro que não é parcela de projeto nem compromisso de projeto (esses já vivem em tabelas próprias do VEOS): custos fixos, folha, impostos, fornecedores, prestadores, contratos de suporte e monitoramento, assistências avulsas. Liquida somente com comprovante bancário.",
+      "responsavel": "analista_pagar",
+      "estados": ["aberta", "aprovada", "agendada", "em_cobranca", "liquidada", "renegociada", "cancelada"],
+      "estado_inicial": "aberta",
+      "estados_finais": ["liquidada", "renegociada", "cancelada"],
+      "campos": [
+        { "id": "natureza", "rotulo": "Natureza", "tipo": "opcao", "opcoes": ["A pagar", "A receber"], "obrigatorio": true },
+        { "id": "contraparte", "rotulo": "Fornecedor / cliente", "tipo": "texto", "obrigatorio": true },
+        { "id": "categoria", "rotulo": "Categoria", "tipo": "opcao", "opcoes": [
+          "Custo fixo (aluguel, estrutura, softwares gerais)",
+          "Folha, pró-labore e encargos",
+          "Impostos e tributos",
+          "Fornecedor de equipamentos",
+          "Instalador ou serviço de terceiros",
+          "Frete, viagem e logística",
+          "Tarifas bancárias, cartão e antecipação",
+          "Receita de contrato de suporte ou monitoramento",
+          "Receita de assistência ou serviço avulso",
+          "Outros"
+        ], "obrigatorio": true },
+        { "id": "vencimento", "rotulo": "Vencimento", "tipo": "data", "obrigatorio": true },
+        { "id": "projeto_ref", "rotulo": "Projeto relacionado (se houver)", "tipo": "texto", "obrigatorio": false },
+        { "id": "documento_ref", "rotulo": "Nota fiscal vinculada (número)", "tipo": "texto", "obrigatorio": false },
+        { "id": "forma", "rotulo": "Forma de pagamento", "tipo": "opcao", "opcoes": ["PIX", "Boleto", "Transferência", "Cartão", "Débito automático", "Outro"], "obrigatorio": false },
+        { "id": "data_liquidacao", "rotulo": "Data da liquidação (extrato)", "tipo": "data", "obrigatorio": false },
+        { "id": "comprovante_ref", "rotulo": "Comprovante bancário (link ou identificador)", "tipo": "texto", "obrigatorio": false },
+        { "id": "historico_cobranca", "rotulo": "Histórico de cobrança", "tipo": "texto_longo", "obrigatorio": false }
+      ]
+    },
+    {
+      "tipo": "documento_fiscal",
+      "nome": "Documento fiscal",
+      "descricao": "Nota fiscal emitida ou recebida, com XML e PDF arquivados. Nota fiscal não comprova pagamento: todo documento aponta para o título financeiro correspondente.",
+      "responsavel": "analista_fiscal",
+      "estados": ["recebido", "em_conferencia", "divergente", "escriturado", "cancelado"],
+      "estado_inicial": "recebido",
+      "estados_finais": ["escriturado", "cancelado"],
+      "campos": [
+        { "id": "tipo_documento", "rotulo": "Tipo", "tipo": "opcao", "opcoes": ["NF-e (produto)", "NFS-e (serviço)", "CT-e (frete)", "Nota de devolução", "Nota de importação", "Outro"], "obrigatorio": true },
+        { "id": "sentido", "rotulo": "Emitida ou recebida", "tipo": "opcao", "opcoes": ["Emitida pela VOICE", "Recebida de fornecedor"], "obrigatorio": true },
+        { "id": "numero", "rotulo": "Número / série", "tipo": "texto", "obrigatorio": true },
+        { "id": "emitente_destinatario", "rotulo": "Emitente ou destinatário", "tipo": "texto", "obrigatorio": true },
+        { "id": "data_emissao", "rotulo": "Data de emissão", "tipo": "data", "obrigatorio": true },
+        { "id": "chave_acesso", "rotulo": "Chave de acesso", "tipo": "texto", "obrigatorio": false },
+        { "id": "xml_ref", "rotulo": "XML arquivado (link ou caminho)", "tipo": "texto", "obrigatorio": false },
+        { "id": "pdf_ref", "rotulo": "PDF / DANFE arquivado (link ou caminho)", "tipo": "texto", "obrigatorio": false },
+        { "id": "conta_ref", "rotulo": "Título financeiro vinculado", "tipo": "texto", "obrigatorio": false },
+        { "id": "projeto_ref", "rotulo": "Projeto relacionado (se houver)", "tipo": "texto", "obrigatorio": false },
+        { "id": "divergencia", "rotulo": "Descrição da divergência", "tipo": "texto_longo", "obrigatorio": false }
+      ]
+    },
+    {
+      "tipo": "fechamento",
+      "nome": "Fechamento mensal",
+      "descricao": "Um registro por competência, com conciliação, os indicadores da Política V1 sec.13 e o parecer do CFO para a direção.",
+      "responsavel": "controller",
+      "estados": ["aberto", "em_conciliacao", "em_revisao", "fechado"],
+      "estado_inicial": "aberto",
+      "estados_finais": ["fechado"],
+      "campos": [
+        { "id": "competencia", "rotulo": "Competência (AAAA-MM)", "tipo": "texto", "obrigatorio": true },
+        { "id": "data_limite", "rotulo": "Data limite (5º dia útil)", "tipo": "data", "obrigatorio": true },
+        { "id": "data_fechamento", "rotulo": "Data em que foi fechado", "tipo": "data", "obrigatorio": false },
+        { "id": "conciliacao_bancaria", "rotulo": "Conciliação bancária", "tipo": "opcao", "opcoes": ["Concluída sem diferença", "Concluída com diferenças explicadas", "Pendente"], "obrigatorio": false },
+        { "id": "diferenca_nao_explicada", "rotulo": "Diferença não explicada (R$)", "tipo": "dinheiro", "obrigatorio": false },
+        { "id": "faturamento", "rotulo": "Faturamento (R$)", "tipo": "dinheiro", "obrigatorio": false },
+        { "id": "receita_liquida", "rotulo": "Receita líquida (R$) — Política V1 sec.4", "tipo": "dinheiro", "obrigatorio": false },
+        { "id": "margem_consolidada_pct", "rotulo": "Margem de contribuição consolidada (%)", "tipo": "numero", "obrigatorio": false },
+        { "id": "margem_operacional_pct", "rotulo": "Margem operacional (%)", "tipo": "numero", "obrigatorio": false },
+        { "id": "ticket_medio", "rotulo": "Ticket médio dos projetos vendidos (R$)", "tipo": "dinheiro", "obrigatorio": false },
+        { "id": "prazo_medio_recebimento", "rotulo": "Prazo médio de recebimento (dias)", "tipo": "numero", "obrigatorio": false },
+        { "id": "inadimplencia_pct", "rotulo": "Inadimplência (% da receita)", "tipo": "numero", "obrigatorio": false },
+        { "id": "contas_receber_total", "rotulo": "Contas a receber em aberto (R$)", "tipo": "dinheiro", "obrigatorio": false },
+        { "id": "contas_pagar_total", "rotulo": "Contas a pagar em aberto (R$)", "tipo": "dinheiro", "obrigatorio": false },
+        { "id": "necessidade_caixa_30", "rotulo": "Necessidade de caixa 30 dias (R$)", "tipo": "dinheiro", "obrigatorio": false },
+        { "id": "necessidade_caixa_60", "rotulo": "Necessidade de caixa 60 dias (R$)", "tipo": "dinheiro", "obrigatorio": false },
+        { "id": "necessidade_caixa_90", "rotulo": "Necessidade de caixa 90 dias (R$)", "tipo": "dinheiro", "obrigatorio": false },
+        { "id": "custo_fixo_medio", "rotulo": "Custo fixo médio mensal (R$)", "tipo": "dinheiro", "obrigatorio": false },
+        { "id": "reserva_caixa", "rotulo": "Reserva financeira disponível (R$)", "tipo": "dinheiro", "obrigatorio": false },
+        { "id": "falta_para_reserva", "rotulo": "Falta para a reserva de 3 meses (R$) = máx(0; 3 × custo fixo médio − reserva)", "tipo": "dinheiro", "obrigatorio": false },
+        { "id": "concentracao_cliente_pct", "rotulo": "Maior cliente (% do faturamento)", "tipo": "numero", "obrigatorio": false },
+        { "id": "concentracao_parceiro_pct", "rotulo": "Maior parceiro/arquiteto (% do faturamento)", "tipo": "numero", "obrigatorio": false },
+        { "id": "abaixo_margem_pct", "rotulo": "Faturamento de projetos abaixo de 30% de margem (%)", "tipo": "numero", "obrigatorio": false },
+        { "id": "parecer", "rotulo": "Parecer do CFO", "tipo": "texto_longo", "obrigatorio": false }
+      ]
+    }
+  ],
+  "rotinas": [
+    {
+      "id": "cobranca_diaria",
+      "nome": "Régua de cobrança e baixa pelo extrato",
+      "frequencia": "diaria",
+      "responsavel": "analista_receber",
+      "passos": [
+        "Importar ou conferir o extrato bancário do dia",
+        "Baixar recebimentos identificados no extrato, com comprovante referenciado",
+        "Enviar lembretes de títulos que vencem em 3 dias",
+        "Executar a régua (D+1, D+7) e escalar ao CFO títulos com 15 dias de atraso",
+        "Antes de cobrar, verificar se o cliente pagou nos últimos dias para não cobrar quem já pagou"
+      ]
+    },
+    {
+      "id": "fluxo_caixa_13_semanas",
+      "nome": "Atualização do fluxo de caixa de 13 semanas",
+      "frequencia": "semanal",
+      "responsavel": "controller",
+      "passos": [
+        "Partir do saldo bancário real da segunda-feira (nunca de saldo presumido)",
+        "Lançar entradas previstas: parcelas de projeto (das telas de projeto) e contas a receber, ajustadas pelo atraso médio de cada cliente",
+        "Lançar saídas: contas a pagar, compromissos de projeto, folha, impostos e custos fixos",
+        "Comparar a semana anterior com o realizado e explicar as diferenças",
+        "Destacar semanas com saldo projetado abaixo da reserva e a necessidade de caixa em 30/60/90 dias",
+        "Rotular a projeção como estado corrente; simulações de compra entram separadas como pro forma (Política V1.1 sec.10)"
+      ]
+    },
+    {
+      "id": "proposta_pagamentos",
+      "nome": "Proposta semanal de pagamentos",
+      "frequencia": "semanal",
+      "responsavel": "analista_pagar",
+      "passos": [
+        "Listar títulos a pagar que vencem até a próxima semana e os já vencidos",
+        "Checar duplicidades e créditos de fornecedor antes de propor",
+        "Informar o total que sairá da conta e o saldo após os pagamentos",
+        "Obter aprovação do CFO (portão de pagamento, separado da aprovação do lançamento)",
+        "Agendar no banco e marcar os títulos como agendados"
+      ]
+    },
+    {
+      "id": "notas_semana",
+      "nome": "Conferência semanal de notas fiscais",
+      "frequencia": "semanal",
+      "responsavel": "analista_fiscal",
+      "passos": [
+        "Baixar XML e PDF das notas recebidas e emitidas na semana",
+        "Conferir notas de fornecedor contra pedido e recebimento",
+        "Vincular cada nota ao título financeiro e ao projeto",
+        "Abrir divergência com o fornecedor quando houver diferença de preço, quantidade ou dados cadastrais"
+      ]
+    },
+    {
+      "id": "fechamento_mensal",
+      "nome": "Fechamento mensal em D+5",
+      "frequencia": "mensal",
+      "responsavel": "controller",
+      "passos": [
+        "Pré-fechamento: listar notas sem XML, títulos sem comprovante e lançamentos pendentes",
+        "D+1/D+2: conciliar bancos, contas a pagar e contas a receber",
+        "D+3: revisar variações relevantes contra o mês anterior",
+        "D+4: calcular os 15 indicadores da Política V1 sec.13 e a reserva de caixa (sec.12)",
+        "D+5: travar o mês, escrever o parecer e enviar o pacote à direção e ao contador",
+        "Só atualizar o fluxo de 13 semanas depois do fechamento aprovado"
+      ]
+    },
+    {
+      "id": "painel_direcao",
+      "nome": "Painel de saúde financeira para a direção",
+      "frequencia": "mensal",
+      "responsavel": "CFO",
+      "passos": [
+        "Apresentar indicadores fora da meta da Política V1 sec.13",
+        "Mostrar projetos com exposição acima de 10% (tela de exposição V1.1) e cobertura por fase (V1 sec.10)",
+        "Mostrar exceções aprovadas no mês e seu impacto financeiro",
+        "Propor recalibrações somente como PROPOSTA, com dados reais (Política V1 sec.15)"
+      ]
+    }
+  ],
+  "indicadores": [
+    { "id": "faturamento_receita", "nome": "Faturamento e receita líquida", "formula": "Faturamento = valor bruto faturado no período. Receita líquida = valor bruto vendido − descontos e abatimentos − impostos incidentes diretamente sobre a venda (Política V1 sec.4)", "meta": "Acompanhar contra o plano anual da direção (meta de valor: PROPOSTA)", "frequencia": "mensal", "status": "POLITICA" },
+    { "id": "margem_contribuicao", "nome": "Margem de contribuição por projeto e consolidada", "formula": "Margem de contribuição = receita líquida − custos diretos e variáveis (incluindo provisão de risco de 2%); MC% = MC / receita líquida × 100 (Política V1 sec.4, 5 e 6). Consolidada = soma das MC / soma das receitas líquidas do período", "meta": "Alvo ≥ 35%; mínimo para aprovação normal 30% (Política V1 sec.3)", "frequencia": "mensal", "status": "POLITICA" },
+    { "id": "margem_operacional", "nome": "Margem operacional", "formula": "Resultado operacional / receita líquida × 100 (detalhamento da fórmula é PROPOSTA a validar com o contador)", "meta": "12% a 15% ou superior (Política V1 sec.13)", "frequencia": "mensal", "status": "POLITICA" },
+    { "id": "ticket_medio", "nome": "Ticket médio", "formula": "Valor dos projetos completos vendidos no período / quantidade de projetos completos vendidos", "meta": "Desejado ≥ R$ 100.000,00; é meta, não bloqueio (Política V1 sec.2)", "frequencia": "mensal", "status": "POLITICA" },
+    { "id": "recebiveis_pagaveis", "nome": "Contas a receber, contas a pagar e prazo médio de recebimento", "formula": "Saldos em aberto por faixa de atraso (a vencer, 1–15, 16–30, 31–60, > 60 dias). Prazo médio de recebimento = média ponderada pelo valor dos dias entre emissão e recebimento efetivo", "meta": "Prazo médio ≤ 30 dias e nenhum título a pagar vencido sem negociação (PROPOSTA; indicadores exigidos pela Política V1 sec.13)", "frequencia": "semanal", "status": "PROPOSTA" },
+    { "id": "inadimplencia", "nome": "Inadimplência", "formula": "Valores vencidos há mais de 30 dias e não recebidos / receita do período × 100 (corte de 30 dias é PROPOSTA)", "meta": "< 2% da receita (Política V1 sec.13)", "frequencia": "mensal", "status": "POLITICA" },
+    { "id": "exposicao_projetos", "nome": "Exposição de caixa por projeto", "formula": "Exposição = máx(0; compromissos/desembolsos assumidos − valores efetivamente recebidos); Exposição % = exposição / valor do contrato × 100 (Política V1.1 sec.7 e 9). Calculada na tela de exposição do VEOS", "meta": "Preferencialmente zero; acima de 10% do valor do contrato exige autorização expressa da direção (Política V1.1 sec.9)", "frequencia": "semanal", "status": "POLITICA" },
+    { "id": "necessidade_caixa_reserva", "nome": "Necessidade de caixa em 30, 60 e 90 dias e reserva", "formula": "Saídas previstas − entradas previstas em cada janela, a partir do saldo bancário real; reserva em meses = reserva disponível / custo fixo médio mensal", "meta": "Reserva ≥ 3 meses de custos fixos médios (Política V1 sec.12 e sec.13)", "frequencia": "semanal", "status": "POLITICA" },
+    { "id": "concentracao", "nome": "Concentração por cliente e por parceiro/arquiteto", "formula": "Faturamento dos 12 meses do maior cliente (e do maior parceiro indicador) / faturamento total dos 12 meses × 100", "meta": "Maior cliente ≤ 20% e maior parceiro ≤ 30% (PROPOSTA; indicadores exigidos pela Política V1 sec.13)", "frequencia": "mensal", "status": "PROPOSTA" },
+    { "id": "faturamento_abaixo_margem", "nome": "Projetos abaixo da margem mínima normal", "formula": "Faturamento de projetos com margem de contribuição < 30% / faturamento total do período × 100", "meta": "≤ 10% do faturamento no período (Política V1 sec.13)", "frequencia": "mensal", "status": "POLITICA" }
+  ],
+  "sentinelas": [
+    {
+      "id": "FIN_PAGAR_VENCENDO",
+      "titulo": "Conta a pagar vencendo sem agendamento",
+      "severidade": "MEDIO",
+      "status": "PROPOSTA",
+      "gatilho": { "tipo": "vencido", "registro": "conta", "campo": "vencimento", "filtros": [ { "campo": "natureza", "igual": "A pagar" }, { "campo": "estado", "em": ["aberta", "aprovada"] } ], "antecedencia_dias": 3 },
+      "mensagem": "A conta '{{titulo}}' vence em até 3 dias (ou já venceu) e ainda não foi agendada.",
+      "acoes": [
+        { "tipo": "tarefa", "titulo": "Incluir na proposta de pagamentos e obter aprovação do CFO", "papel": "analista_pagar", "prazo_dias": 1 }
+      ],
+      "fonte": "PROPOSTA — padrão de mercado (contas a pagar com dois portões de aprovação)"
+    },
+    {
+      "id": "FIN_RECEBER_VENCIDO",
+      "titulo": "Conta a receber vencida",
+      "severidade": "ALTO",
+      "status": "PROPOSTA",
+      "gatilho": { "tipo": "vencido", "registro": "conta", "campo": "vencimento", "filtros": [ { "campo": "natureza", "igual": "A receber" }, { "campo": "estado", "em": ["aberta", "aprovada", "agendada"] } ], "antecedencia_dias": 0 },
+      "mensagem": "O título '{{titulo}}' venceu e não consta recebimento no extrato. Iniciar a régua de cobrança.",
+      "acoes": [
+        { "tipo": "tarefa", "titulo": "Confirmar no extrato e iniciar cobrança (D+1)", "papel": "analista_receber", "prazo_dias": 1 },
+        { "tipo": "rascunho", "modelo": "cobranca_vencido" }
+      ],
+      "fonte": "PROPOSTA — padrão de mercado (aging de recebíveis e régua de cobrança)"
+    },
+    {
+      "id": "FIN_COBRANCA_PARADA",
+      "titulo": "Cobrança sem avanço",
+      "severidade": "ALTO",
+      "status": "PROPOSTA",
+      "gatilho": { "tipo": "parado", "registro": "conta", "filtros": [ { "campo": "estado", "igual": "em_cobranca" } ], "dias": 7, "data_campo": "atualizado_em" },
+      "mensagem": "A cobrança de '{{titulo}}' está sem movimentação há {{dias}} dias. Escalar ao CFO.",
+      "acoes": [
+        { "tipo": "tarefa", "titulo": "Reforçar cobrança e registrar retorno do cliente", "papel": "analista_receber", "prazo_dias": 1 },
+        { "tipo": "rascunho", "modelo": "cobranca_firme" },
+        { "tipo": "notificar", "para": "CFO" }
+      ],
+      "fonte": "PROPOSTA — padrão de mercado (régua de cobrança D+1, D+7, D+15)"
+    },
+    {
+      "id": "FIN_LIQUIDADA_SEM_COMPROVANTE",
+      "titulo": "Título liquidado sem comprovante bancário",
+      "severidade": "MEDIO",
+      "status": "PROPOSTA",
+      "gatilho": { "tipo": "faltando", "registro": "conta", "campo": "comprovante_ref", "filtros": [ { "campo": "estado", "igual": "liquidada" } ] },
+      "mensagem": "O título '{{titulo}}' foi marcado como liquidado sem comprovante bancário. Nota fiscal não comprova pagamento nem recebimento.",
+      "acoes": [
+        { "tipo": "tarefa", "titulo": "Anexar comprovante bancário ou reabrir o título", "papel": "controller", "prazo_dias": 2 }
+      ],
+      "fonte": "PROPOSTA — padrão de mercado (conciliação bancária); coerente com Política V1.1 sec.5 (valores efetivamente recebidos)"
+    },
+    {
+      "id": "FIN_NOTA_SEM_XML",
+      "titulo": "Nota fiscal sem XML arquivado",
+      "severidade": "MEDIO",
+      "status": "PROPOSTA",
+      "gatilho": { "tipo": "faltando", "registro": "documento_fiscal", "campo": "xml_ref", "filtros": [ { "campo": "estado", "diferente": "cancelado" }, { "campo": "tipo_documento", "em": ["NF-e (produto)", "NFS-e (serviço)", "CT-e (frete)", "Nota de devolução", "Nota de importação"] } ] },
+      "mensagem": "A nota '{{titulo}}' não tem XML arquivado. Sem XML o fechamento e o envio ao contador ficam incompletos.",
+      "acoes": [
+        { "tipo": "tarefa", "titulo": "Obter e arquivar o XML da nota", "papel": "analista_fiscal", "prazo_dias": 3 },
+        { "tipo": "rascunho", "modelo": "solicitacao_documento_fornecedor" }
+      ],
+      "fonte": "PROPOSTA — padrão de mercado (guarda de documentos fiscais; prazos legais a validar com o contador)"
+    },
+    {
+      "id": "FIN_NOTA_DIVERGENTE_PARADA",
+      "titulo": "Divergência de nota sem solução",
+      "severidade": "MEDIO",
+      "status": "PROPOSTA",
+      "gatilho": { "tipo": "parado", "registro": "documento_fiscal", "filtros": [ { "campo": "estado", "igual": "divergente" } ], "dias": 3, "data_campo": "atualizado_em" },
+      "mensagem": "A nota '{{titulo}}' está divergente há {{dias}} dias sem solução. Não pagar até resolver.",
+      "acoes": [
+        { "tipo": "tarefa", "titulo": "Cobrar do fornecedor carta de correção, nota substituta ou abatimento", "papel": "analista_fiscal", "prazo_dias": 2 },
+        { "tipo": "rascunho", "modelo": "solicitacao_documento_fornecedor" }
+      ],
+      "fonte": "PROPOSTA — padrão de mercado (conferência de três vias)"
+    },
+    {
+      "id": "FIN_FECHAMENTO_ATRASADO",
+      "titulo": "Fechamento mensal atrasado",
+      "severidade": "ALTO",
+      "status": "PROPOSTA",
+      "gatilho": { "tipo": "vencido", "registro": "fechamento", "campo": "data_limite", "filtros": [], "antecedencia_dias": 0 },
+      "mensagem": "O fechamento '{{titulo}}' passou do 5º dia útil e ainda não foi concluído. A direção está sem os indicadores do mês.",
+      "acoes": [
+        { "tipo": "tarefa", "titulo": "Listar bloqueios do fechamento e concluir", "papel": "controller", "prazo_dias": 1 },
+        { "tipo": "notificar", "para": "CFO" }
+      ],
+      "fonte": "PROPOSTA — padrão de mercado (fechamento mensal em D+5)"
+    },
+    {
+      "id": "FIN_INADIMPLENCIA_ACIMA_META",
+      "titulo": "Inadimplência acima de 2% da receita",
+      "severidade": "ALTO",
+      "status": "POLITICA",
+      "gatilho": { "tipo": "soma", "registro": "fechamento", "campo": "inadimplencia_pct", "filtros": [ { "campo": "estado", "igual": "fechado" } ], "janela_dias": 25, "data_campo": "data_fechamento", "operador": ">", "valor": 2 },
+      "mensagem": "A inadimplência do último fechamento ficou em {{total}}% da receita, acima da meta de 2% da política.",
+      "acoes": [
+        { "tipo": "tarefa", "titulo": "Plano de cobrança dos maiores devedores e revisão das condições de pagamento", "papel": "analista_receber", "prazo_dias": 5 },
+        { "tipo": "notificar", "para": "direcao" }
+      ],
+      "fonte": "Política V1 sec.13"
+    },
+    {
+      "id": "FIN_RESERVA_ABAIXO_3_MESES",
+      "titulo": "Reserva de caixa abaixo de 3 meses de custos fixos",
+      "severidade": "ALTO",
+      "status": "POLITICA",
+      "gatilho": { "tipo": "soma", "registro": "fechamento", "campo": "falta_para_reserva", "filtros": [ { "campo": "estado", "igual": "fechado" } ], "janela_dias": 25, "data_campo": "data_fechamento", "operador": ">", "valor": 0 },
+      "mensagem": "Faltam R$ {{total}} para a reserva mínima desejada de 3 meses de custos fixos médios. Contas a receber não substituem a reserva.",
+      "acoes": [
+        { "tipo": "tarefa", "titulo": "Propor plano de recomposição da reserva à direção", "papel": "controller", "prazo_dias": 7 },
+        { "tipo": "rascunho", "modelo": "alerta_reserva" },
+        { "tipo": "notificar", "para": "direcao" }
+      ],
+      "fonte": "Política V1 sec.12"
+    },
+    {
+      "id": "FIN_ABAIXO_MARGEM_ACIMA_10",
+      "titulo": "Projetos abaixo de 30% de margem acima de 10% do faturamento",
+      "severidade": "ALTO",
+      "status": "POLITICA",
+      "gatilho": { "tipo": "soma", "registro": "fechamento", "campo": "abaixo_margem_pct", "filtros": [ { "campo": "estado", "igual": "fechado" } ], "janela_dias": 25, "data_campo": "data_fechamento", "operador": ">", "valor": 10 },
+      "mensagem": "Projetos com margem abaixo de 30% representaram {{total}}% do faturamento no último fechamento, acima do limite de 10% da política.",
+      "acoes": [
+        { "tipo": "tarefa", "titulo": "Listar os projetos abaixo de 30% e as exceções que os aprovaram", "papel": "controller", "prazo_dias": 3 },
+        { "tipo": "notificar", "para": "direcao" }
+      ],
+      "fonte": "Política V1 sec.13"
+    }
+  ],
+  "modelos": [
+    {
+      "id": "lembrete_vencimento",
+      "tipo": "whatsapp",
+      "assunto": "Lembrete de vencimento",
+      "corpo": "Olá! Aqui é do financeiro da VOICE Ambientes Inteligentes. Passando só para lembrar que o título '{{titulo}}' vence em breve. Se já estiver programado, pode desconsiderar. Qualquer dúvida, estou à disposição. — {{responsavel}}"
+    },
+    {
+      "id": "cobranca_vencido",
+      "tipo": "email",
+      "assunto": "VOICE — pagamento pendente: {{titulo}}",
+      "corpo": "Olá,\n\nNão identificamos em nosso extrato o pagamento referente a '{{titulo}}', com vencimento recente. Pode ser apenas um desencontro de datas; se o pagamento já foi feito, por gentileza nos envie o comprovante para localizarmos.\n\nCaso precise de uma nova data ou de outra forma de pagamento, conte conosco para combinar.\n\nAtenciosamente,\n{{responsavel}}\nFinanceiro — VOICE Ambientes Inteligentes"
+    },
+    {
+      "id": "cobranca_firme",
+      "tipo": "email",
+      "assunto": "VOICE — regularização de pagamento em atraso: {{titulo}}",
+      "corpo": "Olá,\n\nRetomamos o contato sobre '{{titulo}}', que segue em aberto há {{dias}} dias sem retorno. Precisamos regularizar esta pendência para manter o atendimento e o suporte técnico programados.\n\nPedimos, por gentileza, o pagamento ou uma proposta de data até o fim desta semana. Se houver qualquer questão sobre o serviço prestado, nos avise para que a equipe técnica verifique.\n\nAtenciosamente,\n{{responsavel}}\nFinanceiro — VOICE Ambientes Inteligentes"
+    },
+    {
+      "id": "solicitacao_documento_fornecedor",
+      "tipo": "email",
+      "assunto": "Documento fiscal pendente ou divergente — {{titulo}}",
+      "corpo": "Olá,\n\nSobre a nota '{{titulo}}', precisamos de:\n- o arquivo XML (e o PDF/DANFE), e/ou\n- a correção da divergência encontrada na conferência com o pedido e o recebimento dos equipamentos.\n\nO pagamento fica programado após a regularização. Obrigado,\n{{responsavel}}\nFinanceiro — VOICE Ambientes Inteligentes"
+    },
+    {
+      "id": "pacote_fechamento",
+      "tipo": "documento",
+      "assunto": "Fechamento mensal — {{titulo}}",
+      "corpo": "FECHAMENTO MENSAL — {{titulo}} (estado corrente)\n\nConciliação bancária: {{conciliacao_bancaria}} | Diferença não explicada: {{diferenca_nao_explicada}}\n\nINDICADORES DA POLÍTICA V1 sec.13\nFaturamento: {{faturamento}}\nReceita líquida: {{receita_liquida}}\nMargem de contribuição consolidada: {{margem_consolidada_pct}}% (alvo 35%, mínimo 30%)\nMargem operacional: {{margem_operacional_pct}}% (meta 12% a 15% ou superior)\nTicket médio: {{ticket_medio}} (desejado R$ 100 mil)\nPrazo médio de recebimento: {{prazo_medio_recebimento}} dias\nInadimplência: {{inadimplencia_pct}}% (meta < 2%)\nContas a receber: {{contas_receber_total}} | Contas a pagar: {{contas_pagar_total}}\nNecessidade de caixa 30/60/90: {{necessidade_caixa_30}} / {{necessidade_caixa_60}} / {{necessidade_caixa_90}}\nReserva: {{reserva_caixa}} | Falta para 3 meses: {{falta_para_reserva}}\nConcentração maior cliente: {{concentracao_cliente_pct}}% | maior parceiro: {{concentracao_parceiro_pct}}%\nProjetos abaixo de 30% de margem: {{abaixo_margem_pct}}% do faturamento (limite 10%)\nExposição por projeto e margem por projeto: ver telas de projeto e caixa do VEOS.\n\nPARECER DO CFO\n{{parecer}}"
+    },
+    {
+      "id": "alerta_reserva",
+      "tipo": "documento",
+      "assunto": "Reserva de caixa abaixo do mínimo desejado",
+      "corpo": "Para: Direção Geral\n\nNo fechamento '{{titulo}}', a reserva financeira ficou abaixo de 3 meses de custos fixos médios (Política V1 sec.12). Faltam {{total}}.\n\nOpções para recomposição (PROPOSTA, a decidir pela direção):\n1. Destinar parte da margem dos próximos recebimentos à reserva;\n2. Revisar custos fixos não essenciais;\n3. Reforçar a cobrança dos vencidos;\n4. Rever condições de recebimento de novos projetos conforme a referência 50/40/10 (Política V1 sec.10).\n\n{{responsavel}}"
+    }
+  ],
+  "documentos": [
+    "Fluxo de caixa de 13 semanas (estado corrente, com simulações pro forma em aba separada)",
+    "Checklist de fechamento mensal D-2 a D+5",
+    "Relatório de conciliação bancária com diferenças classificadas",
+    "Aging de contas a receber e a pagar",
+    "Pacote mensal dos 15 indicadores da Política V1 sec.13",
+    "Pasta de XML e PDF de notas fiscais por competência",
+    "Régua de cobrança e modelos de mensagem",
+    "Cálculo da reserva de caixa (3 meses de custos fixos médios)"
+  ],
+  "relacoes": [
+    { "setor": "direcao", "fluxo": "Entrega o fechamento mensal, os indicadores da Política V1 sec.13 e a análise de margem e exposição de cada pedido de alçada; recebe decisões registradas." },
+    { "setor": "vendas", "fluxo": "Recebe propostas para conferência de margem pela fórmula oficial e condições de pagamento; informa clientes com atraso recorrente." },
+    { "setor": "operacoes", "fluxo": "Recebe pedidos de compra e recebimentos de equipamentos para a conferência de três vias; informa cobertura da fase antes de compra relevante (Política V1 sec.10)." },
+    { "setor": "posvenda", "fluxo": "Recebe contratos de suporte e monitoramento para faturamento recorrente; informa inadimplência que afeta o atendimento." },
+    { "setor": "pessoas", "fluxo": "Recebe variáveis da folha, pró-labore e contratos de prestadores para programação de pagamentos." },
+    { "setor": "secretaria", "fluxo": "Recebe documentos e correspondências de cobrança, boletos e notas que chegam por e-mail ou correio." }
+  ],
+  "fontes": [
+    { "titulo": "Política de Saúde Financeira da VOICE — V1 (sec.2, 3, 4, 5, 6, 7, 10, 12, 13, 15)", "tipo": "norma", "ref": "04 - PADROES/VOICE - Politica de Saude Financeira - V1.md" },
+    { "titulo": "Política de Saúde Financeira da VOICE — V1.1 (sec.5, 7, 9, 10)", "tipo": "norma", "ref": "04 - PADROES/VOICE - Politica de Saude Financeira - V1.1 - Clarificacao de posicao e exposicao de caixa.md" },
+    { "titulo": "Skill close-management (checklist e dependências do fechamento)", "tipo": "skill", "ref": "knowledge-work-plugins/finance/skills/close-management/SKILL.md" },
+    { "titulo": "Skill reconciliation (conciliação bancária e classificação de diferenças)", "tipo": "skill", "ref": "knowledge-work-plugins/finance/skills/reconciliation/SKILL.md" },
+    { "titulo": "Skill cash-flow-snapshot (previsão 30/60/90 dias a partir do saldo real)", "tipo": "skill", "ref": "knowledge-work-plugins/small-business/skills/cash-flow-snapshot/SKILL.md" },
+    { "titulo": "Skill ap-processor (três vias, deduplicação e dois portões de aprovação)", "tipo": "skill", "ref": "knowledge-work-plugins/small-business/skills/ap-processor/SKILL.md" },
+    { "titulo": "Skill invoice-chase (cobrança com tom ajustado ao histórico do cliente)", "tipo": "skill", "ref": "knowledge-work-plugins/small-business/skills/invoice-chase/SKILL.md" },
+    { "titulo": "Skill close-month (fechar antes de projetar)", "tipo": "skill", "ref": "knowledge-work-plugins/small-business/skills/close-month/SKILL.md" },
+    { "titulo": "Fluxo de caixa de 13 semanas", "tipo": "metodo", "ref": "Prática de tesouraria e reestruturação (13-week cash flow)" }
+  ]
+}

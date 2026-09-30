@@ -3,7 +3,7 @@
 // Acesso: papeis direcao e financas. Somente ambiente TESTE.
 import { avaliarCaixaProjeto } from "../_shared/regras/caixa.ts";
 import { centavos, centavosOuNulo, RegraError } from "../_shared/regras/dinheiro.ts";
-import { HttpError, lerCorpo, type Membro, servico } from "./comum.ts";
+import { HttpError, lerCorpo, type Membro, servico } from "../_shared/banco.ts";
 
 const PAPEIS = ["direcao", "financas"];
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;

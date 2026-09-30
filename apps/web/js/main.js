@@ -10,6 +10,10 @@ import { renderVigia } from "./ui/views/cfo_vigia.js";
 import { renderOrbita } from "./ui/views/orbita.js";
 import { renderIA } from "./ui/views/ia.js";
 import { telaProjeto, telaProjetos } from "./ui/views/projetos.js";
+import { telaSetor } from "./ui/views/setor.js";
+import { telaRadar } from "./ui/views/radar.js";
+import { telaConselho } from "./ui/views/conselho.js";
+import { CATALOGO } from "./data/catalogo.js";
 
 const el = {
   view: document.getElementById("view"),
@@ -28,9 +32,13 @@ const link = (href, sigla, texto) =>
 
 // ---------------------------------------------------------------- telas
 async function telaOrbita(root, signal) {
-  const [{ setores, diretores }, { orcamentos }] = await Promise.all([api.setores(), api.orcamentos()]);
-  const avisosCfo = orcamentos.reduce((n, o) => n + o.avisos.length, 0);
-  renderOrbita(root, { setores, diretores, avisosCfo, signal });
+  const [{ setores, diretores }, radar] = await Promise.all([api.setores(), api.radar()]);
+  const atividade = Object.fromEntries(setores.map((s) => [s.id, {
+    alertas: radar.alertas.filter((a) => a.setor_id === s.id).length,
+    tarefas: radar.tarefas.filter((t) => t.setor_id === s.id).length,
+    acessivel: radar.setores.includes(s.id),
+  }]));
+  renderOrbita(root, { setores, diretores, atividade, signal });
 }
 
 async function telaVisao(root) {
@@ -78,10 +86,12 @@ async function telaHistorico(root) {
 }
 
 const TELAS = {
+  "#/radar": { fn: telaRadar, titulo: ["Radar", "Alertas e tarefas de todos os setores"] },
+  "#/conselho": { fn: telaConselho, titulo: ["Conselho consultivo", "Os diretores especialistas da VOICE"] },
   "#/ia": { fn: (root, signal) => renderIA(root, signal), titulo: ["IA VEOS", "Comando por voz"] },
   "#/orbita": { fn: telaOrbita, titulo: ["Órbita", "Os setores em órbita do VEOS"] },
   "#/visao": { fn: telaVisao, titulo: ["Visão geral", "VEOS online · VOICE Ambientes Inteligentes"] },
-  "#/cfo": { fn: telaAvisos, titulo: ["Sala CFO — Avisos", "Vigia: orçamento salvo → avisos do CFO com regra e fonte"] },
+  "#/cfo": { fn: telaAvisos, titulo: ["Avisos de orçamento", "Vigia: orçamento salvo → avisos do CFO com regra e fonte"] },
   "#/projetos": { fn: telaProjetos, titulo: ["Projetos e caixa", "Setor Financeiro · exposição e cobertura por fase"] },
   "#/historico": { fn: telaHistorico, titulo: ["Histórico", "Orçamentos TESTE gravados e seus avisos"] },
 };
@@ -123,11 +133,19 @@ function montarMenu() {
     telaLogin();
   });
   clear(el.nav).append(
-    h("div", { class: "nav-group" }, link("#/orbita", "◉", "Órbita"), link("#/ia", "✦", "IA VEOS"), link("#/visao", "◎", "Visão geral")),
+    h("div", { class: "nav-group", role: "group", "aria-labelledby": "nav-cmd" },
+      h("span", { class: "nav-label", id: "nav-cmd" }, "Comando"),
+      link("#/orbita", "◉", "Órbita"),
+      link("#/radar", "◈", "Radar"),
+      link("#/ia", "✦", "IA VEOS"),
+      link("#/conselho", "◇", "Conselho")),
+    h("div", { class: "nav-group", role: "group", "aria-labelledby": "nav-setores" },
+      h("span", { class: "nav-label", id: "nav-setores" }, "Setores"),
+      CATALOGO.map((s) => link(`#/setor/${s.id}`, s.sigla, s.nome))),
     h("div", { class: "nav-group", role: "group", "aria-labelledby": "nav-cfo" },
-      h("span", { class: "nav-label", id: "nav-cfo" }, "Finanças"),
+      h("span", { class: "nav-label", id: "nav-cfo" }, "Ferramentas do CFO"),
       link("#/projetos", "PRJ", "Projetos e caixa"),
-      link("#/cfo", "CFO", "Avisos do CFO"),
+      link("#/cfo", "ORÇ", "Avisos de orçamento"),
       link("#/historico", "HIST", "Histórico de orçamentos")),
   );
   clear(el.status).append(h("span", { class: "pill tone-ok" }, h("span", { class: "dot" }), eu.email), botaoSair);
@@ -136,8 +154,19 @@ function montarMenu() {
 async function navegar() {
   if (!eu) return;
   const detalhe = /^#\/projetos\/([0-9a-f-]{36})$/.exec(location.hash);
-  const rota = detalhe ? "#/projetos" : TELAS[location.hash] ? location.hash : "#/orbita";
-  const def = detalhe ? { fn: (root) => telaProjeto(root, detalhe[1]), titulo: ["Projeto", "Caixa, fases e lançamentos · avisos do CFO"] } : TELAS[rota];
+  const setorRota = /^#\/setor\/([a-z]+)(?:\/([a-z]+))?$/.exec(location.hash);
+  const setor = setorRota && CATALOGO.find((s) => s.id === setorRota[1]);
+  let rota, def;
+  if (detalhe) {
+    rota = "#/projetos";
+    def = { fn: (root) => telaProjeto(root, detalhe[1]), titulo: ["Projeto", "Caixa, fases e lançamentos · avisos do CFO"] };
+  } else if (setor) {
+    rota = `#/setor/${setor.id}`;
+    def = { fn: (root, signal) => telaSetor(root, setor.id, signal, setorRota[2]), titulo: [`${setor.sigla} · ${setor.nome}`, setor.diretor.titulo] };
+  } else {
+    rota = TELAS[location.hash] ? location.hash : "#/orbita";
+    def = TELAS[rota];
+  }
   atual?.abort();
   const controle = new AbortController();
   atual = controle;
@@ -167,7 +196,7 @@ async function iniciar(mensagem) {
     return telaLogin(e.status === 403 ? "Este e-mail não tem acesso ao VEOS. Fale com a direção." : e.message);
   }
   montarMenu();
-  if (!TELAS[location.hash] && !/^#\/projetos\//.test(location.hash)) history.replaceState(null, "", "#/orbita");
+  if (!TELAS[location.hash] && !/^#\/(projetos|setor)\//.test(location.hash)) history.replaceState(null, "", "#/orbita");
   navegar();
 }
 

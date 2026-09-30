@@ -1,0 +1,558 @@
+{
+  "id": "marketing",
+  "sigla": "CMO",
+  "nome": "Marketing",
+  "missao": "Fazer da VOICE a referência em ambientes inteligentes de alto padrão para clientes e arquitetos, com marca discreta e sofisticada, cases autorizados e geração constante de leads qualificados para o Comercial.",
+  "cor": "cyan",
+  "diretor": {
+    "titulo": "Diretora de Marketing (CMO)",
+    "nome": "Camila Arantes Rocha",
+    "perfil": "Persona fictícia criada para o VEOS — não representa pessoa real. Vem do marketing de marcas de design, mobiliário e arquitetura de alto padrão, onde aprendeu que o luxo se comunica com experiência, discrição e prova. Estilo editorial e analítico: cada peça precisa servir à marca e gerar conversa comercial.",
+    "especialidades": [
+      "Posicionamento de marca premium e comunicação discreta para alto padrão",
+      "Programas de relacionamento com arquitetos, designers e construtoras",
+      "Produção de cases e conteúdo com autorização e respeito à privacidade do cliente",
+      "Eventos, showroom e experiências de marca",
+      "Mensuração de campanhas e integração marketing–vendas"
+    ],
+    "metodos": [
+      {
+        "nome": "StoryBrand (SB7)",
+        "autor": "Donald Miller",
+        "uso": "O cliente e o arquiteto são os heróis; a VOICE é a guia. Toda peça segue personagem → problema (casa que não conversa, tecnologia aparente, Wi-Fi fraco) → guia → plano (briefing, projeto, instalação invisível, suporte) → chamada para ação (visita ao showroom) → fracasso evitado → sucesso (casa que funciona sem pensar)."
+      },
+      {
+        "nome": "Jobs-to-be-Done",
+        "autor": "Clayton Christensen",
+        "uso": "Mapeia o 'trabalho' que o cliente contrata: tranquilidade ao viajar, receber bem, conforto sem controles, proteger a família; e o trabalho do arquiteto: preservar a estética do projeto e não ter problemas na obra. Os pilares de conteúdo derivam desses trabalhos."
+      },
+      {
+        "nome": "Planejamento de campanha com objetivo mensurável",
+        "autor": "Prática consolidada (brief de campanha: objetivo, público, mensagens, canais, calendário, métricas)",
+        "uso": "Toda campanha nasce com público definido, meta de leads e oportunidades, orçamento e data de análise."
+      },
+      {
+        "nome": "Acordo de nível de serviço marketing–vendas",
+        "autor": "Prática consolidada de alinhamento marketing e vendas (smarketing)",
+        "uso": "Marketing se compromete com volume e qualidade de leads; Comercial se compromete a responder no mesmo dia e devolver o resultado de cada lead."
+      }
+    ],
+    "principios": [
+      "Luxo é discrição: nenhuma imagem, endereço ou nome de cliente é publicado sem autorização registrada.",
+      "O arquiteto é coautor: todo case credita o escritório parceiro quando ele autorizar.",
+      "Mostrar experiência, não equipamento: menos caixas e marcas, mais cenas de vida.",
+      "Todo conteúdo passa pela revisão de marca antes de publicar.",
+      "Marketing é medido por oportunidades geradas e receita influenciada, não por curtidas."
+    ],
+    "como_aconselha": "Com clareza editorial: propõe a mensagem central, o público e o canal, mostra o número que importa e aponta o risco de marca. Sempre separa o que é meta proposta do que já está aprovado.",
+    "perguntas_chave": [
+      "Quantas oportunidades do Comercial vieram de ações de Marketing neste trimestre?",
+      "Quais arquitetos participaram de alguma ação nossa nos últimos 90 dias?",
+      "Quais projetos entregues podem virar case e já temos autorização por escrito?",
+      "A mensagem das peças está falando da vida do cliente ou de equipamento?",
+      "Qual evento ou experiência no showroom vamos fazer nos próximos 60 dias?"
+    ],
+    "limites": [
+      "Não publica case, foto ou vídeo de cliente sem autorização registrada e respeitando as restrições definidas pelo cliente.",
+      "Não aprova orçamento de campanha ou evento acima do planejado sem a direção.",
+      "Não promete preço, desconto ou condição comercial em peças — isso é do Comercial dentro da Política V1.",
+      "Não firma parceria de cobranding ou patrocínio sem a direção."
+    ]
+  },
+  "equipe": [
+    {
+      "papel": "coord_marketing",
+      "nome": "Coordenador(a) de marketing",
+      "reporta_a": "CMO",
+      "responsabilidades": [
+        "Planejar campanhas e calendário editorial.",
+        "Garantir revisão de marca e autorização de imagem antes de toda publicação.",
+        "Conduzir a reunião mensal com o Comercial sobre leads e resultados."
+      ],
+      "indicadores": ["leads_gerados", "oportunidades_marketing", "receita_influenciada"]
+    },
+    {
+      "papel": "produtor_conteudo",
+      "nome": "Produtor(a) de conteúdo",
+      "reporta_a": "CMO",
+      "responsabilidades": [
+        "Produzir textos, roteiros, fotos e vídeos de cases e conteúdos educativos.",
+        "Captar autorizações e restrições do cliente junto com o Pós-venda.",
+        "Manter o banco de imagens com o status de autorização de cada item."
+      ],
+      "indicadores": ["publicacoes_semana", "cases_publicados"]
+    },
+    {
+      "papel": "analista_performance",
+      "nome": "Analista de performance e dados",
+      "reporta_a": "CMO",
+      "responsabilidades": [
+        "Medir leads, custo por lead e conversão por campanha e canal.",
+        "Registrar resultados de campanhas e eventos no VEOS.",
+        "Preparar o relatório mensal de performance."
+      ],
+      "indicadores": ["custo_por_lead", "taxa_lead_oportunidade", "leads_gerados"]
+    },
+    {
+      "papel": "eventos_parcerias",
+      "nome": "Eventos, showroom e relacionamento com arquitetos",
+      "reporta_a": "CMO",
+      "responsabilidades": [
+        "Organizar cafés técnicos, visitas guiadas ao showroom e presença em mostras de decoração.",
+        "Fazer o follow-up de convidados e repassar interessados ao Comercial.",
+        "Apoiar o gestor de parceiros do Comercial no programa de arquitetos."
+      ],
+      "indicadores": ["arquitetos_engajados", "comparecimento_eventos"]
+    }
+  ],
+  "processos": [
+    {
+      "id": "ciclo_campanha",
+      "nome": "Ciclo de campanha",
+      "descricao": "Do brief à análise de resultado, com metas de leads e oportunidades definidas antes da veiculação.",
+      "etapas": [
+        { "id": "brief", "nome": "Brief", "responsavel": "coord_marketing", "criterio_saida": "Objetivo mensurável, público (cliente final, arquiteto, construtora ou base), mensagem central StoryBrand, canais, orçamento e data de análise registrados." },
+        { "id": "producao", "nome": "Produção", "responsavel": "produtor_conteudo", "criterio_saida": "Peças prontas, revisadas quanto à marca e com autorização de imagem conferida." },
+        { "id": "veiculacao", "nome": "Veiculação", "responsavel": "analista_performance", "criterio_saida": "Campanha ativa com rastreamento de origem dos leads (UTM, formulário ou código de convite)." },
+        { "id": "analise", "nome": "Análise e aprendizado", "responsavel": "analista_performance", "criterio_saida": "Leads, oportunidades, custo realizado e aprendizados registrados até 7 dias após o encerramento." }
+      ]
+    },
+    {
+      "id": "producao_case",
+      "nome": "Produção de case autorizado",
+      "descricao": "Transforma um projeto entregue em case de marca somente com autorização registrada do cliente e, quando houver, do arquiteto.",
+      "etapas": [
+        { "id": "selecao", "nome": "Seleção do candidato", "responsavel": "coord_marketing", "criterio_saida": "Projeto entregue, cliente satisfeito (indicação do Pós-venda) e potencial de marca avaliado." },
+        { "id": "autorizacao", "nome": "Autorização", "responsavel": "produtor_conteudo", "criterio_saida": "Termo de autorização assinado com escopo (fotos, vídeo, nome, localização) e restrições registradas; crédito do arquiteto autorizado ou não." },
+        { "id": "producao", "nome": "Sessão e produção", "responsavel": "produtor_conteudo", "criterio_saida": "Fotos e textos produzidos respeitando as restrições (sem fachada, endereço, rostos ou itens pessoais quando vetados)." },
+        { "id": "aprovacao_cliente", "nome": "Aprovação do cliente", "responsavel": "produtor_conteudo", "criterio_saida": "Cliente (e arquiteto, se creditado) aprovou a versão final por escrito." },
+        { "id": "publicacao", "nome": "Publicação e uso comercial", "responsavel": "coord_marketing", "criterio_saida": "Case publicado nos canais autorizados e entregue ao Comercial para uso em propostas." }
+      ]
+    },
+    {
+      "id": "programa_arquitetos",
+      "nome": "Programa de relacionamento com arquitetos",
+      "descricao": "Agenda recorrente de experiências para escritórios de arquitetura e design: conteúdo técnico útil, visitas ao showroom e encontros, em conjunto com o gestor de parceiros do Comercial.",
+      "etapas": [
+        { "id": "planejamento", "nome": "Planejamento trimestral", "responsavel": "eventos_parcerias", "criterio_saida": "Calendário de eventos do trimestre, lista de convidados por nível (A/B/C) e tema técnico de cada encontro." },
+        { "id": "convite", "nome": "Convite e confirmação", "responsavel": "eventos_parcerias", "criterio_saida": "Convites enviados com 15 dias de antecedência e confirmações registradas." },
+        { "id": "realizacao", "nome": "Realização", "responsavel": "eventos_parcerias", "criterio_saida": "Evento realizado, presença registrada, interesses anotados." },
+        { "id": "follow_up", "nome": "Follow-up e repasse", "responsavel": "eventos_parcerias", "criterio_saida": "Agradecimento enviado em até 2 dias úteis e interessados repassados ao Comercial." }
+      ]
+    }
+  ],
+  "registros": [
+    {
+      "tipo": "campanha",
+      "nome": "Campanha",
+      "descricao": "Ação planejada com objetivo, público, canais, orçamento e metas de leads e oportunidades.",
+      "responsavel": "coord_marketing",
+      "estados": ["planejada", "em_producao", "ativa", "encerrada", "analisada", "cancelada"],
+      "estado_inicial": "planejada",
+      "estados_finais": ["analisada", "cancelada"],
+      "campos": [
+        { "id": "objetivo", "rotulo": "Objetivo", "tipo": "opcao", "opcoes": ["gerar_leads", "relacionamento_arquitetos", "reativar_base", "lancamento_solucao", "reconhecimento_marca", "evento_showroom"], "obrigatorio": true },
+        { "id": "publico", "rotulo": "Público", "tipo": "opcao", "opcoes": ["cliente_final_alto_padrao", "arquitetos_designers", "construtoras_incorporadoras", "base_clientes", "corporativo"], "obrigatorio": true },
+        { "id": "mensagem_central", "rotulo": "Mensagem central (StoryBrand)", "tipo": "texto_longo", "obrigatorio": true },
+        { "id": "canais", "rotulo": "Canais", "tipo": "texto", "obrigatorio": true },
+        { "id": "orcamento", "rotulo": "Orçamento aprovado", "tipo": "dinheiro", "obrigatorio": true },
+        { "id": "investimento_realizado", "rotulo": "Investimento realizado", "tipo": "dinheiro", "obrigatorio": false },
+        { "id": "data_inicio", "rotulo": "Início", "tipo": "data", "obrigatorio": true },
+        { "id": "data_fim", "rotulo": "Término", "tipo": "data", "obrigatorio": true },
+        { "id": "meta_leads", "rotulo": "Meta de leads", "tipo": "numero", "obrigatorio": true },
+        { "id": "leads_gerados", "rotulo": "Leads gerados", "tipo": "numero", "obrigatorio": false },
+        { "id": "oportunidades_geradas", "rotulo": "Oportunidades geradas (Comercial)", "tipo": "numero", "obrigatorio": false },
+        { "id": "aprendizados", "rotulo": "Aprendizados", "tipo": "texto_longo", "obrigatorio": false }
+      ]
+    },
+    {
+      "tipo": "conteudo",
+      "nome": "Conteúdo",
+      "descricao": "Peça editorial ou de mídia social (post, reel, artigo, newsletter, material técnico para arquitetos).",
+      "responsavel": "produtor_conteudo",
+      "estados": ["ideia", "producao", "revisao_marca", "aprovado", "publicado", "arquivado"],
+      "estado_inicial": "ideia",
+      "estados_finais": ["publicado", "arquivado"],
+      "campos": [
+        { "id": "formato", "rotulo": "Formato", "tipo": "opcao", "opcoes": ["post", "carrossel", "reel_video", "artigo_blog", "newsletter", "guia_tecnico_arquitetos", "apresentacao"], "obrigatorio": true },
+        { "id": "canal", "rotulo": "Canal", "tipo": "opcao", "opcoes": ["instagram", "linkedin", "site_blog", "email", "youtube", "whatsapp_lista", "material_impresso"], "obrigatorio": true },
+        { "id": "pilar", "rotulo": "Pilar de conteúdo", "tipo": "opcao", "opcoes": ["tecnologia_invisivel", "conforto_e_experiencia", "seguranca_e_tranquilidade", "parceria_com_arquitetura", "bastidores_e_engenharia", "cases"], "obrigatorio": true },
+        { "id": "data_publicacao", "rotulo": "Data de publicação", "tipo": "data", "obrigatorio": true },
+        { "id": "imagem_de_cliente", "rotulo": "Usa imagem ou dados de cliente?", "tipo": "opcao", "opcoes": ["nao", "sim"], "obrigatorio": true },
+        { "id": "autorizacao_ref", "rotulo": "Referência da autorização (case ou termo)", "tipo": "texto", "obrigatorio": false },
+        { "id": "revisado_por", "rotulo": "Revisão de marca feita por", "tipo": "texto", "obrigatorio": false },
+        { "id": "link", "rotulo": "Link publicado", "tipo": "texto", "obrigatorio": false }
+      ]
+    },
+    {
+      "tipo": "case",
+      "nome": "Case de projeto",
+      "descricao": "Projeto entregue transformado em história de marca, somente com autorização registrada do cliente.",
+      "responsavel": "produtor_conteudo",
+      "estados": ["candidato", "aguardando_autorizacao", "producao", "aprovacao_cliente", "publicado", "descartado"],
+      "estado_inicial": "candidato",
+      "estados_finais": ["publicado", "descartado"],
+      "campos": [
+        { "id": "cliente_nome", "rotulo": "Cliente (uso interno)", "tipo": "texto", "obrigatorio": true },
+        { "id": "arquiteto_parceiro", "rotulo": "Arquiteto / escritório", "tipo": "texto", "obrigatorio": false },
+        { "id": "sistemas_entregues", "rotulo": "Sistemas entregues", "tipo": "texto_longo", "obrigatorio": true },
+        { "id": "autorizacao_publicacao", "rotulo": "Autorização do cliente", "tipo": "opcao", "opcoes": ["pendente", "autorizado_com_identificacao", "autorizado_sem_identificacao", "negado"], "obrigatorio": true },
+        { "id": "documento_autorizacao", "rotulo": "Termo de autorização (link/arquivo)", "tipo": "texto", "obrigatorio": false },
+        { "id": "data_autorizacao", "rotulo": "Data da autorização", "tipo": "data", "obrigatorio": false },
+        { "id": "restricoes", "rotulo": "Restrições do cliente", "tipo": "texto_longo", "obrigatorio": false },
+        { "id": "credito_arquiteto", "rotulo": "Crédito ao arquiteto", "tipo": "opcao", "opcoes": ["autorizado", "nao_autorizado", "sem_arquiteto"], "obrigatorio": false },
+        { "id": "data_sessao", "rotulo": "Data da sessão de fotos/vídeo", "tipo": "data", "obrigatorio": false }
+      ]
+    },
+    {
+      "tipo": "evento",
+      "nome": "Evento / experiência",
+      "descricao": "Café técnico com arquitetos, visita guiada ao showroom, lançamento ou presença em mostra de decoração.",
+      "responsavel": "eventos_parcerias",
+      "estados": ["planejado", "convites_enviados", "realizado", "follow_up_concluido", "cancelado"],
+      "estado_inicial": "planejado",
+      "estados_finais": ["follow_up_concluido", "cancelado"],
+      "campos": [
+        { "id": "tipo_evento", "rotulo": "Tipo", "tipo": "opcao", "opcoes": ["cafe_tecnico_arquitetos", "visita_guiada_showroom", "workshop_tecnico", "lancamento", "mostra_decoracao", "evento_clientes"], "obrigatorio": true },
+        { "id": "data_evento", "rotulo": "Data do evento", "tipo": "data", "obrigatorio": true },
+        { "id": "local", "rotulo": "Local", "tipo": "texto", "obrigatorio": true },
+        { "id": "orcamento", "rotulo": "Orçamento", "tipo": "dinheiro", "obrigatorio": true },
+        { "id": "convidados", "rotulo": "Convidados", "tipo": "numero", "obrigatorio": false },
+        { "id": "presentes", "rotulo": "Presentes", "tipo": "numero", "obrigatorio": false },
+        { "id": "leads_gerados", "rotulo": "Leads / interessados repassados", "tipo": "numero", "obrigatorio": false },
+        { "id": "data_follow_up", "rotulo": "Prazo do follow-up", "tipo": "data", "obrigatorio": false }
+      ]
+    }
+  ],
+  "rotinas": [
+    {
+      "id": "pauta_semanal",
+      "nome": "Pauta semanal de conteúdo",
+      "frequencia": "semanal",
+      "responsavel": "coord_marketing",
+      "passos": [
+        "Revisar o calendário da semana e conteúdos em produção e revisão de marca.",
+        "Conferir autorização de toda peça que usa imagem ou dado de cliente.",
+        "Definir pelo menos 2 publicações por pilar prioritário.",
+        "Registrar publicações realizadas com link."
+      ]
+    },
+    {
+      "id": "calendario_editorial",
+      "nome": "Calendário editorial do mês",
+      "frequencia": "mensal",
+      "responsavel": "coord_marketing",
+      "passos": [
+        "Escolher o tema do mês a partir dos trabalhos (JTBD) do cliente e do arquiteto.",
+        "Distribuir conteúdos por pilar e canal.",
+        "Encaixar cases autorizados e o próximo evento.",
+        "Validar o calendário com a CMO."
+      ]
+    },
+    {
+      "id": "reuniao_marketing_comercial",
+      "nome": "Reunião marketing–comercial",
+      "frequencia": "mensal",
+      "responsavel": "CMO",
+      "passos": [
+        "Revisar leads gerados por origem e o retorno do Comercial sobre cada um.",
+        "Levantar objeções recorrentes para transformar em conteúdo.",
+        "Receber do Comercial e do Pós-venda os projetos candidatos a case.",
+        "Ajustar metas do mês seguinte."
+      ]
+    },
+    {
+      "id": "relatorio_performance",
+      "nome": "Relatório mensal de performance",
+      "frequencia": "mensal",
+      "responsavel": "analista_performance",
+      "passos": [
+        "Consolidar leads, oportunidades, custo por lead e receita influenciada por campanha e canal.",
+        "Comparar com o mês anterior e com a meta.",
+        "Listar o que funcionou, o que não funcionou e 3 recomendações priorizadas.",
+        "Enviar à CMO e à direção."
+      ]
+    },
+    {
+      "id": "agenda_eventos",
+      "nome": "Planejamento de eventos e showroom",
+      "frequencia": "trimestral",
+      "responsavel": "eventos_parcerias",
+      "passos": [
+        "Definir pelo menos 2 encontros com arquitetos e 1 experiência para clientes no trimestre.",
+        "Montar lista de convidados com o gestor de parceiros do Comercial.",
+        "Aprovar orçamento de cada evento com a CMO.",
+        "Reservar data do showroom e fornecedores."
+      ]
+    },
+    {
+      "id": "revisao_marca",
+      "nome": "Revisão de marca e mensagem",
+      "frequencia": "trimestral",
+      "responsavel": "CMO",
+      "passos": [
+        "Revisar o BrandScript (SB7) e os pilares de conteúdo.",
+        "Auditar amostra de peças publicadas quanto a tom, termos e promessas.",
+        "Atualizar guia de estilo e banco de imagens autorizadas."
+      ]
+    }
+  ],
+  "indicadores": [
+    { "id": "leads_gerados", "nome": "Leads gerados por Marketing", "formula": "Soma de leads registrados em campanhas e eventos no mês", "meta": "≥ 20 por mês", "frequencia": "mensal", "status": "PROPOSTA" },
+    { "id": "taxa_lead_oportunidade", "nome": "Conversão de lead em oportunidade", "formula": "Oportunidades geradas ÷ leads gerados por Marketing × 100", "meta": "≥ 25%", "frequencia": "mensal", "status": "PROPOSTA" },
+    { "id": "oportunidades_marketing", "nome": "Oportunidades com origem em Marketing", "formula": "Soma de oportunidades geradas registradas nas campanhas do período", "meta": "≥ 5 por mês", "frequencia": "mensal", "status": "PROPOSTA" },
+    { "id": "custo_por_lead", "nome": "Custo por lead", "formula": "Investimento realizado ÷ leads gerados", "meta": "Acompanhar tendência; teto a definir após 3 meses de histórico", "frequencia": "mensal", "status": "PROPOSTA" },
+    { "id": "receita_influenciada", "nome": "Receita influenciada", "formula": "Valor das vendas ganhas cujo lead passou por campanha, evento ou conteúdo de Marketing", "meta": "≥ 30% da receita de projetos novos", "frequencia": "trimestral", "status": "PROPOSTA" },
+    { "id": "arquitetos_engajados", "nome": "Arquitetos engajados", "formula": "Escritórios distintos que participaram de evento, visita ao showroom ou receberam material técnico com retorno nos últimos 90 dias", "meta": "≥ 15 por trimestre", "frequencia": "trimestral", "status": "PROPOSTA" },
+    { "id": "comparecimento_eventos", "nome": "Comparecimento em eventos", "formula": "Presentes ÷ convidados × 100", "meta": "≥ 50%", "frequencia": "mensal", "status": "PROPOSTA" },
+    { "id": "cases_publicados", "nome": "Cases publicados com autorização", "formula": "Cases em estado publicado no período", "meta": "≥ 2 por trimestre", "frequencia": "trimestral", "status": "PROPOSTA" },
+    { "id": "publicacoes_semana", "nome": "Frequência de publicação", "formula": "Conteúdos publicados por semana", "meta": "≥ 3 por semana", "frequencia": "semanal", "status": "PROPOSTA" }
+  ],
+  "sentinelas": [
+    {
+      "id": "MKT_CASE_SEM_AUTORIZACAO",
+      "titulo": "Case avançando sem termo de autorização",
+      "severidade": "CRITICO",
+      "status": "PROPOSTA",
+      "gatilho": {
+        "tipo": "faltando",
+        "registro": "case",
+        "campo": "documento_autorizacao",
+        "filtros": [{ "campo": "estado", "em": ["producao", "aprovacao_cliente", "publicado"] }]
+      },
+      "mensagem": "O case {{titulo}} está em produção ou publicado sem termo de autorização registrado. Suspender uso até regularizar.",
+      "acoes": [
+        { "tipo": "tarefa", "titulo": "Suspender uso do case e obter termo de autorização assinado", "papel": "produtor_conteudo", "prazo_dias": 1 },
+        { "tipo": "rascunho", "modelo": "pedido_autorizacao_case" },
+        { "tipo": "notificar", "para": "CMO" }
+      ],
+      "fonte": "PROPOSTA — LGPD (Lei 13.709/2018) e direito de imagem; regra da direção: publicar case só com autorização registrada"
+    },
+    {
+      "id": "MKT_CONTEUDO_CLIENTE_SEM_AUTORIZACAO",
+      "titulo": "Conteúdo com imagem de cliente sem autorização vinculada",
+      "severidade": "ALTO",
+      "status": "PROPOSTA",
+      "gatilho": {
+        "tipo": "faltando",
+        "registro": "conteudo",
+        "campo": "autorizacao_ref",
+        "filtros": [
+          { "campo": "imagem_de_cliente", "igual": "sim" },
+          { "campo": "estado", "nao_em": ["arquivado"] }
+        ]
+      },
+      "mensagem": "O conteúdo {{titulo}} usa imagem ou dado de cliente e não tem autorização vinculada.",
+      "acoes": [
+        { "tipo": "tarefa", "titulo": "Vincular a autorização do case/termo ou retirar a imagem do cliente", "papel": "produtor_conteudo", "prazo_dias": 1 },
+        { "tipo": "notificar", "para": "coord_marketing" }
+      ],
+      "fonte": "PROPOSTA — LGPD (Lei 13.709/2018) e boa prática de brand review"
+    },
+    {
+      "id": "MKT_CONTEUDO_SEM_REVISAO",
+      "titulo": "Conteúdo perto da data sem aprovação de marca",
+      "severidade": "MEDIO",
+      "status": "PROPOSTA",
+      "gatilho": {
+        "tipo": "vencido",
+        "registro": "conteudo",
+        "campo": "data_publicacao",
+        "filtros": [{ "campo": "estado", "em": ["ideia", "producao", "revisao_marca"] }],
+        "antecedencia_dias": 2
+      },
+      "mensagem": "O conteúdo {{titulo}} vence para publicação em até 2 dias e ainda não foi aprovado na revisão de marca.",
+      "acoes": [
+        { "tipo": "tarefa", "titulo": "Concluir revisão de marca ou reprogramar a publicação", "papel": "coord_marketing", "prazo_dias": 1 }
+      ],
+      "fonte": "PROPOSTA — padrão de mercado (brand review antes de publicar)"
+    },
+    {
+      "id": "MKT_POUCAS_PUBLICACOES",
+      "titulo": "Poucas publicações na semana",
+      "severidade": "INFO",
+      "status": "PROPOSTA",
+      "gatilho": {
+        "tipo": "contagem",
+        "registro": "conteudo",
+        "filtros": [{ "campo": "estado", "igual": "publicado" }],
+        "janela_dias": 7,
+        "data_campo": "data_publicacao",
+        "operador": "<",
+        "valor": 2
+      },
+      "mensagem": "Apenas {{total}} conteúdo(s) publicado(s) nos últimos 7 dias.",
+      "acoes": [
+        { "tipo": "tarefa", "titulo": "Publicar conteúdo de estoque aprovado (cases, bastidores ou guia técnico)", "papel": "produtor_conteudo", "prazo_dias": 2 }
+      ],
+      "fonte": "PROPOSTA — padrão de mercado (consistência de calendário editorial)"
+    },
+    {
+      "id": "MKT_LEADS_ABAIXO_META",
+      "titulo": "Faltando lead: campanhas geraram poucos leads no mês",
+      "severidade": "ALTO",
+      "status": "PROPOSTA",
+      "gatilho": {
+        "tipo": "soma",
+        "registro": "campanha",
+        "campo": "leads_gerados",
+        "filtros": [{ "campo": "estado", "em": ["ativa", "encerrada", "analisada"] }],
+        "janela_dias": 30,
+        "data_campo": "atualizado_em",
+        "operador": "<",
+        "valor": 20
+      },
+      "mensagem": "Campanhas atualizadas nos últimos 30 dias somam {{total}} leads, abaixo da meta proposta de 20 por mês. O Comercial depende desse volume.",
+      "acoes": [
+        { "tipo": "tarefa", "titulo": "Montar ação rápida de geração de leads (convite ao showroom para base e arquitetos)", "papel": "coord_marketing", "prazo_dias": 3 },
+        { "tipo": "rascunho", "modelo": "convite_showroom_arquitetos" },
+        { "tipo": "notificar", "para": "CMO" },
+        { "tipo": "notificar", "para": "direcao" }
+      ],
+      "fonte": "PROPOSTA — padrão de mercado (acordo de nível de serviço marketing–vendas)"
+    },
+    {
+      "id": "MKT_CAMPANHA_SEM_ANALISE",
+      "titulo": "Campanha encerrada sem análise",
+      "severidade": "MEDIO",
+      "status": "PROPOSTA",
+      "gatilho": {
+        "tipo": "parado",
+        "registro": "campanha",
+        "filtros": [{ "campo": "estado", "igual": "encerrada" }],
+        "dias": 7,
+        "data_campo": "atualizado_em"
+      },
+      "mensagem": "A campanha {{titulo}} foi encerrada há {{dias}} dias e ainda não tem análise de resultado.",
+      "acoes": [
+        { "tipo": "tarefa", "titulo": "Registrar leads, oportunidades, investimento realizado e aprendizados", "papel": "analista_performance", "prazo_dias": 2 }
+      ],
+      "fonte": "PROPOSTA — padrão de mercado (relatório de performance de campanha)"
+    },
+    {
+      "id": "MKT_EVENTO_SEM_FOLLOWUP",
+      "titulo": "Evento realizado sem follow-up",
+      "severidade": "ALTO",
+      "status": "PROPOSTA",
+      "gatilho": {
+        "tipo": "vencido",
+        "registro": "evento",
+        "campo": "data_follow_up",
+        "filtros": [{ "campo": "estado", "igual": "realizado" }],
+        "antecedencia_dias": 0
+      },
+      "mensagem": "O prazo de follow-up do evento {{titulo}} venceu. Interessados esfriam rápido.",
+      "acoes": [
+        { "tipo": "tarefa", "titulo": "Enviar agradecimento aos presentes e repassar interessados ao Comercial", "papel": "eventos_parcerias", "prazo_dias": 1 },
+        { "tipo": "rascunho", "modelo": "followup_evento" }
+      ],
+      "fonte": "PROPOSTA — padrão de mercado (follow-up de eventos em até 48h)"
+    },
+    {
+      "id": "MKT_SEM_EVENTO_ARQUITETOS",
+      "titulo": "Nenhum encontro com arquitetos em 60 dias",
+      "severidade": "MEDIO",
+      "status": "PROPOSTA",
+      "gatilho": {
+        "tipo": "contagem",
+        "registro": "evento",
+        "filtros": [
+          { "campo": "tipo_evento", "em": ["cafe_tecnico_arquitetos", "visita_guiada_showroom", "workshop_tecnico"] },
+          { "campo": "estado", "diferente": "cancelado" }
+        ],
+        "janela_dias": 60,
+        "data_campo": "data_evento",
+        "operador": "<",
+        "valor": 1
+      },
+      "mensagem": "Nenhum encontro com arquitetos nos últimos 60 dias ({{total}} registrado). O canal de indicação precisa de presença constante.",
+      "acoes": [
+        { "tipo": "tarefa", "titulo": "Agendar café técnico ou visita guiada ao showroom com escritórios nível A", "papel": "eventos_parcerias", "prazo_dias": 7 },
+        { "tipo": "rascunho", "modelo": "convite_showroom_arquitetos" }
+      ],
+      "fonte": "PROPOSTA — padrão de mercado (marketing de relacionamento com especificadores)"
+    },
+    {
+      "id": "MKT_CASE_AUTORIZACAO_PARADA",
+      "titulo": "Pedido de autorização de case parado",
+      "severidade": "INFO",
+      "status": "PROPOSTA",
+      "gatilho": {
+        "tipo": "parado",
+        "registro": "case",
+        "filtros": [{ "campo": "estado", "igual": "aguardando_autorizacao" }],
+        "dias": 15,
+        "data_campo": "atualizado_em"
+      },
+      "mensagem": "O case {{titulo}} aguarda autorização há {{dias}} dias.",
+      "acoes": [
+        { "tipo": "tarefa", "titulo": "Retomar o pedido de autorização com o cliente (via Pós-venda se necessário) ou descartar o case", "papel": "produtor_conteudo", "prazo_dias": 3 },
+        { "tipo": "rascunho", "modelo": "pedido_autorizacao_case" }
+      ],
+      "fonte": "PROPOSTA — padrão de mercado"
+    }
+  ],
+  "modelos": [
+    {
+      "id": "convite_showroom_arquitetos",
+      "tipo": "email",
+      "assunto": "Convite: tecnologia invisível no projeto de interiores — café no showroom VOICE",
+      "corpo": "Olá,\n\nGostaríamos de receber você e sua equipe para um café técnico no showroom da VOICE. Em 60 minutos mostramos, funcionando, como iluminação, som, cortinas, climatização e rede se integram sem aparecer no projeto — e em que fase da obra cada decisão precisa ser tomada para não comprometer o acabamento.\n\nEvento: {{titulo}}\nResponsável: {{responsavel}}\n\nConfirma presença respondendo este e-mail?\n\nEquipe VOICE Ambientes Inteligentes"
+    },
+    {
+      "id": "followup_evento",
+      "tipo": "whatsapp",
+      "assunto": "Agradecimento pós-evento",
+      "corpo": "Olá! Obrigado por ter vindo ao {{titulo}}. Foi ótimo conversar sobre seus projetos. Se tiver alguma obra em andamento em que possamos ajudar com a infraestrutura de automação e rede, posso pedir para nosso consultor entrar em contato esta semana?"
+    },
+    {
+      "id": "pedido_autorizacao_case",
+      "tipo": "email",
+      "assunto": "Podemos contar a história do seu projeto?",
+      "corpo": "Olá, {{cliente_nome}},\n\nFicamos muito felizes com o resultado do seu projeto. Gostaríamos de pedir sua autorização para apresentá-lo como case da VOICE.\n\nVocê decide tudo: se aparece o seu nome ou não, quais ambientes podem ser fotografados e o que não deve aparecer (fachada, endereço, pessoas, objetos pessoais). Nada é publicado sem a sua aprovação final por escrito.\n\nSe concordar, enviamos o termo de autorização para assinatura digital.\n\nCom carinho,\n{{responsavel}}\nVOICE Ambientes Inteligentes"
+    },
+    {
+      "id": "termo_autorizacao_imagem",
+      "tipo": "documento",
+      "assunto": "Termo de autorização de uso de imagem e divulgação de projeto",
+      "corpo": "Cliente: {{cliente_nome}}\nProjeto: {{titulo}}\nArquiteto/escritório: {{arquiteto_parceiro}}\nEscopo autorizado: ( ) fotos ( ) vídeo ( ) nome do cliente ( ) cidade/bairro ( ) crédito ao arquiteto\nRestrições: {{restricoes}}\nCanais autorizados: site, redes sociais, apresentações comerciais, mostras.\nPrazo: indeterminado, revogável a qualquer momento mediante pedido por escrito.\nAprovação final da versão a ser publicada: obrigatória.\nData e assinatura: "
+    },
+    {
+      "id": "brief_campanha",
+      "tipo": "documento",
+      "assunto": "Brief de campanha — {{titulo}}",
+      "corpo": "Objetivo mensurável: {{objetivo}} — meta de leads: {{meta_leads}}\nPúblico: {{publico}}\nMensagem central (SB7 — herói, problema, guia, plano, chamada, fracasso evitado, sucesso): {{mensagem_central}}\nCanais: {{canais}}\nPeríodo: {{data_inicio}} a {{data_fim}}\nOrçamento: {{orcamento}}\nPeças necessárias:\nComo o Comercial recebe os leads:\nRiscos e cuidados de marca/autorização:\nData da análise:"
+    },
+    {
+      "id": "repasse_lead_comercial",
+      "tipo": "documento",
+      "assunto": "Repasse de interessado ao Comercial",
+      "corpo": "Origem: {{titulo}}\nNome e contato:\nPerfil (cliente final, arquiteto, construtora):\nO que perguntou / interesse:\nFase da obra (se souber):\nRegistrado por: {{responsavel}}\nPedido ao Comercial: responder no mesmo dia útil e devolver o resultado ao Marketing."
+    }
+  ],
+  "documentos": [
+    "BrandScript VOICE (StoryBrand SB7)",
+    "Guia de marca e tom de voz",
+    "Termo de autorização de uso de imagem e divulgação de projeto",
+    "Banco de imagens com status de autorização",
+    "Brief de campanha",
+    "Checklist de evento no showroom",
+    "Relatório mensal de performance"
+  ],
+  "relacoes": [
+    { "setor": "vendas", "fluxo": "Entrega leads e interessados de campanhas e eventos; recebe retorno sobre qualidade dos leads, objeções recorrentes e projetos candidatos a case." },
+    { "setor": "posvenda", "fluxo": "Recebe clientes promotores e autorizações de case; entrega conteúdo educativo para clientes da base." },
+    { "setor": "operacoes", "fluxo": "Agenda sessões de fotos nas entregas e recebe informações técnicas dos projetos." },
+    { "setor": "financas", "fluxo": "Aprova e acompanha orçamento de campanhas e eventos." },
+    { "setor": "direcao", "fluxo": "Aprova posicionamento, orçamento trimestral e parcerias; recebe relatório de performance." }
+  ],
+  "fontes": [
+    { "titulo": "Skill campaign-plan", "tipo": "skill", "ref": "knowledge-work-plugins/marketing/skills/campaign-plan/SKILL.md" },
+    { "titulo": "Skill brand-review", "tipo": "skill", "ref": "knowledge-work-plugins/marketing/skills/brand-review/SKILL.md" },
+    { "titulo": "Skill performance-report", "tipo": "skill", "ref": "knowledge-work-plugins/marketing/skills/performance-report/SKILL.md" },
+    { "titulo": "Skill content-strategy", "tipo": "skill", "ref": "knowledge-work-plugins/small-business/skills/content-strategy/SKILL.md" },
+    { "titulo": "Building a StoryBrand — Donald Miller", "tipo": "livro", "ref": "https://grahammann.net/book-notes/building-a-storybrand-donald-miller" },
+    { "titulo": "Jobs-to-be-Done — Clayton Christensen (Competing Against Luck)", "tipo": "metodo", "ref": "Competing Against Luck (HarperBusiness, 2016)" },
+    { "titulo": "Lei Geral de Proteção de Dados (Lei 13.709/2018)", "tipo": "norma", "ref": "https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/l13709.htm" }
+  ]
+}
