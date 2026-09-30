@@ -13,7 +13,8 @@ Deno.serve(async () => {
   const [conexao] = await servico("/rest/v1/integracoes?id=eq.zoho&select=id");
   if (!conexao) return json(200, { pulado: "zoho nao conectado" });
   const [ultima] = await servico("/rest/v1/zoho_sync_log?select=em,ms&order=id.desc&limit=1");
-  if (ultima && Date.now() - Date.parse(ultima.em) < 90_000) return json(200, { pulado: "rodada recente" });
+  // compara com o INICIO da rodada anterior (em - ms): assim roda a cada 2 min, nao a cada 4
+  if (ultima && Date.now() - (Date.parse(ultima.em) - ultima.ms) < 90_000) return json(200, { pulado: "rodada recente" });
   const r = await sincronizar("agendada", { limiteMs: 100_000 });
   return json(200, { ...r, erros: r.erros.length });
 });

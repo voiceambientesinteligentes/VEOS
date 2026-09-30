@@ -133,3 +133,12 @@
   .zoho-modulos { position: static; flex-direction: row; overflow-x: auto; }
   .zoho-modulo { white-space: nowrap; }
 }
+
+/* Fluxo vivo e edicao do Zoho */
+.previsao-linha { display: grid; grid-template-columns: 90px minmax(0, 1fr) 130px; gap: var(--s3); align-items: center; }
+.previsao-trilho { height: 10px; border-radius: 6px; background: var(--bg-3, rgba(255,255,255,0.05)); overflow: hidden; }
+.previsao-barra { display: block; height: 100%; border-radius: 6px; background: linear-gradient(90deg, var(--gold), var(--gold-2)); }
+.previsao-mes { color: var(--text-1); text-transform: capitalize; }
+.zoho-grupo { border: 1px solid var(--line); border-radius: var(--radius-s, 8px); padding: var(--s3); margin: 0; }
+.zoho-grupo > legend { padding: 0 6px; color: var(--gold-2); font-weight: 600; }
+.zoho-sugestoes { max-height: 220px; overflow-y: auto; }

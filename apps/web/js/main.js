@@ -16,6 +16,7 @@ import { telaConselho } from "./ui/views/conselho.js";
 import { telaCalculadora, telaNegociacao } from "./ui/views/precificacao.js";
 import { telaIntegracoes } from "./ui/views/integracoes.js";
 import { PRODUTOS, telaZoho } from "./ui/views/zoho.js";
+import { telaEstoque, telaItemEstoque, telaPedido, telaPedidos, telaRecebimentos } from "./ui/views/fluxo.js";
 import { CATALOGO } from "./data/catalogo.js";
 
 const el = {
@@ -99,6 +100,9 @@ const TELAS = {
   "#/visao": { fn: telaVisao, titulo: ["Visão geral", "VEOS online · VOICE Ambientes Inteligentes"] },
   "#/cfo": { fn: telaAvisos, titulo: ["Avisos de orçamento", "Vigia: orçamento salvo → avisos do CFO com regra e fonte"] },
   "#/projetos": { fn: telaProjetos, titulo: ["Projetos e caixa", "Setor Financeiro · exposição e cobertura por fase"] },
+  "#/pedidos": { fn: telaPedidos, titulo: ["Pedidos", "Orçamento aceito → estoque → parcelas → nota fiscal → recebimento"] },
+  "#/estoque": { fn: (root) => telaEstoque(root), titulo: ["Estoque", "Saldo físico, reservas dos pedidos e custo médio"] },
+  "#/recebimentos": { fn: telaRecebimentos, titulo: ["Recebimentos e faturamento", "Previsão de caixa, parcelas e notas fiscais"] },
   "#/integracoes": { fn: (root) => telaIntegracoes(root, eu), titulo: ["Integrações", "Zoho Books, CRM e Projects · somente leitura"] },
   "#/negociacao": { fn: (root) => telaNegociacao(root, fontesZoho), titulo: ["Negociação ao Vivo", "Desconto, custos e Simples → margem e alçada pela Política V1"] },
   "#/calculadora": { fn: telaCalculadora, titulo: ["Calculadora de Preços", "Preço mínimo para a margem alvo, já com Simples e provisão de 2%"] },
@@ -149,6 +153,11 @@ function montarMenu() {
       link("#/ia", "✦", "IA VEOS"),
       link("#/conselho", "◇", "Conselho"),
       link("#/integracoes", "⇄", "Integrações")),
+    h("div", { class: "nav-group", role: "group", "aria-labelledby": "nav-operacao" },
+      h("span", { class: "nav-label", id: "nav-operacao" }, "Operação"),
+      link("#/pedidos", "PED", "Pedidos"),
+      link("#/estoque", "EST", "Estoque"),
+      link("#/recebimentos", "REC", "Recebimentos e faturamento")),
     h("div", { class: "nav-group", role: "group", "aria-labelledby": "nav-zoho" },
       h("span", { class: "nav-label", id: "nav-zoho" }, "Zoho"),
       Object.entries(PRODUTOS).map(([id, p]) => link(`#/zoho/${id}`, id === "books" ? "BKS" : id === "crm" ? "CRM" : "ZPR", `Zoho ${p.nome}`))),
@@ -173,7 +182,15 @@ async function navegar() {
   const setor = setorRota && CATALOGO.find((s) => s.id === setorRota[1]);
   let rota, def;
   const zohoRota = /^#\/zoho\/(books|crm|projects)(?:\/([A-Za-z0-9_]+)(?:\/([0-9A-Za-z_-]+))?)?$/.exec(rotaBase());
-  if (zohoRota) {
+  const pedidoRota = /^#\/pedidos\/([0-9a-f-]{36})$/.exec(rotaBase());
+  const estoqueRota = /^#\/estoque\/([0-9A-Za-z_-]{1,40})$/.exec(rotaBase());
+  if (pedidoRota) {
+    rota = "#/pedidos";
+    def = { fn: (root) => telaPedido(root, pedidoRota[1], eu), titulo: ["Pedido", "Itens, estoque, parcelas, notas fiscais e histórico"] };
+  } else if (estoqueRota) {
+    rota = "#/estoque";
+    def = { fn: (root) => telaItemEstoque(root, estoqueRota[1], eu), titulo: ["Estoque do item", "Saldo e movimentos"] };
+  } else if (zohoRota) {
     rota = `#/zoho/${zohoRota[1]}`;
     def = { fn: (root) => telaZoho(root, ["zoho", zohoRota[1], zohoRota[2], zohoRota[3] && decodeURIComponent(zohoRota[3])], eu), titulo: [`Zoho ${PRODUTOS[zohoRota[1]].nome}`, "Cópia completa do Zoho dentro do VEOS · sincronização automática"] };
   } else if (detalhe) {
@@ -215,7 +232,7 @@ async function iniciar(mensagem) {
     return telaLogin(e.status === 403 ? "Este e-mail não tem acesso ao VEOS. Fale com a direção." : e.message);
   }
   montarMenu();
-  if (!TELAS[rotaBase()] && !/^#\/(projetos|setor|zoho)\//.test(location.hash)) history.replaceState(null, "", "#/orbita");
+  if (!TELAS[rotaBase()] && !/^#\/(projetos|setor|zoho|pedidos|estoque)\//.test(location.hash)) history.replaceState(null, "", "#/orbita");
   navegar();
 }
 

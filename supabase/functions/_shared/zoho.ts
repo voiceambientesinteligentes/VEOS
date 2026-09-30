@@ -13,6 +13,9 @@ export const ESCOPOS = [
   "ZohoCRM.modules.READ", "ZohoCRM.settings.READ", "ZohoCRM.users.READ", "ZohoCRM.org.READ",
   // Projects
   ...["portals", "projects", "tasks", "tasklists", "milestones", "bugs", "timesheets", "users"].map((m) => `ZohoProjects.${m}.READ`),
+  // Escrita (criar/alterar, sem excluir) nos modulos editaveis pelo VEOS
+  ...["contacts", "settings", "estimates"].flatMap((m) => [`ZohoBooks.${m}.CREATE`, `ZohoBooks.${m}.UPDATE`]),
+  "ZohoCRM.modules.CREATE", "ZohoCRM.modules.UPDATE", "ZohoProjects.tasks.CREATE", "ZohoProjects.tasks.UPDATE",
 ].join(",");
 
 const CLIENT_ID = () => Deno.env.get("ZOHO_CLIENT_ID") ?? "";
@@ -109,6 +112,25 @@ export async function zohoGetBruto(caminho: string, params: Record<string, strin
     return { status: r.status, dados: d as Record<string, any> };
   }
   throw new HttpError(502, "Zoho recusou o acesso");
+}
+
+/** POST/PUT/PATCH autenticado (escrita). Nao repete em erro: escrita nunca e reenviada as cegas. */
+export async function zohoEnviar(metodo: "POST" | "PUT" | "PATCH", caminho: string, params: Record<string, string> = {}, corpo: unknown = {}, produto: "api" | "projects" = "api") {
+  const c = await conexao();
+  const token = c.access_token && c.expira_em && Date.parse(c.expira_em) > Date.now() + 30_000 ? c.access_token : await renovar(c);
+  const q = new URLSearchParams(params);
+  const base = produto === "projects" ? projectsBase(c.api_domain) : c.api_domain;
+  const r = await fetch(`${base}${caminho}${q.size ? `?${q}` : ""}`, {
+    method: metodo, headers: { Authorization: `Zoho-oauthtoken ${token}`, "Content-Type": "application/json" },
+    body: JSON.stringify(corpo), signal: AbortSignal.timeout(30_000),
+  });
+  const d = await r.json().catch(() => ({}));
+  if (!r.ok || (typeof d.code === "number" && d.code !== 0)) {
+    console.error("zoho escrita", caminho, r.status, JSON.stringify(d).slice(0, 400));
+    const det = d?.data?.[0];
+    throw new HttpError(r.status === 401 ? 403 : 400, `Zoho recusou a gravação: ${d.message ?? det?.message ?? r.status}${det?.details?.api_name ? ` (${det.details.api_name})` : ""}${r.status === 401 ? ". Reconecte o Zoho em Integrações para liberar a escrita." : ""}`);
+  }
+  return d as Record<string, any>;
 }
 
 export async function zohoGet(caminho: string, params: Record<string, string | number | undefined> = {}, produto: "api" | "projects" = "api") {

@@ -6,11 +6,17 @@
 //   GET  /zoho/orcamentos?busca=&status=   orcamentos do Books
 //   GET  /zoho/orcamentos/:id     itens + custo de compra
 //   GET  /zoho/crm/etapas         etapas reais do funil (Deals.Stage)
-import { HttpError, type Membro, servico } from "../_shared/banco.ts";
+import { HttpError, lerCorpo, type Membro, servico } from "../_shared/banco.ts";
 import { configurado, ESCOPOS, etapasCrm, orcamento, orcamentos, rbt12, urlAutorizacao } from "../_shared/zoho.ts";
 import { sincronizar } from "../_shared/zoho_sync.ts";
+import { camposEditaveis, escrever } from "../_shared/zoho_escrita.ts";
 
 const COMERCIAL = ["direcao", "financas", "vendas"];
+const ESCRITA: Record<string, string[]> = {
+  books: ["direcao", "financas", "vendas"],
+  crm: ["direcao", "vendas", "marketing", "secretaria", "posvenda"],
+  projects: ["direcao", "operacoes", "tecnologia", "posvenda"],
+};
 
 function exigir(eu: Membro, papeis: string[]) {
   if (!papeis.includes(eu.papel)) throw new HttpError(403, "seu perfil não acessa estes dados do Zoho");
@@ -25,7 +31,7 @@ export async function rotearZoho(req: Request, partes: string[], eu: Membro) {
     if (c) [por] = await servico(`/rest/v1/membros?user_id=eq.${c.conectado_por}&select=nome`);
     const concedidos: string[] = c?.escopos?.split(/[ ,]+/) ?? [];
     const faltando = c ? ESCOPOS.split(",").filter((e) => !concedidos.includes(e)) : [];
-    return { configurado: configurado(), conectado: Boolean(c), precisa_reconectar: faltando.length > 0, escopos_faltando: faltando, conectado_em: c?.conectado_em ?? null, conectado_por: por?.nome ?? null, escopos: c?.escopos?.split(",") ?? [], somente_leitura: true };
+    return { configurado: configurado(), conectado: Boolean(c), precisa_reconectar: faltando.length > 0, escopos_faltando: faltando, conectado_em: c?.conectado_em ?? null, conectado_por: por?.nome ?? null, escopos: c?.escopos?.split(",") ?? [], somente_leitura: faltando.some((e) => /\.(CREATE|UPDATE)$/.test(e)) };
   }
   if (req.method === "POST" && a === "conectar") {
     exigir(eu, ["direcao"]);
@@ -47,6 +53,19 @@ export async function rotearZoho(req: Request, partes: string[], eu: Membro) {
     return { ...r, erros: r.erros.slice(0, 20) };
   }
   if (a === "espelho") return await rotearEspelho(req, partes.slice(1), eu);
+  // edicao nos dois sentidos: formulario (campos editaveis) e gravacao no Zoho
+  if (a === "campos" || a === "escrever") {
+    const [, , produto, modulo, id] = partes; // zoho/(campos|escrever)/:produto/:modulo[/:id]
+    if (!ESCRITA[produto]?.includes(eu.papel)) throw new HttpError(403, "seu perfil não edita este produto do Zoho");
+    if (!/^[A-Za-z0-9_]{2,60}$/.test(modulo ?? "") || (id && !/^[0-9A-Za-z_-]{1,40}$/.test(id))) throw new HttpError(400, "módulo ou id inválido");
+    if (req.method === "GET" && a === "campos") return { campos: await camposEditaveis(produto, modulo) };
+    if (req.method === "POST" && a === "escrever") {
+      const chave = req.headers.get("Idempotency-Key") ?? "";
+      if (!/^[A-Za-z0-9-]{16,64}$/.test(chave)) throw new HttpError(400, "Idempotency-Key obrigatorio");
+      const corpo = (await lerCorpo(req)) ?? {};
+      return await escrever({ produto, modulo, id: id ?? null, campos: corpo.campos ?? {}, modificadoEm: typeof corpo.modificado_em === "string" ? corpo.modificado_em : null, usuario: eu.user_id, chave: `${eu.user_id}:${chave}` });
+    }
+  }
   if (req.method === "GET" && a === "rbt12") { exigir(eu, COMERCIAL); return await rbt12(); }
   if (req.method === "GET" && a === "orcamentos" && !b) { exigir(eu, COMERCIAL); return { orcamentos: await orcamentos(q.get("busca") ?? "", q.get("status") ?? "") }; }
   if (req.method === "GET" && a === "orcamentos" && b) { exigir(eu, COMERCIAL); return await orcamento(b); }

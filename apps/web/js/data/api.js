@@ -59,6 +59,21 @@ export const api = {
   zohoEspelho: () => request("GET", "zoho/espelho"),
   zohoEspelhoLista: (produto, modulo, busca = "", pagina = 1) => request("GET", `zoho/espelho/${encodeURIComponent(produto)}/${encodeURIComponent(modulo)}?${new URLSearchParams({ busca, pagina: String(pagina) })}`),
   zohoEspelhoRegistro: (produto, modulo, id) => request("GET", `zoho/espelho/${encodeURIComponent(produto)}/${encodeURIComponent(modulo)}/${encodeURIComponent(id)}`),
+  zohoCampos: (produto, modulo) => request("GET", `zoho/campos/${encodeURIComponent(produto)}/${encodeURIComponent(modulo)}`),
+  zohoEscrever: (produto, modulo, id, campos, modificadoEm) =>
+    request("POST", `zoho/escrever/${encodeURIComponent(produto)}/${encodeURIComponent(modulo)}${id ? `/${encodeURIComponent(id)}` : ""}`, { campos, modificado_em: modificadoEm ?? null }, { "Idempotency-Key": crypto.randomUUID() }),
+  // Fluxo vivo: pedidos, estoque, parcelas, NF
+  fluxoResumo: () => request("GET", "fluxo/resumo"),
+  fluxoOrcamentosAceitos: () => request("GET", "fluxo/orcamentos-aceitos"),
+  fluxoPedidos: (estado = "") => request("GET", `fluxo/pedidos${estado ? `?estado=${encodeURIComponent(estado)}` : ""}`),
+  fluxoPedido: (id) => request("GET", `fluxo/pedidos/${encodeURIComponent(id)}`),
+  fluxoCriarPedido: (dados) => request("POST", "fluxo/pedidos", dados, { "Idempotency-Key": crypto.randomUUID() }),
+  fluxoAcao: (id, acao, dados = {}) => request("POST", `fluxo/pedidos/${encodeURIComponent(id)}/${acao}`, dados, { "Idempotency-Key": crypto.randomUUID() }),
+  fluxoReceber: (parcelaId, dados) => request("POST", `fluxo/parcelas/${encodeURIComponent(parcelaId)}/receber`, dados, { "Idempotency-Key": crypto.randomUUID() }),
+  fluxoParcelas: (estado = "aberta") => request("GET", `fluxo/parcelas?estado=${encodeURIComponent(estado)}`),
+  fluxoEstoque: (busca = "", pagina = 1) => request("GET", `fluxo/estoque?${new URLSearchParams({ busca, pagina: String(pagina) })}`),
+  fluxoEstoqueItem: (id) => request("GET", `fluxo/estoque/${encodeURIComponent(id)}`),
+  fluxoMovimento: (dados) => request("POST", "fluxo/estoque", dados, { "Idempotency-Key": crypto.randomUUID() }),
   // Salvar = vigia avalia e o servidor grava orcamento + avisos. Uma chave por clique:
   // se a rede repetir o envio, o servidor nao duplica o registro.
   vigiaOrcamento: (entrada) =>

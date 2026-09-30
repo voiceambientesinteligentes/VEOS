@@ -4,6 +4,7 @@
 import { api } from "../../data/api.js";
 import { formatBRL, formatDate, formatDateTime } from "../../domain/format.js";
 import { clear, errorNotice, h, panel, stamp } from "../dom.js";
+import { formularioZoho, podeEditar } from "./zoho_edicao.js";
 
 export const PRODUTOS = {
   books: { nome: "Books", sub: "Clientes, itens, orçamentos, vendas, compras e financeiro" },
@@ -143,7 +144,7 @@ export async function telaZoho(root, rota, eu) {
     } catch (e) { saidaSync.textContent = e.message; sincronizar.disabled = false; }
   });
   root.append(
-    status.precisa_reconectar ? h("p", { class: "notice notice-warn" }, "Para copiar todos os módulos (vendas, compras, pagamentos, despesas, bancos, todo o CRM e Projects), a direção precisa reconectar o Zoho uma vez: ", h("a", { href: "#/integracoes" }, "Integrações → Desconectar → Conectar Zoho"), ".") : null,
+    status.precisa_reconectar ? h("p", { class: "notice notice-warn" }, "Novas permissões do Zoho disponíveis (edição nos dois sentidos). A direção reconecta uma vez: ", h("a", { href: "#/integracoes" }, "Integrações → Desconectar → Conectar Zoho"), ".") : null,
     h("div", { class: "row zoho-topo" },
       h("nav", { class: "segmented", "aria-label": "Produto do Zoho" }, espelho.produtos.map((p) => h("a", { class: `zoho-produto${p === produto ? " ativo" : ""}`, href: `#/zoho/${p}`, "aria-current": p === produto ? "page" : null }, `Zoho ${PRODUTOS[p].nome}`))),
       h("span", { class: "field-hint" }, r ? `Última sincronização: ${formatDateTime(r.em)} · automática a cada 2 min` : "Aguardando a primeira sincronização"),
@@ -200,17 +201,29 @@ async function listaRegistros(area, produto, modulo, [nome, colunas]) {
     } catch (e) { clear(corpo).append(errorNotice(e.message)); }
   }
   busca.addEventListener("input", () => { clearTimeout(t); t = setTimeout(() => { pagina = 1; carregar(); }, 350); });
-  area.append(panel({ title: nome, subtitle: `Zoho ${PRODUTOS[produto].nome} · cópia completa (somente leitura por enquanto)`, actions: busca }, corpo));
+  const novo = podeEditar(produto, modulo) && !(produto === "projects") ? h("button", { class: "btn btn-primary", type: "button" }, "+ Novo") : null;
+  novo?.addEventListener("click", () => {
+    clear(area);
+    formularioZoho(area, { produto, modulo, id: null, registro: null, nomeModulo: nome, aoSalvar: (nid) => { location.hash = `#/zoho/${produto}/${modulo}/${encodeURIComponent(nid)}`; } })
+      .catch((e) => area.append(errorNotice(e.message)));
+  });
+  area.append(panel({ title: nome, subtitle: `Zoho ${PRODUTOS[produto].nome} · cópia completa, sincronizada a cada 2 min`, actions: h("div", { class: "row" }, busca, novo) }, corpo));
   await carregar();
 }
 
 async function fichaRegistro(area, produto, modulo, id, [nome]) {
   const r = await api.zohoEspelhoRegistro(produto, modulo, id);
   const incompleto = produto === "books" && !r.detalhe_em;
+  const editar = podeEditar(produto, modulo) && !r.excluido && !incompleto ? h("button", { class: "btn btn-primary", type: "button" }, "Editar") : null;
+  editar?.addEventListener("click", () => {
+    clear(area);
+    area.append(h("p", null, h("a", { href: `#/zoho/${produto}/${modulo}/${encodeURIComponent(id)}` }, `‹ voltar à ficha`)));
+    formularioZoho(area, { produto, modulo, id, registro: r, nomeModulo: nome, aoSalvar: () => location.reload() }).catch((e) => area.append(errorNotice(e.message)));
+  });
   area.append(
     h("p", null, h("a", { href: `#/zoho/${produto}/${modulo}` }, `‹ ${nome}`)),
     panel({ title: r.nome ?? id, subtitle: `Zoho ${PRODUTOS[produto].nome} · ${nome} · id ${r.zoho_id}`,
-      actions: h("div", { class: "row" }, r.excluido ? stamp("Excluído no Zoho", "risk") : null, incompleto ? stamp("Ficha resumida: completa na próxima sincronização", "warn") : stamp(`${Object.keys(r.dados).length} campos`, "live")) },
+      actions: h("div", { class: "row" }, r.excluido ? stamp("Excluído no Zoho", "risk") : null, incompleto ? stamp("Ficha resumida: completa na próxima sincronização", "warn") : stamp(`${Object.keys(r.dados).length} campos`, "live"), editar) },
       h("p", { class: "field-hint" }, `Alterado no Zoho: ${r.modificado_em ? formatDateTime(r.modificado_em) : "—"} · copiado para o VEOS: ${formatDateTime(r.sincronizado_em)}`),
       ficha(r.dados)));
 }

@@ -7,6 +7,7 @@ import { CATALOGO } from "../_shared/setores/catalogo.ts";
 import type { Setor } from "../_shared/setores/motor.ts";
 import { varrer } from "../_shared/setores/varredura.ts";
 import { diagnostico } from "../_shared/zoho.ts";
+import { vigiarFluxo } from "../_shared/fluxo_vigia.ts";
 
 const INTERVALO_MS = 10 * 60 * 1000;
 
@@ -21,7 +22,8 @@ Deno.serve(async (req) => {
     banco = "ok";
     if (!ultima || Date.now() - Date.parse(ultima.em) > INTERVALO_MS) {
       const r = await varrer(CATALOGO as unknown as Setor[], null, "automatica");
-      varredura = { novos: r.novos, resolvidos: r.resolvidos, ativos: r.ativos };
+      const f = await vigiarFluxo().catch((e) => { console.error("vigia do fluxo", e); return null; });
+      varredura = { novos: r.novos, resolvidos: r.resolvidos, ativos: r.ativos, fluxo: f };
     } else {
       varredura = "recente (pulada)";
     }

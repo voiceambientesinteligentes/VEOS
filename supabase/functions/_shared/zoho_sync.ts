@@ -181,7 +181,50 @@ async function listarProjects(o: Orcamento, forcar: boolean) {
     await gravar(linhas, o);
     await salvarEstado("projects", modulo, { estado: "ok", total: linhas.length, ultima_volta_em: new Date().toISOString(), erro: null });
   }
-  await salvarEstado("projects", "projects", { estado: "ok", total: projetos.length, ultima_volta_em: new Date().toISOString(), erro: null });
+  // projetos arquivados/fechados (API classica do Projects; a v3 lista so os ativos)
+  const arquivados: Obj[] = [];
+  for (let index = 1; index <= 1000; index += 100) {
+    if (o.resta < 12_000) break;
+    await o.vez();
+    let d: Obj;
+    try { d = await zohoGet(`/restapi/portal/${PORTAL_PROJECTS}/projects/`, { status: "archived", index, range: 100 }, "projects"); } catch (e) { o.erros.push(`projects/arquivados: ${e instanceof Error ? e.message : e}`); break; }
+    const lista = (d.projects ?? []) as Obj[];
+    arquivados.push(...lista);
+    if (lista.length < 100) break;
+  }
+  const ativos = new Set(projetos.map((p) => String(p.id)));
+  const novosArq = arquivados.filter((p) => !ativos.has(String(p.id_string ?? p.id)));
+  await gravar(novosArq.map((p) => ({ produto: "projects", modulo: "projects", zoho_id: String(p.id_string ?? p.id), nome: tx(p.key, p.name, "(arquivado)"), dados: { ...p, id: String(p.id_string ?? p.id), arquivado: true }, modificado_em: quando(p.updated_date_long ? new Date(Number(p.updated_date_long)).toISOString() : null), completo: true })), o);
+  await salvarEstado("projects", "projects", { estado: "ok", total: projetos.length + novosArq.length, ultima_volta_em: new Date().toISOString(), erro: null });
+  await tarefasArquivados(novosArq.map((p) => ({ id: String(p.id_string ?? p.id), name: p.name, key: p.key })), base, o);
+}
+
+/** Tarefas dos projetos arquivados: uma volta por dia, continuando de onde parou (cursor). */
+async function tarefasArquivados(projetos: { id: string; name: string; key: string }[], base: string, o: Orcamento) {
+  const st = await estado("projects", "tasks_arquivados");
+  const cursor = (st.cursor ?? {}) as { pendentes?: string[] };
+  let pendentes = cursor.pendentes ?? [];
+  if (!pendentes.length) {
+    if (!vencido(st.ultima_volta_em, 24 * 60)) return;
+    pendentes = projetos.map((p) => p.id);
+  }
+  const porId = new Map(projetos.map((p) => [p.id, p]));
+  while (pendentes.length && o.resta > 15_000) {
+    const pid = pendentes[0];
+    const p = porId.get(pid) ?? { id: pid, name: "", key: "" };
+    const linhas: Linha[] = [];
+    for (let page = 1; page <= 20; page++) {
+      await o.vez();
+      let d: Obj;
+      try { d = await zohoGet(`${base}/projects/${pid}/tasks`, { page, per_page: 100 }, "projects"); } catch (e) { o.erros.push(`projects/tasks arquivado ${pid}: ${e instanceof Error ? e.message : e}`); break; }
+      const lista = (Array.isArray(d) ? d : d.tasks ?? []) as Obj[];
+      linhas.push(...lista.map((t) => ({ produto: "projects", modulo: "tasks", zoho_id: String(t.id), nome: tx(t.prefix, t.name, p.name), dados: { ...t, projeto: { id: p.id, name: p.name, key: p.key, arquivado: true } }, modificado_em: quando(t.last_modified_time ?? t.modified_time), completo: true })));
+      if (lista.length < 100) break;
+    }
+    await gravar(linhas, o);
+    pendentes = pendentes.slice(1);
+  }
+  await salvarEstado("projects", "tasks_arquivados", { estado: "ok", cursor: { pendentes }, total: projetos.length - pendentes.length, ...(pendentes.length ? {} : { ultima_volta_em: new Date().toISOString() }), erro: null });
 }
 
 // ---------------------------------------------------------------- execucao

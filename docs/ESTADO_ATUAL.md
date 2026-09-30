@@ -62,6 +62,14 @@ classificação do item 30. **Não está 100%.**
 - Escopos ampliados (leitura de todos os módulos): exige **reconectar** o Zoho uma vez (Integrações).
 - Próximo: edição nos dois sentidos, estoque próprio, pedido → estoque → parcelas → faturamento (NF manual registrada).
 
+## Edição nos dois sentidos, estoque e fluxo vivo (30/09)
+- **Escrita no Zoho** (`_shared/zoho_escrita.ts`): Books (contatos, itens, orçamentos com itens), CRM (qualquer módulo, campos editáveis lidos dos metadados do Zoho), Projects (tarefas). Confere conflito (alterado no Zoho depois de aberto → 409), grava, relê e atualiza o espelho; trilha `zoho_escritas` append-only. Exige reconectar (escopos CREATE/UPDATE, sem DELETE).
+- **Estoque próprio** (`estoque_movimentos` append-only, visão `estoque_saldos`): entrada, ajuste (com motivo), reserva/liberação/saída pelos pedidos, custo médio. Entrada completa sozinha as reservas pendentes.
+- **Fluxo vivo** (`pedidos`, `pedido_itens`, `parcelas`, `notas_fiscais`, `pedidos_historico`): pedido criado do orçamento aceito no Zoho; parcelas devem somar o total; confirmar reserva estoque; entregar baixa estoque (recusa sem saldo); NF manual registrada (NF-e/NFS-e, não passa do total); última parcela recebida conclui. Funções plpgsql atômicas. Teste: `tests/banco/fluxo_vivo.sql` (17/17, transação desfeita).
+- **Vigia do fluxo** (`_shared/fluxo_vigia.ts`, alertas FLX_*): estoque insuficiente, parcela vencida/vencendo (rascunho de WhatsApp), entregue sem NF, pedido parado, orçamento aceito sem pedido. A varredura dos setores ignora FLX_*.
+- Menu **Operação**: Pedidos, Estoque, Recebimentos e faturamento (previsão por mês).
+- **Projects arquivados**: lista pela API clássica a cada hora; tarefas 1x/dia com cursor.
+
 ## GitHub
 - `origin` = https://github.com/voiceambientesinteligentes/VEOS (branch `main`), **público** por decisão do Fernando. Push verificado: commit remoto = local.
 

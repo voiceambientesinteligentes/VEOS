@@ -4,7 +4,8 @@
 //   GET  /api/orcamentos  -> ultimos orcamentos com avisos
 //   POST /api/orcamentos  -> vigia avalia e grava orcamento + avisos + evento
 //   /api/projetos...      -> setor Financeiro (ver financeiro.ts; direcao e financas)
-//   /api/zoho/...        -> Zoho somente leitura (ver zoho.ts)
+//   /api/zoho/...        -> Zoho: espelho, edicao nos dois sentidos (ver zoho.ts)
+//   /api/fluxo/...       -> pedidos, estoque, parcelas, NF (ver fluxo.ts)
 //   /api/radar, /setor, /registros, /tarefas, /alertas -> setores vivos (ver setores.ts)
 // Escritas exigem header Idempotency-Key (repetir nao duplica).
 // Identidade: token do Supabase Auth validado no servidor + cadastro ativo em `membros`.
@@ -14,6 +15,7 @@ import { ANON, HttpError, lerCorpo, type Membro, SERVICE, servico, URL_BASE } fr
 import { rotearFinanceiro } from "./financeiro.ts";
 import { rotearSetores } from "./setores.ts";
 import { rotearZoho } from "./zoho.ts";
+import { rotearFluxo } from "./fluxo.ts";
 
 const ORIGENS = [
   /^https:\/\/veos-voice\.netlify\.app$/,
@@ -55,6 +57,7 @@ async function rotear(req: Request, rota: string) {
   const eu = await membro(req);
   const partes = rota.split("/");
   if (partes[0] === "zoho") return await rotearZoho(req, partes, eu);
+  if (partes[0] === "fluxo") return await rotearFluxo(req, partes, eu);
   if (partes[0] === "projetos") return await rotearFinanceiro(req, partes, eu);
   if (["radar", "setor", "registros", "tarefas", "alertas"].includes(partes[0])) return await rotearSetores(req, partes, eu);
   if (req.method === "GET" && rota === "me") return eu;
