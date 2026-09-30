@@ -143,13 +143,13 @@ export async function telaZoho(root, rota, eu) {
       setTimeout(() => location.reload(), 1200);
     } catch (e) { saidaSync.textContent = e.message; sincronizar.disabled = false; }
   });
-  root.append(
+  root.append(...[
     status.precisa_reconectar ? h("p", { class: "notice notice-warn" }, "Novas permissões do Zoho disponíveis (edição nos dois sentidos). A direção reconecta uma vez: ", h("a", { href: "#/integracoes" }, "Integrações → Desconectar → Conectar Zoho"), ".") : null,
     h("div", { class: "row zoho-topo" },
       h("nav", { class: "segmented", "aria-label": "Produto do Zoho" }, espelho.produtos.map((p) => h("a", { class: `zoho-produto${p === produto ? " ativo" : ""}`, href: `#/zoho/${p}`, "aria-current": p === produto ? "page" : null }, `Zoho ${PRODUTOS[p].nome}`))),
       h("span", { class: "field-hint" }, r ? `Última sincronização: ${formatDateTime(r.em)} · automática a cada 2 min` : "Aguardando a primeira sincronização"),
       sincronizar, saidaSync),
-  );
+  ].filter(Boolean));
 
   const mods = Object.entries(MODULOS[produto]);
   const menu = h("nav", { class: "zoho-modulos", "aria-label": `Módulos do Zoho ${PRODUTOS[produto].nome}` }, mods.map(([m, [nome]]) => {
@@ -197,7 +197,7 @@ async function listaRegistros(area, produto, modulo, [nome, colunas]) {
                 colunas.map(([c, , f], i) => h("td", { class: f === "brl" ? "r num" : null }, i === 0 ? h("a", { href: `#/zoho/${produto}/${modulo}/${encodeURIComponent(l.id)}` }, formatar(pegar(l.campos, c), c, f)) : formatar(pegar(l.campos, c), c, f))),
                 h("td", null, h("a", { class: "btn btn-ghost", href: `#/zoho/${produto}/${modulo}/${encodeURIComponent(l.id)}` }, "Abrir")))))))
           : h("p", { class: "result-empty" }, busca.value ? "Nada encontrado." : "Nenhum registro neste módulo."),
-        d.total > 50 ? h("div", { class: "row" }, ant, h("span", { class: "field-hint" }, `Página ${pagina} de ${paginas}`), prox) : null);
+        d.total > 50 ? h("div", { class: "row" }, ant, h("span", { class: "field-hint" }, `Página ${pagina} de ${paginas}`), prox) : "");
     } catch (e) { clear(corpo).append(errorNotice(e.message)); }
   }
   busca.addEventListener("input", () => { clearTimeout(t); t = setTimeout(() => { pagina = 1; carregar(); }, 350); });

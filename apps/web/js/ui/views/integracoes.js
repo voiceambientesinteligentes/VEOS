@@ -46,20 +46,21 @@ export async function telaIntegracoes(root, eu) {
         saida.append(errorNotice(e.message));
       }
     });
-    clear(conteudo).append(
+    clear(conteudo).append(...[
       aviso ? h("p", { class: `notice notice-${aviso[1] === "ok" ? "ok" : aviso[1] === "risk" ? "risk" : "warn"}`, role: "status" }, aviso[0]) : null,
-      panel({ title: "Zoho (Books, CRM e Projects)", subtitle: "Organização VOICE AMBIENTES INTELIGENTES · somente leitura", actions: botao },
+      st.conectado && st.precisa_reconectar ? h("p", { class: "notice notice-warn" }, "Há permissões novas para liberar (edição nos dois sentidos e módulos novos). Clique em Desconectar e depois em Conectar Zoho, e aceite no Zoho.") : null,
+      panel({ title: "Zoho (Books, CRM e Projects)", subtitle: `Organização VOICE AMBIENTES INTELIGENTES · ${st.somente_leitura ? "somente leitura" : "leitura e edição"}`, actions: botao },
         h("div", { class: "row" },
           st.conectado ? stamp("Conectado", "ok") : stamp("Não conectado", "neutral"),
-          stamp("Somente leitura", "live"),
+          st.conectado ? stamp(st.somente_leitura ? "Somente leitura" : "Leitura e edição", "live") : null,
           st.configurado ? null : stamp("Credenciais ausentes no servidor", "risk")),
-        st.conectado ? h("p", null, `Conectado em ${formatDateTime(st.conectado_em)}${st.conectado_por ? ` por ${st.conectado_por}` : ""}.`) : h("p", null, direcao ? "Clique em Conectar Zoho: você entra na sua conta do Zoho e autoriza o VEOS a ler os dados." : "Só a direção pode conectar o Zoho."),
+        st.conectado ? h("p", null, `Conectado em ${formatDateTime(st.conectado_em)}${st.conectado_por ? ` por ${st.conectado_por}` : ""}.`) : h("p", null, direcao ? "Clique em Conectar Zoho: você entra na sua conta do Zoho e autoriza o VEOS a ler e editar os dados." : "Só a direção pode conectar o Zoho."),
         saida,
         h("ul", { class: "list-plain stack-s" }, USOS.map(([t, d]) => h("li", null, h("strong", null, `${t}: `), d))),
-        method("Segurança", "O acesso é só de leitura: o VEOS não cria, altera nem apaga nada no Zoho.",
+        method("Segurança", "O VEOS lê tudo e só cria ou altera (nunca exclui) contatos, itens, orçamentos, registros do CRM e tarefas; cada gravação pede confirmação na tela e fica registrada com quem fez.",
           "Client ID e segredo ficam nos segredos do servidor; o token de acesso fica numa tabela que só o servidor lê. Nada disso chega ao navegador.",
           st.escopos.length ? `Permissões concedidas: ${st.escopos.join(", ")}` : null)),
-    );
+    ].filter(Boolean));
   }
   await desenhar(retorno ? RETORNO[retorno] ?? RETORNO.erro : null);
 }

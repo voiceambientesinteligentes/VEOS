@@ -73,7 +73,7 @@ export async function telaPedido(root, id, eu) {
       const motivo = prompt("Motivo do cancelamento:"); if (!motivo) throw new Error("Informe o motivo."); return api.fluxoAcao(id, "cancelar", { motivo });
     })));
     const custo = p.custo_total !== null ? Number(p.custo_total) : null;
-    root.append(
+    root.append(...[
       h("p", null, h("a", { href: "#/pedidos" }, "‹ Pedidos")),
       msg ? h("p", { class: "notice notice-ok", role: "status" }, msg) : null,
       panel({ title: `${p.numero} · ${p.cliente_nome}`, subtitle: `${p.orcamento_numero ? `Orçamento ${p.orcamento_numero} (Zoho) · ` : ""}criado em ${formatDateTime(p.criado_em)}`, actions: estado(p.estado) },
@@ -91,8 +91,8 @@ export async function telaPedido(root, id, eu) {
       painelParcelas(d, id, eu, () => api.fluxoPedido(id).then((x) => { d = x; desenhar("Parcelas atualizadas."); })),
       painelNotas(d, id, eu, (r) => { d = r; desenhar("Nota fiscal registrada."); }),
       panel({ title: "Histórico", subtitle: "Não pode ser alterado nem apagado." },
-        h("ul", { class: "list-plain stack-s" }, d.historico.map((x) => h("li", null, h("strong", null, x.acao.replace("_", " ")), ` · ${formatDateTime(x.em)}`, Object.keys(x.detalhe ?? {}).length ? h("span", { class: "field-hint" }, ` ${JSON.stringify(x.detalhe)}`) : null)))),
-    );
+        h("ul", { class: "list-plain stack-s" }, d.historico.map((x) => h("li", null, h("strong", null, x.acao.replace("_", " ")), ` · ${formatDateTime(x.em)}`, Object.keys(x.detalhe ?? {}).length ? h("span", { class: "field-hint" }, ` · ${Object.entries(x.detalhe).map(([k, v]) => `${k}: ${Array.isArray(v) ? v.map((f) => (f && typeof f === "object" ? `${f.nome ?? ""} ${f.falta ? `(falta ${qtd(f.falta)})` : ""}`.trim() : f)).join(", ") || "nenhuma" : v}`).join(" · ")}`) : null)))),
+    ].filter(Boolean));
   };
   desenhar();
 }
@@ -245,7 +245,7 @@ export async function telaItemEstoque(root, id, eu) {
     });
     form = panel({ title: "Registrar movimento" }, h("div", { class: "form-grid" }, field("mv-tipo", "Tipo", tipo), field("mv-qtd", "Quantidade", q, "Ajuste aceita negativo."), field("mv-custo", "Custo unitário (R$)", custo, "Só para entrada; vira o custo médio."), field("mv-obs", "Observação", obs, "Obrigatória no ajuste.")), h("div", { class: "row" }, b), erro);
   }
-  root.append(
+  root.append(...[
     h("p", null, h("a", { href: "#/estoque" }, "‹ Estoque")),
     panel({ title: d.item.nome, subtitle: `SKU ${d.item.sku ?? "—"} · unidade ${d.item.unidade ?? "—"}` },
       h("div", { class: "form-grid" }, stat("Físico", qtd(f)), stat("Reservado para pedidos", qtd(r)), stat("Disponível", qtd(f - r)), stat("Custo médio", brl(d.saldo?.custo_medio), `cadastro: ${brl(d.item.compra)}`))),
@@ -254,7 +254,7 @@ export async function telaItemEstoque(root, id, eu) {
       d.movimentos.length
         ? table({ head: ["Quando", "Tipo", "Quantidade", "Custo", "Pedido", "Observação"], align: ["", "", "r", "r", "", ""],
             rows: d.movimentos.map((m) => [formatDateTime(m.criado_em), TIPO[m.tipo] ?? m.tipo, qtd(m.quantidade), brl(m.custo_unit), m.pedido?.numero ?? "—", m.observacao ?? "—"]) })
-        : h("p", { class: "result-empty" }, "Nenhum movimento ainda.")));
+        : h("p", { class: "result-empty" }, "Nenhum movimento ainda."))].filter(Boolean));
 }
 
 // ---------------------------------------------------------------- Recebimentos e faturamento
