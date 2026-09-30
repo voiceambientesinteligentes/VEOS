@@ -21,8 +21,10 @@ classificação do item 30. **Não está 100%.**
 | 15 cenários PreWriter | `blocker-tests.json`: `BLOCKED_NO_GENUINE_CONSENSUS`; `genuine-preflight15.json`: `BLOCKED` | resolver o item 30 |
 | Item 30 (classificação) | agregado `UNRESOLVED_TYPE`; 30/31 itens unânimes; item 30 = REFERENCIA/REFERENCIA/PADRAO | análise da fonte + decisão explícita e rastreável (etapa E) |
 | Writer de produção | nunca executado nesta sequência | item 30 + requisitos W1–W10 (`VOICE360-V2-PLANNING/08-V2-PIPELINE-SPEC.md` §10.1) |
-| Envio ao GitHub | repositório `VEOS` está **PÚBLICO** (API respondeu 200 sem login em 30/09); o `git remote`/`push` foi **bloqueado pelo classificador de permissões** do Claude Code | Fernando: tornar privado + liberar a permissão de push (ver CONTINUIDADE) |
 | Remover `.obsidian` da raiz | cópia arquivada e verificada (6 arquivos, hashes idênticos); a remoção da original foi **bloqueada pelo ambiente de permissões** | Fernando apagar a pasta ou aprovar a remoção |
+
+## GitHub
+- `origin` = https://github.com/voiceambientesinteligentes/VEOS (branch `main`), **público** por decisão do Fernando. Push verificado: commit remoto = local.
 
 ## Não implantado
 - Nenhum servidor MCP próprio, nenhuma conta Cloudflare/Vercel, nenhum domínio configurado.
