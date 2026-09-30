@@ -117,7 +117,7 @@ test("salvar como proposta: campos que as regras vivas do Comercial vigiam", asy
   assert.throws(() => paraProposta(negociacao({ tabela: R(120000), ...base }), { cliente: "a", referencia: "", condicao: "c" }), /referência/);
 });
 
-test("aceite com a tela validada (EST-000962): Lucro Presumido 11,33%, overhead 20%", async () => {
+test("aceite com a tela validada (EST-000962): impostos da tela validada 11,33%, overhead 20%", async () => {
   const { IMPOSTOS_PADRAO, somaAliquotas } = await import("../../apps/web/js/domain/precificacao.js");
   const r = negociacao({
     tabela: R(4794.60), desconto: { modo: "pct", valor: 0n },

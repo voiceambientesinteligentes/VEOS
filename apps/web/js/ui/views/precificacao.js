@@ -1,5 +1,5 @@
 // Ferramentas do CFO: Negociacao ao Vivo e Calculadora de Precos. Calculo local, a cada digitacao.
-// Impostos com nota pelo enquadramento do CNPJ (Lucro Presumido, editaveis), overhead de 20% sobre o
+// Impostos com nota conforme a tela validada pela direcao (editaveis; regime a confirmar), overhead de 20% sobre o
 // custo direto, margem antes dos impostos e com nota (como a tela validada pela direcao), mais a
 // conferencia da Politica V1 (MC oficial com provisao de 2%, faixas e alcada de desconto).
 // Destinos: "Salvar como proposta" (Comercial) e "Fechar negociacao" (vira pedido no fluxo:
@@ -195,7 +195,7 @@ export function telaNegociacao(root, fontes = null) {
         "Overhead = custo direto × %. Custo total = direto + overhead + adicionais.",
         "Impostos: a receita é rateada entre produtos e serviços pela participação de cada um no custo direto; cada parte paga as alíquotas do seu bloco (NF-e ou NFS-e).",
         "Margem antes dos impostos = (negociado − custo total) ÷ negociado. Com nota = (negociado − custo total − impostos) ÷ negociado.",
-        `Conferência: ${FONTE_POLITICA}.`, "Alíquotas: enquadramento do CNPJ (Lucro Presumido) informado pela direção; editáveis; confirmar com o contador.")));
+        `Conferência: ${FONTE_POLITICA}.`, "Alíquotas: as da tela de negociação validada pela direção (regime tributário a confirmar); editáveis.")));
     montarAcoes(r);
   }
 

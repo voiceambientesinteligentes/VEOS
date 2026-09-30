@@ -94,8 +94,8 @@ export function alcadaDesconto(desc, mc) {
 
 const pctDe = (base, h) => arred(base * h, 10000n); // valor x (h/100)%
 
-// Impostos da VOICE com nota, pelo enquadramento do CNPJ (Lucro Presumido), conforme a tela de
-// negociacao validada pela direcao em 30/09/2026. Editaveis na tela; confirmar com o contador.
+// Impostos da VOICE com nota, conforme a tela de negociacao validada pela direcao em 30/09/2026
+// (regime tributario do CNPJ a confirmar com a direcao/contador). Editaveis na tela; confirmar com o contador.
 export const IMPOSTOS_PADRAO = {
   produto: [["PIS", 65n], ["COFINS", 300n], ["IRPJ", 480n], ["CSLL", 288n]],
   servico: [["ISS", 265n], ["PIS", 0n], ["COFINS", 0n], ["IRPJ", 0n], ["CSLL", 0n]],
