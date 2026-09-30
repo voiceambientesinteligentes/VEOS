@@ -35,7 +35,7 @@ Atualize este arquivo ao fim de cada sessão: última ação, resultado e próxi
 - Portal online em `apps/web`, build `node scripts/build-web.mjs`, teste local `node scripts/serve-web.mjs` (porta 8878).
 
 **Aguardando o Fernando**
-0. Criar o site na Netlify a partir do GitHub VEOS com o nome `veos-voice`; depois testar o login pelo link do e-mail. Decisões pendentes: P-3 (orçamento de IA) e P-5 (siglas).
+0. Site `veos-voice` criado e no ar. Falta o Fernando testar o login pelo link do e-mail. Decisões pendentes: P-3 (orçamento de IA) e P-5 (siglas).
 1. Apagar a pasta `VOICE_360\.obsidian` (cópia já arquivada) ou aprovar a remoção.
 2. (Recomendado) Tornar o repositório privado.
 3. Decisões P-1 (hospedagem), P-3 (orçamento de IA) e P-5 (siglas) em [DECISOES.md](DECISOES.md).

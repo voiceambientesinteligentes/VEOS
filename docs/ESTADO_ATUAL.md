@@ -29,7 +29,8 @@ classificação do item 30. **Não está 100%.**
 - Função `api` (login + cadastro em `membros`): `/me`, `/setores`, `/orcamentos` (GET e POST). POST grava orçamento + avisos + evento numa transação, idempotente. **E2E online: 15/15** (`tests/online/e2e_api.mjs`).
 - Login: Supabase Auth por link mágico; cadastro público **desligado**; membro real: Fernando (direção). Usuário TESTE automatizado (papel vendas) só para testes.
 - Portal online (`apps/web` → `dist/` via `scripts/build-web.mjs`): login, visão geral, avisos do CFO, histórico. Testado servido localmente contra o Supabase real, com a mesma CSP da Netlify (desktop e celular, 0 erros JS).
-- Ainda não: portal **publicado** na Netlify (aguarda o Fernando criar o site `veos-voice`); login por link mágico real não testado (depende do e-mail).
+- **Portal publicado: https://veos-voice.netlify.app** (Netlify, deploy automático a cada push em `main`). Testado no endereço público com o usuário TESTE: login, 7 setores, aviso do CFO gravado, histórico, celular sem rolagem lateral. A Netlify injeta o script `/.netlify/scripts/hud`, cujo código embutido é bloqueado pela nossa CSP (esperado; não é do VEOS).
+- Ainda não testado: login do Fernando pelo link mágico real (depende do e-mail).
 
 ## GitHub
 - `origin` = https://github.com/voiceambientesinteligentes/VEOS (branch `main`), **público** por decisão do Fernando. Push verificado: commit remoto = local.
