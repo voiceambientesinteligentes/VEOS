@@ -39,6 +39,10 @@ Atualize este arquivo ao fim de cada sessão: última ação, resultado e próxi
 - Setor Financeiro online: regras de caixa com paridade, banco, API e tela Projetos e caixa.
 - Testes: `npm test` (regras + portal) e, online, `tests/online/e2e_api.mjs` (15) e `tests/online/e2e_financeiro.mjs` (12), com as chaves obtidas pela CLI.
 
+**Feito (setores vivos, ~16:10)**
+- 9 catálogos pesquisados (3 pesquisas paralelas), validados e auditados; motor, banco, API, Radar, Conselho, páginas de setor.
+- Aprovações pendentes para o Fernando: metas marcadas como Proposta em cada setor (aba Indicadores e Regras vivas).
+
 **Aguardando o Fernando**
 0. Site no ar e login real do Fernando verificado. Próximas etapas: personalidade dos diretores, mais regras do vigia, MCP, keep-alive do Supabase. Decisões pendentes: P-3 (orçamento de IA) e P-5 (siglas).
 1. Apagar a pasta `VOICE_360\.obsidian` (cópia já arquivada) ou aprovar a remoção.

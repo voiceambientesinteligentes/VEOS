@@ -40,6 +40,14 @@ classificação do item 30. **Não está 100%.**
 - Manter ativo: função `saude` + GitHub Actions diário (`manter-supabase-ativo`, ativo).
 - Ainda não: correção/estorno de lançamentos; importação de dados reais; demais setores.
 
+## Setores vivos (30/09)
+- **9 setores completos** em `setores/*.json` (esquema: `docs/SETORES_ESQUEMA.md`): diretor-persona com métodos reais, equipe (40 papéis), processos, 36 tipos de registro, 55 rotinas, 82 indicadores, **87 sentinelas**, 57 modelos. Fontes: skills `anthropics/knowledge-work-plugins` (Apache 2.0) + métodos consagrados pesquisados.
+- Itens marcados "Política oficial" auditados contra a Política V1/V1.1; 2 corrigidos para Proposta (retrabalho e garantia ≤ 2%). Demais metas são **Proposta** até aprovação.
+- Motor de sentinelas (`_shared/setores/motor.ts`) + validação de registros pelo catálogo + varredura que cria/reativa/resolve alertas e gera tarefas e rascunhos. Roda a cada gravação e diariamente (função `saude`).
+- Portal: menu Comando (Órbita, Radar, IA, Conselho) · Setores (9) · Ferramentas do CFO; página de setor com 8 abas. Testado no navegador (desktop e celular).
+- Testes: 23 locais; online 9 (setores) + 15 (api) + 12 (financeiro).
+- Ainda não: envio automático de e-mail/WhatsApp (só rascunho + abrir no app, decisão de segurança); cálculo automático dos valores dos indicadores; histórico visível por registro na tela.
+
 ## GitHub
 - `origin` = https://github.com/voiceambientesinteligentes/VEOS (branch `main`), **público** por decisão do Fernando. Push verificado: commit remoto = local.
 
