@@ -1,0 +1,197 @@
+/* Orbita - VEOS no centro, setores em orbita. Luxo orbital: obsidiana, ouro e ciano,
+   vidro fosco, filetes finos. Usa somente os tokens do portal. */
+@layer views {
+  .orbita {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--s4);
+  }
+  @media (min-width: 1180px) {
+    .orbita { grid-template-columns: minmax(0, 1fr) 320px; align-items: start; }
+    .orbita:has(> .orbita-cartao[hidden]) { grid-template-columns: minmax(0, 1fr); }
+  }
+
+  .orbita-palco {
+    position: relative;
+    height: clamp(440px, 70vh, 760px);
+    border-radius: var(--radius-l);
+    overflow: hidden;
+    border: 1px solid var(--line);
+    background:
+      radial-gradient(ellipse 60% 55% at 50% 50%, rgba(201, 165, 76, 0.07), transparent 70%),
+      radial-gradient(ellipse 90% 80% at 50% 120%, rgba(110, 200, 212, 0.06), transparent 60%),
+      linear-gradient(180deg, #07080a, var(--bg-0) 60%, #06070a);
+    box-shadow: 0 0 0 1px rgba(201, 165, 76, 0.06) inset, 0 40px 80px -40px rgba(0, 0, 0, 0.9);
+    cursor: default;
+    isolation: isolate;
+  }
+  .orbita-palco::after { /* filete dourado no topo, assinatura luxury */
+    content: "";
+    position: absolute;
+    inset: 0 18% auto;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold-line), transparent);
+  }
+  .orbita-canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+
+  /* Nucleo VEOS */
+  .orbita-nucleo {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 96px;
+    height: 96px;
+    translate: -50% -50%;
+    border-radius: 50%;
+    display: grid;
+    place-content: center;
+    text-align: center;
+    z-index: 25;
+    background: radial-gradient(circle at 35% 30%, rgba(227, 198, 125, 0.22), rgba(10, 11, 13, 0.92) 62%);
+    box-shadow: 0 0 40px -6px rgba(201, 165, 76, 0.55), 0 0 0 1px rgba(227, 198, 125, 0.35) inset;
+    pointer-events: none;
+  }
+  .orbita-nucleo::before { /* anel conico girando */
+    content: "";
+    position: absolute;
+    inset: -7px;
+    border-radius: 50%;
+    background: conic-gradient(from 0deg, transparent 0 55%, var(--gold) 70%, var(--cyan) 82%, transparent 92%);
+    mask: radial-gradient(circle, transparent 60%, #000 61%, #000 64%, transparent 65%);
+    animation: orbita-giro 9s linear infinite;
+  }
+  .orbita-nucleo-nome {
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    font-weight: 600;
+    letter-spacing: 0.34em;
+    padding-left: 0.34em;
+    color: var(--gold-2);
+  }
+  .orbita-nucleo-sub {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.24em;
+    color: var(--cyan);
+    opacity: 0.8;
+  }
+
+  /* Setores */
+  .orbita-no {
+    position: absolute;
+    left: 0;
+    top: 0;
+    display: grid;
+    justify-items: center;
+    gap: 6px;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--text-1);
+    cursor: pointer;
+    transition: opacity var(--dur-2) var(--ease), filter var(--dur-2) var(--ease);
+    will-change: transform;
+  }
+  .orbita-no-ponto {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    color: var(--gold-2);
+    background: radial-gradient(circle at 30% 25%, rgba(255, 255, 255, 0.08), rgba(15, 17, 20, 0.78) 60%);
+    border: 1px solid var(--gold-line);
+    backdrop-filter: blur(6px);
+    box-shadow: 0 0 22px -8px rgba(201, 165, 76, 0.6);
+    transition: border-color var(--dur-2) var(--ease), box-shadow var(--dur-2) var(--ease), color var(--dur-2) var(--ease);
+  }
+  .orbita-no-nome {
+    font-size: var(--fs-xs);
+    letter-spacing: 0.06em;
+    white-space: nowrap;
+    color: var(--text-1);
+    text-shadow: 0 1px 8px #000;
+  }
+  .orbita-no:hover .orbita-no-ponto,
+  .orbita-no:focus-visible .orbita-no-ponto {
+    border-color: var(--gold-2);
+    box-shadow: 0 0 30px -4px rgba(227, 198, 125, 0.75);
+  }
+  .orbita-no:focus-visible { outline: none; }
+  .orbita-no:focus-visible .orbita-no-ponto { box-shadow: var(--focus-ring), 0 0 30px -4px rgba(227, 198, 125, 0.75); }
+  .orbita-no.is-ativo .orbita-no-ponto {
+    color: var(--bg-0);
+    background: radial-gradient(circle at 30% 25%, #fff, var(--cyan) 70%);
+    border-color: var(--cyan);
+    box-shadow: 0 0 0 6px var(--cyan-dim), 0 0 44px -2px rgba(110, 200, 212, 0.9);
+  }
+  .orbita-no.is-ativo .orbita-no-nome { color: var(--text-0); font-weight: 600; }
+  .orbita-no.is-relacionado .orbita-no-ponto { border-color: var(--cyan-line); animation: orbita-pulso 1.6s var(--ease) infinite; }
+  .orbita-no.is-apagado { opacity: 0.32; filter: saturate(0.4); }
+
+  /* Cartao do setor */
+  .orbita-cartao {
+    position: relative;
+    display: grid;
+    gap: var(--s3);
+    padding: var(--s5);
+    border-radius: var(--radius-l);
+    border: 1px solid var(--line-2);
+    background: linear-gradient(160deg, rgba(27, 31, 36, 0.92), rgba(12, 13, 16, 0.96));
+    box-shadow: var(--shadow-1), 0 0 0 1px rgba(110, 200, 212, 0.05) inset;
+    animation: orbita-entrada var(--dur-3) var(--ease);
+  }
+  .orbita-cartao[hidden] { display: none; }
+  .orbita-cartao::before {
+    content: "";
+    position: absolute;
+    inset: 0 12% auto;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--cyan-line), transparent);
+  }
+  .orbita-cartao-topo { display: flex; justify-content: space-between; align-items: center; }
+  .orbita-cartao-sigla { margin: 0; font-family: var(--mono); font-size: var(--fs-xs); letter-spacing: 0.3em; color: var(--cyan); }
+  .orbita-cartao-titulo { margin: 0; font-family: var(--font-display); font-size: var(--fs-xl); font-weight: 500; color: var(--text-0); }
+  .orbita-cartao-diretor { margin: 0; color: var(--gold-2); font-size: var(--fs-s); letter-spacing: 0.04em; }
+  .orbita-cartao-texto { margin: 0; color: var(--text-1); font-size: var(--fs-s); line-height: 1.55; }
+  .orbita-energia { display: grid; gap: 6px; padding-top: var(--s3); border-top: 1px solid var(--line); }
+  .orbita-energia-rotulo { display: flex; justify-content: space-between; font-size: var(--fs-xs); color: var(--text-2); letter-spacing: 0.06em; text-transform: uppercase; }
+  .orbita-energia-trilho { height: 3px; border-radius: 3px; background: var(--bg-4); overflow: hidden; }
+  .orbita-energia-barra { display: block; height: 100%; background: linear-gradient(90deg, var(--gold), var(--cyan)); box-shadow: 0 0 12px var(--cyan); }
+  .orbita-conexoes { display: grid; gap: var(--s2); padding-top: var(--s3); border-top: 1px solid var(--line); }
+  .orbita-conexoes-rotulo { font-size: var(--fs-xs); color: var(--text-2); letter-spacing: 0.06em; text-transform: uppercase; }
+  .orbita-conexoes-lista { display: flex; flex-wrap: wrap; gap: 6px; }
+  .orbita-chip {
+    padding: 4px 10px;
+    border-radius: 999px;
+    border: 1px solid var(--cyan-line);
+    background: var(--cyan-dim);
+    color: var(--text-0);
+    font-family: var(--mono);
+    font-size: var(--fs-xs);
+    cursor: pointer;
+  }
+  .orbita-chip:hover, .orbita-chip:focus-visible { border-color: var(--cyan); outline: none; box-shadow: 0 0 14px -4px var(--cyan); }
+  .orbita-acao { justify-self: start; }
+  .orbita-dica { margin: 0; color: var(--text-2); font-size: var(--fs-xs); letter-spacing: 0.03em; }
+
+  @media (max-width: 640px) {
+    .orbita-palco { height: 440px; }
+    .orbita-no-ponto { width: 44px; height: 44px; font-size: 0.64rem; }
+    .orbita-no-nome { font-size: 0.66rem; }
+    .orbita-nucleo { width: 76px; height: 76px; }
+    .orbita-nucleo-nome { font-size: 0.95rem; }
+  }
+
+  @keyframes orbita-giro { to { rotate: 360deg; } }
+  @keyframes orbita-pulso { 50% { box-shadow: 0 0 0 5px var(--cyan-dim), 0 0 30px -4px rgba(110, 200, 212, 0.8); } }
+  @keyframes orbita-entrada { from { opacity: 0; translate: 0 8px; } }
+
+  @media (prefers-reduced-motion: reduce) {
+    .orbita-nucleo::before, .orbita-no.is-relacionado .orbita-no-ponto, .orbita-cartao { animation: none; }
+  }
+}

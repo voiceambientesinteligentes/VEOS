@@ -7,6 +7,7 @@ import { clear, errorNotice, field, h, panel, stamp, table, testTag } from "./ui
 import { enableMotion } from "./ui/motion.js";
 import { markActive, setupDrawer } from "./ui/shell.js";
 import { renderVigia } from "./ui/views/cfo_vigia.js";
+import { renderOrbita } from "./ui/views/orbita.js";
 
 const el = {
   view: document.getElementById("view"),
@@ -24,6 +25,12 @@ const link = (href, sigla, texto) =>
   h("a", { class: "nav-link", href }, h("span", { class: "nav-sigla", "aria-hidden": "true" }, sigla), h("span", { class: "nav-text" }, texto));
 
 // ---------------------------------------------------------------- telas
+async function telaOrbita(root, signal) {
+  const [{ setores, diretores }, { orcamentos }] = await Promise.all([api.setores(), api.orcamentos()]);
+  const avisosCfo = orcamentos.reduce((n, o) => n + o.avisos.length, 0);
+  renderOrbita(root, { setores, diretores, avisosCfo, signal });
+}
+
 async function telaVisao(root) {
   const { setores, diretores } = await api.setores();
   const porSetor = Object.fromEntries(diretores.map((d) => [d.setor_id, d]));
@@ -69,6 +76,7 @@ async function telaHistorico(root) {
 }
 
 const TELAS = {
+  "#/orbita": { fn: telaOrbita, titulo: ["Órbita", "Os setores em órbita do VEOS"] },
   "#/visao": { fn: telaVisao, titulo: ["Visão geral", "VEOS online · VOICE Ambientes Inteligentes"] },
   "#/cfo": { fn: telaAvisos, titulo: ["Sala CFO — Avisos", "Vigia: orçamento salvo → avisos do CFO com regra e fonte"] },
   "#/historico": { fn: telaHistorico, titulo: ["Histórico", "Orçamentos TESTE gravados e seus avisos"] },
@@ -111,7 +119,7 @@ function montarMenu() {
     telaLogin();
   });
   clear(el.nav).append(
-    h("div", { class: "nav-group" }, link("#/visao", "◎", "Visão geral")),
+    h("div", { class: "nav-group" }, link("#/orbita", "◉", "Órbita"), link("#/visao", "◎", "Visão geral")),
     h("div", { class: "nav-group", role: "group", "aria-labelledby": "nav-cfo" },
       h("span", { class: "nav-label", id: "nav-cfo" }, "Finanças"),
       link("#/cfo", "CFO", "Avisos do CFO"),
@@ -122,7 +130,7 @@ function montarMenu() {
 
 async function navegar() {
   if (!eu) return;
-  const rota = TELAS[location.hash] ? location.hash : "#/visao";
+  const rota = TELAS[location.hash] ? location.hash : "#/orbita";
   const def = TELAS[rota];
   atual?.abort();
   const controle = new AbortController();
@@ -153,7 +161,7 @@ async function iniciar(mensagem) {
     return telaLogin(e.status === 403 ? "Este e-mail não tem acesso ao VEOS. Fale com a direção." : e.message);
   }
   montarMenu();
-  if (!TELAS[location.hash]) history.replaceState(null, "", "#/visao");
+  if (!TELAS[location.hash]) history.replaceState(null, "", "#/orbita");
   navegar();
 }
 

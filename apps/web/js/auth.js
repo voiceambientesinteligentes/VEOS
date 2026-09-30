@@ -51,7 +51,7 @@ export function capturarRetornoDoLink() {
   }
   if (!h.get("access_token") || !h.get("refresh_token")) return null;
   guardar(deTokens({ access_token: h.get("access_token"), refresh_token: h.get("refresh_token"), expires_in: h.get("expires_in") }));
-  history.replaceState(null, "", `${location.pathname}#/visao`);
+  history.replaceState(null, "", `${location.pathname}#/orbita`);
   return null;
 }
 

@@ -59,6 +59,14 @@ Próximos eventos candidatos (dependem de regra aprovada por setor): pagamento v
 exposição de caixa > 10% (V1.1), compra sem cobertura da fase (V1 sec.10), case sem
 autorização de uso (CMO).
 
+## Design: luxo orbital
+
+Direção visual confirmada pelo Fernando (30/09): futurista, luxuosa e orbital.
+- Paleta existente: obsidiana (`--bg-*`), ouro (`--gold*`) para identidade e ciano (`--cyan*`) para estado ativo/fluxo.
+- **Órbita** (`apps/web/js/ui/views/orbita.js`, `apps/web/css/orbita.css`) é a tela inicial do VEOS online: o núcleo VEOS no centro e cada setor em órbita inclinada; um campo de "células" (inspirado no grafo do Obsidian) se agrupa em cada setor e acende ao ativá-lo; as conexões mostram fluxos reais entre setores (`FLUXOS`), com partículas viajando.
+- Dados reais: setores/diretores do banco; atividade do CFO = avisos registrados; demais setores aparecem como "Estrutura criada" até terem regras.
+- Sem biblioteca e sem estilo embutido (CSP): canvas para células, botões reais para setores (teclado, Esc, leitor de tela), `prefers-reduced-motion` respeitado, pausa quando a aba fica oculta.
+
 ## MCP
 
 MCP é o canal pelo qual um cliente de IA dá ordens ao VEOS. As ferramentas previstas estão no
