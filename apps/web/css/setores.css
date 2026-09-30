@@ -108,3 +108,28 @@
 .notice-ok { border-left-color: var(--ok); background: rgba(134, 196, 154, 0.08); }
 .notice-warn { border-left-color: var(--warn); background: rgba(220, 181, 97, 0.08); }
 .zoho-lista { max-height: 320px; overflow-y: auto; }
+
+/* Aba Zoho (espelho completo) */
+.zoho-topo { flex-wrap: wrap; gap: var(--s3); align-items: center; }
+.zoho-produto { padding: 6px 14px; border-radius: var(--radius-s, 8px); color: var(--text-1); text-decoration: none; }
+.zoho-produto.ativo { background: var(--bg-4); color: var(--text-0); box-shadow: inset 0 0 0 1px var(--gold-line); }
+.zoho-layout { display: grid; grid-template-columns: 230px minmax(0, 1fr); gap: var(--s4); align-items: start; }
+.zoho-modulos { display: flex; flex-direction: column; gap: 2px; position: sticky; top: var(--s3); }
+.zoho-modulo { display: flex; justify-content: space-between; gap: var(--s2); padding: 8px 12px; border-radius: var(--radius-s, 8px); color: var(--text-1); text-decoration: none; font-size: var(--fs-s, 0.9rem); }
+.zoho-modulo:hover { background: var(--bg-3, rgba(255,255,255,0.04)); color: var(--text-0); }
+.zoho-modulo.ativo { background: var(--gold-dim); color: var(--text-0); box-shadow: inset 2px 0 0 var(--gold); }
+.zoho-num { font-variant-numeric: tabular-nums; color: var(--text-2); }
+.zoho-num.erro { color: var(--warn); }
+.zoho-cartao { display: flex; flex-direction: column; gap: 4px; text-decoration: none; color: inherit; }
+.zoho-grade { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: var(--s2) var(--s4); margin: 0; }
+.zoho-campo { min-width: 0; border-bottom: 1px solid var(--line); padding-bottom: 6px; }
+.zoho-campo dt { font-size: 0.75rem; color: var(--text-2); }
+.zoho-campo dd { margin: 2px 0 0; overflow-wrap: anywhere; white-space: pre-line; }
+.zoho-bloco { border: 1px solid var(--line); border-radius: var(--radius-s, 8px); padding: var(--s2) var(--s3); }
+.zoho-bloco > summary { cursor: pointer; font-weight: 600; color: var(--gold-2); }
+.zoho-tabela td, .zoho-tabela th { white-space: nowrap; }
+@media (max-width: 900px) {
+  .zoho-layout { grid-template-columns: minmax(0, 1fr); }
+  .zoho-modulos { position: static; flex-direction: row; overflow-x: auto; }
+  .zoho-modulo { white-space: nowrap; }
+}

@@ -55,6 +55,10 @@ export const api = {
   zohoOrcamentos: (busca = "", status = "") => request("GET", `zoho/orcamentos?${new URLSearchParams({ busca, status })}`),
   zohoOrcamento: (id) => request("GET", `zoho/orcamentos/${encodeURIComponent(id)}`),
   zohoEtapas: () => request("GET", "zoho/crm/etapas"),
+  zohoSincronizar: () => request("POST", "zoho/sincronizar", {}, { "Idempotency-Key": crypto.randomUUID() }),
+  zohoEspelho: () => request("GET", "zoho/espelho"),
+  zohoEspelhoLista: (produto, modulo, busca = "", pagina = 1) => request("GET", `zoho/espelho/${encodeURIComponent(produto)}/${encodeURIComponent(modulo)}?${new URLSearchParams({ busca, pagina: String(pagina) })}`),
+  zohoEspelhoRegistro: (produto, modulo, id) => request("GET", `zoho/espelho/${encodeURIComponent(produto)}/${encodeURIComponent(modulo)}/${encodeURIComponent(id)}`),
   // Salvar = vigia avalia e o servidor grava orcamento + avisos. Uma chave por clique:
   // se a rede repetir o envio, o servidor nao duplica o registro.
   vigiaOrcamento: (entrada) =>

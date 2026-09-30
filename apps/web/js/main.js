@@ -15,6 +15,7 @@ import { telaRadar } from "./ui/views/radar.js";
 import { telaConselho } from "./ui/views/conselho.js";
 import { telaCalculadora, telaNegociacao } from "./ui/views/precificacao.js";
 import { telaIntegracoes } from "./ui/views/integracoes.js";
+import { PRODUTOS, telaZoho } from "./ui/views/zoho.js";
 import { CATALOGO } from "./data/catalogo.js";
 
 const el = {
@@ -148,6 +149,9 @@ function montarMenu() {
       link("#/ia", "✦", "IA VEOS"),
       link("#/conselho", "◇", "Conselho"),
       link("#/integracoes", "⇄", "Integrações")),
+    h("div", { class: "nav-group", role: "group", "aria-labelledby": "nav-zoho" },
+      h("span", { class: "nav-label", id: "nav-zoho" }, "Zoho"),
+      Object.entries(PRODUTOS).map(([id, p]) => link(`#/zoho/${id}`, id === "books" ? "BKS" : id === "crm" ? "CRM" : "ZPR", `Zoho ${p.nome}`))),
     h("div", { class: "nav-group", role: "group", "aria-labelledby": "nav-setores" },
       h("span", { class: "nav-label", id: "nav-setores" }, "Setores"),
       CATALOGO.map((s) => link(`#/setor/${s.id}`, s.sigla, s.nome))),
@@ -168,7 +172,11 @@ async function navegar() {
   const setorRota = /^#\/setor\/([a-z]+)(?:\/([a-z]+))?$/.exec(location.hash);
   const setor = setorRota && CATALOGO.find((s) => s.id === setorRota[1]);
   let rota, def;
-  if (detalhe) {
+  const zohoRota = /^#\/zoho\/(books|crm|projects)(?:\/([A-Za-z0-9_]+)(?:\/([0-9A-Za-z_-]+))?)?$/.exec(rotaBase());
+  if (zohoRota) {
+    rota = `#/zoho/${zohoRota[1]}`;
+    def = { fn: (root) => telaZoho(root, ["zoho", zohoRota[1], zohoRota[2], zohoRota[3] && decodeURIComponent(zohoRota[3])], eu), titulo: [`Zoho ${PRODUTOS[zohoRota[1]].nome}`, "Cópia completa do Zoho dentro do VEOS · sincronização automática"] };
+  } else if (detalhe) {
     rota = "#/projetos";
     def = { fn: (root) => telaProjeto(root, detalhe[1]), titulo: ["Projeto", "Caixa, fases e lançamentos · avisos do CFO"] };
   } else if (setor) {
@@ -207,7 +215,7 @@ async function iniciar(mensagem) {
     return telaLogin(e.status === 403 ? "Este e-mail não tem acesso ao VEOS. Fale com a direção." : e.message);
   }
   montarMenu();
-  if (!TELAS[rotaBase()] && !/^#\/(projetos|setor)\//.test(location.hash)) history.replaceState(null, "", "#/orbita");
+  if (!TELAS[rotaBase()] && !/^#\/(projetos|setor|zoho)\//.test(location.hash)) history.replaceState(null, "", "#/orbita");
   navegar();
 }
 

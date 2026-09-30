@@ -55,6 +55,13 @@ classificação do item 30. **Não está 100%.**
 - Catálogos: **Frente de trabalho** (Direção, 3 regras), **Contato** e categoria de pendência (Secretaria), 7 modelos de WhatsApp do painel legado (Comercial e Finanças). Totais: 38 tipos de registro, 91 regras, 64 modelos.
 - Falta: a direção clicar em **Conectar Zoho** (login no Zoho); depois validar RBT12 e orçamentos reais.
 
+## Aba Zoho: espelho completo (30/09)
+- Tabelas `zoho_registros` (registro inteiro em jsonb, todos os campos), `zoho_sync` (estado por módulo) e `zoho_sync_log` (trilha). Função `zoho-sync` chamada a cada 2 min por pg_cron + pg_net (rodada máx. 100 s, Books ≤ 80 chamadas/min, CRM só o que mudou via If-Modified-Since, Projects de hora em hora).
+- Módulos: Books (14: contatos, itens, orçamentos, pedidos, faturas, pagamentos, notas de crédito, compras, contas a pagar, pagamentos a fornecedores, despesas, bancos, plano de contas, impostos), CRM (18 módulos), Projects (projetos, tarefas, issues).
+- Menu **Zoho** (Books, CRM, Projects): lista com busca e paginação; ficha mostra todos os campos (listas como tabelas, objetos em blocos).
+- Escopos ampliados (leitura de todos os módulos): exige **reconectar** o Zoho uma vez (Integrações).
+- Próximo: edição nos dois sentidos, estoque próprio, pedido → estoque → parcelas → faturamento (NF manual registrada).
+
 ## GitHub
 - `origin` = https://github.com/voiceambientesinteligentes/VEOS (branch `main`), **público** por decisão do Fernando. Push verificado: commit remoto = local.
 

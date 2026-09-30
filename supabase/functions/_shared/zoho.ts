@@ -7,9 +7,12 @@ export const ORG_BOOKS = "782439572"; // VOICE AMBIENTES INTELIGENTES (Zoho Book
 export const PORTAL_PROJECTS = "776190049";
 export const RETORNO = `${URL_BASE}/functions/v1/zoho/retorno`;
 export const ESCOPOS = [
-  "ZohoBooks.invoices.READ", "ZohoBooks.estimates.READ", "ZohoBooks.settings.READ", "ZohoBooks.contacts.READ",
-  "ZohoCRM.modules.deals.READ", "ZohoCRM.modules.leads.READ", "ZohoCRM.modules.contacts.READ", "ZohoCRM.settings.fields.READ",
-  "ZohoProjects.portals.READ", "ZohoProjects.projects.READ", "ZohoProjects.tasks.READ",
+  // Books: todos os modulos, so leitura (espelho completo na aba Zoho)
+  ...["contacts", "settings", "estimates", "invoices", "customerpayments", "creditnotes", "projects", "expenses", "salesorders", "purchaseorders", "bills", "debitnotes", "vendorpayments", "banking", "accountants"].map((m) => `ZohoBooks.${m}.READ`),
+  // CRM: todos os modulos e metadados, so leitura
+  "ZohoCRM.modules.READ", "ZohoCRM.settings.READ", "ZohoCRM.users.READ", "ZohoCRM.org.READ",
+  // Projects
+  ...["portals", "projects", "tasks", "tasklists", "milestones", "bugs", "timesheets", "users"].map((m) => `ZohoProjects.${m}.READ`),
 ].join(",");
 
 const CLIENT_ID = () => Deno.env.get("ZOHO_CLIENT_ID") ?? "";
@@ -73,7 +76,9 @@ async function conexao(): Promise<Conexao> {
   return c;
 }
 
+let ultimaRenovacao = 0;
 async function renovar(c: Conexao) {
+  ultimaRenovacao = Date.now();
   const t = await pedirToken(c.accounts_server, { grant_type: "refresh_token", refresh_token: c.refresh_token });
   const expira = new Date(Date.now() + (t.expires_in - 120) * 1000).toISOString();
   await servico("/rest/v1/integracoes?id=eq.zoho", {
@@ -84,24 +89,30 @@ async function renovar(c: Conexao) {
 }
 
 /** GET autenticado na API do Zoho (renova o token quando preciso, uma nova tentativa em 401). */
-export async function zohoGet(caminho: string, params: Record<string, string | number | undefined> = {}, produto: "api" | "projects" = "api") {
+export async function zohoGetBruto(caminho: string, params: Record<string, string | number | undefined> = {}, extras: Record<string, string> = {}, produto: "api" | "projects" = "api") {
   const c = await conexao();
   let token = c.access_token && c.expira_em && Date.parse(c.expira_em) > Date.now() ? c.access_token : await renovar(c);
   const q = new URLSearchParams(Object.entries(params).filter(([, v]) => v !== undefined && v !== "").map(([k, v]) => [k, String(v)]));
   const base = produto === "projects" ? projectsBase(c.api_domain) : c.api_domain;
   const url = `${base}${caminho}${q.size ? `?${q}` : ""}`;
   for (let tentativa = 0; tentativa < 2; tentativa++) {
-    const r = await fetch(url, { headers: { Authorization: `Zoho-oauthtoken ${token}` }, signal: AbortSignal.timeout(20_000) });
-    if (r.status === 401 && tentativa === 0) { token = await renovar(c); continue; }
-    if (r.status === 204) return {};
+    const r = await fetch(url, { headers: { Authorization: `Zoho-oauthtoken ${token}`, ...extras }, signal: AbortSignal.timeout(25_000) });
+    // 401 so renova se o token pode ter expirado e nao houve renovacao ha pouco (o Zoho limita
+    // renovacoes; 401 por falta de permissao nao se resolve renovando).
+    if (r.status === 401 && tentativa === 0 && Date.now() - ultimaRenovacao > 120_000) { token = await renovar(c); continue; }
+    if (r.status === 204 || r.status === 304) return { status: r.status, dados: {} as Record<string, any> };
     const d = await r.json().catch(() => ({}));
     if (!r.ok) {
       console.error("zoho api", caminho, r.status, JSON.stringify(d).slice(0, 300));
-      throw new HttpError(502, `Zoho respondeu ${r.status}${d?.message ? `: ${d.message}` : ""}`);
+      throw new HttpError(502, `Zoho respondeu ${r.status}${d?.message ? `: ${d.message}` : d?.code ? `: ${d.code}` : ""}`);
     }
-    return d;
+    return { status: r.status, dados: d as Record<string, any> };
   }
   throw new HttpError(502, "Zoho recusou o acesso");
+}
+
+export async function zohoGet(caminho: string, params: Record<string, string | number | undefined> = {}, produto: "api" | "projects" = "api") {
+  return (await zohoGetBruto(caminho, params, {}, produto)).dados;
 }
 
 // ---------------------------------------------------------------- leituras de negocio
