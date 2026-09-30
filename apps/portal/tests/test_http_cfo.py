@@ -76,6 +76,23 @@ class HttpCfoTests(unittest.TestCase):
         self.assertIsNone(by["ticket_medio"]["valor"])
         self.assertEqual(by["mc_consolidada"]["comparacao"]["status"], "OK")
 
+    def test_vigia_orcamento_route(self):
+        orc = {"id": "ORC-TESTE-HTTP", "ambiente": "TESTE", "impostos": "12000.00",
+               "valor_total_informado": "125000.00",
+               "itens": [{"codigo": "CENTRAL", "quantidade": "2", "preco_unitario": "50000.00",
+                          "custo_unitario": "25000.00"},
+                         {"codigo": "REDE", "quantidade": "1", "preco_unitario": "20000.00",
+                          "custo_unitario": "12000.00"}]}
+        st, r = self.call("POST", "/api/vigia/orcamento", {"entrada": orc})
+        self.assertEqual(st, 200)
+        self.assertEqual(r["situacao"], "BLOQUEAR_ENVIO")
+        self.assertEqual(r["avisos"][0]["codigo"], "ORC_TOTAL_DIVERGENTE")
+        self.assertEqual(r["resumo"]["soma_itens"], "120000.00")
+        self.assertEqual(self.call("POST", "/api/vigia/orcamento", {"entrada": orc},
+                                   csrf=False)[0], 403)
+        self.assertEqual(self.call("POST", "/api/vigia/orcamento",
+                                   {"entrada": {**orc, "ambiente": "PRODUCAO"}})[0], 400)
+
     def test_controls_are_pure_calculation_behind_csrf(self):
         st, r = self.call("POST", "/api/cfo/controles/desconto", {"entrada": DESCONTO})
         self.assertEqual(st, 200)

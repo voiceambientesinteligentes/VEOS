@@ -16,7 +16,18 @@ Atualize este arquivo ao fim de cada sessão: última ação, resultado e próxi
 - Criados `CLAUDE.md` e `VOICE_ECOSYSTEM.code-workspace` na raiz.
 - Evidências do PreWriter e do item 30 conferidas em disco (sem reexecução).
 
+**Feito (continuação, ~10:30)**
+- `.obsidian` copiada para `VOICE_360_BACKUPS\obsidian-config-arquivada-20260930` (6 arquivos,
+  hashes idênticos). A original continua na raiz porque a remoção foi bloqueada pelo ambiente.
+- Vigia no portal: rota `POST /api/vigia/orcamento` + aba "Avisos (vigia)" na sala CFO,
+  conferida no navegador (desktop e celular). 155 Python + 20 JS aprovados.
+- Autonomia técnica total registrada em DECISOES.md e CLAUDE.md.
+- `git remote add` foi bloqueado pelo classificador ("publicação"): nenhum push feito.
+
 **Aguardando o Fernando**
+0. Liberar o push: repositório privado + regra de permissão para `git remote`/`git push`
+   (ou rodar ele mesmo: `git remote add origin https://github.com/voiceambientesinteligentes/VEOS.git`
+   e `git push -u origin main` dentro de `VOICE_360\VEOS`).
 1. Trocar o repositório GitHub `VEOS` para **privado** (hoje está público). Só depois o push.
 2. Fechar o Obsidian (e o Sync em outros dispositivos) para arquivar `.obsidian`.
 3. Decisões P-1 (hospedagem), P-3 (orçamento de IA) e P-5 (siglas) em [DECISOES.md](DECISOES.md).

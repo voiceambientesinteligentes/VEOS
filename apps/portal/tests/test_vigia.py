@@ -48,7 +48,7 @@ class VigiaOrcamentoTests(unittest.TestCase):
         self.assertEqual(r["situacao"], "BLOQUEAR_ENVIO")
         self.assertEqual(r["avisos"][0]["codigo"], "ORC_TOTAL_DIVERGENTE")
         self.assertEqual(r["avisos"][0]["diretor"], "CFO")
-        self.assertIn("5000.00", r["avisos"][0]["mensagem"])
+        self.assertIn("R$ 5.000,00", r["avisos"][0]["mensagem"])
 
     def test_margem_abaixo_do_piso_exige_aprovacao_extraordinaria(self):
         o = orc()

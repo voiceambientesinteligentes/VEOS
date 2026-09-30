@@ -28,6 +28,16 @@ def _r2(v):
     return None if v is None else cc.q(v)
 
 
+def _brl(v):
+    """Decimal -> 'R$ 1.234,56' (texto de aviso; os numeros do resumo seguem em Decimal)."""
+    s = f"{cc.q(v):,.2f}".replace(",", "_").replace(".", ",").replace("_", ".")
+    return f"R$ {s}"
+
+
+def _pct(v):
+    return f"{cc.q(v):.2f}".replace(".", ",") + "%"
+
+
 def _itens(lista):
     itens = []
     for i, it in enumerate(cc._list(lista, "itens", MAX_ITENS)):
@@ -67,26 +77,27 @@ def avaliar_orcamento(o):
     # 1. A lista de produtos fecha com o total informado pelo vendedor?
     if soma != informado:
         avisos.append(_aviso(
-            "ORC_TOTAL_DIVERGENTE", "CFO", "CRITICO", "Total nao fecha com a lista de produtos",
-            f"Soma dos itens R$ {soma:.2f} x total informado R$ {informado:.2f} "
-            f"(diferenca R$ {informado - soma:.2f}). Nenhuma analise de margem vale ate corrigir.",
-            "soma quantidade x preco unitario dos itens", INTEGRIDADE))
+            "ORC_TOTAL_DIVERGENTE", "CFO", "CRITICO", "O total não fecha com a lista de produtos",
+            f"A soma dos itens dá {_brl(soma)}, mas o total informado é {_brl(informado)} "
+            f"(diferença de {_brl(informado - soma)}). Corrija antes de enviar: nenhuma análise de "
+            "margem vale até isso ser resolvido.",
+            "soma de quantidade × preço unitário dos itens", INTEGRIDADE))
     if desconto > soma:
         raise cc.ControlError("desconto_valor maior que a soma dos itens")
 
     # 2. Itens vendidos abaixo do custo e itens sem custo.
     sem_custo = [i["codigo"] for i in itens if i["custo_unitario"] is None]
     if sem_custo:
-        lacunas.append(f"Custo unitario ausente: {', '.join(sem_custo)}. Margem nao calculada.")
+        lacunas.append(f"Custo unitário ausente: {', '.join(sem_custo)}. Margem não calculada.")
     for i in itens:
         if i["custo_unitario"] is not None and i["preco_unitario"] < i["custo_unitario"]:
             avisos.append(_aviso(
-                "ORC_ITEM_ABAIXO_CUSTO", "CFO", "ALTO", f"Item {i['codigo']} abaixo do custo",
-                f"Preco R$ {i['preco_unitario']:.2f} < custo R$ {i['custo_unitario']:.2f}.",
-                "comparacao preco x custo do item", INTEGRIDADE))
+                "ORC_ITEM_ABAIXO_CUSTO", "CFO", "ALTO", f"Item {i['codigo']} vendido abaixo do custo",
+                f"Preço {_brl(i['preco_unitario'])} menor que o custo {_brl(i['custo_unitario'])}.",
+                "comparação preço × custo do item", INTEGRIDADE))
     if impostos is None:
-        lacunas.append("Impostos nao informados: Receita Liquida e margem nao calculadas "
-                       "(Politica V1 sec.4).")
+        lacunas.append("Impostos não informados: Receita Líquida e margem não calculadas "
+                       "(Política V1 sec.4).")
 
     # 3. Margem e alcada (V1 sec.3, 4, 6, 8, 9) - so sem lacunas.
     liquido = soma - desconto
@@ -96,18 +107,18 @@ def avaliar_orcamento(o):
         custos = sum((i["total_custo"] for i in itens), ZERO)
         mg = cc.margem(liquido - impostos, custos)
         alcada = cc.alcada_desconto(desc_pct, mg["pct"])
-        pct_txt = "nao resolvida" if mg["pct"] is None else f"{_r2(mg['pct'])}%"
+        pct_txt = "não resolvida" if mg["pct"] is None else _pct(mg["pct"])
         sev = {"VERDE": "INFO", "ACEITAVEL": "INFO", "ATENCAO": "ALTO",
                "NAO APROVADO": "CRITICO"}.get(mg["faixa"], "ALTO")
         avisos.append(_aviso(
-            "ORC_MARGEM", "CFO", sev, f"Margem de contribuicao {pct_txt} - faixa {mg['faixa']}",
-            "Margem calculada com provisao de risco de 2% da Receita Liquida (uma vez).",
-            "Politica V1 sec.3, 4 e 6", cc.POLITICA))
+            "ORC_MARGEM", "CFO", sev, f"Margem de contribuição {pct_txt} — faixa {mg['faixa']}",
+            "Margem calculada com provisão de risco de 2% da Receita Líquida (uma única vez).",
+            "Política V1 sec.3, 4 e 6", cc.POLITICA))
         if alcada["nivel"] not in ("FLUXO NORMAL", "AUTONOMIA COMERCIAL"):
             sev = "CRITICO" if alcada["nivel"] == "EXTRAORDINARIA" else "ALTO"
             avisos.append(_aviso(
-                "ORC_ALCADA", "CFO", sev, f"Alcada exigida: {alcada['nivel']}",
-                " ".join(alcada["exigencias"]), "Politica V1 sec.3, 8 e 9", cc.POLITICA))
+                "ORC_ALCADA", "CFO", sev, f"Alçada exigida: {alcada['nivel']}",
+                " ".join(alcada["exigencias"]), "Política V1 sec.3, 8 e 9", cc.POLITICA))
 
     # 4. Ticket desejado (V1 sec.2): alerta, nunca bloqueio.
     mg_pct = None if mg is None else _r2(mg["pct"])
@@ -118,7 +129,8 @@ def avaliar_orcamento(o):
     if tk["abaixo_do_desejado"] and tk["situacao"] != "ABAIXO DO DESEJADO - EXCECAO JUSTIFICADA":
         avisos.append(_aviso(
             "ORC_TICKET", "CFO", "MEDIO", tk["situacao"].capitalize(),
-            f"Valor R$ {liquido:.2f} abaixo do ticket desejado R$ {cc.TICKET_DESEJADO:.2f}. "
+            f"Valor {_brl(liquido)} abaixo do ticket desejado de {_brl(cc.TICKET_DESEJADO)}. "
+            "É meta, não bloqueio: registre a justificativa. "
             + " ".join(tk["inconsistencias"]), tk["fonte"], cc.POLITICA))
 
     avisos.sort(key=lambda a: -SEVERIDADES.index(a["severidade"]))
@@ -133,5 +145,5 @@ def avaliar_orcamento(o):
                    "margem_pct": None if mg is None else _r2(mg["pct"]),
                    "faixa_margem": None if mg is None else mg["faixa"],
                    "alcada": None if alcada is None else alcada["nivel"]},
-        "nota": "Avisos deterministicos sobre dados TESTE. Nada foi gravado ou aprovado.",
+        "nota": "Avisos determinísticos sobre dados TESTE. Nada foi gravado ou aprovado.",
     }

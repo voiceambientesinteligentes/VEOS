@@ -34,7 +34,8 @@ for _js in ("main", "data/api", "domain/format", "domain/params", "domain/chart"
             "ui/shell", "ui/chart", "ui/chat", "ui/motion", "ui/views/overview", "ui/views/room",
             "ui/views/secretaria", "ui/views/meeting", "ui/views/cfo", "ui/views/params",
             "ui/views/cfo_briefing", "ui/views/cfo_controls", "ui/views/cfo_indicators",
-            "ui/views/cfo_decisions", "ui/views/integrations", "ui/views/voice360"):
+            "ui/views/cfo_decisions", "ui/views/cfo_vigia", "ui/views/integrations",
+            "ui/views/voice360"):
     STATIC[f"/js/{_js}.js"] = (f"js/{_js}.js", "text/javascript; charset=utf-8")
 
 CSP = ("default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; "
@@ -301,6 +302,9 @@ class Handler(BaseHTTPRequestHandler):
         if m and self.command == "POST":
             # calculo puro: nada e gravado; POST apenas para receber o corpo JSON
             return lambda b: (HTTPStatus.OK, s.controls.simular(m.group(1), b.get("entrada")))
+        if path == "/api/vigia/orcamento" and self.command == "POST":
+            # vigia: avisos calculados, nada e gravado
+            return lambda b: (HTTPStatus.OK, s.controls.vigiar_orcamento(b.get("entrada")))
         if path == "/api/cfo/metodologias" and self.command == "PUT":
             return lambda b: (HTTPStatus.OK, s.controls.save_metodologia(b.get("rascunho")))
         if path == "/api/cfo/metodologias" and self.command == "DELETE":

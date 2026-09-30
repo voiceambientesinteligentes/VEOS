@@ -13,6 +13,8 @@ Formato: data · decisão · quem · origem. Propostas ficam separadas até o Fe
 | 30/09/2026 | "Sistema vivo": ordens/registros que contrariam regra geram aviso automático do diretor responsável (ex.: orçamento com margem que não fecha). | mensagem de 30/09 |
 | 30/09/2026 | Repositório GitHub `VEOS` fica **privado** até o final; público só no fim. | mensagem de 30/09 |
 | 30/09/2026 | Infraestrutura começa em planos gratuitos; nada pago sem decisão. | Plano Mestre §1 |
+| 30/09/2026 | **Autonomia técnica total para o Claude**: entrar em pastas (inclui `VOICE_SITE`), criar, alterar, fazer commit e `git push` sem pedir de novo. Acessos e contas o Fernando cria quando o Claude pedir. Só ferramentas gratuitas. Limites que continuam: não gastar dinheiro, não publicar ou enviar para terceiros, não alterar políticas canônicas nem evidências congeladas, e respeitar os bloqueios de permissão do ambiente. | mensagem de 30/09 |
+| 30/09/2026 | Obsidian não é mais necessário. `.obsidian` copiada com hashes idênticos para `VOICE_360_BACKUPS\obsidian-config-arquivada-20260930`. | mensagem de 30/09 |
 | 30/09/2026 | Dados de exemplo sempre marcados TESTE; dados reais numa fase própria. | Plano Mestre §1 |
 
 ## Propostas (aguardando confirmação)

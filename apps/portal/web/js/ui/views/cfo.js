@@ -10,6 +10,7 @@ import { renderBriefing } from "./cfo_briefing.js";
 import { renderControls } from "./cfo_controls.js";
 import { mountDecisions } from "./cfo_decisions.js";
 import { renderIndicators } from "./cfo_indicators.js";
+import { renderVigia } from "./cfo_vigia.js";
 import { roomChat, roomHeader } from "./room.js";
 
 const faixa = (f) => h("span", { class: `faixa tone-${faixaTone(f)}` }, faixaLabel(f));
@@ -27,6 +28,7 @@ function kpi(label, value, foot) {
 
 const TAB_DEFS = [
   ["briefing", "Briefing"],
+  ["avisos", "Avisos (vigia)"],
   ["painel", "Painel TESTE"],
   ["controles", "Controles"],
   ["indicadores", "Indicadores"],
@@ -253,6 +255,7 @@ export async function renderCfo(root, _route, { signal }) {
     const box = panels[id];
     if (id === "conversa") roomChat(box, "cfo", signal);
     else if (id === "painel") load();
+    else if (id === "avisos") renderVigia(box, ctx);
     else if (needsForms(box)) mounted.delete(id);
     else if (id === "briefing") renderBriefing(box, ctx);
     else if (id === "controles") renderControls(box, ctx);

@@ -8,6 +8,7 @@ from pathlib import Path
 
 from . import cfo_controls as cc
 from . import cfo_indicadores as ci
+from . import vigia
 from .cfo_bridge import CFOUnavailable, jsonable
 
 SETTINGS_KEY = "cfo_metodologias"
@@ -137,6 +138,15 @@ class CFOControlsService:
                 over["reserva_metodo"] = entrada["metodo"]
             cfg = cc.validar_metodologia({**{k: cfg[k] for k in cfg}, **over})
             return cc.avaliar_reserva(fx, cfg, entrada.get("periodo"), entrada.get("caixa_livre")), sha
+        except cc.ControlError as e:
+            raise ValueError(str(e))
+
+    def vigiar_orcamento(self, entrada):
+        """Vigia: avisos do CFO sobre um orcamento TESTE. Calculo puro, nada e gravado."""
+        if not isinstance(entrada, dict):
+            raise ValueError("entrada deve ser objeto")
+        try:
+            return jsonable(vigia.avaliar_orcamento(entrada))
         except cc.ControlError as e:
             raise ValueError(str(e))
 

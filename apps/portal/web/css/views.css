@@ -256,3 +256,12 @@
     .count-list { grid-template-columns: minmax(0, 1fr); }
   }
 }
+
+/* Vigia (avisos do CFO): linha de item com remover na mesma linha; avisos sem marcador */
+@layer views {
+  .vigia-item { grid-template-columns: minmax(0, 1.4fr) minmax(0, 0.6fr) minmax(0, 1fr) minmax(0, 1fr) auto; gap: var(--s3); }
+  .vigia-avisos { list-style: none; padding-left: 0; }
+  @media (max-width: 640px) {
+    .vigia-item { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  }
+}
