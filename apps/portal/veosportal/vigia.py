@@ -73,6 +73,8 @@ def avaliar_orcamento(o):
 
     avisos, lacunas = [], []
     soma = sum((i["total_preco"] for i in itens), ZERO)
+    if soma == ZERO:
+        raise cc.ControlError("itens: a soma dos itens deve ser maior que zero")
 
     # 1. A lista de produtos fecha com o total informado pelo vendedor?
     if soma != informado:

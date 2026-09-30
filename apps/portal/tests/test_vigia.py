@@ -107,7 +107,9 @@ class VigiaOrcamentoTests(unittest.TestCase):
             vigia.avaliar_orcamento(orc(id="ORC-REAL-001"))
 
     def test_entrada_invalida_e_recusada(self):
-        for ruim in (orc(itens=[]), orc(campo_extra="x"),
+        zerado = orc(valor_total_informado="1.00",
+                     itens=[{"codigo": "BRINDE", "quantidade": "1", "preco_unitario": "0.00"}])
+        for ruim in (orc(itens=[]), orc(campo_extra="x"), zerado,
                      orc(itens=[{"codigo": "X", "quantidade": "0", "preco_unitario": "1.00"}])):
             with self.assertRaises(cc.ControlError):
                 vigia.avaliar_orcamento(ruim)

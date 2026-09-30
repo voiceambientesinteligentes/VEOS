@@ -1,0 +1,14 @@
+{
+  "name": "veos",
+  "private": true,
+  "type": "module",
+  "description": "VEOS - scripts do repositorio. Sem dependencias: Node 24 roda TypeScript direto.",
+  "scripts": {
+    "test": "npm run test:regras && npm run test:portal",
+    "test:regras": "node --test \"tests/regras/*.test.ts\"",
+    "test:portal": "cd apps/portal && python -m unittest discover -s tests && node --test tests/js/domain.test.mjs tests/js/controls.test.mjs",
+    "paridade:gerar": "python tests/regras/gerar_paridade.py",
+    "supabase": "npx -y supabase@2.118.0",
+    "deploy:vigia": "npx -y supabase@2.118.0 functions deploy vigia --use-api --project-ref vkrwxvnfstvriibjwuvw"
+  }
+}
