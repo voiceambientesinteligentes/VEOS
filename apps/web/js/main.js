@@ -14,6 +14,7 @@ import { telaSetor } from "./ui/views/setor.js";
 import { telaRadar } from "./ui/views/radar.js";
 import { telaConselho } from "./ui/views/conselho.js";
 import { telaCalculadora, telaNegociacao } from "./ui/views/precificacao.js";
+import { telaIntegracoes } from "./ui/views/integracoes.js";
 import { CATALOGO } from "./data/catalogo.js";
 
 const el = {
@@ -26,6 +27,9 @@ const el = {
 };
 const SITUACAO = { OK: ["OK", "ok"], REVISAR: ["Revisar", "warn"], BLOQUEAR_ENVIO: ["Não enviar", "risk"] };
 let eu = null;
+// Fontes automaticas da Negociacao ao Vivo (Zoho); a tela funciona sem elas.
+const fontesZoho = { rbt12: api.zohoRbt12, orcamentos: api.zohoOrcamentos, orcamento: api.zohoOrcamento };
+const rotaBase = () => location.hash.split("?")[0];
 let atual = null;
 
 const link = (href, sigla, texto) =>
@@ -94,7 +98,8 @@ const TELAS = {
   "#/visao": { fn: telaVisao, titulo: ["Visão geral", "VEOS online · VOICE Ambientes Inteligentes"] },
   "#/cfo": { fn: telaAvisos, titulo: ["Avisos de orçamento", "Vigia: orçamento salvo → avisos do CFO com regra e fonte"] },
   "#/projetos": { fn: telaProjetos, titulo: ["Projetos e caixa", "Setor Financeiro · exposição e cobertura por fase"] },
-  "#/negociacao": { fn: telaNegociacao, titulo: ["Negociação ao Vivo", "Desconto, custos e Simples → margem e alçada pela Política V1"] },
+  "#/integracoes": { fn: (root) => telaIntegracoes(root, eu), titulo: ["Integrações", "Zoho Books, CRM e Projects · somente leitura"] },
+  "#/negociacao": { fn: (root) => telaNegociacao(root, fontesZoho), titulo: ["Negociação ao Vivo", "Desconto, custos e Simples → margem e alçada pela Política V1"] },
   "#/calculadora": { fn: telaCalculadora, titulo: ["Calculadora de Preços", "Preço mínimo para a margem alvo, já com Simples e provisão de 2%"] },
   "#/historico": { fn: telaHistorico, titulo: ["Histórico", "Orçamentos TESTE gravados e seus avisos"] },
 };
@@ -141,7 +146,8 @@ function montarMenu() {
       link("#/orbita", "◉", "Órbita"),
       link("#/radar", "◈", "Radar"),
       link("#/ia", "✦", "IA VEOS"),
-      link("#/conselho", "◇", "Conselho")),
+      link("#/conselho", "◇", "Conselho"),
+      link("#/integracoes", "⇄", "Integrações")),
     h("div", { class: "nav-group", role: "group", "aria-labelledby": "nav-setores" },
       h("span", { class: "nav-label", id: "nav-setores" }, "Setores"),
       CATALOGO.map((s) => link(`#/setor/${s.id}`, s.sigla, s.nome))),
@@ -169,7 +175,7 @@ async function navegar() {
     rota = `#/setor/${setor.id}`;
     def = { fn: (root, signal) => telaSetor(root, setor.id, signal, setorRota[2]), titulo: [`${setor.sigla} · ${setor.nome}`, setor.diretor.titulo] };
   } else {
-    rota = TELAS[location.hash] ? location.hash : "#/orbita";
+    rota = TELAS[rotaBase()] ? rotaBase() : "#/orbita";
     def = TELAS[rota];
   }
   atual?.abort();
@@ -201,7 +207,7 @@ async function iniciar(mensagem) {
     return telaLogin(e.status === 403 ? "Este e-mail não tem acesso ao VEOS. Fale com a direção." : e.message);
   }
   montarMenu();
-  if (!TELAS[location.hash] && !/^#\/(projetos|setor)\//.test(location.hash)) history.replaceState(null, "", "#/orbita");
+  if (!TELAS[rotaBase()] && !/^#\/(projetos|setor)\//.test(location.hash)) history.replaceState(null, "", "#/orbita");
   navegar();
 }
 

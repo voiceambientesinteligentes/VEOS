@@ -47,6 +47,14 @@ export const api = {
   // tipo: fases | recebimentos | compromissos
   lancar: (id, tipo, dados) => request("POST", `projetos/${encodeURIComponent(id)}/${tipo}`, dados, { "Idempotency-Key": crypto.randomUUID() }),
   compraProposta: (id, dados) => request("POST", `projetos/${encodeURIComponent(id)}/compra-proposta`, dados, { "Idempotency-Key": crypto.randomUUID() }),
+  // Zoho (somente leitura; tokens ficam no servidor)
+  zohoStatus: () => request("GET", "zoho/status"),
+  zohoConectar: () => request("POST", "zoho/conectar", {}, { "Idempotency-Key": crypto.randomUUID() }),
+  zohoDesconectar: () => request("POST", "zoho/desconectar", {}, { "Idempotency-Key": crypto.randomUUID() }),
+  zohoRbt12: () => request("GET", "zoho/rbt12"),
+  zohoOrcamentos: (busca = "", status = "") => request("GET", `zoho/orcamentos?${new URLSearchParams({ busca, status })}`),
+  zohoOrcamento: (id) => request("GET", `zoho/orcamentos/${encodeURIComponent(id)}`),
+  zohoEtapas: () => request("GET", "zoho/crm/etapas"),
   // Salvar = vigia avalia e o servidor grava orcamento + avisos. Uma chave por clique:
   // se a rede repetir o envio, o servidor nao duplica o registro.
   vigiaOrcamento: (entrada) =>
