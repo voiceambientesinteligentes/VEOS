@@ -1,0 +1,124 @@
+// Edge Function "api" - servidor do portal VEOS online.
+//   GET  /api/me          -> membro autenticado
+//   GET  /api/setores     -> setores e diretores
+//   GET  /api/orcamentos  -> ultimos orcamentos com avisos
+//   POST /api/orcamentos  -> vigia avalia e grava orcamento + avisos + evento
+//                            (header Idempotency-Key obrigatorio; repetir nao duplica)
+// Identidade: token do Supabase Auth validado no servidor + cadastro ativo em `membros`.
+// Nunca confia em papel/setor enviado pelo cliente.
+import { avaliarOrcamento, RegraError } from "../_shared/regras/vigia.ts";
+
+const URL_BASE = Deno.env.get("SUPABASE_URL") ?? "";
+const ANON = Deno.env.get("SUPABASE_ANON_KEY") ?? "";
+const SERVICE = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
+const MAX_BODY = 64 * 1024;
+const ORIGENS = [
+  /^https:\/\/veos-voice\.netlify\.app$/,
+  /^https:\/\/[a-z0-9-]+--veos-voice\.netlify\.app$/,
+  /^http:\/\/127\.0\.0\.1:8878$/,
+];
+const CHAVE_RE = /^[A-Za-z0-9-]{16,64}$/;
+
+class HttpError extends Error {
+  constructor(public status: number, msg: string) {
+    super(msg);
+  }
+}
+
+function cors(req: Request): Record<string, string> {
+  const o = req.headers.get("Origin") ?? "";
+  if (!ORIGENS.some((re) => re.test(o))) return {};
+  return {
+    "Access-Control-Allow-Origin": o,
+    "Access-Control-Allow-Headers": "authorization, apikey, content-type, idempotency-key",
+    "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+    Vary: "Origin",
+  };
+}
+
+const json = (req: Request, status: number, body: unknown) =>
+  new Response(JSON.stringify(body), {
+    status,
+    headers: { ...cors(req), "Content-Type": "application/json; charset=utf-8", "Cache-Control": "no-store" },
+  });
+
+async function servico(path: string, init: RequestInit = {}) {
+  const r = await fetch(`${URL_BASE}${path}`, {
+    ...init,
+    headers: { apikey: SERVICE, Authorization: `Bearer ${SERVICE}`, "Content-Type": "application/json", ...(init.headers ?? {}) },
+  });
+  const texto = await r.text();
+  if (!r.ok) {
+    console.error("banco", r.status, texto.slice(0, 500));
+    throw new HttpError(502, "falha ao acessar o banco");
+  }
+  return texto ? JSON.parse(texto) : null;
+}
+
+async function membro(req: Request) {
+  const token = (req.headers.get("Authorization") ?? "").replace(/^Bearer\s+/i, "");
+  if (!token) throw new HttpError(401, "login necessario");
+  const r = await fetch(`${URL_BASE}/auth/v1/user`, { headers: { apikey: ANON, Authorization: `Bearer ${token}` } });
+  if (!r.ok) throw new HttpError(401, "sessao invalida ou expirada");
+  const user = await r.json();
+  if (!user?.id) throw new HttpError(401, "sessao invalida");
+  const rows = await servico(`/rest/v1/membros?user_id=eq.${encodeURIComponent(user.id)}&ativo=is.true&select=user_id,nome,papel`);
+  if (!rows?.length) throw new HttpError(403, "usuario sem acesso ao VEOS");
+  return { ...rows[0], email: user.email as string };
+}
+
+async function lerCorpo(req: Request) {
+  const raw = await req.text();
+  if (new TextEncoder().encode(raw).length > MAX_BODY) throw new HttpError(413, "corpo acima de 64 KB");
+  try {
+    return JSON.parse(raw);
+  } catch {
+    throw new HttpError(400, "JSON invalido");
+  }
+}
+
+async function rotear(req: Request, rota: string) {
+  const eu = await membro(req);
+  if (req.method === "GET" && rota === "me") return eu;
+  if (req.method === "GET" && rota === "setores") {
+    const [setores, diretores] = await Promise.all([
+      servico("/rest/v1/setores?select=id,sigla,nome,descricao&ativo=is.true&order=sigla"),
+      servico("/rest/v1/diretores?select=id,setor_id,sigla,nome&ativo=is.true&order=sigla"),
+    ]);
+    return { setores, diretores };
+  }
+  if (req.method === "GET" && rota === "orcamentos") {
+    return {
+      orcamentos: await servico(
+        "/rest/v1/orcamentos?select=id,codigo,ambiente,vendedor,cliente,valor_total_informado,criado_em," +
+          "avisos(severidade,codigo,titulo,situacao)&order=criado_em.desc&limit=20",
+      ),
+    };
+  }
+  if (req.method === "POST" && rota === "orcamentos") {
+    const chave = req.headers.get("Idempotency-Key") ?? "";
+    if (!CHAVE_RE.test(chave)) throw new HttpError(400, "Idempotency-Key obrigatorio (16-64 caracteres)");
+    const entrada = (await lerCorpo(req))?.entrada;
+    const resultado = avaliarOrcamento(entrada); // RegraError -> 400
+    const reg = await servico("/rest/v1/rpc/registrar_orcamento", {
+      method: "POST",
+      body: JSON.stringify({ p: { chave: `${eu.user_id}:${chave}`, usuario_id: eu.user_id, orcamento: entrada, resultado } }),
+    });
+    return { ...resultado, ...reg };
+  }
+  throw new HttpError(404, "rota inexistente");
+}
+
+Deno.serve(async (req) => {
+  if (req.method === "OPTIONS") return new Response(null, { status: 204, headers: cors(req) });
+  if (!URL_BASE || !ANON || !SERVICE) return json(req, 500, { erro: "configuracao do servidor incompleta" });
+  const rota = new URL(req.url).pathname.replace(/^.*\/api\/?/, "").replace(/\/$/, "");
+  try {
+    return json(req, 200, await rotear(req, rota));
+  } catch (e) {
+    if (e instanceof HttpError) return json(req, e.status, { erro: e.message });
+    if (e instanceof RegraError) return json(req, 400, { erro: e.message });
+    console.error(e);
+    return json(req, 500, { erro: "falha interna" });
+  }
+});
