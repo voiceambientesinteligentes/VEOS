@@ -74,6 +74,10 @@ function painelImpostos(aoMudar, fontes = null) {
   rbt.addEventListener("input", () => { origem.textContent = "Receita digitada (substitui a do Zoho nesta tela)."; });
   if (fontes?.rbt12) {
     fontes.rbt12().then((r) => {
+      if (!r.faturas) {
+        origem.textContent = `O Zoho Books não tem faturas emitidas de ${dataBR(r.inicio)} a ${dataBR(r.fim)}: a receita dos 12 meses não pode vir de lá. Digite a receita bruta (ex.: do extrato do Simples/PGDAS).`;
+        return;
+      }
       rbt.value = decimalBR(r.valor);
       origem.textContent = `Automático: ${r.fonte}, ${r.faturas} faturas de ${dataBR(r.inicio)} a ${dataBR(r.fim)}.`;
       aoMudar();

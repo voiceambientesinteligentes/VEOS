@@ -6,6 +6,7 @@ import { SERVICE, servico, URL_BASE } from "../_shared/banco.ts";
 import { CATALOGO } from "../_shared/setores/catalogo.ts";
 import type { Setor } from "../_shared/setores/motor.ts";
 import { varrer } from "../_shared/setores/varredura.ts";
+import { diagnostico } from "../_shared/zoho.ts";
 
 const INTERVALO_MS = 10 * 60 * 1000;
 
@@ -28,7 +29,12 @@ Deno.serve(async (req) => {
     console.error("saude:", e);
     if (banco === "ok") varredura = "falhou";
   }
-  return new Response(JSON.stringify({ servico: "veos", banco, varredura, ms: Date.now() - inicio, em: new Date().toISOString() }), {
+  // ?zoho=1: testa a leitura de cada produto do Zoho (so ok/erro e contagens; renova o token)
+  let zoho: unknown;
+  if (banco === "ok" && new URL(req.url).searchParams.get("zoho") === "1") {
+    try { zoho = await diagnostico(); } catch (e) { zoho = { erro: e instanceof Error ? e.message : "falha" }; }
+  }
+  return new Response(JSON.stringify({ servico: "veos", banco, varredura, zoho, ms: Date.now() - inicio, em: new Date().toISOString() }), {
     status: banco === "ok" ? 200 : 503,
     headers: { "Content-Type": "application/json", "Cache-Control": "no-store" },
   });

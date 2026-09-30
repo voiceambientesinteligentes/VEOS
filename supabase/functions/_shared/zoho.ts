@@ -18,6 +18,8 @@ const CLIENT_SECRET = () => Deno.env.get("ZOHO_CLIENT_SECRET") ?? "";
 const ACCOUNTS_RE = /^https:\/\/accounts\.zoho\.(com|eu|in|com\.au|jp|com\.cn|sa|ca|uk)$/;
 const API_RE = /^https:\/\/www\.zohoapis\.(com|eu|in|com\.au|jp|com\.cn|sa|ca|uk)$/;
 const PADRAO_ACCOUNTS = "https://accounts.zoho.com";
+// Zoho Projects usa um host proprio: projectsapi.zoho.<dc> (mesmo data center do api_domain).
+const projectsBase = (api: string) => api.replace("https://www.zohoapis.", "https://projectsapi.zoho.");
 
 export const configurado = () => Boolean(CLIENT_ID() && CLIENT_SECRET());
 
@@ -82,11 +84,12 @@ async function renovar(c: Conexao) {
 }
 
 /** GET autenticado na API do Zoho (renova o token quando preciso, uma nova tentativa em 401). */
-export async function zohoGet(caminho: string, params: Record<string, string | number | undefined> = {}) {
+export async function zohoGet(caminho: string, params: Record<string, string | number | undefined> = {}, produto: "api" | "projects" = "api") {
   const c = await conexao();
   let token = c.access_token && c.expira_em && Date.parse(c.expira_em) > Date.now() ? c.access_token : await renovar(c);
   const q = new URLSearchParams(Object.entries(params).filter(([, v]) => v !== undefined && v !== "").map(([k, v]) => [k, String(v)]));
-  const url = `${c.api_domain}${caminho}${q.size ? `?${q}` : ""}`;
+  const base = produto === "projects" ? projectsBase(c.api_domain) : c.api_domain;
+  const url = `${base}${caminho}${q.size ? `?${q}` : ""}`;
   for (let tentativa = 0; tentativa < 2; tentativa++) {
     const r = await fetch(url, { headers: { Authorization: `Zoho-oauthtoken ${token}` }, signal: AbortSignal.timeout(20_000) });
     if (r.status === 401 && tentativa === 0) { token = await renovar(c); continue; }
@@ -176,4 +179,31 @@ export async function etapasCrm() {
   const stage = (d.fields ?? []).find((f: Record<string, unknown>) => f.api_name === "Stage");
   if (!stage) throw new HttpError(502, "campo Stage não encontrado no Zoho CRM");
   return (stage.pick_list_values ?? []).map((p: Record<string, unknown>) => ({ valor: p.actual_value, nome: p.display_value, probabilidade: p.probability ?? null, tipo: p.forecast_type ?? null }));
+}
+
+/** Projetos do Zoho Projects (portal da VOICE). */
+export async function projetosZoho() {
+  const d = await zohoGet(`/api/v3/portal/${PORTAL_PROJECTS}/projects`, { per_page: 100 }, "projects");
+  const lista = Array.isArray(d) ? d : d.projects ?? [];
+  return lista.map((p: Record<string, unknown>) => ({ id: String(p.id), nome: p.name, status: (p.status as Record<string, unknown>)?.name ?? p.status ?? null }));
+}
+
+/**
+ * Diagnostico da integracao: chama cada produto e devolve so ok/erro e contagens da 1a pagina
+ * (nenhum valor, nome ou dado de cliente). Usado pela funcao "saude".
+ */
+export async function diagnostico() {
+  const passo = async (nome: string, fn: () => Promise<number>) => {
+    try { return [nome, { ok: true, itens: await fn() }] as const; } catch (e) { return [nome, { ok: false, erro: e instanceof Error ? e.message.slice(0, 160) : "falha" }] as const; }
+  };
+  const conta = (d: Record<string, unknown>, k: string) => (Array.isArray(d[k]) ? (d[k] as unknown[]).length : 0);
+  const r = await Promise.all([
+    passo("books_faturas", async () => conta(await zohoGet("/books/v3/invoices", { organization_id: ORG_BOOKS, per_page: 200 }), "invoices")),
+    passo("books_orcamentos", async () => conta(await zohoGet("/books/v3/estimates", { organization_id: ORG_BOOKS, per_page: 200 }), "estimates")),
+    passo("books_itens", async () => conta(await zohoGet("/books/v3/items", { organization_id: ORG_BOOKS, per_page: 200 }), "items")),
+    passo("crm_etapas", async () => (await etapasCrm()).length),
+    passo("crm_negocios", async () => conta(await zohoGet("/crm/v7/Deals", { fields: "id", per_page: 200 }), "data")),
+    passo("projects_projetos", async () => (await projetosZoho()).length),
+  ]);
+  return Object.fromEntries(r);
 }
