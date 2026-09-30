@@ -27,8 +27,14 @@ disso, cancele o Sync se não for mais usar. Mudanças feitas com o app aberto p
 - Método: robocopy `/E /XJ` (não segue junctions, evita ciclos) + manifesto SHA-256 da origem
   e da cópia (`manifest-origem.sha256`, `manifest-copia.sha256`, `diferencas.txt`,
   `resultado.json`).
-- Diferenças esperadas: arquivos escritos durante a cópia (`.obsidian/workspace.json` com o app
-  aberto, fila SHADOW desta sessão e a pasta `VEOS/`, criada durante a cópia).
+- **Verificado em 30/09 10:20**: 19.372 arquivos na origem × 19.290 na cópia, com 0 falhas de
+  cópia. As 84 diferenças foram todas explicadas: 80 arquivos de `VEOS/` (criados durante a
+  cópia), `.obsidian/workspace.json` (Obsidian aberto) e 2 symlinks de teste.
+- **Links não copiados (de propósito)**: 16 junctions e 2 symlinks criados pelos testes de
+  segurança do pipeline (`99 - SISTEMA/SHADOW/REPLAY/.../LAB*`, `VOICE360-V2-SEALED-TEST-STAGING`).
+  Os alvos ficam dentro do VOICE_360, então o conteúdo está no backup. A lista, para recriar numa
+  restauração, está em `links-nao-copiados.json`. Esses links usam caminho absoluto: mais um
+  motivo para **não mover** SHADOW nem as pastas SEALED.
 
 ## Mudanças feitas
 
