@@ -11,7 +11,7 @@ Formato: data · decisão · quem · origem. Propostas ficam separadas até o Fe
 | 30/09/2026 | VEOS será usado online no site da VOICE, com domínio conectado na etapa final. | mensagem de 30/09 |
 | 30/09/2026 | Hierarquia: VEOS contém o VOICE_360; o VOICE_360 contém os diretores (CMO, CFO…), cada um com personalidade a ser criada. | mensagem de 30/09 |
 | 30/09/2026 | "Sistema vivo": ordens/registros que contrariam regra geram aviso automático do diretor responsável (ex.: orçamento com margem que não fecha). | mensagem de 30/09 |
-| 30/09/2026 | Repositório GitHub `VEOS` fica **privado** até o final; público só no fim. | mensagem de 30/09 |
+| 30/09/2026 | ~~Repositório GitHub `VEOS` fica privado até o final.~~ **Substituída** pela decisão de enviar com o repositório público (abaixo). | mensagem de 30/09 |
 | 30/09/2026 | Infraestrutura começa em planos gratuitos; nada pago sem decisão. | Plano Mestre §1 |
 | 30/09/2026 | **Autonomia técnica total para o Claude**: entrar em pastas (inclui `VOICE_SITE`), criar, alterar, fazer commit e `git push` sem pedir de novo. Acessos e contas o Fernando cria quando o Claude pedir. Só ferramentas gratuitas. Limites que continuam: não gastar dinheiro, não publicar ou enviar para terceiros, não alterar políticas canônicas nem evidências congeladas, e respeitar os bloqueios de permissão do ambiente. | mensagem de 30/09 |
 | 30/09/2026 | Push para o GitHub `VEOS` feito **com o repositório público**, por escolha explícita do Fernando após o aviso de que as regras internas (margens, alçadas, ticket) ficam visíveis. Tornar privado continua recomendado. | pergunta respondida em 30/09 |

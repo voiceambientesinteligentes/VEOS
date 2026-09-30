@@ -22,16 +22,16 @@ Atualize este arquivo ao fim de cada sessão: última ação, resultado e próxi
 - Vigia no portal: rota `POST /api/vigia/orcamento` + aba "Avisos (vigia)" na sala CFO,
   conferida no navegador (desktop e celular). 155 Python + 20 JS aprovados.
 - Autonomia técnica total registrada em DECISOES.md e CLAUDE.md.
-- `git remote add` foi bloqueado pelo classificador ("publicação"): nenhum push feito.
+- GitHub conectado: `origin/main` em https://github.com/voiceambientesinteligentes/VEOS (push verificado).
 
 **Aguardando o Fernando**
 0. GitHub conectado e enviado (público, por decisão do Fernando). Próximo acesso: conta gratuita Cloudflare.
-1. Trocar o repositório GitHub `VEOS` para **privado** (hoje está público). Só depois o push.
-2. Fechar o Obsidian (e o Sync em outros dispositivos) para arquivar `.obsidian`.
+1. Apagar a pasta `VOICE_360\.obsidian` (cópia já arquivada) ou aprovar a remoção.
+2. (Recomendado) Tornar o repositório privado.
 3. Decisões P-1 (hospedagem), P-3 (orçamento de IA) e P-5 (siglas) em [DECISOES.md](DECISOES.md).
 
 **Próximo passo técnico (independente das pendências)**
 - Etapa E: ler a fonte integral, o candidato e os três motivos do item 30 e preparar uma análise
   com as duas leituras lado a lado.
-- Vigia: rota `POST /api/vigia/orcamento` + tela "Avisos" no portal, reutilizando componentes.
+- Vigia: próximos eventos (exposição de caixa V1.1, cobertura de fase V1 sec.10).
 - P04: esboço do esquema de cadastros compartilhados e setores.
