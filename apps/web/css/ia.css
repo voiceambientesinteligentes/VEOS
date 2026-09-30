@@ -1,0 +1,93 @@
+/* IA VEOS - onda de voz + microfone. Mesmo luxo orbital da Orbita. */
+@layer views {
+  .ia { display: grid; gap: var(--s5); }
+
+  .ia-palco {
+    position: relative;
+    height: clamp(220px, 34vh, 340px);
+    border-radius: var(--radius-l);
+    overflow: hidden;
+    border: 1px solid var(--line);
+    background: #000;
+    box-shadow: 0 0 0 1px rgba(201, 165, 76, 0.06) inset, 0 40px 80px -40px rgba(0, 0, 0, 0.9);
+  }
+  .ia-palco::after {
+    content: "";
+    position: absolute;
+    inset: 0 18% auto;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold-line), transparent);
+  }
+  .ia-onda { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+  .ia-palco.sem-webgl { background: radial-gradient(ellipse 50% 30% at 50% 50%, rgba(227, 198, 125, 0.35), rgba(110, 200, 212, 0.12) 50%, #000 75%); }
+  .ia-marca {
+    position: absolute;
+    left: var(--s5);
+    top: var(--s4);
+    display: flex;
+    gap: var(--s2);
+    align-items: center;
+    font-family: var(--mono);
+    font-size: var(--fs-xs);
+    letter-spacing: 0.3em;
+    color: var(--gold-2);
+  }
+  .ia-marca-simbolo { color: var(--cyan); font-size: 1rem; letter-spacing: 0; }
+
+  .ia-controles { display: grid; justify-items: center; gap: var(--s3); text-align: center; }
+  .ia-selos { display: flex; flex-wrap: wrap; gap: var(--s2); justify-content: center; }
+
+  .ia-microfone {
+    position: relative;
+    width: 88px;
+    height: 88px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    color: var(--gold-2);
+    background: radial-gradient(circle at 30% 25%, rgba(255, 255, 255, 0.1), rgba(15, 17, 20, 0.9) 62%);
+    border: 1px solid var(--gold-line);
+    box-shadow: 0 0 36px -8px rgba(201, 165, 76, 0.7);
+    transition: color var(--dur-2) var(--ease), border-color var(--dur-2) var(--ease), box-shadow var(--dur-2) var(--ease);
+  }
+  .ia-microfone svg { width: 34px; height: 34px; }
+  .ia-microfone:hover:not(:disabled), .ia-microfone:focus-visible { border-color: var(--gold-2); outline: none; box-shadow: var(--focus-ring), 0 0 44px -6px rgba(227, 198, 125, 0.8); }
+  .ia-microfone:disabled { opacity: 0.4; cursor: not-allowed; }
+  .ia-microfone.is-ouvindo {
+    color: var(--bg-0);
+    background: radial-gradient(circle at 30% 25%, #fff, var(--cyan) 70%);
+    border-color: var(--cyan);
+    box-shadow: 0 0 0 8px var(--cyan-dim), 0 0 60px -4px rgba(110, 200, 212, 0.95);
+  }
+  .ia-microfone.is-ouvindo::before, .ia-microfone.is-ouvindo::after {
+    content: "";
+    position: absolute;
+    inset: -6px;
+    border-radius: 50%;
+    border: 1px solid var(--cyan-line);
+    animation: ia-onda-anel 1.8s var(--ease) infinite;
+  }
+  .ia-microfone.is-ouvindo::after { animation-delay: 0.9s; }
+
+  .ia-estado { margin: 0; color: var(--text-1); font-size: var(--fs-s); }
+  .ia-transcricao { margin: 0; min-height: 1.6em; font-family: var(--font-display); font-size: var(--fs-l); color: var(--text-0); }
+  .ia-resposta { max-width: 640px; font-size: var(--fs-s); color: var(--text-1); }
+  .ia-resposta p { margin: 0 0 var(--s1); }
+  .ia-resposta strong { color: var(--cyan); font-weight: 600; }
+  .ia-form { display: flex; gap: var(--s2); width: min(100%, 520px); }
+  .ia-form .input { flex: 1; min-width: 0; }
+  .ia-opcao { display: inline-flex; gap: var(--s2); align-items: center; font-size: var(--fs-xs); color: var(--text-2); }
+  .ia-opcao input { accent-color: var(--gold); }
+
+  .ia-ajuda { display: grid; gap: var(--s3); padding-top: var(--s4); border-top: 1px solid var(--line); }
+  .ia-ajuda-titulo { margin: 0; font-size: var(--fs-xs); letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-2); }
+  .ia-exemplos { display: flex; flex-wrap: wrap; gap: var(--s2); margin: 0; padding: 0; list-style: none; }
+  .ia-exemplos .orbita-chip { font-family: var(--font); }
+  .ia-privacidade { margin: 0; font-size: var(--fs-xs); color: var(--text-2); line-height: 1.5; max-width: 780px; }
+
+  @keyframes ia-onda-anel { from { transform: scale(1); opacity: 0.9; } to { transform: scale(1.5); opacity: 0; } }
+  @media (prefers-reduced-motion: reduce) {
+    .ia-microfone.is-ouvindo::before, .ia-microfone.is-ouvindo::after { animation: none; }
+  }
+}

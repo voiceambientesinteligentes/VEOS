@@ -8,6 +8,7 @@ import { enableMotion } from "./ui/motion.js";
 import { markActive, setupDrawer } from "./ui/shell.js";
 import { renderVigia } from "./ui/views/cfo_vigia.js";
 import { renderOrbita } from "./ui/views/orbita.js";
+import { renderIA } from "./ui/views/ia.js";
 
 const el = {
   view: document.getElementById("view"),
@@ -76,6 +77,7 @@ async function telaHistorico(root) {
 }
 
 const TELAS = {
+  "#/ia": { fn: (root, signal) => renderIA(root, signal), titulo: ["IA VEOS", "Comando por voz"] },
   "#/orbita": { fn: telaOrbita, titulo: ["Órbita", "Os setores em órbita do VEOS"] },
   "#/visao": { fn: telaVisao, titulo: ["Visão geral", "VEOS online · VOICE Ambientes Inteligentes"] },
   "#/cfo": { fn: telaAvisos, titulo: ["Sala CFO — Avisos", "Vigia: orçamento salvo → avisos do CFO com regra e fonte"] },
@@ -119,7 +121,7 @@ function montarMenu() {
     telaLogin();
   });
   clear(el.nav).append(
-    h("div", { class: "nav-group" }, link("#/orbita", "◉", "Órbita"), link("#/visao", "◎", "Visão geral")),
+    h("div", { class: "nav-group" }, link("#/orbita", "◉", "Órbita"), link("#/ia", "✦", "IA VEOS"), link("#/visao", "◎", "Visão geral")),
     h("div", { class: "nav-group", role: "group", "aria-labelledby": "nav-cfo" },
       h("span", { class: "nav-label", id: "nav-cfo" }, "Finanças"),
       link("#/cfo", "CFO", "Avisos do CFO"),

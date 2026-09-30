@@ -67,6 +67,13 @@ Direção visual confirmada pelo Fernando (30/09): futurista, luxuosa e orbital.
 - Dados reais: setores/diretores do banco; atividade do CFO = avisos registrados; demais setores aparecem como "Estrutura criada" até terem regras.
 - Sem biblioteca e sem estilo embutido (CSP): canvas para células, botões reais para setores (teclado, Esc, leitor de tela), `prefers-reduced-motion` respeitado, pausa quando a aba fica oculta.
 
+### IA VEOS (voz)
+- Aba **IA VEOS** (símbolo ✦ no menu): onda de voz em WebGL (porte do shader "wave" estilo Siri, nas cores ouro→ciano, reage ao estado: repouso, ouvindo, falando) — `apps/web/js/ui/onda.js`, `apps/web/js/ui/views/ia.js`, `apps/web/css/ia.css`.
+- Comando por voz: reconhecimento de fala do **navegador** (pt-BR; Chrome/Edge). O áudio pode ir ao fornecedor do navegador (aviso na tela); o VEOS não grava áudio. Campo de texto como alternativa.
+- Hoje, sem IA: `apps/web/js/domain/comandos.js` interpreta de forma determinística (navegação entre telas + indica o diretor que receberia o pedido). Testes: `tests/web/comandos.test.mjs`.
+- Quando a IA for integrada (decisão P-3), o texto reconhecido vai ao diretor indicado via `api`/MCP; a tela já reserva esse lugar.
+- `Permissions-Policy`: microfone liberado só para o próprio site (`microphone=(self)`).
+
 ## MCP
 
 MCP é o canal pelo qual um cliente de IA dá ordens ao VEOS. As ferramentas previstas estão no
