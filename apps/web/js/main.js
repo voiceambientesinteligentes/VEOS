@@ -13,6 +13,7 @@ import { telaProjeto, telaProjetos } from "./ui/views/projetos.js";
 import { telaSetor } from "./ui/views/setor.js";
 import { telaRadar } from "./ui/views/radar.js";
 import { telaConselho } from "./ui/views/conselho.js";
+import { telaCalculadora, telaNegociacao } from "./ui/views/precificacao.js";
 import { CATALOGO } from "./data/catalogo.js";
 
 const el = {
@@ -93,6 +94,8 @@ const TELAS = {
   "#/visao": { fn: telaVisao, titulo: ["Visão geral", "VEOS online · VOICE Ambientes Inteligentes"] },
   "#/cfo": { fn: telaAvisos, titulo: ["Avisos de orçamento", "Vigia: orçamento salvo → avisos do CFO com regra e fonte"] },
   "#/projetos": { fn: telaProjetos, titulo: ["Projetos e caixa", "Setor Financeiro · exposição e cobertura por fase"] },
+  "#/negociacao": { fn: telaNegociacao, titulo: ["Negociação ao Vivo", "Desconto, custos e Simples → margem e alçada pela Política V1"] },
+  "#/calculadora": { fn: telaCalculadora, titulo: ["Calculadora de Preços", "Preço mínimo para a margem alvo, já com Simples e provisão de 2%"] },
   "#/historico": { fn: telaHistorico, titulo: ["Histórico", "Orçamentos TESTE gravados e seus avisos"] },
 };
 
@@ -144,6 +147,8 @@ function montarMenu() {
       CATALOGO.map((s) => link(`#/setor/${s.id}`, s.sigla, s.nome))),
     h("div", { class: "nav-group", role: "group", "aria-labelledby": "nav-cfo" },
       h("span", { class: "nav-label", id: "nav-cfo" }, "Ferramentas do CFO"),
+      link("#/negociacao", "NEG", "Negociação ao Vivo"),
+      link("#/calculadora", "CALC", "Calculadora de Preços"),
       link("#/projetos", "PRJ", "Projetos e caixa"),
       link("#/cfo", "ORÇ", "Avisos de orçamento"),
       link("#/historico", "HIST", "Histórico de orçamentos")),

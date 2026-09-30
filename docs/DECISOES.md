@@ -19,6 +19,11 @@ Formato: data · decisão · quem · origem. Propostas ficam separadas até o Fe
 | 30/09/2026 | Criar **todos os setores** completos, com diretores especialistas (conselho consultivo) e regras vivas; liberdade para estruturar e redesenhar o menu. Pós-venda (CXO) e Administrativo/Pessoas (CHRO) criados (resolve P-6). | mensagem de 30/09 |
 | 30/09/2026 | Diretores são **personas fictícias** com métodos reais; metas/regras fora da Política V1/V1.1 ficam como **Proposta** até aprovação. Mensagens externas: VEOS prepara rascunho, envio é humano (até integração aprovada). | registro técnico |
 | 30/09/2026 | Obsidian não é mais necessário. `.obsidian` copiada com hashes idênticos para `VOICE_360_BACKUPS\obsidian-config-arquivada-20260930`. | mensagem de 30/09 |
+| 30/09/2026 | Prompt da ferramenta anterior (Manus, "Gerenciamento de Frentes"): aproveitar **pontos e campos** adequando ao VEOS; **layout e base do VEOS ficam como estão** (sem troca de stack, tema ou rotas). | mensagem de 30/09 |
+| 30/09/2026 | Calculadora de Preços e Negociação ao Vivo usam a **Política V1** (MC com provisão de 2%, faixas 35/30/25, alçada de desconto sec.9, ticket R$ 100 mil como meta). Os limites do legado (40/30/25, 60%, bloqueio abaixo de R$ 15 mil) **não** são adotados. | pergunta respondida em 30/09 |
+| 30/09/2026 | Impostos **automáticos**: a empresa está no Simples Nacional (imposto "SIMPLES" no Zoho Books); alíquota efetiva calculada pela LC 123 a partir da receita dos últimos 12 meses, que virá do Zoho Books. PIS/COFINS/IRPJ/CSLL separados do legado (Lucro Presumido) não se aplicam. Anexo dos serviços (III ou V) a confirmar com o contador. | resposta de 30/09 + leitura do Zoho |
+| 30/09/2026 | **Integrar o Zoho agora** (Books, CRM, Projects). Substitui "só dados TESTE até a fase de preenchimento" para leitura; dados do Zoho aparecem com a fonte indicada. Escrita no Zoho (etapa/valor de negócio) só com confirmação na tela. | pergunta respondida em 30/09 |
+| 30/09/2026 | Nomes dos diretores continuam como estão (codinomes NEXUS/TITAN etc. não adotados por ora). | pergunta respondida em 30/09 |
 | 30/09/2026 | Dados de exemplo sempre marcados TESTE; dados reais numa fase própria. | Plano Mestre §1 |
 
 ## Propostas (aguardando confirmação)

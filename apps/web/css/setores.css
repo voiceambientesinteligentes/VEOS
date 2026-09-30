@@ -89,3 +89,19 @@
   .conselho-titulo { margin: 0; color: var(--gold-2); font-size: var(--fs-s); }
   .conselho-perfil { margin: 0; font-size: var(--fs-s); line-height: 1.5; }
 }
+
+/* Ferramentas do CFO: Calculadora e Negociacao ao Vivo */
+.preco-destaque { margin: 0; font-family: var(--font-display, inherit); font-size: clamp(2rem, 5vw, 2.8rem); color: var(--gold-2); font-variant-numeric: tabular-nums; }
+.regua-margem { position: relative; display: grid; grid-template-columns: 50fr 10fr 10fr 30fr; height: 10px; margin: 8px 0 26px; border-radius: 6px; overflow: visible; }
+.regua-zona:first-child { border-radius: 6px 0 0 6px; }
+.regua-zona:nth-child(4) { border-radius: 0 6px 6px 0; }
+.regua-risco { background: color-mix(in srgb, var(--risk) 55%, transparent); }
+.regua-atencao { background: color-mix(in srgb, var(--warn) 55%, transparent); }
+.regua-aceitavel { background: color-mix(in srgb, var(--ok) 35%, transparent); }
+.regua-verde { background: color-mix(in srgb, var(--ok) 65%, transparent); }
+.regua-marca { position: absolute; top: 14px; font-size: 0.75rem; color: var(--text-2, #9a9a9a); transform: translateX(-50%); }
+.regua-marca-0 { left: 50%; }
+.regua-marca-1 { left: 60%; }
+.regua-marca-2 { left: 70%; }
+.regua-ponteiro { position: absolute; top: -5px; width: 4px; height: 20px; border-radius: 2px; background: var(--gold-2); box-shadow: 0 0 10px var(--gold-line); transform: translateX(-50%); transition: left 0.25s ease; }
+@media (prefers-reduced-motion: reduce) { .regua-ponteiro { transition: none; } }
