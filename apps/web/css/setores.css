@@ -142,3 +142,7 @@
 .zoho-grupo { border: 1px solid var(--line); border-radius: var(--radius-s, 8px); padding: var(--s3); margin: 0; }
 .zoho-grupo > legend { padding: 0 6px; color: var(--gold-2); font-weight: 600; }
 .zoho-sugestoes { max-height: 220px; overflow-y: auto; }
+.zoho-secao { border-top: 1px solid var(--line); padding-top: var(--s3); }
+.zoho-secao-titulo { margin: 0; font-size: 0.95rem; color: var(--gold-2); font-weight: 600; }
+.zoho-texto { margin: 0; white-space: pre-line; }
+.zoho-tecnico { opacity: 0.85; }

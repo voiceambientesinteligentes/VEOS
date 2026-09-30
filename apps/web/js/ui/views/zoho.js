@@ -5,6 +5,7 @@ import { api } from "../../data/api.js";
 import { formatBRL, formatDate, formatDateTime } from "../../domain/format.js";
 import { clear, errorNotice, h, panel, stamp } from "../dom.js";
 import { formularioZoho, podeEditar } from "./zoho_edicao.js";
+import { fichaZoho } from "./zoho_ficha.js";
 
 export const PRODUTOS = {
   books: { nome: "Books", sub: "Clientes, itens, orçamentos, vendas, compras e financeiro" },
@@ -223,7 +224,8 @@ async function fichaRegistro(area, produto, modulo, id, [nome]) {
   area.append(
     h("p", null, h("a", { href: `#/zoho/${produto}/${modulo}` }, `‹ ${nome}`)),
     panel({ title: r.nome ?? id, subtitle: `Zoho ${PRODUTOS[produto].nome} · ${nome} · id ${r.zoho_id}`,
-      actions: h("div", { class: "row" }, r.excluido ? stamp("Excluído no Zoho", "risk") : null, incompleto ? stamp("Ficha resumida: completa na próxima sincronização", "warn") : stamp(`${Object.keys(r.dados).length} campos`, "live"), editar) },
+      actions: h("div", { class: "row" }, r.excluido ? stamp("Excluído no Zoho", "risk") : null, incompleto ? stamp("Ficha resumida: completa na próxima sincronização", "warn") : stamp("Ficha completa", "live"), editar) },
       h("p", { class: "field-hint" }, `Alterado no Zoho: ${r.modificado_em ? formatDateTime(r.modificado_em) : "—"} · copiado para o VEOS: ${formatDateTime(r.sincronizado_em)}`),
-      ficha(r.dados)));
+      h("div", { class: "stack" }, fichaZoho(produto, modulo, r.dados, rotulo).filter(Boolean)),
+      h("details", { class: "zoho-bloco zoho-tecnico" }, h("summary", null, `Todos os campos do Zoho (técnico · ${Object.keys(r.dados).length})`), ficha(r.dados, 1))));
 }
