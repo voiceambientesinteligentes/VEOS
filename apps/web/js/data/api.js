@@ -73,6 +73,7 @@ export const api = {
   fluxoReceber: (parcelaId, dados) => request("POST", `fluxo/parcelas/${encodeURIComponent(parcelaId)}/receber`, dados, { "Idempotency-Key": crypto.randomUUID() }),
   fluxoAnexo: (pedidoId, dados) => request("POST", `fluxo/pedidos/${encodeURIComponent(pedidoId)}/anexos`, dados, { "Idempotency-Key": crypto.randomUUID() }),
   fluxoAnexoLink: (anexoId) => request("POST", `fluxo/anexos/${encodeURIComponent(anexoId)}/link`, {}, { "Idempotency-Key": crypto.randomUUID() }),
+  fluxoProjetos: () => request("GET", "fluxo/projetos"),
   comprasLista: (estado = "") => request("GET", `fluxo/compras${estado ? `?estado=${encodeURIComponent(estado)}` : ""}`),
   comprasFaltas: () => request("GET", "fluxo/compras/faltas"),
   comprasFornecedores: () => request("GET", "fluxo/compras/fornecedores"),

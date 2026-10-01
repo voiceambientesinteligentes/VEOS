@@ -20,6 +20,7 @@ import { telaContrato, telaEstoque, telaItemEstoque, telaPedido, telaPedidos, te
 import { telaBiblioteca, telaRegistroBiblioteca } from "./ui/views/biblioteca.js";
 import { telaValidacao } from "./ui/views/validacao.js";
 import { telaPainel } from "./ui/views/painel.js";
+import { telaTermoAceite } from "./ui/views/obra.js";
 import { telaCompra, telaCompras, telaContasPagar, telaNovaCompra } from "./ui/views/compras.js";
 import { telaExportar, telaSaude } from "./ui/views/sistema.js";
 import { formCodigoMfa, telaConta, telaUsuarios } from "./ui/views/usuarios.js";
@@ -233,8 +234,12 @@ async function navegar() {
   const bibRota = /^#\/biblioteca\/(governanca|decisoes|aprendizados|referencias|politicas|revisoes|consultar)$/.exec(rotaBase());
   const bibReg = /^#\/biblioteca\/r\/([0-9a-f-]{36})$/.exec(rotaBase());
   const contratoRota = /^#\/pedidos\/([0-9a-f-]{36})\/contrato$/.exec(rotaBase());
+  const aceiteRota = /^#\/pedidos\/([0-9a-f-]{36})\/aceite$/.exec(rotaBase());
   const compraRota = /^#\/compras\/([0-9a-f-]{36})$/.exec(rotaBase());
-  if (compraRota) {
+  if (aceiteRota) {
+    rota = "#/pedidos";
+    def = { fn: (root) => telaTermoAceite(root, aceiteRota[1]), titulo: ["Termo de aceite", "Gerado do pedido · imprimir ou salvar em PDF"] };
+  } else if (compraRota) {
     rota = "#/compras";
     def = { fn: (root) => telaCompra(root, compraRota[1]), titulo: ["Compra", "Itens, recebimento, parcelas a pagar e histórico"] };
   } else if (contratoRota) {

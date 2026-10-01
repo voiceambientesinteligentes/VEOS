@@ -6,6 +6,7 @@ import { parseMoneyInput } from "../../domain/controls.js";
 import { formatBRL, formatDate, formatDateTime } from "../../domain/format.js";
 import { clear, errorNotice, field, h, method, panel, stamp, stat, table } from "../dom.js";
 import { barrasMensais } from "../grafico.js";
+import { painelAceite, painelHoras, painelObra } from "./obra.js";
 
 const ESTADOS = {
   rascunho: ["Rascunho", "neutral"], confirmado: ["Confirmado", "live"], entregue: ["Entregue", "warn"],
@@ -92,6 +93,9 @@ export async function telaPedido(root, id, eu) {
             i.tipo === "produto" && i.item_id ? (Number(i.reservado_pedido) < Number(i.quantidade) && p.estado === "confirmado" ? stamp(`${qtd(i.reservado_pedido)} (faltam ${qtd(i.quantidade - i.reservado_pedido)})`, "risk") : qtd(i.reservado_pedido)) : "—",
             i.estoque ? `${qtd(i.estoque.fisico)} / ${qtd(i.estoque.reservado)}` : "—"]) })),
       d.caixa ? painelCaixa(d) : null,
+      ["confirmado", "entregue", "faturado", "concluido"].includes(p.estado) ? painelObra(d, id, (m) => api.fluxoPedido(id).then((x) => { d = x; desenhar(m); })) : null,
+      ["confirmado", "entregue", "faturado", "concluido"].includes(p.estado) ? painelHoras(d, id, (m) => api.fluxoPedido(id).then((x) => { d = x; desenhar(m); })) : null,
+      !["rascunho", "cancelado"].includes(p.estado) ? painelAceite(d, id, (m) => api.fluxoPedido(id).then((x) => { d = x; desenhar(m); })) : null,
       painelParcelas(d, id, eu, () => api.fluxoPedido(id).then((x) => { d = x; desenhar("Parcelas atualizadas."); })),
       painelNotas(d, id, eu, (r) => { d = r; desenhar("Nota fiscal registrada."); }),
       painelAnexos(d, id, () => api.fluxoPedido(id).then((x) => { d = x; desenhar("Anexo enviado."); })),
@@ -316,7 +320,7 @@ function painelPrevisaoCaixa(cx) {
 }
 
 // ---------------------------------------------------------------- anexos em PDF
-const TIPO_ANEXO = { orcamento: "Orçamento", proposta: "Proposta", contrato: "Contrato assinado", outro: "Outro" };
+const TIPO_ANEXO = { orcamento: "Orçamento", proposta: "Proposta", contrato: "Contrato assinado", aceite: "Termo de aceite", outro: "Outro" };
 function painelAnexos(d, id, recarregar) {
   const saida = h("div", { role: "status" });
   const arquivo = h("input", { type: "file", id: "ax-arq", accept: "application/pdf,.pdf", class: "input" });

@@ -27,7 +27,7 @@ function modelo(setor: string, id: string, vars: Record<string, string>) {
 
 export async function vigiarFluxo(agora = Date.now()) {
   const hoje = dia(agora);
-  const [faltas, parcelas, entregues, confirmados, aceitos, pedidosOrc, contas, compras, ativos, recebidas, compromissos]: Obj[][] = await Promise.all([
+  const [faltas, parcelas, entregues, confirmados, aceitos, pedidosOrc, contas, compras, ativos, recebidas, compromissos, semAceite, garantias]: Obj[][] = await Promise.all([
     servico("/rest/v1/rpc/fluxo_faltas_compra", { method: "POST", body: "{}" }),
     servico(`/rest/v1/parcelas?estado=eq.aberta&vencimento=lte.${dia(agora + 3 * DIA)}&select=id,numero,vencimento,valor,pedido:pedidos(id,numero,cliente_nome,estado)&limit=1000`),
     servico(`/rest/v1/pedidos?estado=eq.entregue&entregue_em=lt.${new Date(agora - 2 * DIA).toISOString()}&select=id,numero,cliente_nome,valor_total,entregue_em&limit=500`),
@@ -39,6 +39,8 @@ export async function vigiarFluxo(agora = Date.now()) {
     servico("/rest/v1/pedidos?estado=in.(confirmado,entregue,faturado)&select=id,numero,cliente_nome,valor_total&limit=2000"),
     servico("/rest/v1/parcelas?estado=eq.recebida&select=pedido_id,valor,valor_recebido&limit=10000"),
     servico("/rest/v1/contas_pagar?estado=neq.cancelada&pedido_id=not.is.null&select=pedido_id,valor&limit=10000"),
+    servico(`/rest/v1/pedidos?estado=in.(entregue,faturado,concluido)&aceite_em=is.null&entregue_em=lt.${new Date(agora - 7 * DIA).toISOString()}&select=id,numero,cliente_nome,entregue_em&limit=500`),
+    servico(`/rest/v1/pedidos?estado=neq.cancelado&garantia_ate=gte.${hoje}&garantia_ate=lte.${dia(agora + 60 * DIA)}&select=id,numero,cliente_nome,garantia_ate&limit=500`),
   ]);
   const alvos = new Map<string, Alvo>();
   const add = (a: Omit<Alvo, "fonte" | "rascunhos" | "tarefas" | "notificar"> & Partial<Alvo>) =>
@@ -110,6 +112,22 @@ export async function vigiarFluxo(agora = Date.now()) {
       mensagem: `${p.cliente_nome}: compromissos superam o recebido em ${brl(Number(e.exposicao) / 100)}. Acima de 10% do valor do pedido exige autorização expressa da direção.`,
       fonte: "Política V1.1 sec.7 e 9", notificar: ["CFO"],
       tarefas: [{ titulo: `Decidir a exposição de caixa do pedido ${p.numero}`, papel: "controller", prazo: hoje }] });
+  }
+  // 2e. obra entregue ha mais de 7 dias sem aceite (prazo = proposta OPS_ACEITE_PENDENTE do catalogo)
+  for (const p of semAceite) {
+    add({ chave: `FLX_ACEITE_PENDENTE:${p.id}`, setor: "operacoes", sentinela: "FLX_ACEITE_PENDENTE", severidade: "MEDIO",
+      titulo: `Pedido ${p.numero} entregue sem aceite da obra`,
+      mensagem: `${p.cliente_nome}: entregue em ${dataBR(p.entregue_em)} e sem termo de aceite registrado. Agende a demonstração final e registre o aceite no pedido.`,
+      fonte: "Fluxo do VEOS · prazo de 7 dias = Proposta (catálogo Operações, OPS_ACEITE_PENDENTE)",
+      tarefas: [{ titulo: `Coletar o termo de aceite do pedido ${p.numero}`, papel: "gerente_obra", prazo: dia(agora + 3 * DIA) }] });
+  }
+  // 2f. garantia terminando em ate 60 dias (prazo = proposta CX_GARANTIA_TERMINANDO do catalogo)
+  for (const p of garantias) {
+    add({ chave: `FLX_GARANTIA_TERMINANDO:${p.id}`, setor: "posvenda", sentinela: "FLX_GARANTIA_TERMINANDO", severidade: "MEDIO",
+      titulo: `Garantia do pedido ${p.numero} termina em ${dataBR(p.garantia_ate)}`,
+      mensagem: `${p.cliente_nome}: ofereça o contrato de suporte antes do fim da garantia.`,
+      fonte: "Fluxo do VEOS · antecedência de 60 dias = Proposta (catálogo Pós-venda, CX_GARANTIA_TERMINANDO)",
+      tarefas: [{ titulo: `Oferecer contrato de suporte ao cliente do pedido ${p.numero}`.slice(0, 240), papel: "gestor_contratos", prazo: dia(agora + 5 * DIA) }] });
   }
   // 3. entregue sem nota fiscal ha mais de 2 dias
   for (const p of entregues) {

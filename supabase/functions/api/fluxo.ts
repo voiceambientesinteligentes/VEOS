@@ -12,6 +12,8 @@
 //   GET  /fluxo/estoque[?busca=&pagina=]  produtos com saldo
 //   GET  /fluxo/estoque/:item             movimentos do item
 //   POST /fluxo/estoque                   {item_id, tipo: entrada|ajuste, quantidade, custo_unit?, observacao?}
+//   GET  /fluxo/projetos                  projetos do Zoho Projects (para ligar ao pedido)
+//   POST /fluxo/pedidos/:id/(projeto|horas|aceite)  obra: projeto, horas lancadas, aceite e garantia
 //   /fluxo/compras, /fluxo/contas-pagar, /fluxo/caixa -> compras, contas a pagar e previsao (ver compras.ts)
 import { HttpError, lerCorpo, type Membro, SERVICE, servico, URL_BASE } from "../_shared/banco.ts";
 
@@ -66,12 +68,16 @@ async function pedidoCompleto(id: string) {
   const reservado = new Map<string, number>();
   for (const r of reservas) reservado.set(r.item_id, (reservado.get(r.item_id) ?? 0) + (r.tipo === "reserva" ? num(r.quantidade) : -num(r.quantidade)));
   const saldo = new Map(saldos.map((s: { item_id: string }) => [s.item_id, s]));
-  const [caixa, compras] = await Promise.all([
+  const pid = pedido.projeto_zoho_id;
+  const [caixa, compras, horas, projeto, tarefas] = await Promise.all([
     caixaPedido(id, pedido.valor_total),
     servico(`/rest/v1/compras?pedido_id=eq.${id}&select=id,numero,fornecedor_nome,estado,valor_total,previsao_entrega&order=criado_em`),
+    servico(`/rest/v1/pedido_horas?pedido_id=eq.${id}&select=id,data,pessoa,horas,custo_hora,descricao,criado_em&order=data.desc,id.desc`),
+    pid ? servico(`/rest/v1/zoho_registros?produto=eq.projects&modulo=eq.projects&zoho_id=eq.${encodeURIComponent(pid)}&select=zoho_id,nome,status:dados->status,pct:dados->>percent_complete,fim:dados->>end_date`) : [],
+    pid ? servico(`/rest/v1/zoho_registros?produto=eq.projects&modulo=eq.tasks&excluido=is.false&or=(dados->project->>id.eq.${encodeURIComponent(pid)},dados->>projeto.eq.${encodeURIComponent(pid)})&select=zoho_id,nome,status:dados->status,pct:dados->>completion_percentage,concluida:dados->>is_completed,fim:dados->>end_date,lista:dados->tasklist->>name,horas:dados->log_hours&order=nome&limit=300`) : [],
   ]);
   return {
-    pedido, parcelas, notas, historico, anexos, caixa, compras,
+    pedido, parcelas, notas, historico, anexos, caixa, compras, horas, obra: pid ? { projeto: projeto[0] ?? null, tarefas } : null,
     itens: itens.map((i: Record<string, any>) => ({ ...i, reservado_pedido: i.item_id ? reservado.get(i.item_id) ?? 0 : null, estoque: i.item_id ? saldo.get(i.item_id) ?? { fisico: 0, reservado: 0 } : null })),
   };
 }
@@ -132,6 +138,10 @@ export async function rotearFluxo(req: Request, partes: string[], eu: Membro) {
     exigir(eu, VER);
     if (!UUID_RE.test(b)) throw new HttpError(400, "pedido inválido");
     return await pedidoCompleto(b);
+  }
+  if (!post && a === "projetos") {
+    exigir(eu, VER);
+    return { projetos: await servico("/rest/v1/zoho_registros?produto=eq.projects&modulo=eq.projects&excluido=is.false&select=zoho_id,nome,status:dados->status->>name,arquivado:dados->>arquivado&order=nome&limit=500") };
   }
   if (!post && a === "parcelas") {
     exigir(eu, VER);
@@ -220,7 +230,7 @@ export async function rotearFluxo(req: Request, partes: string[], eu: Membro) {
   if (post && a === "pedidos" && b && c === "anexos") {
     exigir(eu, VER);
     if (!UUID_RE.test(b)) throw new HttpError(400, "pedido inválido");
-    const tipo = ["orcamento", "proposta", "contrato", "outro"].includes(String(corpo.tipo)) ? String(corpo.tipo) : "outro";
+    const tipo = ["orcamento", "proposta", "contrato", "aceite", "outro"].includes(String(corpo.tipo)) ? String(corpo.tipo) : "outro";
     const nome = texto(corpo.nome, 200);
     const tamanho = num(corpo.tamanho);
     if (!nome || !/\.pdf$/i.test(nome)) throw new HttpError(400, "envie um arquivo PDF");
@@ -265,6 +275,26 @@ export async function rotearFluxo(req: Request, partes: string[], eu: Membro) {
     } else if (c === "confirmar" || c === "reservar") {
       exigir(eu, c === "confirmar" ? COMERCIAL : [...OPERACAO, "vendas"]);
       r = await servico(`/rest/v1/rpc/pedido_${c}`, { method: "POST", body: JSON.stringify({ p_pedido: b, p_usuario: eu.user_id }) });
+    } else if (c === "projeto") {
+      exigir(eu, OPERACAO);
+      const proj = texto(corpo.projeto_zoho_id, 40);
+      if (proj && !ZID_RE.test(proj)) throw new HttpError(400, "projeto inválido");
+      r = await servico("/rest/v1/rpc/pedido_vincular_projeto", { method: "POST", body: JSON.stringify({ p_pedido: b, p_projeto: proj, p_usuario: eu.user_id }) });
+    } else if (c === "horas") {
+      exigir(eu, OPERACAO);
+      if (!DATA_RE.test(String(corpo.data))) throw new HttpError(400, "data inválida");
+      if (!/^-?\d{1,2}(\.\d{1,2})?$/.test(String(corpo.horas)) || num(corpo.horas) === 0 || Math.abs(num(corpo.horas)) > 24) throw new HttpError(400, "horas inválidas (até 24 por lançamento)");
+      if (corpo.custo_hora !== undefined && corpo.custo_hora !== null && corpo.custo_hora !== "" && !MONEY_RE.test(String(corpo.custo_hora))) throw new HttpError(400, "custo/hora inválido");
+      const pessoa = texto(corpo.pessoa, 120);
+      if (!pessoa) throw new HttpError(400, "informe quem trabalhou");
+      const descricao = texto(corpo.descricao, 300);
+      if (num(corpo.horas) < 0 && !descricao) throw new HttpError(400, "correção (horas negativas) exige descrição");
+      r = await servico("/rest/v1/rpc/pedido_lancar_horas", { method: "POST", body: JSON.stringify({ p: { chave: `${eu.user_id}:${chave}`, usuario: eu.user_id, pedido_id: b, data: corpo.data, pessoa, horas: corpo.horas, custo_hora: corpo.custo_hora || null, descricao } }) });
+    } else if (c === "aceite") {
+      exigir(eu, OPERACAO);
+      if (!DATA_RE.test(String(corpo.data))) throw new HttpError(400, "data do aceite inválida");
+      if (corpo.garantia_ate && !DATA_RE.test(String(corpo.garantia_ate))) throw new HttpError(400, "data de fim da garantia inválida");
+      r = await servico("/rest/v1/rpc/pedido_aceite", { method: "POST", body: JSON.stringify({ p_pedido: b, p_data: corpo.data, p_garantia_ate: corpo.garantia_ate || null, p_usuario: eu.user_id }) });
     } else if (c === "entregar") {
       exigir(eu, OPERACAO);
       r = await servico("/rest/v1/rpc/pedido_entregar", { method: "POST", body: JSON.stringify({ p_pedido: b, p_usuario: eu.user_id }) });
