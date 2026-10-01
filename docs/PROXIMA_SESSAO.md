@@ -47,6 +47,11 @@ Já decididas em 01/10: IA no servidor = teto zero (BIB-0044); Fernando exerce a
 ## Para o FINAL do projeto (decidir junto com o Fernando, só quando ele pedir)
 - **Mesclar o catálogo do VEOS com os itens do Zoho** — plano completo na Biblioteca **BIB-0077**: revisar duplicados e itens "Conferir", definir preços de venda, enviar/aposentar itens no Zoho, ligar estoque/compras/pedidos ao catálogo do VEOS, importar os demais itens do Zoho e desligar o módulo de itens.
 
+## Manuais dos diretores (01/10, noite)
+- 9 manuais de atuação de nível sênior (`setores/manuais/*.json`, pesquisa com fontes: competências, frameworks, 13 procedimentos por diretor com perguntas/passos/entrega/critérios/quando escalar, indicadores com fórmula, rotinas, armadilhas, aplicação na VOICE, cursos/certificações de referência, bibliografia). Validados pelo gerador de catálogo; carregados sob demanda.
+- Onde aparecem: aba **Manual** em cada setor (com "O que você precisa?"), Conselho, tela **IA VEOS** (mostra o procedimento do diretor para o pedido falado/digitado, sem IA paga) e MCP `veos_manual_diretor` para o Claude Code.
+- Melhorar depois: procedimentos que faltam (ex.: diagnóstico de Wi-Fi lento no CIO; planejamento de obra nova no COO; funil comercial no CSO).
+
 ## Catálogo de produtos (01/10, noite)
 - Catálogo próprio no VEOS (Operação → Catálogo de produtos): 139 produtos importados do inventário AliExpress (`scripts/importar_aliexpress.py`, idempotente, preserva decisões manuais), 157 variantes, ficha técnica, 380 compras de origem, fotos no Storage privado. 5 compras pessoais excluídas (histórico preservado); 3 talvez pessoais em "Conferir" (PRD-0005, PRD-0101, PRD-0119).
 - Preço de compra = último preço pago (sem frete/impostos); preço de venda = lacuna. Simulador pelo markup do Sebrae (BIB-0074); alçada de preço proposta (BIB-0075).

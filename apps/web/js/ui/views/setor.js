@@ -5,8 +5,9 @@ import { api } from "../../data/api.js";
 import { formatBRL, formatDate } from "../../domain/format.js";
 import { cartaoAlerta, descreverSentinela, formularioRegistro, linhaTarefa, nomePapel, setorPorId, SEV_ROTULO, SEV_TOM } from "../componentes.js";
 import { clear, errorNotice, h, panel, stamp, table, testTag } from "../dom.js";
+import { carregarManual, painelManual } from "./manual.js";
 
-const ABAS = [["painel", "Painel"], ["registros", "Registros"], ["processos", "Processos"], ["equipe", "Equipe"], ["rotinas", "Rotinas"], ["regras", "Regras vivas"], ["diretor", "Diretor"], ["modelos", "Modelos"]];
+const ABAS = [["painel", "Painel"], ["registros", "Registros"], ["processos", "Processos"], ["equipe", "Equipe"], ["rotinas", "Rotinas"], ["regras", "Regras vivas"], ["diretor", "Diretor"], ["manual", "Manual"], ["modelos", "Modelos"]];
 const statusTag = (s) => stamp(s === "POLITICA" ? "Política oficial" : "Proposta", s === "POLITICA" ? "live" : "neutral");
 
 export async function telaSetor(root, id, signal, aba = "painel") {
@@ -46,7 +47,17 @@ export async function telaSetor(root, id, signal, aba = "painel") {
 
   function mostrar(k) {
     clear(corpo);
-    ({ painel, registros, processos, equipe, rotinas, regras, diretor, modelos }[k] ?? painel)();
+    ({ painel, registros, processos, equipe, rotinas, regras, diretor, manual, modelos }[k] ?? painel)();
+  }
+
+  // ------------------------------------------------ Manual de atuacao (carregado sob demanda)
+  function manual() {
+    const area = h("div", { class: "stack" }, h("p", { class: "field-hint" }, "Carregando o manual…"));
+    corpo.append(area);
+    carregarManual(id).then((m) => {
+      if (signal.aborted) return;
+      clear(area).append(m ? painelManual(setor, m) : h("p", { class: "result-empty" }, "Manual deste diretor ainda em pesquisa."));
+    }).catch((e) => clear(area).append(errorNotice(`Não foi possível abrir o manual: ${e.message}`)));
   }
 
   // ------------------------------------------------ Painel

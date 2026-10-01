@@ -3,10 +3,39 @@
 // so criam o que a governanca permite a qualquer membro (ideia, proposta, rascunho, tarefa);
 // decisao/politica, aprovacao e envio continuam humanos, pela tela.
 
+import { existsSync, readFileSync } from "node:fs";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
+import { buscar, buscarSolto } from "../../apps/web/js/domain/busca.js";
+
+const SETORES = ["direcao", "financas", "vendas", "marketing", "operacoes", "tecnologia", "posvenda", "pessoas", "secretaria"];
+const RAIZ = join(dirname(fileURLToPath(import.meta.url)), "../..");
+const lerJson = (f) => JSON.parse(readFileSync(join(RAIZ, f), "utf8"));
+
+/** Manual de atuacao do diretor (local, sem rede). Com "pedido": os procedimentos mais proximos + o essencial. */
+export function manualDiretor({ setor, pedido }) {
+  if (!SETORES.includes(setor)) throw new Error(`setor invalido; use: ${SETORES.join(", ")}`);
+  const s = lerJson(`setores/${setor}.json`);
+  const arq = `setores/manuais/${setor}.json`;
+  if (!existsSync(join(RAIZ, arq))) return { diretor: s.diretor, aviso: "manual ainda nao pesquisado: use o perfil, metodos e principios do diretor" };
+  const m = lerJson(arq);
+  const base = { diretor: { titulo: s.diretor.titulo, nome: s.diretor.nome, perfil: s.diretor.perfil, principios: s.diretor.principios, limites: s.diretor.limites }, resumo: m.resumo,
+    regras_do_veos: "Persona ficticia. Precedente orienta, nao autoriza (consulte veos_consultar_precedentes). Nao invente meta, alcada, politica nem regime tributario: registre como ideia/proposta. Diferencie fato, opiniao, inferencia e hipotese." };
+  if (!pedido) return { ...base, competencias: m.competencias, frameworks: m.frameworks.map((f) => ({ nome: f.nome, autor_ou_origem: f.autor_ou_origem, quando_usar: f.quando_usar })), procedimentos: m.procedimentos.map((p) => p.pedido), indicadores: m.indicadores, rotinas: m.rotinas, armadilhas: m.armadilhas, aplicacao_voice: m.aplicacao_voice };
+  const itens = m.procedimentos.map((p, i) => ({ titulo: p.pedido, extra: [...(p.passos ?? []), p.entregavel].join(" "), i }));
+  const exatos = buscar(pedido, itens, 3);
+  const achados = (exatos.length ? exatos : buscarSolto(pedido, itens, 3)).map((a) => m.procedimentos[a.i]);
+  return { ...base, pedido, procedimentos: achados.length ? achados : m.procedimentos.slice(0, 3), aviso: achados.length ? undefined : "nenhum procedimento com essas palavras: veja os primeiros e adapte",
+    frameworks_relacionados: buscarSolto(pedido, m.frameworks.map((f, i) => ({ titulo: f.nome, extra: `${f.quando_usar} ${f.como_aplicar.join(" ")}`, i })), 3).map((a) => m.frameworks[a.i]),
+    indicadores: m.indicadores, armadilhas: m.armadilhas };
+}
+
 const obj = (props, req = []) => ({ type: "object", properties: props, required: req, additionalProperties: false });
 const str = (description, extra = {}) => ({ type: "string", description, ...extra });
 
 export const FERRAMENTAS = [
+  { name: "veos_manual_diretor", description: "Manual de atuação do diretor de um setor (profissional sênior: competências, métodos, procedimentos passo a passo, indicadores, erros a evitar, fontes). Use ANTES de agir como diretor: com 'pedido', devolve os procedimentos mais próximos do que foi pedido.",
+    inputSchema: obj({ setor: str("setor", { enum: SETORES }), pedido: str("o que o fundador pediu (opcional)") }, ["setor"]), local: manualDiretor },
   { name: "veos_radar", description: "Alertas ativos e tarefas abertas dos setores que o usuário acessa.", inputSchema: obj({}), rota: () => ["GET", "radar"] },
   { name: "veos_resumo_do_dia", description: "Resumo do dia por setor: alertas novos, tarefas atrasadas, mensagens a enviar.", inputSchema: obj({}), rota: () => ["GET", "resumo"] },
   { name: "veos_painel", description: "Painel executivo (direção e finanças): vendas aceitas, faturado, caixa, funil do CRM, alertas.", inputSchema: obj({}), rota: () => ["GET", "painel"] },
@@ -33,7 +62,7 @@ export const FERRAMENTAS = [
     rota: (a) => ["POST", "mensagens", { canal: a.canal, corpo: a.corpo, destinatario: a.destinatario, assunto: a.assunto, setor_id: a.setor_id, origem: "manual" }] },
 ];
 
-const INSTRUCOES = "VEOS da VOICE Ambientes Inteligentes. Antes de recomendar ou executar algo relevante, use veos_consultar_precedentes. Precedente orienta, não autoriza. Não deduza regime tributário, alçada, meta ou política: registre como ideia/proposta. Diferencie fato, opinião, inferência e hipótese. Nada é enviado a clientes pelo VEOS.";
+const INSTRUCOES = "VEOS da VOICE Ambientes Inteligentes. Para agir como um diretor (CEO, CFO, CMO...), leia antes veos_manual_diretor com o pedido. Antes de recomendar ou executar algo relevante, use veos_consultar_precedentes. Precedente orienta, não autoriza. Não deduza regime tributário, alçada, meta ou política: registre como ideia/proposta. Diferencie fato, opinião, inferência e hipótese. Nada é enviado a clientes pelo VEOS.";
 
 /** Trata uma mensagem JSON-RPC. chamar(metodo, rota, corpo) -> dados da API (ou lanca erro). */
 export async function responder(msg, chamar) {
@@ -53,6 +82,7 @@ export async function responder(msg, chamar) {
       const faltando = (f.inputSchema.required ?? []).filter((k) => args[k] === undefined || args[k] === "");
       if (faltando.length) return ok({ content: [{ type: "text", text: `Faltou: ${faltando.join(", ")}` }], isError: true });
       try {
+        if (f.local) return ok({ content: [{ type: "text", text: JSON.stringify(f.local(args), null, 1).slice(0, 60000) }] });
         const [metodo, rota, corpo] = f.rota(args);
         const dados = await chamar(metodo, rota, corpo);
         return ok({ content: [{ type: "text", text: JSON.stringify(dados, null, 1).slice(0, 60000) }] });

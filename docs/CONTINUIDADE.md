@@ -79,3 +79,7 @@ Atualize este arquivo ao fim de cada sessão: última ação, resultado e próxi
 - Importado o inventário AliExpress do fundador para o catálogo próprio (commits 0e11b9e, 8826b8d e seguintes). Registros: BIB-0074 (Sebrae), BIB-0075 (alçada de preço, proposta), BIB-0076 (importação), BIB-0077 (mesclagem Zoho × VEOS, para o fim do projeto).
 - Fundador: excluir compras pessoais (feito: 5; 3 em dúvida) e deixar a mesclagem com o Zoho para o final, decidindo juntos.
 - Testes online agora usam usuários TESTE separados no GitHub Actions (antes colidiam com a execução local).
+
+## 01/10/2026 (noite) — manuais dos diretores
+- Fundador: não decidir nada da empresa agora; terminar o programa e tornar cada diretor especialista sênior. Feito: 9 pesquisas em paralelo (fontes abertas; benchmarks só com fonte), manuais integrados ao portal, IA VEOS e MCP.
+- Achado legal relevante: reserva técnica a arquitetos é vedada (Lei 12.378/2010, art. 18, VI; CAU) — BIB-0078.

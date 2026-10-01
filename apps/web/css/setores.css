@@ -281,3 +281,10 @@ a.pill { text-decoration: none; }
 @media (max-width: 600px) { .produtos-grade { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s2); } }
 .produtos-grade > li { list-style: none; }
 .produtos-grade > li::marker { content: none; }
+
+/* Manual de atuacao dos diretores */
+.manual-proc { border: 1px solid var(--line); border-radius: var(--radius-s); padding: var(--s3); background: var(--bg-2); }
+.manual-proc > summary { cursor: pointer; }
+.manual-proc[open] > summary { margin-bottom: var(--s2); }
+.manual-proc ol, .manual-proc ul { margin: 4px 0 4px 1.2em; padding: 0; }
+.manual-rotulo { font-size: var(--fs-xs); color: var(--gold-2); text-transform: uppercase; letter-spacing: .05em; margin: 6px 0 2px; }

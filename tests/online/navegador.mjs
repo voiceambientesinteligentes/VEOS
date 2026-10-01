@@ -16,7 +16,7 @@ const EMAIL = `teste-navegador${process.env.CI ? "-ci" : ""}@veos-teste.invalid`
 const admin = { apikey: SERVICE, Authorization: `Bearer ${SERVICE}`, "Content-Type": "application/json" };
 const TELAS = [
   "#/visao", "#/orbita", "#/radar", "#/mensagens", "#/conselho", "#/integracoes", "#/biblioteca/governanca", "#/biblioteca/decisoes", "#/biblioteca/revisoes",
-  "#/pedidos", "#/estoque", "#/recebimentos", "#/produtos", "#/produtos/revisao", "#/compras", "#/compras/nova", "#/contas-pagar", "#/zoho/books", "#/zoho/crm", "#/setor/financas", "#/setor/vendas",
+  "#/pedidos", "#/estoque", "#/recebimentos", "#/produtos", "#/produtos/revisao", "#/compras", "#/compras/nova", "#/contas-pagar", "#/zoho/books", "#/zoho/crm", "#/setor/financas", "#/setor/vendas", "#/setor/marketing/manual", "#/setor/direcao/manual",
   "#/negociacao", "#/propostas", "#/calculadora", "#/projetos", "#/sistema/saude", "#/sistema/usuarios", "#/sistema/exportar", "#/sistema/validacao", "#/conta",
 ];
 const CELULAR = ["#/visao", "#/orbita", "#/radar", "#/produtos", "#/pedidos", "#/compras", "#/contas-pagar", "#/recebimentos", "#/biblioteca/revisoes", "#/negociacao", "#/sistema/saude", "#/sistema/usuarios", "#/conta"];

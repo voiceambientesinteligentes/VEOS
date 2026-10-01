@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 
-import { buscar, normalizar, pontuar } from "../../apps/web/js/domain/busca.js";
+import { buscar, buscarSolto, normalizar, pontuar } from "../../apps/web/js/domain/busca.js";
 
 const ITENS = [
   { titulo: "Negociação ao Vivo", extra: "Ferramentas do CFO", href: "#/negociacao" },
@@ -24,4 +24,11 @@ test("todas as palavras precisam aparecer; inicio do titulo pesa mais", () => {
   assert.deepEqual(buscar("financeiro", ITENS).map((i) => i.href), ["#/contas-pagar"]);
   assert.deepEqual(buscar("", ITENS), []);
   assert.deepEqual(buscar("a(b", ITENS), []);
+});
+
+test("busca solta para frases naturais", () => {
+  const procs = [{ titulo: "Planejar campanha para arquitetos e designers", extra: "instagram eventos" }, { titulo: "Fazer o fluxo de caixa", extra: "entradas saidas" }];
+  assert.equal(buscarSolto("prepare uma campanha para arquitetos no instagram", procs)[0].titulo, procs[0].titulo);
+  assert.equal(buscarSolto("quero ver o caixa", procs)[0].titulo, procs[1].titulo);
+  assert.deepEqual(buscarSolto("prepare uma para", procs), []);
 });

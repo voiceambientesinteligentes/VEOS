@@ -2,6 +2,8 @@
 // Hoje executa comandos de navegacao e indica o diretor que receberia o pedido;
 // a IA (respostas dos diretores) entra quando for integrada - nada e inventado aqui.
 import { interpretar } from "../../domain/comandos.js";
+import { CATALOGO } from "../../data/catalogo.js";
+import { carregarManual, cartaoProcedimento, procedimentoPara } from "./manual.js";
 import { clear, h, s } from "../dom.js";
 import { montarOnda } from "../onda.js";
 
@@ -73,11 +75,21 @@ export function renderIA(root, signal) {
       falar(r.fala);
       setTimeout(() => { if (!signal.aborted) location.hash = r.rota; }, 1100);
     } else if (r.diretor) {
+      const setor = CATALOGO.find((s) => s.sigla === r.diretor.sigla);
+      const comoAge = h("div", { class: "stack-s" });
       resposta.append(
         h("p", null, h("strong", null, "Encaminhamento: "), `${r.diretor.sigla} — ${r.diretor.nome}`),
-        h("p", { class: "muted" }, "Quando a IA for integrada, o diretor responderá aqui com base nas fontes do VOICE_360, com data, versão e lacunas."),
+        comoAge,
+        h("p", { class: "muted" }, "Sem IA no servidor (teto zero): o VEOS mostra o procedimento do manual do diretor; a resposta escrita na voz dele depende da IA."),
       );
-      falar(r.fala);
+      if (setor) carregarManual(setor.id).then((m) => {
+        const p = m && procedimentoPara(m, texto);
+        if (signal.aborted || !p) return falar(r.fala);
+        comoAge.append(h("p", null, h("strong", null, `Como o ${setor.sigla} age neste pedido:`)), cartaoProcedimento(p, true),
+          h("a", { class: "btn btn-ghost", href: `#/setor/${setor.id}/manual` }, "Abrir o manual completo"));
+        falar(`Pedido para o ${setor.sigla}. Procedimento: ${p.pedido}. Primeiro passo: ${p.passos[0]}`);
+      }).catch(() => falar(r.fala));
+      else falar(r.fala);
     } else {
       resposta.append(h("p", { class: "muted" }, r.fala));
       falar(r.fala);

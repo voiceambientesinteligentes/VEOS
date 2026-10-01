@@ -28,3 +28,12 @@ test("tools/call passa pela API e nunca cria decisao", async () => {
   const desconhecida = await responder({ jsonrpc: "2.0", id: 6, method: "tools/call", params: { name: "apagar_tudo" } }, chamar);
   assert.equal(desconhecida.error.code, -32602);
 });
+
+test("manual do diretor: setor invalido recusado; sem manual devolve o perfil", async () => {
+  const r = await responder({ jsonrpc: "2.0", id: 9, method: "tools/call", params: { name: "veos_manual_diretor", arguments: { setor: "inexistente" } } }, null);
+  assert.equal(r.result.isError, true);
+  const m = await responder({ jsonrpc: "2.0", id: 10, method: "tools/call", params: { name: "veos_manual_diretor", arguments: { setor: "marketing", pedido: "campanha para arquitetos" } } }, null);
+  assert.ok(!m.result.isError, m.result.content[0].text);
+  const d = JSON.parse(m.result.content[0].text);
+  assert.ok(d.diretor.nome);
+});

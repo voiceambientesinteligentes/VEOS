@@ -1,0 +1,921 @@
+// GERADO por scripts/gerar-catalogo.mjs a partir de setores/*.json - nao editar a mao.
+export default {
+ "setor": "tecnologia",
+ "resumo": "Manual de atuação do(a) diretor(a) de Tecnologia e Engenharia (CIO/CTO) da VOICE: traduz pedidos do fundador em decisões técnicas fundamentadas em duas frentes — engenharia dos sistemas entregues ao cliente (Zigbee, Thread/Matter, Wi-Fi, KNX, DALI, Home Assistant, redes e segurança de IoT) e TI interna (VEOS/Supabase, Zoho, dados, segurança, LGPD, backup e continuidade). Complementa a persona do setor com competências, frameworks com origem, procedimentos passo a passo, indicadores com referência e armadilhas típicas de uma integradora pequena que importa muitos equipamentos. Toda meta sem fonte externa é marcada para ser definida com dados da VOICE.",
+ "competencias": [
+  {
+   "area": "Arquitetura de sistemas de automação residencial e predial",
+   "o_que_domina": "Escolha do protocolo certo por função: KNX (cabeado, padrão aberto ISO/IEC 14543-3) para iluminação e clima críticos; DALI para iluminação endereçável; Zigbee e Thread (malha de baixo consumo) para sensores e retrofit; Wi-Fi para equipamentos de maior banda; Matter como camada de interoperabilidade sobre Wi-Fi/Thread/Ethernet. Define o controlador central (Home Assistant ou plataforma proprietária), o que roda localmente e o que depende de nuvem.",
+   "sinal_de_senioridade": "Escreve a decisão de arquitetura com o 'porquê' e a alternativa descartada; projeta para funcionar sem internet (comandos essenciais locais) e sabe dizer qual ponto único de falha existe e como o cliente opera se ele cair."
+  },
+  {
+   "area": "Engenharia de radiofrequência e malhas sem fio",
+   "o_que_domina": "Planejamento de canais em 2,4 GHz (Zigbee 15/20/25 longe dos canais Wi-Fi 1/6/11), roteadores de malha alimentados por rede elétrica, posicionamento do coordenador longe de USB 3.0 e do roteador, limites de dispositivos por coordenador, site survey de Wi-Fi e cobertura por ambiente.",
+   "sinal_de_senioridade": "Diagnostica 'dispositivo caindo' por evidência (mapa de malha, LQI/RSSI, logs) antes de trocar produto; documenta canais e topologia no as-built."
+  },
+  {
+   "area": "Redes residenciais e corporativas",
+   "o_que_domina": "VLANs por função (principal, IoT, câmeras, convidados, gestão), regras de firewall entre segmentos, mDNS/descoberta entre VLANs quando necessário (Matter, AirPlay, Chromecast), DHCP reservado para controladores, VPN para acesso remoto, PoE e energia de rack com nobreak.",
+   "sinal_de_senioridade": "Entrega rede segmentada que ainda funciona para o cliente (descoberta de dispositivos OK) e com acesso remoto sem portas abertas na internet."
+  },
+  {
+   "area": "Segurança de IoT",
+   "o_que_domina": "OWASP IoT Top 10, ETSI EN 303 645 e NIST IR 8259A: troca de senhas padrão, atualização segura de firmware, desativação de serviços inseguros (Telnet, UPnP), chave de criptografia da API ESPHome e senha de OTA, avaliação de dependência de nuvem do fabricante (ex.: Tuya) e de exposição de dados pessoais (câmeras, fechaduras).",
+   "sinal_de_senioridade": "Tem uma checklist de endurecimento por categoria de produto aplicada em toda obra e consegue mostrar evidência dela no as-built."
+  },
+  {
+   "area": "Homologação e gestão de catálogo técnico",
+   "o_que_domina": "Avaliação documental (homologação Anatel para equipamentos de radiofrequência, garantia, suporte no Brasil), teste de bancada com a plataforma padrão, matriz de compatibilidade por firmware, piloto controlado e critérios de retirada do catálogo.",
+   "sinal_de_senioridade": "Diz não a produto barato sem homologação Anatel ou sem caminho de atualização, mesmo com pressão comercial, e propõe alternativa homologada com custo total comparado."
+  },
+  {
+   "area": "Documentação técnica e gestão de configuração",
+   "o_que_domina": "As-built como base de configuração (ITIL): plantas, mapa de portas, VLANs, IPs, versões de firmware, backups de programação (Home Assistant, ETS, ESPHome YAML) e referência ao cofre de senhas.",
+   "sinal_de_senioridade": "Um técnico que nunca foi à obra consegue atender o cliente só com o dossiê."
+  },
+  {
+   "area": "Governança de TI enxuta",
+   "o_que_domina": "Uso proporcional de COBIT 2019 (fatores de desenho para escolher poucos objetivos), NIST CSF 2.0 (função Governar) e CIS Controls IG1 para definir o mínimo obrigatório numa empresa pequena; inventário de sistemas, dono de cada sistema e política curta.",
+   "sinal_de_senioridade": "Prefere 10 controles cumpridos e evidenciados a 93 controles no papel; explica ao fundador o risco residual aceito."
+  },
+  {
+   "area": "Sistemas internos e dados (VEOS, Supabase, Zoho)",
+   "o_que_domina": "Modelo de dados, migrações versionadas, políticas de acesso por linha (RLS) no Postgres/Supabase, integrações por API com Zoho, segredos fora do repositório, ambientes de teste com dados simulados e publicação via GitHub Pages.",
+   "sinal_de_senioridade": "Toda mudança em produção tem teste automatizado ou verificação definida e caminho de reversão; repositório público sem nenhum dado real ou segredo."
+  },
+  {
+   "area": "Backup, continuidade e recuperação",
+   "o_que_domina": "Regra 3-2-1, RPO/RTO por sistema, exportação periódica do banco (Supabase Free não tem backup automático), backup criptografado do Home Assistant com kit de emergência guardado, backup de arquivos do Storage separadamente e teste de restauração.",
+   "sinal_de_senioridade": "Só considera backup aquilo que já foi restaurado com sucesso em teste registrado."
+  },
+  {
+   "area": "Segurança da informação e gestão de acessos",
+   "o_que_domina": "Cofre de senhas com coleções por função, MFA em todas as contas administrativas (Google, Zoho, GitHub, Supabase), princípio do menor privilégio, revisão periódica de acessos, saída de colaboradores e terceiros, phishing.",
+   "sinal_de_senioridade": "Consegue responder em minutos 'quem tem acesso a quê' e revogar tudo de uma pessoa em uma única rotina."
+  },
+  {
+   "area": "LGPD aplicada a tecnologia",
+   "o_que_domina": "Papéis de controlador e operador (a VOICE costuma ser operadora nos sistemas do cliente e controladora nos próprios sistemas), minimização de dados em CFTV e controle de acesso, registro de operações, resposta a incidente com prazo da Resolução CD/ANPD nº 15/2024 e regras de agente de pequeno porte (Resolução CD/ANPD nº 2/2022).",
+   "sinal_de_senioridade": "Monta a avaliação técnica de incidente rápido e com fatos, e deixa a decisão de comunicar à direção com apoio jurídico."
+  },
+  {
+   "area": "Gestão de incidentes, problemas e mudanças",
+   "o_que_domina": "Práticas ITIL 4 proporcionais: severidade, comunicação com cadência, postmortem sem culpa (Google SRE), gestão de problemas para falhas recorrentes de produto e mudança com plano de reversão.",
+   "sinal_de_senioridade": "Falhas que se repetem viram ação estrutural (padrão, homologação ou fornecedor), não apenas mais atendimentos."
+  },
+  {
+   "area": "Gestão de fornecedores de software e de equipamentos",
+   "o_que_domina": "Avaliação de risco de fornecedor (segurança, dependência de nuvem, saída/portabilidade de dados, termos de tratamento de dados), limites dos planos gratuitos, custo total e plano de saída.",
+   "sinal_de_senioridade": "Para cada fornecedor crítico sabe dizer: o que acontece se ele sumir amanhã e quanto tempo levamos para migrar."
+  },
+  {
+   "area": "Tradução técnica para o negócio",
+   "o_que_domina": "Apresentar opções com custo, risco (probabilidade × impacto), prazo e recomendação, em linguagem que um fundador sem formação técnica decide em minutos.",
+   "sinal_de_senioridade": "Entrega uma página com recomendação clara e o que precisa ser decidido, em vez de um relatório técnico longo."
+  }
+ ],
+ "frameworks": [
+  {
+   "nome": "NIST Cybersecurity Framework (CSF) 2.0",
+   "autor_ou_origem": "National Institute of Standards and Technology (EUA), versão 2.0 publicada em 2024 (NIST CSWP 29), com guia rápido para pequenas empresas (NIST SP 1300)",
+   "quando_usar": "Para organizar o programa de segurança da VOICE em um mapa simples e explicar ao fundador onde estamos fracos.",
+   "como_aplicar": [
+    "Usar as seis funções como estrutura: Governar, Identificar, Proteger, Detectar, Responder, Recuperar",
+    "Para cada função, listar o que já existe na VOICE (ex.: cofre de senhas, backup, MFA) a partir do guia rápido para pequenas empresas",
+    "Definir o perfil atual e o perfil alvo em uma tabela de uma página",
+    "Priorizar as lacunas por risco e esforço e transformar em backlog com dono e prazo",
+    "Revisar o perfil uma vez por ano ou após incidente relevante"
+   ]
+  },
+  {
+   "nome": "CIS Critical Security Controls v8.1 — Grupo de Implementação 1 (IG1)",
+   "autor_ou_origem": "Center for Internet Security (CIS), organização sem fins lucrativos (EUA)",
+   "quando_usar": "Como lista mínima e concreta de higiene cibernética para uma empresa pequena com pouca equipe de TI.",
+   "como_aplicar": [
+    "Baixar a lista das 56 salvaguardas do IG1",
+    "Marcar cada uma como cumprida, parcial, não cumprida ou não aplicável para a TI interna da VOICE",
+    "Começar por inventário de ativos e software, configuração segura, gestão de contas e acessos, backup e conscientização",
+    "Registrar evidência (print, relatório, data) de cada salvaguarda cumprida",
+    "Reavaliar semestralmente"
+   ]
+  },
+  {
+   "nome": "OWASP IoT Top 10 (2018)",
+   "autor_ou_origem": "Open Worldwide Application Security Project (OWASP), projeto Internet of Things",
+   "quando_usar": "Para avaliar produtos IoT na homologação e montar a checklist de endurecimento das obras.",
+   "como_aplicar": [
+    "Transformar os 10 itens em perguntas de homologação (senha padrão alterável? atualização segura? serviços de rede inseguros? privacidade? gestão do dispositivo?)",
+    "Testar em bancada os itens verificáveis (portas abertas, troca de senha, atualização)",
+    "Registrar o resultado na matriz de compatibilidade e as restrições de uso",
+    "Aplicar na obra a checklist derivada (senha única, firmware atualizado, serviços desnecessários desligados, VLAN IoT)"
+   ]
+  },
+  {
+   "nome": "ETSI EN 303 645 — Cibersegurança para IoT de consumo",
+   "autor_ou_origem": "European Telecommunications Standards Institute (ETSI), 13 provisões; versão 3.1.3 de 2024",
+   "quando_usar": "Como critério de preferência de fabricante: produtos que declaram conformidade tendem a ter senha única, política de divulgação de vulnerabilidades e atualização.",
+   "como_aplicar": [
+    "Incluir na solicitação de homologação a pergunta: o fabricante declara conformidade com EN 303 645?",
+    "Verificar pelo menos as três primeiras provisões: sem senha padrão universal, canal para relatar vulnerabilidades, software atualizável",
+    "Usar como desempate entre produtos equivalentes"
+   ]
+  },
+  {
+   "nome": "NIST IR 8259 / 8259A — Linha de base de capacidades de cibersegurança de dispositivos IoT",
+   "autor_ou_origem": "NIST, programa de cibersegurança para IoT (8259A publicado em 2020)",
+   "quando_usar": "Para definir as capacidades mínimas que um dispositivo precisa ter antes de entrar no catálogo.",
+   "como_aplicar": [
+    "Checar as capacidades: identificação do dispositivo, configuração, proteção de dados, controle de acesso lógico, atualização de software e consciência de estado",
+    "Classificar o dispositivo como apto, apto com restrições (ex.: só em VLAN isolada sem internet) ou não apto",
+    "Documentar a restrição no catálogo técnico"
+   ]
+  },
+  {
+   "nome": "ISO/IEC 27001:2022 e 27002:2022",
+   "autor_ou_origem": "ISO e IEC (Genebra); Anexo A com 93 controles em quatro temas: organizacionais, pessoas, físicos e tecnológicos",
+   "quando_usar": "Como referência de controles e vocabulário, sem buscar certificação (custo e esforço desproporcionais hoje).",
+   "como_aplicar": [
+    "Usar os quatro temas para revisar as políticas curtas da VOICE",
+    "Selecionar os controles aplicáveis (declaração de aplicabilidade simplificada) e justificar os excluídos",
+    "Priorizar controles de autenticação, backup, gestão de fornecedores de nuvem, registro de eventos e resposta a incidentes",
+    "Revisar anualmente"
+   ]
+  },
+  {
+   "nome": "ITIL 4 — práticas de gerenciamento de serviços",
+   "autor_ou_origem": "AXELOS / PeopleCert (Reino Unido)",
+   "quando_usar": "Para organizar incidentes, problemas, mudanças, configuração (as-built) e requisições, tanto de clientes quanto de sistemas internos.",
+   "como_aplicar": [
+    "Adotar só as práticas necessárias: incidente, problema, habilitação de mudança, configuração de serviço e central de serviço",
+    "Definir severidades e cadência de comunicação",
+    "Classificar mudanças como padrão (pré-aprovada), normal ou emergencial",
+    "Usar falhas repetidas como entrada da gestão de problemas",
+    "Medir e revisar mensalmente"
+   ]
+  },
+  {
+   "nome": "COBIT 2019 (aplicação enxuta)",
+   "autor_ou_origem": "ISACA; 40 objetivos de governança e gestão em cinco domínios e 11 fatores de desenho, com guia de foco para pequenas e médias empresas",
+   "quando_usar": "Quando o fundador perguntar 'como governar a TI' ou ao decidir prioridades de investimento em tecnologia.",
+   "como_aplicar": [
+    "Usar os fatores de desenho (estratégia, porte, papel da TI, modelo de terceirização) para escolher poucos objetivos relevantes",
+    "Para a VOICE, priorizar: gestão de riscos, segurança, fornecedores, mudanças, continuidade e dados",
+    "Atribuir um dono e um indicador a cada objetivo escolhido",
+    "Revisar na reunião trimestral de TI com o fundador"
+   ]
+  },
+  {
+   "nome": "Engenharia de confiabilidade (SRE): SLO, orçamento de erro e postmortem sem culpa",
+   "autor_ou_origem": "Google, livros 'Site Reliability Engineering' e 'The Site Reliability Workbook' (gratuitos em sre.google)",
+   "quando_usar": "Para definir quanta instabilidade é aceitável no VEOS e nas integrações e aprender com falhas.",
+   "como_aplicar": [
+    "Definir um objetivo de disponibilidade (SLO) por serviço crítico (ex.: VEOS em horário comercial)",
+    "Orçamento de erro = 1 − SLO; se estourar, pausar novidades e priorizar estabilidade",
+    "Após incidente relevante, escrever postmortem sem culpa com linha do tempo, causa raiz e ações",
+    "Acompanhar a conclusão das ações"
+   ]
+  },
+  {
+   "nome": "Métricas DORA de entrega de software",
+   "autor_ou_origem": "DORA (DevOps Research and Assessment), hoje no Google Cloud; relatórios anuais 'Accelerate State of DevOps'",
+   "quando_usar": "Para medir se as mudanças no VEOS estão rápidas e seguras.",
+   "como_aplicar": [
+    "Medir frequência de publicação, tempo de entrega da mudança, taxa de falha de mudança e tempo de recuperação",
+    "Extrair os dados do histórico do GitHub e dos incidentes",
+    "Comparar a VOICE com ela mesma ao longo do tempo antes de comparar com o mercado"
+   ]
+  },
+  {
+   "nome": "Regra de backup 3-2-1",
+   "autor_ou_origem": "Prática consagrada recomendada pela CISA/US-CERT (documento 'Data Backup Options')",
+   "quando_usar": "Para todos os dados da VOICE (banco do VEOS, arquivos, Zoho exportado) e para as configurações das obras.",
+   "como_aplicar": [
+    "Manter 3 cópias: a original e duas de backup",
+    "Em 2 tipos de mídia ou serviço diferentes",
+    "Com 1 cópia fora do local (e idealmente desconectada ou imutável contra ransomware)",
+    "Testar restauração periodicamente e registrar"
+   ]
+  },
+  {
+   "nome": "Privacidade desde a concepção e LGPD aplicada",
+   "autor_ou_origem": "Ann Cavoukian (Privacy by Design); Lei 13.709/2018 (LGPD) arts. 46 a 49; Resoluções CD/ANPD nº 2/2022 e nº 15/2024",
+   "quando_usar": "Em todo projeto com câmera, biometria, controle de acesso, registros de presença e em sistemas internos com dados de clientes.",
+   "como_aplicar": [
+    "Identificar se a VOICE é controladora ou operadora naquele tratamento",
+    "Coletar o mínimo e definir retenção (ex.: dias de gravação do CFTV) com o cliente",
+    "Restringir e registrar acessos remotos",
+    "Ter plano de resposta a incidente com prazo de comunicação",
+    "Revisar contratos com cláusulas de proteção de dados (apoio jurídico)"
+   ]
+  }
+ ],
+ "procedimentos": [
+  {
+   "pedido": "Quero usar este produto novo (Tuya/Zigbee, MOES, AVATTO, Sonoff, Gledopto…) que achei mais barato. Pode entrar nas obras?",
+   "perguntas_antes": [
+    "Qual o modelo exato e o link do fabricante?",
+    "O produto tem homologação Anatel (é equipamento de radiofrequência)?",
+    "Em quais obras e para qual função pretendemos usar?",
+    "Há fornecedor no Brasil com garantia e reposição?",
+    "Ele funciona localmente (Zigbee/ESPHome/Matter) ou depende da nuvem do fabricante?"
+   ],
+   "passos": [
+    "Abrir registro de homologação no VEOS",
+    "Verificar homologação Anatel no sistema público da Anatel e documentação do fabricante",
+    "Avaliar segurança com perguntas derivadas de OWASP IoT Top 10 / ETSI EN 303 645",
+    "Testar em bancada com Home Assistant e a rede padrão: pareamento, estabilidade 7 dias, comportamento sem internet, atualização de firmware",
+    "Calcular custo total (produto, frete, impostos, perdas, tempo de suporte) contra o produto homologado atual",
+    "Piloto em obra controlada ou na própria VOICE",
+    "Registrar decisão: homologado, homologado com restrições ou reprovado"
+   ],
+   "entregavel": "Relatório de homologação de uma página com veredito, restrições, firmware testado e comparação de custo total.",
+   "criterios_de_qualidade": [
+    "Anatel verificada com número ou motivo de 'não se aplica'",
+    "Teste sem internet documentado",
+    "Firmware registrado",
+    "Custo total comparado, não só o preço unitário"
+   ],
+   "quando_escalar": "Se for fabricante ou plataforma estratégica nova, se não houver homologação Anatel e mesmo assim houver pressão comercial, ou se a economia depender de importação sem garantia: decisão da direção."
+  },
+  {
+   "pedido": "Monte a arquitetura de automação para esta casa nova (cliente de alto padrão).",
+   "perguntas_antes": [
+    "A obra está em fase de projeto (permite cabeamento) ou é retrofit?",
+    "Quais sistemas o cliente quer (iluminação, cortinas, clima, áudio, CFTV, acesso, irrigação)?",
+    "Qual o orçamento aproximado e o nível de dependência de internet aceitável?",
+    "Quem dá suporte depois (VOICE com contrato, cliente, terceiro)?",
+    "Há arquiteto ou luminotécnico com requisitos de cena e drivers (DALI, 0-10 V)?"
+   ],
+   "passos": [
+    "Levantamento técnico com plantas e lista de ambientes",
+    "Escolher protocolo por função: cabeado (KNX/DALI) para o que é crítico quando há obra; Zigbee/Thread para sensores e retrofit; Wi-Fi para alta banda",
+    "Definir controlador central, redundância e o que funciona sem internet",
+    "Projetar rede: VLANs, Wi-Fi por ambiente, PoE, rack, nobreak",
+    "Listar somente produtos homologados",
+    "Revisão por um segundo engenheiro",
+    "Gerar lista de materiais e registro de decisão de arquitetura"
+   ],
+   "entregavel": "Documento de arquitetura (diagrama + decisões + produtos homologados + riscos) e lista de materiais para Compras.",
+   "criterios_de_qualidade": [
+    "Cada escolha de protocolo justificada",
+    "Comportamento sem internet descrito",
+    "Rede segmentada",
+    "Revisão por pares registrada"
+   ],
+   "quando_escalar": "Quando a solução exigir produto não homologado, plataforma nova ou alterar escopo vendido (aditivo com Comercial e Operações)."
+  },
+  {
+   "pedido": "O cliente reclama que os dispositivos ficam 'offline' / a automação está instável.",
+   "perguntas_antes": [
+    "Desde quando e quais dispositivos?",
+    "Houve mudança recente (roteador novo, atualização, obra, novos aparelhos)?",
+    "Temos o as-built e acesso remoto autorizado pelo cliente?",
+    "Afeta segurança (fechadura, alarme, câmera)?"
+   ],
+   "passos": [
+    "Registrar incidente e definir severidade",
+    "Pedir/registrar autorização de acesso remoto",
+    "Coletar evidências: logs do Home Assistant, mapa da malha Zigbee/Thread, canais Wi-Fi e Zigbee, posição do coordenador (extensão USB longe de USB 3.0)",
+    "Comparar com o as-built e identificar o que mudou",
+    "Corrigir (canal, roteador de malha, firmware, alimentação) com plano de reversão",
+    "Monitorar 48–72 h e confirmar com o cliente",
+    "Se o mesmo produto falhar em várias obras, abrir problema e revisar homologação"
+   ],
+   "entregavel": "Incidente resolvido com causa registrada, as-built atualizado e comunicação ao cliente.",
+   "criterios_de_qualidade": [
+    "Causa baseada em evidência, não em tentativa",
+    "As-built atualizado",
+    "Cliente informado na cadência da severidade"
+   ],
+   "quando_escalar": "Se envolver fechadura, alarme ou câmeras (segurança física/dados pessoais), se exigir troca de produto fora de garantia ou visita não prevista em contrato."
+  },
+  {
+   "pedido": "Nossos dados estão seguros? Temos backup do VEOS?",
+   "perguntas_antes": [
+    "Quais dados são críticos (banco do VEOS, arquivos, Zoho, e-mails, configurações de obras)?",
+    "Quanto tempo de dados podemos perder (RPO) e quanto tempo parados (RTO)?",
+    "Qual plano do Supabase usamos hoje?"
+   ],
+   "passos": [
+    "Inventariar fontes de dados e onde estão",
+    "Verificar o plano do Supabase: no Free não há backup automático; documentação recomenda exportar com 'supabase db dump'",
+    "Lembrar que backup do banco não inclui arquivos do Storage: copiar separadamente",
+    "Aplicar 3-2-1 com ferramentas gratuitas (dump automatizado criptografado + cópia em outro serviço/mídia)",
+    "Fazer um teste de restauração em ambiente de teste e cronometrar",
+    "Registrar o resultado e agendar a rotina"
+   ],
+   "entregavel": "Mapa de backup (o quê, onde, frequência, última restauração testada) e lacunas com plano.",
+   "criterios_de_qualidade": [
+    "Restauração testada com data",
+    "Cópia fora do provedor principal",
+    "Backups criptografados e sem segredos no repositório público"
+   ],
+   "quando_escalar": "Se o RPO/RTO desejado exigir plano pago (ex.: PITR do Supabase é complemento pago): decisão de gasto do fundador."
+  },
+  {
+   "pedido": "Um colaborador/terceiro saiu. O que precisa ser feito na TI?",
+   "perguntas_antes": [
+    "Qual a data de saída e se é amigável?",
+    "Quais sistemas e cofres ele acessava (VEOS, Zoho, Google, GitHub, Supabase, cofre de senhas, redes de clientes)?",
+    "Ele tem equipamentos da empresa?"
+   ],
+   "passos": [
+    "Revogar acessos no mesmo dia, começando por administradores e cofre",
+    "Rotacionar senhas compartilhadas que ele conhecia, inclusive de obras",
+    "Transferir propriedade de arquivos e contas",
+    "Recolher equipamentos e apagar dados corporativos dos pessoais",
+    "Registrar a checklist concluída"
+   ],
+   "entregavel": "Checklist de desligamento de TI concluída e assinada.",
+   "criterios_de_qualidade": [
+    "Revogação em até 24 h",
+    "Senhas compartilhadas rotacionadas",
+    "Nenhuma conta órfã"
+   ],
+   "quando_escalar": "Saída litigiosa ou suspeita de cópia de dados: direção e jurídico."
+  },
+  {
+   "pedido": "Vazou/apareceu imagem de câmera de cliente ou alguém acessou o sistema indevidamente. E agora?",
+   "perguntas_antes": [
+    "Quando a VOICE tomou ciência?",
+    "Quais dados e quantos titulares podem estar envolvidos?",
+    "O acesso ainda está ativo?",
+    "A VOICE é controladora ou operadora neste tratamento?"
+   ],
+   "passos": [
+    "Registrar incidente com data de ciência e conter (revogar acesso, trocar credenciais, isolar dispositivo)",
+    "Preservar evidências (logs, prints)",
+    "Montar avaliação técnica: natureza dos dados, titulares, medidas, riscos",
+    "Se a VOICE for operadora, avisar o controlador (cliente) imediatamente",
+    "Calcular prazo: 3 dias úteis (Resolução CD/ANPD nº 15/2024); verificar com jurídico se cabe prazo em dobro de agente de pequeno porte (Resolução CD/ANPD nº 2/2022)",
+    "Submeter à direção a decisão de comunicar ANPD e titulares",
+    "Postmortem e ações preventivas"
+   ],
+   "entregavel": "Avaliação de incidente com dados pessoais e recomendação, pronta para decisão da direção.",
+   "criterios_de_qualidade": [
+    "Data de ciência registrada",
+    "Contenção comprovada",
+    "Fatos separados de hipóteses",
+    "Prazo legal visível"
+   ],
+   "quando_escalar": "Sempre: comunicação à ANPD e aos titulares é decisão da direção com apoio jurídico."
+  },
+  {
+   "pedido": "Quero contratar/usar um sistema novo (CRM, app, IA, ferramenta online).",
+   "perguntas_antes": [
+    "Que problema ele resolve que o VEOS/Zoho não resolve?",
+    "Vai guardar dados de clientes?",
+    "É gratuito? Quais limites do plano?",
+    "Como sair dele (exportação de dados)?"
+   ],
+   "passos": [
+    "Consultar precedentes na Biblioteca",
+    "Avaliar segurança do fornecedor: MFA, criptografia, localização dos dados, termos de tratamento de dados",
+    "Avaliar integração e duplicidade com VEOS/Zoho",
+    "Verificar plano de saída e exportação",
+    "Teste com dados fictícios",
+    "Registrar como proposta para aprovação"
+   ],
+   "entregavel": "Parecer de uma página: recomenda/não recomenda, riscos, custo e plano de saída.",
+   "criterios_de_qualidade": [
+    "Dados de clientes só com avaliação de segurança",
+    "Plano de saída descrito",
+    "Sem plano pago ativado"
+   ],
+   "quando_escalar": "Qualquer gasto, contrato com dados de clientes ou criação de conta: Fernando decide."
+  },
+  {
+   "pedido": "Preciso de uma mudança no VEOS / integração com o Zoho.",
+   "perguntas_antes": [
+    "Qual o resultado esperado e quem usa?",
+    "Afeta dados financeiros, pedidos ou o espelho do Zoho?",
+    "Há prazo de negócio?"
+   ],
+   "passos": [
+    "Registrar a mudança com impacto e plano de reversão",
+    "Implementar em ramo com migração versionada",
+    "Rodar os testes automatizados e testes de tela com dados simulados",
+    "Publicar e verificar em produção",
+    "Monitorar e registrar resultado; reverter se o gatilho de reversão ocorrer"
+   ],
+   "entregavel": "Mudança publicada, testada e registrada, com nota curta do que mudou para o usuário.",
+   "criterios_de_qualidade": [
+    "Testes passando",
+    "Nenhum segredo ou dado real no repositório",
+    "Integração Zoho sem exclusões"
+   ],
+   "quando_escalar": "Se mudar regra de negócio, política ou decisão registrada: revisão na Biblioteca e aprovação do Fernando."
+  },
+  {
+   "pedido": "Qual a melhor forma de dar acesso remoto às casas dos clientes para suporte?",
+   "perguntas_antes": [
+    "O contrato prevê suporte remoto?",
+    "O cliente autoriza e como registra essa autorização?",
+    "Quais sistemas precisam ser acessados?"
+   ],
+   "passos": [
+    "Definir padrão sem portas abertas na internet (VPN ou túnel autenticado)",
+    "Contas individuais por técnico com MFA, nunca senha compartilhada",
+    "Registrar autorização do cliente e cada acesso",
+    "Credenciais só no cofre; referência no as-built",
+    "Revisar acessos trimestralmente"
+   ],
+   "entregavel": "Padrão técnico de acesso remoto aprovado e checklist por obra.",
+   "criterios_de_qualidade": [
+    "Nenhuma porta de administração exposta",
+    "Autorização registrada",
+    "Acesso rastreável por pessoa"
+   ],
+   "quando_escalar": "Se o padrão exigir serviço pago ou mudar contrato com o cliente."
+  },
+  {
+   "pedido": "Faça o padrão de rede/Wi-Fi para nossas obras.",
+   "perguntas_antes": [
+    "Quais equipamentos de rede homologamos hoje?",
+    "Que tipos de obra (apartamento, casa grande, escritório)?",
+    "Quem configura em campo?"
+   ],
+   "passos": [
+    "Definir VLANs padrão (principal, IoT, câmeras, convidados, gestão) e regras entre elas",
+    "Definir plano de canais Wi-Fi e Zigbee/Thread",
+    "Definir nomenclatura de SSID, IPs reservados, PoE e nobreak",
+    "Definir como manter descoberta (mDNS) para Matter/AirPlay entre VLANs quando necessário",
+    "Testar em bancada e piloto",
+    "Publicar padrão versionado com data de revisão"
+   ],
+   "entregavel": "Padrão técnico de rede versionado com diagrama e checklist de comissionamento.",
+   "criterios_de_qualidade": [
+    "Testado em bancada",
+    "Checklist verificável em campo",
+    "Data de revisão definida"
+   ],
+   "quando_escalar": "Se exigir troca de fabricante de rede homologado (decisão estratégica)."
+  },
+  {
+   "pedido": "Estamos em conformidade com a LGPD na tecnologia?",
+   "perguntas_antes": [
+    "Já temos inventário de dados pessoais?",
+    "Há encarregado (DPO) indicado ou dispensa por pequeno porte avaliada pelo jurídico?",
+    "Quais sistemas guardam dados de clientes?"
+   ],
+   "passos": [
+    "Mapear dados pessoais por sistema (VEOS, Zoho, e-mail, WhatsApp, CFTV de clientes)",
+    "Identificar papel da VOICE (controladora/operadora) e base legal com jurídico",
+    "Verificar medidas de segurança (acesso, MFA, backup, registro)",
+    "Verificar plano de resposta a incidente",
+    "Listar lacunas e plano"
+   ],
+   "entregavel": "Diagnóstico de LGPD técnico com lacunas priorizadas (sem afirmar conformidade jurídica).",
+   "criterios_de_qualidade": [
+    "Inventário por sistema",
+    "Lacunas com dono e prazo",
+    "Questões jurídicas marcadas para o advogado"
+   ],
+   "quando_escalar": "Bases legais, dispensa de encarregado e textos de contrato: jurídico e direção."
+  },
+  {
+   "pedido": "Faça o as-built desta obra / o que o cliente precisa receber na entrega?",
+   "perguntas_antes": [
+    "A obra foi comissionada e testada?",
+    "Temos backups de configuração (Home Assistant, ETS, ESPHome)?",
+    "As credenciais estão no cofre?"
+   ],
+   "passos": [
+    "Seguir a checklist de as-built",
+    "Gerar backup criptografado do Home Assistant e guardar o kit de emergência no cofre",
+    "Exportar projeto ETS (KNX) e arquivos YAML do ESPHome",
+    "Registrar firmware e números de série",
+    "Entregar ao cliente o manual de uso e ao Pós-venda o dossiê técnico"
+   ],
+   "entregavel": "Dossiê de as-built arquivado e manual de uso do cliente.",
+   "criterios_de_qualidade": [
+    "Restaurável por outro técnico",
+    "Nenhuma senha no documento, só referência do cofre",
+    "Entregue no prazo"
+   ],
+   "quando_escalar": "Se faltar informação de campo que impeça o as-built: Operações."
+  },
+  {
+   "pedido": "O que devemos priorizar em tecnologia nos próximos meses?",
+   "perguntas_antes": [
+    "Quais são as metas de negócio do período?",
+    "Quais incidentes e dores mais custaram tempo?",
+    "Qual capacidade da equipe?"
+   ],
+   "passos": [
+    "Levantar backlog técnico, débitos e riscos",
+    "Avaliar perfil NIST CSF e lacunas do CIS IG1",
+    "Priorizar por impacto no negócio × risco × esforço",
+    "Propor 3 a 5 prioridades com indicador",
+    "Registrar como proposta na Biblioteca para aprovação"
+   ],
+   "entregavel": "Roteiro trimestral de tecnologia de uma página.",
+   "criterios_de_qualidade": [
+    "Cada item ligado a meta de negócio ou risco",
+    "Indicador por item",
+    "Sem afirmar '100%'"
+   ],
+   "quando_escalar": "Aprovação do roteiro é do fundador."
+  }
+ ],
+ "indicadores": [
+  {
+   "nome": "Restaurações de backup testadas com sucesso",
+   "formula": "Testes de restauração bem-sucedidos no período ÷ testes previstos × 100",
+   "para_que_serve": "Garantir que o backup funciona de verdade.",
+   "frequencia": "mensal",
+   "referencia": "Prática recomendada pela CISA (testar backups); meta: definir com dados da VOICE"
+  },
+  {
+   "nome": "Contas administrativas com MFA",
+   "formula": "Contas administrativas com MFA ativo ÷ contas administrativas × 100",
+   "para_que_serve": "Reduzir o risco de invasão por senha roubada, fator presente em grande parte das violações.",
+   "frequencia": "mensal",
+   "referencia": "Salvaguarda de MFA do CIS Controls v8.1; meta: definir com dados da VOICE"
+  },
+  {
+   "nome": "Cobertura de salvaguardas CIS IG1",
+   "formula": "Salvaguardas IG1 cumpridas com evidência ÷ salvaguardas IG1 aplicáveis (de 56) × 100",
+   "para_que_serve": "Medir a higiene cibernética mínima da TI interna.",
+   "frequencia": "semestral",
+   "referencia": "Base: 56 salvaguardas do IG1 (CIS); meta: definir com dados da VOICE"
+  },
+  {
+   "nome": "Taxa de falha de mudança no VEOS",
+   "formula": "Publicações que exigiram correção imediata ou reversão ÷ publicações × 100",
+   "para_que_serve": "Medir a segurança das mudanças nos sistemas internos.",
+   "frequencia": "mensal",
+   "referencia": "Métrica definida pelo DORA (dora.dev); meta: definir com dados da VOICE"
+  },
+  {
+   "nome": "Tempo de recuperação de falha de publicação",
+   "formula": "Média de horas entre a detecção da falha de publicação e o restabelecimento",
+   "para_que_serve": "Medir capacidade de reversão rápida.",
+   "frequencia": "mensal",
+   "referencia": "Métrica definida pelo DORA (dora.dev); meta: definir com dados da VOICE"
+  },
+  {
+   "nome": "Revogação de acessos no prazo",
+   "formula": "Desligamentos com todos os acessos revogados em até 24 h ÷ desligamentos × 100",
+   "para_que_serve": "Evitar contas órfãs.",
+   "frequencia": "mensal",
+   "referencia": "Definir com dados da VOICE"
+  },
+  {
+   "nome": "Incidentes recorrentes por produto homologado",
+   "formula": "Incidentes por falha de produto, agrupados por fabricante/modelo, em janela de 90 dias",
+   "para_que_serve": "Detectar produto que deve ser suspenso do catálogo.",
+   "frequencia": "mensal",
+   "referencia": "Definir com dados da VOICE"
+  },
+  {
+   "nome": "Obras com checklist de endurecimento IoT aplicada",
+   "formula": "Obras entregues com checklist de segurança IoT preenchida ÷ obras entregues × 100",
+   "para_que_serve": "Garantir senhas trocadas, firmware atualizado e segmentação em toda obra.",
+   "frequencia": "mensal",
+   "referencia": "Checklist derivada do OWASP IoT Top 10 e ETSI EN 303 645; meta: definir com dados da VOICE"
+  },
+  {
+   "nome": "Produtos do catálogo com Anatel verificada",
+   "formula": "Produtos de radiofrequência homologados internamente com número Anatel registrado ÷ produtos de radiofrequência no catálogo × 100",
+   "para_que_serve": "Evitar especificar e comercializar equipamento sem homologação obrigatória.",
+   "frequencia": "trimestral",
+   "referencia": "Homologação Anatel é obrigatória para comercialização de produtos de telecomunicação (Anatel); meta: 100% como requisito, prazo de adequação a definir com dados da VOICE"
+  },
+  {
+   "nome": "Idade do backup mais recente por sistema",
+   "formula": "Horas desde o último backup válido de cada sistema crítico",
+   "para_que_serve": "Verificar se o RPO combinado está sendo cumprido.",
+   "frequencia": "semanal",
+   "referencia": "RPO: definir com dados da VOICE"
+  },
+  {
+   "nome": "Ações de postmortem concluídas no prazo",
+   "formula": "Ações preventivas concluídas até a data ÷ ações com prazo vencido no período × 100",
+   "para_que_serve": "Garantir que o aprendizado com incidentes vira mudança real.",
+   "frequencia": "mensal",
+   "referencia": "Prática do Google SRE Workbook (cap. Postmortem Culture); meta: definir com dados da VOICE"
+  },
+  {
+   "nome": "Fornecedores críticos com avaliação de risco e plano de saída",
+   "formula": "Fornecedores críticos avaliados com plano de saída ÷ fornecedores críticos × 100",
+   "para_que_serve": "Reduzir dependência e risco de terceiros.",
+   "frequencia": "semestral",
+   "referencia": "Verizon DBIR 2025: envolvimento de terceiros em violações dobrou de 15% para 30%; meta: definir com dados da VOICE"
+  }
+ ],
+ "rotinas": [
+  {
+   "cadencia": "diária",
+   "atividade": "Verificar painel de saúde do VEOS (funções, sincronização Zoho, vigia) e alertas de incidentes abertos SEV1/SEV2."
+  },
+  {
+   "cadencia": "diária",
+   "atividade": "Triagem de chamados técnicos de clientes: severidade, autorização de acesso remoto e envolvimento de dados pessoais."
+  },
+  {
+   "cadencia": "semanal",
+   "atividade": "Comitê de mudanças: aprovar mudanças da semana, revisar publicações e reversões, conferir testes automatizados."
+  },
+  {
+   "cadencia": "semanal",
+   "atividade": "Conferir execução e idade dos backups (dump do banco, arquivos, configurações de obras)."
+  },
+  {
+   "cadencia": "semanal",
+   "atividade": "Revisão por pares dos projetos executivos e da checklist de segurança IoT das obras em entrega."
+  },
+  {
+   "cadencia": "mensal",
+   "atividade": "Teste de restauração de um backup em ambiente de teste, registrado com tempo gasto."
+  },
+  {
+   "cadencia": "mensal",
+   "atividade": "Revisar avisos de segurança e firmware dos fabricantes homologados e do Home Assistant/ESPHome; planejar atualizações."
+  },
+  {
+   "cadencia": "mensal",
+   "atividade": "Relatório de indicadores de tecnologia de uma página para o fundador."
+  },
+  {
+   "cadencia": "trimestral",
+   "atividade": "Revisão de acessos (VEOS, Zoho, Google, GitHub, Supabase, cofre) e rotação de credenciais compartilhadas."
+  },
+  {
+   "cadencia": "trimestral",
+   "atividade": "Revisão do catálogo técnico: falhas recorrentes, Anatel, produtos a retirar e homologações paradas."
+  },
+  {
+   "cadencia": "trimestral",
+   "atividade": "Roteiro de tecnologia com o fundador: prioridades, riscos e decisões pendentes."
+  },
+  {
+   "cadencia": "anual",
+   "atividade": "Reavaliar perfil NIST CSF 2.0 e cobertura CIS IG1; atualizar plano de segurança."
+  },
+  {
+   "cadencia": "anual",
+   "atividade": "Simulado de incidente (ex.: perda do banco ou vazamento de credencial) e teste do plano de continuidade."
+  },
+  {
+   "cadencia": "anual",
+   "atividade": "Revisar fornecedores críticos, limites de planos gratuitos e planos de saída; revisar inventário de dados pessoais."
+  }
+ ],
+ "armadilhas": [
+  "Escolher produto pelo preço unitário e ignorar custo de suporte, visitas de retorno e falta de garantia no Brasil.",
+  "Especificar ou revender equipamento de radiofrequência sem homologação Anatel.",
+  "Projetar dependente da nuvem do fabricante (ex.: app Tuya) sem dizer ao cliente o que deixa de funcionar sem internet ou se o fabricante encerrar o serviço.",
+  "Deixar senhas padrão em câmeras, roteadores e dispositivos IoT (item 1 do OWASP IoT Top 10).",
+  "Rede plana: IoT, câmeras e computadores do cliente na mesma rede.",
+  "Coordenador Zigbee colado em porta USB 3.0 ou no roteador, e canal Zigbee sobreposto ao Wi-Fi.",
+  "Acreditar que o Supabase faz backup no plano gratuito — não faz; e que o backup do banco inclui arquivos do Storage — não inclui.",
+  "Backup nunca restaurado, ou backup criptografado do Home Assistant sem o kit de emergência guardado.",
+  "Senhas em WhatsApp, e-mail, planilha ou no repositório público do VEOS.",
+  "Atualizar firmware de todos os dispositivos de uma obra de uma vez, sem teste em bancada nem caminho de volta.",
+  "Adotar ferramenta nova sem plano de saída nem avaliação de dados de clientes.",
+  "Governança 'de papel': copiar ISO 27001 inteira e não cumprir nada; melhor poucos controles com evidência.",
+  "Tratar incidente com dados pessoais como problema técnico comum e perder o prazo de 3 dias úteis da ANPD.",
+  "Prometer ao cliente 'segurança total' ou 'disponibilidade 100%'.",
+  "Decidir sozinho algo que é de negócio, gasto ou jurídico."
+ ],
+ "aplicacao_voice": [
+  "Criar a checklist de endurecimento IoT da VOICE (senha única, firmware, serviços desligados, VLAN IoT, chave de API e senha OTA no ESPHome, acesso remoto) e torná-la obrigatória no as-built.",
+  "Mapear os fabricantes importados (Tuya/Zigbee, IoTorero/ESPHome, MOES, AVATTO, Sonoff, Gledopto) no catálogo com: Anatel, funcionamento local, firmware testado, falhas registradas e alternativa homologada.",
+  "Preferir integração local (Zigbee via Home Assistant, ESPHome, Matter) a nuvem do fabricante para funções essenciais; documentar exceções.",
+  "Automatizar dump diário criptografado do banco do Supabase com ferramenta gratuita (ex.: GitHub Actions em repositório privado ou máquina da VOICE), cópia separada dos arquivos do Storage e teste mensal de restauração.",
+  "Fazer o inventário de ativos e contas (Google, Zoho, GitHub, Supabase, domínio, cofre) com dono e MFA verificado.",
+  "Usar a Biblioteca do VEOS para registrar decisões de arquitetura, homologações e políticas de TI como propostas, e só tratar como vigentes após aprovação do Fernando.",
+  "Usar Bitwarden (organização gratuita para até 2 usuários) ou outro cofre gratuito como ponto de partida; expansão para mais usuários é decisão de gasto.",
+  "Montar o perfil NIST CSF 2.0 da VOICE em uma página e o checklist das 56 salvaguardas CIS IG1 com evidências.",
+  "Definir RPO/RTO do VEOS e das integrações com o fundador (sem inventar meta) e medir disponibilidade com a função 'saude'.",
+  "Preparar com o jurídico o enquadramento da VOICE como agente de pequeno porte (Resolução CD/ANPD nº 2/2022) e o modelo de comunicação de incidente.",
+  "Manter o repositório público limpo: varredura de segredos antes de cada publicação e dados reais só no banco."
+ ],
+ "formacao_referencia": [
+  {
+   "nome": "CEDIA ESC-N — Residential Networking Specialist",
+   "instituicao": "CEDIA (Custom Electronics Design and Installation Association)",
+   "url": "https://cedia.org/en-us/smart-home-professionals/certifications/residential-networking-specialist-certification/",
+   "o_que_cobre": "Certificação de redes residenciais para técnicos experientes de integração."
+  },
+  {
+   "nome": "CEDIA ESC-D — Designer",
+   "instituicao": "CEDIA",
+   "url": "https://cedia.org/en-us/smart-home-professionals/certifications/esc-d-certification/",
+   "o_que_cobre": "Certificação de projetista de sistemas residenciais integrados (desenho, documentação, coordenação)."
+  },
+  {
+   "nome": "KNX Basic Course (KNX Partner)",
+   "instituicao": "KNX Association, ministrado por centros certificados",
+   "url": "https://www.knx.org/knx-en/for-professionals/get-started/get-certified/",
+   "o_que_cobre": "Curso de cerca de 30 horas com exame teórico e prático (topologia, dispositivos, ETS, KNX RF e par trançado); requisito para ser KNX Partner."
+  },
+  {
+   "nome": "Google IT Support Professional Certificate",
+   "instituicao": "Google, via Coursera",
+   "url": "https://www.coursera.org/professional-certificates/google-it-support",
+   "o_que_cobre": "Suporte de TI, redes, sistemas operacionais, administração de sistemas e segurança básica."
+  },
+  {
+   "nome": "Google Cybersecurity Professional Certificate",
+   "instituicao": "Google, via Coursera",
+   "url": "https://grow.google/certificates/cybersecurity/",
+   "o_que_cobre": "Frameworks, riscos, playbooks de resposta, segurança de redes e automação com Python (8 cursos)."
+  },
+  {
+   "nome": "Documentação do Home Assistant (ZHA, Thread, Matter, backups)",
+   "instituicao": "Home Assistant / Open Home Foundation",
+   "url": "https://www.home-assistant.io/integrations/zha/",
+   "o_que_cobre": "Configuração e boas práticas de Zigbee, coordenadores, interferência e backups."
+  },
+  {
+   "nome": "NIST CSF 2.0 Small Business Quick-Start Guide",
+   "instituicao": "NIST",
+   "url": "https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.1300.pdf",
+   "o_que_cobre": "Aplicação do CSF 2.0 em pequenas empresas, função por função."
+  },
+  {
+   "nome": "Guia e materiais para agentes de tratamento",
+   "instituicao": "ANPD — Autoridade Nacional de Proteção de Dados",
+   "url": "https://www.gov.br/anpd/pt-br",
+   "o_que_cobre": "Regulamentos, guias orientativos, comunicação de incidentes e regras para pequeno porte."
+  },
+  {
+   "nome": "Site Reliability Engineering e SRE Workbook (leitura gratuita)",
+   "instituicao": "Google",
+   "url": "https://sre.google/books/",
+   "o_que_cobre": "SLO, orçamento de erro, gestão de incidentes e cultura de postmortem."
+  }
+ ],
+ "bibliografia": [
+  {
+   "obra": "Site Reliability Engineering: How Google Runs Production Systems",
+   "autor": "Betsy Beyer, Chris Jones, Jennifer Petoff, Niall Richard Murphy (orgs.)"
+  },
+  {
+   "obra": "The Site Reliability Workbook",
+   "autor": "Betsy Beyer, Niall Richard Murphy, David K. Rensin, Kent Kawahara, Stephen Thorne (orgs.)"
+  },
+  {
+   "obra": "Accelerate: The Science of Lean Software and DevOps",
+   "autor": "Nicole Forsgren, Jez Humble, Gene Kim"
+  },
+  {
+   "obra": "The Phoenix Project",
+   "autor": "Gene Kim, Kevin Behr, George Spafford"
+  },
+  {
+   "obra": "The Practice of System and Network Administration",
+   "autor": "Thomas A. Limoncelli, Christina J. Hogan, Strata R. Chalup"
+  },
+  {
+   "obra": "Security Engineering (3ª ed., capítulos abertos online)",
+   "autor": "Ross Anderson"
+  },
+  {
+   "obra": "The Manager's Path",
+   "autor": "Camille Fournier"
+  },
+  {
+   "obra": "Practical IoT Hacking",
+   "autor": "Fotios Chantzis, Ioannis Stais, Paulino Calderon, Evangelos Deirmentzoglou, Beau Woods"
+  },
+  {
+   "obra": "Privacy by Design: The 7 Foundational Principles",
+   "autor": "Ann Cavoukian"
+  }
+ ],
+ "fontes": [
+  {
+   "titulo": "NIST CSF 2.0: Small Business Quick-Start Guide (SP 1300)",
+   "url": "https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.1300.pdf",
+   "o_que_extraiu": "Seis funções (Governar, Identificar, Proteger, Detectar, Responder, Recuperar) e aplicação a pequenas empresas."
+  },
+  {
+   "titulo": "The NIST Cybersecurity Framework (CSF) 2.0 (CSWP 29)",
+   "url": "https://nvlpubs.nist.gov/nistpubs/CSWP/NIST.CSWP.29.pdf",
+   "o_que_extraiu": "Estrutura oficial do CSF 2.0 e inclusão da função Governar."
+  },
+  {
+   "titulo": "CIS Controls — Implementation Group 1",
+   "url": "https://www.cisecurity.org/controls/implementation-groups/ig1",
+   "o_que_extraiu": "IG1 com 56 salvaguardas de higiene cibernética para empresas com poucos recursos."
+  },
+  {
+   "titulo": "OWASP IoT Top 10 2018 Mapping Project",
+   "url": "https://github.com/scriptingxss/OWASP-IoT-Top-10-2018-Mapping",
+   "o_que_extraiu": "Lista dos 10 riscos de IoT, começando por senhas fracas, adivinháveis ou fixas."
+  },
+  {
+   "titulo": "ETSI EN 303 645 V3.1.3 (2024-09)",
+   "url": "https://www.etsi.org/deliver/etsi_en/303600_303699/303645/03.01.03_60/en_303645v030103p.pdf",
+   "o_que_extraiu": "Provisões de segurança para IoT de consumo, incluindo ausência de senha padrão universal."
+  },
+  {
+   "titulo": "NISTIR 8259 Series",
+   "url": "https://www.nist.gov/itl/applied-cybersecurity/nist-cybersecurity-iot-program/nistir-8259-series",
+   "o_que_extraiu": "Linha de base de capacidades de cibersegurança de dispositivos IoT (8259A, 2020)."
+  },
+  {
+   "titulo": "Comunicado de incidente de segurança (CIS) — ANPD",
+   "url": "https://www.gov.br/anpd/pt-br/canais_atendimento/agente-de-tratamento/comunicado-de-incidente-de-seguranca-cis",
+   "o_que_extraiu": "Prazo de 3 dias úteis (Resolução CD/ANPD nº 15/2024), comunicação pelo encarregado ou representante do controlador, obrigatória quando há risco ou dano relevante."
+  },
+  {
+   "titulo": "Resolução CD/ANPD nº 2/2022 — agentes de tratamento de pequeno porte",
+   "url": "https://www.gov.br/anpd/pt-br/acesso-a-informacao/institucional/atos-normativos/regulamentacoes_anpd/resolucao-cd-anpd-no-2-de-27-de-janeiro-de-2022",
+   "o_que_extraiu": "Definição de agente de pequeno porte e prazos em dobro, inclusive para comunicação de incidente, com exceções."
+  },
+  {
+   "titulo": "Supabase Docs — Database Backups",
+   "url": "https://supabase.com/docs/guides/platform/backups",
+   "o_que_extraiu": "Plano Free sem backup automático (recomenda 'db dump'); Pro com 7 dias; PITR é complemento pago; backups não incluem objetos do Storage."
+  },
+  {
+   "titulo": "CISA — Data Backup Options",
+   "url": "https://www.cisa.gov/sites/default/files/publications/data_backup_options.pdf",
+   "o_que_extraiu": "Regra 3-2-1 de backup."
+  },
+  {
+   "titulo": "Home Assistant — Zigbee Home Automation (ZHA)",
+   "url": "https://www.home-assistant.io/integrations/zha/",
+   "o_que_extraiu": "Boas práticas de coordenador, extensão USB, interferência de USB 3.0 e Wi-Fi."
+  },
+  {
+   "titulo": "zigpy wiki — Generic best practice tips on improving Zigbee network range and stability",
+   "url": "https://github.com/zigpy/zigpy/wiki/Generic-best-practice-tips-on-improving-Zigbee-network-range-and-general-stability",
+   "o_que_extraiu": "Canais Zigbee 15/20/25, distância do roteador e cuidados com interferência."
+  },
+  {
+   "titulo": "Home Assistant — Common tasks: backups",
+   "url": "https://www.home-assistant.io/common-tasks/general/#backups",
+   "o_que_extraiu": "Backups automáticos, criptografia com kit de emergência e cópias fora do dispositivo."
+  },
+  {
+   "titulo": "ESPHome — Native API component",
+   "url": "https://esphome.io/components/api.html",
+   "o_que_extraiu": "Chave de criptografia da API (32 bytes base64) e referência ao guia de boas práticas de segurança."
+  },
+  {
+   "titulo": "CEDIA — ESC-N Residential Networking Specialist",
+   "url": "https://cedia.org/en-us/smart-home-professionals/certifications/residential-networking-specialist-certification/",
+   "o_que_extraiu": "Certificação de redes residenciais para integradores."
+  },
+  {
+   "titulo": "CEDIA — ESC-D Certification",
+   "url": "https://cedia.org/en-us/smart-home-professionals/certifications/esc-d-certification/",
+   "o_que_extraiu": "Certificação de projetista de sistemas integrados."
+  },
+  {
+   "titulo": "KNX — Get Certified",
+   "url": "https://www.knx.org/knx-en/for-professionals/get-started/get-certified/",
+   "o_que_extraiu": "Curso básico como requisito para KNX Partner; conteúdo e exame."
+  },
+  {
+   "titulo": "Google Cybersecurity Certificate",
+   "url": "https://grow.google/certificates/cybersecurity/",
+   "o_que_extraiu": "Conteúdo do certificado de cibersegurança (8 cursos)."
+  },
+  {
+   "titulo": "DORA — Four Keys / software delivery metrics",
+   "url": "https://dora.dev/guides/dora-metrics-four-keys/",
+   "o_que_extraiu": "Definições de tempo de entrega, frequência, taxa de falha de mudança, tempo de recuperação e retrabalho."
+  },
+  {
+   "titulo": "Google SRE Workbook — Postmortem Culture",
+   "url": "https://sre.google/workbook/postmortem-culture/",
+   "o_que_extraiu": "Postmortem sem culpa, modelos e gestão de ações; orçamento de erro = 1 − SLO."
+  },
+  {
+   "titulo": "ISACA — COBIT 2019 and COBIT 5 Comparison",
+   "url": "https://www.isaca.org/resources/news-and-trends/industry-news/2020/cobit-2019-and-cobit-5-comparison",
+   "o_que_extraiu": "40 objetivos de governança e gestão e fatores de desenho do COBIT 2019."
+  },
+  {
+   "titulo": "ISO/IEC 27001 (Wikipedia, visão geral)",
+   "url": "https://en.wikipedia.org/wiki/ISO/IEC_27001",
+   "o_que_extraiu": "Versão 2022 com 93 controles no Anexo A em quatro temas."
+  },
+  {
+   "titulo": "Verizon 2025 Data Breach Investigations Report",
+   "url": "https://www.verizon.com/business/resources/reports/2025-dbir-data-breach-investigations-report.pdf",
+   "o_que_extraiu": "Cerca de 60% das violações com elemento humano; envolvimento de terceiros dobrou de 15% para 30%."
+  },
+  {
+   "titulo": "Bitwarden — Password Manager Plans",
+   "url": "https://bitwarden.com/help/password-manager-plans/",
+   "o_que_extraiu": "Organização gratuita para compartilhamento seguro entre dois usuários."
+  },
+  {
+   "titulo": "Thread Border Router White Paper (Thread Group)",
+   "url": "https://www.threadgroup.org/Portals/0/documents/support/ThreadBorderRouterWhitePaper_07192022_4001_1.pdf",
+   "o_que_extraiu": "Papel do roteador de borda Thread e redes Thread compartilhadas usadas pelo Matter."
+  },
+  {
+   "titulo": "Homologação ANATEL: o que é e quem precisa fazer (Yescert)",
+   "url": "https://yescert.com.br/blog/anatel/homologacao-anatel-o-que-e-quem-precisa-fazer/",
+   "o_que_extraiu": "Produtos com radiofrequência (Wi-Fi, Bluetooth, Zigbee) sujeitos a homologação obrigatória para comercialização; uso próprio por declaração de conformidade (confirmar no site da Anatel)."
+  }
+ ]
+};

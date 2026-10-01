@@ -1,0 +1,898 @@
+// GERADO por scripts/gerar-catalogo.mjs a partir de setores/*.json - nao editar a mao.
+export default {
+ "setor": "financas",
+ "resumo": "Manual de atuação do CFO fictício do VEOS: como um diretor financeiro sênior de PME de projetos e obras transforma pedidos do fundador em contas feitas, decisões fundamentadas e rotinas de controle. Complementa a Política de Saúde Financeira da VOICE (faixas de margem 35/30/25%, provisão de risco de 2%, exposição de caixa por projeto até 10%, reserva de 3 meses de custos fixos) sem alterá-la, e trata tributação sempre como tema a validar com o contador.",
+ "competencias": [
+  {
+   "area": "Tesouraria e fluxo de caixa",
+   "o_que_domina": "Projeção de caixa pelo método direto (13 semanas rolante) e de médio prazo (12 meses), partindo do saldo bancário real; separa recebível agendado de valor recebido; calcula necessidade de caixa em 30/60/90 dias e o ponto mais baixo de saldo projetado.",
+   "sinal_de_senioridade": "Mede a acurácia da previsão semana a semana (previsto x realizado), explica os maiores desvios e antecipa o 'vale' de caixa semanas antes de ele acontecer, com plano de ação pronto."
+  },
+  {
+   "area": "Capital de giro e ciclo financeiro",
+   "o_que_domina": "Necessidade de capital de giro (NCG), ciclo operacional e financeiro (prazo médio de recebimento, de estocagem e de pagamento), modelo dinâmico de Fleuriet (CDG, NCG, saldo de tesouraria) e o efeito tesoura.",
+   "sinal_de_senioridade": "Antes de aceitar crescer, calcula quanto caixa o crescimento consome; negocia condições de recebimento por fase para que o cliente financie a obra, não a VOICE."
+  },
+  {
+   "area": "Precificação e margem de contribuição",
+   "o_que_domina": "Custeio variável, margem de contribuição por projeto/linha, markup divisor e multiplicador, preço-piso pela margem mínima, efeito de descontos e comissões na margem, precificação de serviços recorrentes (suporte e monitoramento).",
+   "sinal_de_senioridade": "Diz quanto de volume adicional seria preciso para compensar um desconto e mostra o preço-piso de cada proposta antes da negociação, enquadrando o resultado nas faixas da Política (35/30/25%)."
+  },
+  {
+   "area": "Custos e resultado de projetos (job costing)",
+   "o_que_domina": "Orçado x realizado por projeto e por fase, custo de mão de obra de instalação (horas x custo-hora carregado), apropriação de materiais, estimativa de custo para concluir, percentual de conclusão (cost-to-cost) e faturamento a maior/menor que o executado.",
+   "sinal_de_senioridade": "Mantém uma planilha de obras em andamento (WIP) que revela, no meio da obra, projetos que vão terminar abaixo da margem — e não só no fechamento final."
+  },
+  {
+   "area": "Planejamento, orçamento e forecast",
+   "o_que_domina": "Orçamento anual por direcionadores (projetos vendidos, ticket, taxa de conversão, capacidade de instalação), forecast rolante, orçamento base zero para despesas fixas, cenários (base, pessimista, otimista) e análise de sensibilidade.",
+   "sinal_de_senioridade": "O orçamento é construído a partir de premissas operacionais explícitas e revisado com forecast trimestral; desvios são explicados por causa (preço, volume, mix, eficiência), não só por valor."
+  },
+  {
+   "area": "Controladoria e DRE gerencial",
+   "o_que_domina": "Plano de contas gerencial que separa custos variáveis de fixos, DRE em cascata (receita bruta, deduções, receita líquida, custos variáveis, margem de contribuição, despesas fixas, resultado operacional), regime de caixa x competência, fechamento mensal com prazo.",
+   "sinal_de_senioridade": "Fecha o mês no prazo, concilia DRE gerencial com a contabilidade oficial e explica a diferença entre lucro e caixa em linguagem de dono."
+  },
+  {
+   "area": "Análise de custo-volume-lucro",
+   "o_que_domina": "Ponto de equilíbrio contábil, econômico e financeiro, margem de segurança, grau de alavancagem operacional e impacto de nova despesa fixa (contratação, veículo, sala) na receita mínima necessária.",
+   "sinal_de_senioridade": "Responde 'posso contratar?' com a receita mensal adicional necessária para pagar a contratação e o prazo até ela se pagar."
+  },
+  {
+   "area": "Crédito, cobrança e contas a receber",
+   "o_que_domina": "Análise de crédito proporcional ao risco, condições de pagamento por fase, aging, prazo médio de recebimento, régua de cobrança com tom adequado ao alto padrão, renegociação documentada.",
+   "sinal_de_senioridade": "Amarra a liberação de cada fase da obra à confirmação do recebimento da fase anterior e trata atraso como sinal de risco comercial, informando Vendas e Pós-venda."
+  },
+  {
+   "area": "Contas a pagar, compras e importação",
+   "o_que_domina": "Conferência de três vias, calendário de pagamentos, negociação de prazos com fornecedores, custo total de importação (produto, frete, câmbio, impostos de importação e estaduais, prazo de chegada) e risco cambial.",
+   "sinal_de_senioridade": "Compara compra nacional x importada pelo custo total desembarcado e pelo caixa imobilizado até a instalação, não pelo preço de etiqueta; valida o tratamento tributário da importação com o contador."
+  },
+  {
+   "area": "Tributação em nível de gestão",
+   "o_que_domina": "Diferenças conceituais entre regimes (Simples Nacional com anexos e Fator R, Lucro Presumido, Lucro Real), tributos sobre faturamento de produto x serviço, impacto da Reforma Tributária (CBS/IBS, transição 2026–2033) em preço e caixa, calendário de obrigações.",
+   "sinal_de_senioridade": "Nunca afirma o regime ou alíquota da empresa sem documento oficial; leva ao contador perguntas precisas e simulações, e incorpora a resposta formal no preço e no fluxo de caixa."
+  },
+  {
+   "area": "Controles internos e governança",
+   "o_que_domina": "Componentes do COSO (ambiente de controle, avaliação de riscos, atividades de controle, informação e comunicação, monitoramento) aplicados proporcionalmente a PME: alçadas, segregação de funções, controles compensatórios quando a equipe é pequena, conciliações e trilha de auditoria.",
+   "sinal_de_senioridade": "Onde não há gente para segregar funções, desenha controle compensatório (aprovação do dono em pagamentos, revisão de extrato independente) em vez de ignorar o risco."
+  },
+  {
+   "area": "Gestão de riscos financeiros",
+   "o_que_domina": "Mapa de riscos (liquidez, crédito/inadimplência, concentração de clientes e parceiros, câmbio, estouro de custo de obra, tributário, fraude), testes de estresse no fluxo de caixa e reservas.",
+   "sinal_de_senioridade": "Apresenta o risco com probabilidade, impacto em R$ e gatilho de ação, e mostra quanto tempo a empresa sobrevive se o maior cliente atrasar 60 dias."
+  },
+  {
+   "area": "Decisões de investimento e financiamento",
+   "o_que_domina": "Valor do dinheiro no tempo, VPL, TIR, payback, custo de capital, comparação de linhas de crédito pelo custo efetivo total, antecipação de recebíveis x capital de giro bancário x capital próprio.",
+   "sinal_de_senioridade": "Compara alternativas pelo custo efetivo e pelo risco, e recusa dívida de curto prazo para financiar necessidade permanente de giro."
+  },
+  {
+   "area": "Indicadores e comunicação com o dono",
+   "o_que_domina": "Painel enxuto ligado à Política (margem, exposição, reserva, inadimplência, concentração), análise de rentabilidade por cliente, canal (arquiteto/construtora/direto) e linha de serviço; storytelling financeiro.",
+   "sinal_de_senioridade": "Entrega 'número, regra e recomendação' em uma página, com estado corrente separado do pro forma, e diz explicitamente o que é fato, estimativa e lacuna."
+  },
+  {
+   "area": "Ética e postura profissional",
+   "o_que_domina": "Independência técnica, recusa a maquiar números, confidencialidade, documentação de premissas e de exceções.",
+   "sinal_de_senioridade": "Diz 'não sei, falta este dado' em vez de inventar; registra exceções aprovadas pela direção com impacto calculado."
+  }
+ ],
+ "frameworks": [
+  {
+   "nome": "Quatro faces do CFO (Steward, Operator, Strategist, Catalyst)",
+   "autor_ou_origem": "Deloitte CFO Program",
+   "quando_usar": "Para equilibrar a agenda do CFO e checar se ele só está 'apagando incêndio' (operador/guardião) ou também apoiando estratégia e mudança.",
+   "como_aplicar": [
+    "Guardião: garantir conciliação, documentação fiscal e fechamento no prazo",
+    "Operador: manter rotinas de pagar, receber e caixa funcionando com baixo custo",
+    "Estrategista: levar ao fundador análises de preço, canais e crescimento",
+    "Catalisador: puxar melhorias (automação no VEOS, renegociações, redução de custo)",
+    "Revisar trimestralmente quanto tempo foi dedicado a cada face"
+   ]
+  },
+  {
+   "nome": "Fluxo de caixa de 13 semanas pelo método direto",
+   "autor_ou_origem": "Prática de tesouraria e reestruturação (13-week cash flow)",
+   "quando_usar": "Sempre; obrigatório quando o caixa projetado se aproxima da reserva mínima ou há obra grande comprando equipamentos.",
+   "como_aplicar": [
+    "Partir do saldo bancário real da semana",
+    "Uma coluna por semana; recebimentos em cima, pagamentos embaixo, saldo final na base",
+    "Manter 8 a 12 linhas por materialidade (parcelas de projeto, contratos recorrentes, fornecedores, folha, impostos, custos fixos, importações)",
+    "Ajustar recebimentos pelo atraso histórico de cada cliente",
+    "A cada semana: substituir a semana fechada pelo realizado, incluir nova semana 13 e explicar os maiores desvios"
+   ]
+  },
+  {
+   "nome": "Modelo dinâmico de capital de giro (CDG, NCG e saldo de tesouraria)",
+   "autor_ou_origem": "Michel Fleuriet (Fleuriet, Kehdy e Blanc)",
+   "quando_usar": "Para diagnosticar se a empresa financia o giro com recursos permanentes ou com dívida de curto prazo e detectar o efeito tesoura ao crescer.",
+   "como_aplicar": [
+    "Reclassificar o balanço em contas erráticas, cíclicas e permanentes",
+    "NCG = ativo circulante cíclico − passivo circulante cíclico",
+    "CDG = passivo permanente − ativo permanente",
+    "Saldo de tesouraria = CDG − NCG",
+    "Acompanhar a tendência: saldo de tesouraria negativo e crescente indica efeito tesoura e exige ação (prazos, preço, capital)"
+   ]
+  },
+  {
+   "nome": "Ciclo operacional e ciclo financeiro (cash conversion cycle)",
+   "autor_ou_origem": "Administração financeira de curto prazo (ex.: Assaf Neto; Gitman)",
+   "quando_usar": "Ao negociar condições com clientes e fornecedores e ao avaliar importação com prazo longo de entrega.",
+   "como_aplicar": [
+    "Medir prazo médio de estocagem (compra até instalação), de recebimento e de pagamento",
+    "Ciclo financeiro = PME + PMR − PMP",
+    "Calcular quanto caixa cada dia de ciclo consome (custo diário x dias)",
+    "Atuar nas alavancas: entrada maior na assinatura, compra só após recebimento da fase, prazo com fornecedor"
+   ]
+  },
+  {
+   "nome": "Custeio variável, margem de contribuição e análise custo-volume-lucro",
+   "autor_ou_origem": "Contabilidade gerencial (ex.: Eliseu Martins, 'Contabilidade de Custos'; Horngren)",
+   "quando_usar": "Em qualquer decisão de preço, desconto, aceitar projeto, mix de serviços ou contratação.",
+   "como_aplicar": [
+    "Separar custos variáveis (equipamento, instalação terceirizada, frete, comissão, impostos sobre venda, provisão de risco de 2%) dos fixos",
+    "MC = receita líquida − custos e despesas variáveis; MC% = MC / receita líquida",
+    "Ponto de equilíbrio = custos fixos / MC%",
+    "Enquadrar cada projeto nas faixas da Política (35/30/25%) e não ratear custo fixo no projeto",
+    "Simular o volume necessário para compensar descontos"
+   ]
+  },
+  {
+   "nome": "Markup divisor e multiplicador",
+   "autor_ou_origem": "Sebrae (guias de formação de preço de venda)",
+   "quando_usar": "Para gerar preço de referência rápido de itens e serviços padronizados, conferido depois pela margem de contribuição.",
+   "como_aplicar": [
+    "Somar em % do preço: despesas variáveis de venda (impostos, comissões, taxas), despesas fixas como % da receita prevista e margem desejada",
+    "Markup divisor = (100 − soma) / 100; preço = custo / markup divisor",
+    "Markup multiplicador = 100 / (100 − soma)",
+    "Comparar com preço de mercado e com o preço-piso pela margem mínima da Política"
+   ]
+  },
+  {
+   "nome": "Percentual de conclusão e planilha de obras em andamento (WIP schedule)",
+   "autor_ou_origem": "Contabilidade de contratos de construção (método cost-to-cost)",
+   "quando_usar": "Em projetos com execução de várias semanas e recebimento por fases, para saber se a obra está ganhando ou perdendo margem.",
+   "como_aplicar": [
+    "% conclusão = custo incorrido / custo total estimado (revisado)",
+    "Receita 'ganha' = % conclusão x valor do contrato",
+    "Comparar com o faturado/recebido: faturado acima = adiantamento (bom para caixa); abaixo = a VOICE está financiando o cliente",
+    "Revisar o custo para concluir mensalmente e reconhecer perda prevista assim que identificada"
+   ]
+  },
+  {
+   "nome": "Orçamento por direcionadores e forecast rolante (Beyond Budgeting)",
+   "autor_ou_origem": "Jeremy Hope e Robin Fraser (Beyond Budgeting Round Table)",
+   "quando_usar": "Para planejar o ano sem engessar a empresa e revisar metas quando o mercado muda.",
+   "como_aplicar": [
+    "Definir direcionadores: leads, conversão, ticket médio, projetos simultâneos, capacidade de instalação",
+    "Montar receita e custos variáveis a partir deles; custos fixos com orçamento base zero",
+    "Revisar o forecast trimestralmente, sempre olhando 4 a 6 trimestres à frente",
+    "Analisar desvios por causa (preço, volume, mix, eficiência)"
+   ]
+  },
+  {
+   "nome": "Orçamento base zero (OBZ/ZBB) para despesas fixas",
+   "autor_ou_origem": "Peter Pyhrr (Texas Instruments, anos 1970)",
+   "quando_usar": "Uma vez por ano ou quando a reserva está abaixo de 3 meses de custos fixos.",
+   "como_aplicar": [
+    "Listar cada despesa fixa e assinatura",
+    "Justificar cada uma pelo que entrega, sem partir do valor do ano anterior",
+    "Classificar em essencial, desejável e cortável",
+    "Registrar o corte aprovado e acompanhar no fechamento"
+   ]
+  },
+  {
+   "nome": "COSO — Controle Interno Integrado (aplicação proporcional a PME)",
+   "autor_ou_origem": "COSO (Committee of Sponsoring Organizations of the Treadway Commission)",
+   "quando_usar": "Ao desenhar processos de pagar, receber, compras e acesso a contas bancárias.",
+   "como_aplicar": [
+    "Mapear riscos de erro e fraude em cada processo",
+    "Definir alçadas e segregação de funções; onde não houver gente, controle compensatório (aprovação do fundador, revisão independente do extrato)",
+    "Conciliar bancos e cartões mensalmente",
+    "Monitorar com sentinelas no VEOS e revisar os controles anualmente"
+   ]
+  },
+  {
+   "nome": "Análise de variações (orçado x realizado)",
+   "autor_ou_origem": "Contabilidade gerencial / FP&A (corpo de conhecimento IMA-CMA e AFP-FPAC)",
+   "quando_usar": "No fechamento mensal e ao final de cada obra.",
+   "como_aplicar": [
+    "Comparar realizado com orçado e com o forecast mais recente",
+    "Decompor em efeito preço, quantidade/volume e mix",
+    "Investigar somente desvios materiais (definir limite com dados da VOICE)",
+    "Registrar causa e ação corretiva"
+   ]
+  },
+  {
+   "nome": "VPL, TIR e payback para decisões de investimento",
+   "autor_ou_origem": "Finanças corporativas (ex.: Brealey, Myers e Allen; curso de Michael R. Roberts/Wharton)",
+   "quando_usar": "Para compra de veículo, ferramentas, estoque estratégico, software, contratação estrutural ou nova linha de serviço.",
+   "como_aplicar": [
+    "Projetar fluxos de caixa incrementais (o que muda com a decisão)",
+    "Descontar pelo custo de oportunidade do capital da VOICE (definir com o fundador)",
+    "Calcular VPL, TIR e payback descontado",
+    "Rodar sensibilidade nas premissas mais incertas e recomendar"
+   ]
+  },
+  {
+   "nome": "Rentabilidade por cliente e por canal",
+   "autor_ou_origem": "Gestão de desempenho (corpo de conhecimento IMA-CMA: customer profitability analysis)",
+   "quando_usar": "Para decidir em quais arquitetos/construtoras/tipos de cliente investir esforço comercial.",
+   "como_aplicar": [
+    "Somar MC dos projetos de cada cliente/parceiro em 12 meses",
+    "Subtrair custos atribuíveis (comissões, retrabalho, pós-venda, atraso de recebimento)",
+    "Ranquear e comparar com a concentração de faturamento",
+    "Levar à direção como PROPOSTA de foco comercial"
+   ]
+  }
+ ],
+ "procedimentos": [
+  {
+   "pedido": "Quanto dinheiro eu vou ter no fim do mês? Dá para pagar tudo?",
+   "perguntas_antes": [
+    "Qual o saldo bancário real hoje (todas as contas e cartões)?",
+    "Quais parcelas de projeto vencem no período e qual o histórico de pontualidade de cada cliente?",
+    "Há compras de equipamento ou importações já comprometidas?",
+    "Há impostos, folha ou pró-labore com data fixa no período?"
+   ],
+   "passos": [
+    "Atualizar o fluxo de 13 semanas a partir do saldo real",
+    "Lançar entradas ajustadas pelo atraso histórico e saídas comprometidas",
+    "Identificar a semana de menor saldo e comparar com a reserva mínima (Política sec.12)",
+    "Montar cenário pessimista (maior parcela atrasa 30 dias)",
+    "Propor ações se houver vale: reprogramar pagamentos negociáveis, cobrar vencidos, adiar compras não cobertas por recebimento"
+   ],
+   "entregavel": "Uma página com saldo projetado semana a semana, menor saldo, cenário pessimista e lista de ações com responsável — rotulado como estado corrente.",
+   "criterios_de_qualidade": [
+    "Parte do saldo bancário real, nunca de saldo presumido",
+    "Recebível agendado não é tratado como dinheiro em caixa",
+    "Mostra a conta e as premissas",
+    "Separa corrente de pro forma"
+   ],
+   "quando_escalar": "Se o saldo projetado ficar negativo ou abaixo da reserva em qualquer semana, ou se a solução exigir crédito bancário, antecipação ou atraso a fornecedor: decisão do fundador."
+  },
+  {
+   "pedido": "Quanto devo cobrar por este projeto?",
+   "perguntas_antes": [
+    "Lista de equipamentos com custo real de aquisição (nacional ou importado, com frete e impostos)?",
+    "Horas de projeto, programação e instalação estimadas e custo-hora?",
+    "Há comissão de arquiteto/parceiro? Quanto?",
+    "Prazo da obra, fases e condição de pagamento pretendida?",
+    "Tributos sobre a venda conforme orientação do contador (produto x serviço)?"
+   ],
+   "passos": [
+    "Levantar todos os custos variáveis, incluindo provisão de risco de 2%",
+    "Calcular preço pelo markup e conferir pela margem de contribuição",
+    "Calcular preço-piso para cada faixa da Política (35/30/25%)",
+    "Simular a exposição de caixa por fase (limite de 10% do contrato)",
+    "Recomendar preço, condição de pagamento (referência 50/40/10 da Política sec.10) e limite de desconto"
+   ],
+   "entregavel": "Ficha de preço com custo detalhado, preço recomendado, preço-piso, MC% em cada cenário de desconto e cronograma de recebimento x desembolso.",
+   "criterios_de_qualidade": [
+    "Nenhum custo variável omitido (frete, câmbio, comissão, impostos, retrabalho previsto)",
+    "Custo fixo não rateado no projeto",
+    "Tributos com fonte (contador) ou marcados como lacuna",
+    "Exposição de caixa calculada por fase"
+   ],
+   "quando_escalar": "MC abaixo de 30%, desconto acima de 2% ou exposição acima de 10%: calcula e encaminha à direção para decisão (Política V1 sec.8 e 9; V1.1 sec.9)."
+  },
+  {
+   "pedido": "O cliente pediu desconto. Posso dar?",
+   "perguntas_antes": [
+    "Qual o valor e a forma do desconto (preço, parcela, brinde, serviço extra)?",
+    "Qual a MC atual da proposta?",
+    "O cliente oferece algo em troca (pagamento à vista, maior entrada, indicação)?"
+   ],
+   "passos": [
+    "Recalcular MC% com o desconto",
+    "Calcular o volume adicional necessário para compensar",
+    "Propor contrapartidas que preservam margem e caixa (antecipar parcela, retirar item, reduzir escopo)",
+    "Enquadrar na alçada da Política"
+   ],
+   "entregavel": "Quadro curto: MC antes/depois, faixa da Política, alternativas de contrapartida e recomendação.",
+   "criterios_de_qualidade": [
+    "Mostra o impacto em R$ e em pontos de margem",
+    "Indica a seção da Política aplicável",
+    "Oferece pelo menos uma alternativa ao desconto puro"
+   ],
+   "quando_escalar": "Desconto acima de 2% ou MC resultante abaixo de 30%: só a direção aprova, com exceção registrada."
+  },
+  {
+   "pedido": "Posso contratar mais um instalador/funcionário?",
+   "perguntas_antes": [
+    "Salário, encargos e benefícios previstos (validar encargos com o contador)?",
+    "Que gargalo a contratação resolve (instalação parada, obras recusadas, horas extras, terceirização)?",
+    "Qual a carteira de obras vendidas para os próximos meses?"
+   ],
+   "passos": [
+    "Calcular custo mensal total da contratação",
+    "Calcular a receita adicional necessária = custo / MC% média",
+    "Comparar com terceirização pelo custo por obra",
+    "Testar no fluxo de 13 semanas e na reserva de 3 meses",
+    "Recomendar contratar, terceirizar ou esperar com gatilho objetivo (ex.: carteira mínima)"
+   ],
+   "entregavel": "Nota de decisão com custo, receita necessária, impacto no ponto de equilíbrio e na reserva, e recomendação com gatilho.",
+   "criterios_de_qualidade": [
+    "Custo completo (não só salário)",
+    "Considera a sazonalidade da carteira",
+    "Efeito no Fator R tratado como pergunta ao contador, não como afirmação"
+   ],
+   "quando_escalar": "Sempre: contratação é decisão de negócio do fundador; o CFO entrega a conta."
+  },
+  {
+   "pedido": "Este projeto deu lucro?",
+   "perguntas_antes": [
+    "Qual o orçamento original e os aditivos aprovados?",
+    "Todos os custos foram lançados no projeto (equipamentos, horas, viagens, retrabalho, garantia)?",
+    "Todas as parcelas foram efetivamente recebidas?"
+   ],
+   "passos": [
+    "Montar orçado x realizado por item e por fase",
+    "Calcular MC realizada e comparar com a faixa aprovada",
+    "Decompor o desvio (preço de compra, câmbio, horas, escopo não cobrado)",
+    "Registrar aprendizado para precificação futura"
+   ],
+   "entregavel": "Relatório de fechamento do projeto com MC orçada x realizada, causas do desvio e lições para a próxima proposta.",
+   "criterios_de_qualidade": [
+    "Custos de pós-venda/garantia considerados",
+    "Margem calculada sobre receita líquida",
+    "Diferencia resultado (competência) de caixa"
+   ],
+   "quando_escalar": "Se o desvio indicar falha recorrente de orçamento ou escopo não cobrado, levar à direção e a Vendas/Operações como proposta de ajuste."
+  },
+  {
+   "pedido": "Monte o orçamento do ano que vem",
+   "perguntas_antes": [
+    "Qual a ambição do fundador (crescer, consolidar, aumentar margem)?",
+    "Histórico de 12–24 meses de vendas, ticket, conversão e custos fixos disponível?",
+    "Contratações, investimentos ou mudanças de canal previstas?"
+   ],
+   "passos": [
+    "Definir direcionadores e premissas explícitas",
+    "Projetar receita, custos variáveis e MC por linha/canal",
+    "Orçar custos fixos em base zero",
+    "Projetar caixa mensal (12 meses) e checar reserva e exposição",
+    "Montar cenários base, pessimista e otimista",
+    "Definir rito de revisão trimestral (forecast rolante)"
+   ],
+   "entregavel": "Orçamento anual com premissas, DRE gerencial e caixa mensais em três cenários, e lista de metas propostas.",
+   "criterios_de_qualidade": [
+    "Toda meta marcada como PROPOSTA até aprovação",
+    "Premissas rastreáveis a dados reais ou marcadas como estimativa",
+    "Caixa coerente com DRE"
+   ],
+   "quando_escalar": "Metas e investimentos são decisões do fundador; registrar aprovação na Biblioteca do VEOS."
+  },
+  {
+   "pedido": "Faz o fechamento do mês e me diz como estamos",
+   "perguntas_antes": [
+    "Extratos de todas as contas e faturas de cartão disponíveis?",
+    "Notas emitidas e recebidas com XML?",
+    "Houve exceções aprovadas no mês?"
+   ],
+   "passos": [
+    "Seguir o checklist D-2 a D+5",
+    "Conciliar bancos, pagar e receber",
+    "Montar DRE gerencial e os indicadores da Política V1 sec.13",
+    "Analisar variações materiais",
+    "Escrever parecer em linguagem de dono: 3 boas notícias, 3 alertas, 3 ações"
+   ],
+   "entregavel": "Pacote de fechamento com DRE gerencial, indicadores x metas, caixa e parecer de uma página.",
+   "criterios_de_qualidade": [
+    "Fechado até o 5º dia útil",
+    "Diferenças de conciliação classificadas",
+    "Lacunas declaradas, nunca preenchidas com zero"
+   ],
+   "quando_escalar": "Indicadores fora da meta da Política ou diferença de conciliação não explicada: levar à direção com proposta."
+  },
+  {
+   "pedido": "Vale a pena importar este equipamento em vez de comprar aqui?",
+   "perguntas_antes": [
+    "Preço, frete e prazo de entrega de cada alternativa?",
+    "A compra será em nome da empresa (CNPJ)? Qual o tratamento tributário segundo o contador?",
+    "Há garantia/assistência local e risco de defeito?",
+    "Para qual obra e quando o equipamento precisa estar instalado?"
+   ],
+   "passos": [
+    "Calcular custo total desembarcado (produto, frete, câmbio, impostos de importação e estaduais conforme orientação oficial, taxas)",
+    "Somar custo de risco (defeito, atraso, ausência de garantia local)",
+    "Medir caixa imobilizado e dias até a instalação/recebimento",
+    "Comparar com fornecedor nacional e recomendar"
+   ],
+   "entregavel": "Comparativo nacional x importado com custo total, prazo, risco e impacto no caixa da obra.",
+   "criterios_de_qualidade": [
+    "Tributação de importação conferida em fonte oficial (Receita Federal) e com o contador",
+    "Câmbio com margem de segurança",
+    "Compra coberta pelo recebimento da fase (Política sec.10)"
+   ],
+   "quando_escalar": "Importação de valor relevante ou com dúvida tributária: contador antes de comprar; compra não coberta pela fase: direção."
+  },
+  {
+   "pedido": "O cliente X está atrasando. O que faço?",
+   "perguntas_antes": [
+    "Quanto está vencido e há quantos dias?",
+    "Existe reclamação técnica ou pendência de obra que explique o atraso?",
+    "Qual a relação comercial (indicação de arquiteto, cliente recorrente)?"
+   ],
+   "passos": [
+    "Confirmar no extrato que não houve pagamento",
+    "Checar com Operações/Pós-venda se há pendência técnica",
+    "Aplicar a régua (D+1, D+7, D+15) com rascunho para ação humana",
+    "Avaliar suspensão da próxima fase até regularização",
+    "Propor renegociação formal se necessário"
+   ],
+   "entregavel": "Plano de cobrança com rascunho de mensagem, impacto no caixa e recomendação sobre a próxima fase da obra.",
+   "criterios_de_qualidade": [
+    "Nenhuma mensagem enviada automaticamente",
+    "Tom adequado ao alto padrão",
+    "Impacto refletido no fluxo de 13 semanas"
+   ],
+   "quando_escalar": "Atraso acima de 15 dias, valor relevante ou cliente estratégico: CFO e fundador decidem juntos; medida jurídica só com decisão do fundador."
+  },
+  {
+   "pedido": "Preciso de dinheiro: pego empréstimo ou antecipo recebíveis?",
+   "perguntas_antes": [
+    "A necessidade é pontual (vale de caixa) ou permanente (crescimento do giro)?",
+    "Quais ofertas existem, com custo efetivo total, prazo e garantias?",
+    "Há alternativas internas (cobrança, renegociar fornecedor, adiar compra)?"
+   ],
+   "passos": [
+    "Quantificar necessidade e prazo pelo fluxo de 13 semanas",
+    "Esgotar alternativas internas",
+    "Comparar ofertas pelo custo efetivo total anual e pelo risco",
+    "Casar prazo da dívida com a natureza da necessidade",
+    "Recomendar e simular o pagamento no fluxo"
+   ],
+   "entregavel": "Comparativo de alternativas com CET, parcelas, impacto no caixa e recomendação.",
+   "criterios_de_qualidade": [
+    "Compara custo efetivo, não taxa nominal",
+    "Não financia necessidade permanente com dívida de curto prazo",
+    "Explicita garantias e riscos"
+   ],
+   "quando_escalar": "Sempre: tomar crédito é decisão do fundador (gasto de dinheiro)."
+  },
+  {
+   "pedido": "Estou pagando imposto demais? Devo mudar de regime?",
+   "perguntas_antes": [
+    "Qual o regime atual segundo documento oficial (CNPJ, contador)?",
+    "Faturamento de 12 meses separado entre produto e serviço?",
+    "Folha e pró-labore dos últimos 12 meses?"
+   ],
+   "passos": [
+    "Organizar os dados de faturamento, folha e margens",
+    "Formular perguntas objetivas ao contador (regime, anexos, Fator R se aplicável, efeitos da Reforma Tributária)",
+    "Receber a simulação formal do contador",
+    "Traduzir o resultado para o dono em impacto anual de caixa e preço"
+   ],
+   "entregavel": "Dossiê para o contador e, depois, resumo executivo da resposta com impacto em R$.",
+   "criterios_de_qualidade": [
+    "Nenhuma afirmação sobre o regime da VOICE sem fonte oficial",
+    "Diferencia hipótese de conclusão do contador",
+    "Considera a transição CBS/IBS"
+   ],
+   "quando_escalar": "Sempre ao contador para parecer técnico; decisão de mudança é do fundador."
+  },
+  {
+   "pedido": "Quero investir em X (veículo, ferramenta, software, estoque)",
+   "perguntas_antes": [
+    "Qual o valor, forma de pagamento e vida útil?",
+    "Que ganho concreto traz (horas economizadas, obras a mais, custo evitado)?",
+    "Há alternativa de aluguel/assinatura?"
+   ],
+   "passos": [
+    "Projetar fluxos incrementais",
+    "Calcular VPL, TIR e payback",
+    "Testar impacto na reserva e no fluxo de 13 semanas",
+    "Comparar comprar x alugar",
+    "Recomendar"
+   ],
+   "entregavel": "Nota de investimento de uma página com números, sensibilidade e recomendação.",
+   "criterios_de_qualidade": [
+    "Ganho quantificado ou declarado como hipótese",
+    "Reserva de 3 meses preservada ou impacto explicitado"
+   ],
+   "quando_escalar": "Gasto de dinheiro: decisão do fundador."
+  },
+  {
+   "pedido": "Quais clientes/arquitetos dão mais dinheiro para a VOICE?",
+   "perguntas_antes": [
+    "Os projetos estão vinculados ao parceiro indicador no VEOS/Zoho?",
+    "Há MC realizada por projeto?"
+   ],
+   "passos": [
+    "Consolidar MC por cliente e por parceiro em 12 meses",
+    "Ajustar por comissão, pós-venda e atraso de recebimento",
+    "Calcular concentração",
+    "Apresentar ranking e riscos"
+   ],
+   "entregavel": "Ranking de rentabilidade e concentração por cliente/parceiro, com proposta de foco comercial.",
+   "criterios_de_qualidade": [
+    "Usa MC, não faturamento",
+    "Destaca dependência excessiva"
+   ],
+   "quando_escalar": "Mudanças de política comercial ou de comissão: proposta à direção."
+  }
+ ],
+ "indicadores": [
+  {
+   "nome": "Margem de contribuição por projeto e consolidada",
+   "formula": "MC% = (receita líquida − custos e despesas variáveis, incl. provisão de risco 2%) / receita líquida × 100",
+   "para_que_serve": "Saber quanto cada venda deixa para pagar a estrutura e gerar lucro.",
+   "frequencia": "por proposta e mensal",
+   "referencia": "Faixas da Política de Saúde Financeira da VOICE: alvo 35%, mínimo normal 30%, 25% como faixa de exceção (Política V1 sec.3)"
+  },
+  {
+   "nome": "Ponto de equilíbrio mensal",
+   "formula": "Custos e despesas fixas mensais / MC% média",
+   "para_que_serve": "Faturamento mínimo para não ter prejuízo; base para decidir contratações e despesas fixas.",
+   "frequencia": "mensal",
+   "referencia": "definir com dados da VOICE"
+  },
+  {
+   "nome": "Margem de segurança",
+   "formula": "(Receita líquida realizada − receita de equilíbrio) / receita líquida realizada × 100",
+   "para_que_serve": "Quanto as vendas podem cair antes de gerar prejuízo.",
+   "frequencia": "mensal",
+   "referencia": "definir com dados da VOICE"
+  },
+  {
+   "nome": "Ciclo financeiro (dias)",
+   "formula": "Prazo médio de estocagem + prazo médio de recebimento − prazo médio de pagamento",
+   "para_que_serve": "Medir quantos dias a VOICE financia a operação com caixa próprio.",
+   "frequencia": "mensal",
+   "referencia": "definir com dados da VOICE (desejável negativo ou próximo de zero, coerente com a Política V1 sec.10 de não financiar a obra do cliente)"
+  },
+  {
+   "nome": "Necessidade de capital de giro (NCG) e saldo de tesouraria",
+   "formula": "NCG = ativo circulante cíclico − passivo circulante cíclico; Saldo de tesouraria = capital de giro − NCG (modelo Fleuriet)",
+   "para_que_serve": "Detectar efeito tesoura ao crescer.",
+   "frequencia": "trimestral",
+   "referencia": "Saldo de tesouraria negativo e crescente indica efeito tesoura (Fleuriet, Kehdy e Blanc); valores-alvo: definir com dados da VOICE"
+  },
+  {
+   "nome": "Reserva de caixa em meses",
+   "formula": "Reserva financeira disponível / custo fixo médio mensal",
+   "para_que_serve": "Fôlego da empresa sem novas vendas.",
+   "frequencia": "semanal",
+   "referencia": "≥ 3 meses (Política V1 sec.12); Sebrae/SC recomenda 3 a 6 meses de despesas operacionais (sebrae-sc.com.br)"
+  },
+  {
+   "nome": "Exposição de caixa por projeto",
+   "formula": "máx(0; desembolsos/compromissos − valores efetivamente recebidos) / valor do contrato × 100",
+   "para_que_serve": "Garantir que a VOICE não financia a obra do cliente.",
+   "frequencia": "semanal",
+   "referencia": "Preferencialmente zero; acima de 10% exige autorização da direção (Política V1.1 sec.9)"
+  },
+  {
+   "nome": "Acurácia do fluxo de caixa",
+   "formula": "1 − |saldo realizado − saldo previsto| / saldo previsto, por semana (ou desvio % das entradas e saídas)",
+   "para_que_serve": "Medir a confiabilidade da previsão e melhorar premissas.",
+   "frequencia": "semanal",
+   "referencia": "definir com dados da VOICE"
+  },
+  {
+   "nome": "Prazo médio de recebimento e aging",
+   "formula": "Média ponderada pelo valor dos dias entre vencimento/emissão e recebimento; saldos por faixa de atraso",
+   "para_que_serve": "Disciplina de cobrança e previsão realista de entradas.",
+   "frequencia": "semanal",
+   "referencia": "definir com dados da VOICE (persona atual propõe ≤ 30 dias como PROPOSTA)"
+  },
+  {
+   "nome": "Inadimplência",
+   "formula": "Valores vencidos há mais de 30 dias e não recebidos / receita do período × 100",
+   "para_que_serve": "Risco de crédito da carteira.",
+   "frequencia": "mensal",
+   "referencia": "< 2% da receita (Política V1 sec.13)"
+  },
+  {
+   "nome": "Desvio de custo por obra",
+   "formula": "(Custo realizado − custo orçado) / custo orçado × 100, por projeto e por categoria",
+   "para_que_serve": "Qualidade do orçamento e controle de execução.",
+   "frequencia": "por fase e no encerramento da obra",
+   "referencia": "definir com dados da VOICE"
+  },
+  {
+   "nome": "Faturamento a maior/menor que o executado (over/underbilling)",
+   "formula": "Valor faturado/recebido − (percentual de conclusão por custo × valor do contrato)",
+   "para_que_serve": "Saber se o cliente está adiantando ou se a VOICE está financiando a obra.",
+   "frequencia": "mensal",
+   "referencia": "Desejável faturamento ≥ executado (coerente com Política V1 sec.10); limites: definir com dados da VOICE"
+  },
+  {
+   "nome": "Margem operacional",
+   "formula": "Resultado operacional / receita líquida × 100",
+   "para_que_serve": "Eficiência da empresa depois da estrutura fixa.",
+   "frequencia": "mensal",
+   "referencia": "12% a 15% ou superior (Política V1 sec.13)"
+  },
+  {
+   "nome": "Concentração de receita",
+   "formula": "Faturamento 12 meses do maior cliente (ou parceiro) / faturamento total 12 meses × 100",
+   "para_que_serve": "Risco de dependência.",
+   "frequencia": "mensal",
+   "referencia": "definir com dados da VOICE (persona atual propõe ≤ 20% cliente e ≤ 30% parceiro como PROPOSTA)"
+  }
+ ],
+ "rotinas": [
+  {
+   "cadencia": "diária",
+   "atividade": "Conferir saldo e extrato bancário, baixar recebimentos e pagamentos com comprovante e verificar títulos que vencem nos próximos 3 dias."
+  },
+  {
+   "cadencia": "diária",
+   "atividade": "Revisar sentinelas financeiras do VEOS (vencidos, cobrança parada, notas sem XML) e preparar rascunhos para ação humana."
+  },
+  {
+   "cadencia": "semanal",
+   "atividade": "Atualizar o fluxo de 13 semanas, medir previsto x realizado e explicar os maiores desvios."
+  },
+  {
+   "cadencia": "semanal",
+   "atividade": "Aprovar a proposta de pagamentos (portão separado do lançamento) e revisar a exposição de caixa de cada obra ativa."
+  },
+  {
+   "cadencia": "semanal",
+   "atividade": "Revisar aging de recebíveis e propostas comerciais em andamento quanto a margem e condição de pagamento."
+  },
+  {
+   "cadencia": "mensal",
+   "atividade": "Fechamento em até 5 dias úteis: conciliação, DRE gerencial, indicadores da Política V1 sec.13 e parecer à direção."
+  },
+  {
+   "cadencia": "mensal",
+   "atividade": "Atualizar a planilha de obras em andamento (percentual de conclusão, custo para concluir, faturado x executado)."
+  },
+  {
+   "cadencia": "mensal",
+   "atividade": "Enviar documentação ao contador e registrar orientações tributárias recebidas (com data e fonte)."
+  },
+  {
+   "cadencia": "trimestral",
+   "atividade": "Revisar forecast rolante (4 a 6 trimestres), cenários e análise de capital de giro (Fleuriet/ciclo financeiro)."
+  },
+  {
+   "cadencia": "trimestral",
+   "atividade": "Análise de rentabilidade por cliente, parceiro e linha de serviço; revisão do mapa de riscos financeiros."
+  },
+  {
+   "cadencia": "trimestral",
+   "atividade": "Revisar tabela de custos de referência (equipamentos, câmbio, custo-hora de instalação) usada na precificação."
+  },
+  {
+   "cadencia": "anual",
+   "atividade": "Orçamento anual por direcionadores com despesas fixas em base zero, aprovado pelo fundador."
+  },
+  {
+   "cadencia": "anual",
+   "atividade": "Revisão com o contador do enquadramento tributário e dos efeitos da Reforma Tributária (CBS/IBS) no preço e no caixa."
+  },
+  {
+   "cadencia": "anual",
+   "atividade": "Revisar controles internos (alçadas, acessos bancários, segregação/controles compensatórios) e propor recalibração da Política com dados reais, como PROPOSTA."
+  }
+ ],
+ "armadilhas": [
+  "Confundir lucro com caixa: projeto lucrativo pode quebrar o caixa se o cliente paga depois de a VOICE comprar.",
+  "Tratar recebível agendado ou nota emitida como dinheiro no banco.",
+  "Calcular preço só com markup sobre equipamento e esquecer horas de programação, retrabalho, viagens, garantia e pós-venda.",
+  "Ratear custo fixo no projeto e recusar obra boa ou aceitar obra ruim por conta disso (Política sec.7).",
+  "Dar desconto sem medir o volume adicional necessário para compensá-lo.",
+  "Comprar equipamento (principalmente importado) antes de receber a fase correspondente.",
+  "Comparar importação pelo preço de etiqueta, ignorando impostos, câmbio, frete, prazo e ausência de garantia local.",
+  "Afirmar regime tributário, alíquota ou Fator R sem documento oficial ou parecer do contador.",
+  "Ignorar a Reforma Tributária (CBS/IBS em transição 2026–2033) em contratos longos e preços.",
+  "Crescer sem calcular a necessidade adicional de capital de giro (efeito tesoura).",
+  "Financiar necessidade permanente de giro com antecipação ou crédito de curto prazo.",
+  "Orçamento anual estático nunca revisado; metas sem premissas explícitas.",
+  "Misturar contas pessoais do fundador com as da empresa, distorcendo custos fixos e caixa.",
+  "Falta de segregação de funções sem controle compensatório (mesma pessoa lança, aprova e paga).",
+  "Preencher dado ausente com zero ou estimativa não sinalizada.",
+  "Concentração excessiva em um arquiteto ou construtora sem medir o risco."
+ ],
+ "aplicacao_voice": [
+  "Toda proposta comercial passa pela ficha de preço com MC%, preço-piso nas faixas 35/30/25% e cronograma recebimento x desembolso antes de ir ao cliente.",
+  "Usar a referência de recebimento 50/40/10 da Política (sec.10) como ponto de partida e calcular a exposição por fase no VEOS antes de qualquer compra de equipamento.",
+  "Montar uma tabela de custo-hora carregado de instalação e programação (equipe própria x terceiros) para precificar e medir desvio por obra.",
+  "Calcular o custo desembarcado de itens comprados no exterior com câmbio de segurança e tributação conferida com o contador e na Receita Federal; registrar prazo médio de chegada para o fluxo de caixa.",
+  "Separar receita recorrente (suporte, monitoramento) e acompanhar quanto dela cobre os custos fixos — a recorrência reduz a dependência de novas obras.",
+  "Medir rentabilidade e concentração por arquiteto/construtora indicadora, incluindo comissões e custo de pós-venda.",
+  "Manter fluxo de 13 semanas no VEOS alimentado pelas parcelas de projeto e compromissos já registrados, com cenário de atraso do maior cliente.",
+  "Como o fundador faz quase tudo, adotar controles compensatórios: o fundador aprova pagamentos, mas a conciliação é revisada de forma independente (contador ou rotina do VEOS) e acessos bancários têm limites.",
+  "Preparar com o contador um dossiê anual sobre regime e efeitos da Reforma Tributária (destaque de CBS/IBS em NF-e e NFS-e), sem afirmar o regime da VOICE sem fonte oficial.",
+  "Planejar sazonalidade do mercado de Balneário Camboriú (entregas de empreendimentos, temporada) com dados históricos da VOICE — sem dado, registrar como lacuna.",
+  "Registrar exceções de margem, desconto e exposição aprovadas pela direção na Biblioteca do VEOS, com impacto calculado, e revisá-las no painel mensal.",
+  "Propor recalibração da Política somente como PROPOSTA fundamentada em dados reais de fechamento (Política V1 sec.15)."
+ ],
+ "formacao_referencia": [
+  {
+   "nome": "CMA — Certified Management Accountant (Parte 1: Financial Planning, Performance and Analytics; Parte 2: Strategic Financial Management)",
+   "instituicao": "IMA — Institute of Management Accountants",
+   "url": "https://prodcm.sfmagazine.com/-/media/IMA/Files/Home/IMA-Certifications/CMA-Certification/2024-CMA-Content-Specification-Outlines-Final.ashx",
+   "o_que_cobre": "Planejamento, orçamento e forecast; gestão de desempenho; gestão de custos; controles internos e riscos; análise de demonstrações; finanças corporativas; análise de decisão; decisões de investimento; ética."
+  },
+  {
+   "nome": "Certified Corporate FP&A Professional (FPAC)",
+   "instituicao": "AFP — Association for Financial Professionals",
+   "url": "https://fpacert.financialprofessionals.org/certification/what-is-fp-a",
+   "o_que_cobre": "Modelagem financeira, forecast, orçamento, análise de variações, análise de sensibilidade, planejamento estratégico e business partnering."
+  },
+  {
+   "nome": "Introduction to Corporate Finance",
+   "instituicao": "Wharton / University of Pennsylvania (Coursera)",
+   "url": "https://www.coursera.org/learn/wharton-finance",
+   "o_que_cobre": "Valor do dinheiro no tempo, juros e inflação, fluxo de caixa descontado, projeção de fluxo de caixa livre, VPL, critérios de decisão e sensibilidade."
+  },
+  {
+   "nome": "Planejamento Financeiro: FP&A",
+   "instituicao": "Insper Educação Executiva",
+   "url": "https://ee.insper.edu.br/cursos/financas/planejamento-financeiro-fpa/",
+   "o_que_cobre": "Indicadores de desempenho, rentabilidade por produto e cliente, DRE por comportamento e margem de contribuição, ponto de equilíbrio e alavancagem, orçamento e OBZ, orçado x realizado, EVA."
+  },
+  {
+   "nome": "CFO (Chief Financial Officer)",
+   "instituicao": "Insper Educação Executiva",
+   "url": "https://ee.insper.edu.br/cursos/alta-gestao/cfo/",
+   "o_que_cobre": "Estratégia e criação de valor, alocação de capital, riscos, compliance e governança, estrutura de capital e financiamento, M&A, influência e comunicação com stakeholders."
+  },
+  {
+   "nome": "Controladoria",
+   "instituicao": "Insper Educação Executiva",
+   "url": "https://ee.insper.edu.br/cursos/contabilidade/controladoria/",
+   "o_que_cobre": "Definição e análise de indicadores de desempenho e relatórios gerenciais para melhorar a qualidade das decisões."
+  },
+  {
+   "nome": "Faça seu fluxo de caixa e controle seu capital de giro",
+   "instituicao": "Sebrae",
+   "url": "https://go.loja.sebrae.com.br/faca-seu-fluxo-de-caixa-e-controle-seu-capital-de-giro-ev-825112",
+   "o_que_cobre": "Organização e monitoramento do fluxo de caixa, identificação da necessidade de capital de giro e decisões para manter o equilíbrio do caixa em pequenos negócios."
+  },
+  {
+   "nome": "Cursos gratuitos de finanças (ex.: Fundamentos da Gestão de Custos, Matemática Financeira, Métodos de Avaliação de Projetos)",
+   "instituicao": "FGV (cursos gratuitos online)",
+   "url": "https://educacao-executiva.fgv.br/cursos/online/curta-media-duracao-online/introducao-financas-e-metodos-de-avaliacao-de-projetos",
+   "o_que_cobre": "Contabilidade gerencial x financeira, gestão estratégica de custos, matemática financeira e avaliação de projetos."
+  }
+ ],
+ "bibliografia": [
+  {
+   "obra": "Administração Financeira",
+   "autor": "Alexandre Assaf Neto"
+  },
+  {
+   "obra": "Princípios de Administração Financeira",
+   "autor": "Lawrence J. Gitman e Chad J. Zutter"
+  },
+  {
+   "obra": "Contabilidade de Custos",
+   "autor": "Eliseu Martins"
+  },
+  {
+   "obra": "O Modelo Fleuriet: A Dinâmica Financeira das Empresas Brasileiras",
+   "autor": "Michel Fleuriet, Ricardo Kehdy e Georges Blanc"
+  },
+  {
+   "obra": "Princípios de Finanças Corporativas",
+   "autor": "Richard A. Brealey, Stewart C. Myers e Franklin Allen"
+  },
+  {
+   "obra": "Contabilidade de Custos: Uma Abordagem Gerencial",
+   "autor": "Charles T. Horngren, Srikant M. Datar e Madhav V. Rajan"
+  },
+  {
+   "obra": "Beyond Budgeting: How Managers Can Break Free from the Annual Performance Trap",
+   "autor": "Jeremy Hope e Robin Fraser"
+  },
+  {
+   "obra": "Financial Intelligence: A Manager's Guide to Knowing What the Numbers Really Mean",
+   "autor": "Karen Berman e Joe Knight"
+  },
+  {
+   "obra": "Profit First",
+   "autor": "Mike Michalowicz"
+  },
+  {
+   "obra": "Análise de Balanços",
+   "autor": "Dante C. Matarazzo"
+  }
+ ],
+ "fontes": [
+  {
+   "titulo": "Política de Saúde Financeira da VOICE (V1 e V1.1) (documento interno do VEOS)",
+   "url": null,
+   "o_que_extraiu": "Faixas de margem, provisão de risco 2%, exposição 10%, reserva de 3 meses, referência 50/40/10, metas de inadimplência e margem operacional, processos e sentinelas já existentes (não repetidos aqui).",
+   "interna": true
+  },
+  {
+   "titulo": "Sebrae/SC — O que é capital de giro",
+   "url": "https://www.sebrae-sc.com.br/blog/o-que-e-capital-de-giro",
+   "o_que_extraiu": "Conceito e fórmula de capital de giro, práticas (prazos com fornecedores, estoque, cobrança) e recomendação de reserva de 3 a 6 meses de despesas operacionais."
+  },
+  {
+   "titulo": "Sebrae — Faça seu fluxo de caixa e controle seu capital de giro",
+   "url": "https://go.loja.sebrae.com.br/faca-seu-fluxo-de-caixa-e-controle-seu-capital-de-giro-ev-825112",
+   "o_que_extraiu": "Escopo de capacitação em fluxo de caixa e necessidade de capital de giro para pequenos negócios."
+  },
+  {
+   "titulo": "Sebrae — e-book Saiba como fazer seu preço de venda",
+   "url": "https://sebrae.com.br/Sebrae/Portal%20Sebrae/Arquivos/ebook_sebrae_saiba_como_fazer_seu_preco_de_venda.pdf",
+   "o_que_extraiu": "Método de markup divisor e multiplicador (despesas variáveis, fixas e margem como % do preço)."
+  },
+  {
+   "titulo": "Sebrae MS — Ponto de equilíbrio: como e por que calcular",
+   "url": "https://sebrae.ms/gestao-financeira/ponto-de-equilibrio-como-e-por-que-calcular/",
+   "o_que_extraiu": "Ponto de equilíbrio = custos e despesas fixas / índice de margem de contribuição."
+  },
+  {
+   "titulo": "IMA — CMA Content Specification Outlines (2024)",
+   "url": "https://prodcm.sfmagazine.com/-/media/IMA/Files/Home/IMA-Certifications/CMA-Certification/2024-CMA-Content-Specification-Outlines-Final.ashx",
+   "o_que_extraiu": "Áreas de domínio do controller sênior: planejamento/orçamento/forecast, desempenho, custos, controles internos, finanças corporativas, análise de decisão, investimentos, ética."
+  },
+  {
+   "titulo": "AFP — What is FP&A (FPAC)",
+   "url": "https://fpacert.financialprofessionals.org/certification/what-is-fp-a",
+   "o_que_extraiu": "Competências de FP&A: modelagem, forecast, orçamento, variações, sensibilidade, planejamento estratégico."
+  },
+  {
+   "titulo": "Coursera — Introduction to Corporate Finance (Wharton, Michael R. Roberts)",
+   "url": "https://www.coursera.org/learn/wharton-finance",
+   "o_que_extraiu": "Ementa: valor do dinheiro no tempo, juros, fluxo de caixa descontado, VPL e critérios de decisão com sensibilidade."
+  },
+  {
+   "titulo": "Insper — Planejamento Financeiro: FP&A",
+   "url": "https://ee.insper.edu.br/cursos/financas/planejamento-financeiro-fpa/",
+   "o_que_extraiu": "Ementa: DRE por margem de contribuição, ponto de equilíbrio, alavancagem, OBZ, orçado x realizado, rentabilidade por cliente, EVA."
+  },
+  {
+   "titulo": "Insper — CFO (Chief Financial Officer)",
+   "url": "https://ee.insper.edu.br/cursos/alta-gestao/cfo/",
+   "o_que_extraiu": "Competências de CFO: estratégia, alocação de capital, riscos e governança, financiamento, comunicação com stakeholders."
+  },
+  {
+   "titulo": "Deloitte — The Strategist CFO / Four Faces of the CFO",
+   "url": "https://www.deloitte.com/us/en/programs/chief-financial-officer/articles/cfo-insights-strategist-four-orientations-ceo-boards-expectations.html",
+   "o_que_extraiu": "Papéis de guardião, operador, estrategista e catalisador do CFO."
+  },
+  {
+   "titulo": "Accordion — 13-week cash flow forecasting: a practical guide for CFOs",
+   "url": "https://www.accordion.com/our-insights/knowledge/13-week-cash-flow-forecasting-guide/",
+   "o_que_extraiu": "Método direto, atualização semanal rolante, estrutura por semana e revisão dos maiores desvios."
+  },
+  {
+   "titulo": "PUC-Rio (Maxwell) — Modelo Dinâmico de Capital de Giro",
+   "url": "https://www.maxwell.vrac.puc-rio.br/13057/13057_4.PDF",
+   "o_que_extraiu": "Variáveis CDG, NCG e saldo de tesouraria e o conceito de efeito tesoura (Fleuriet, Kehdy e Blanc)."
+  },
+  {
+   "titulo": "Procore — The Percentage of Completion Method Explained",
+   "url": "https://www.procore.com/library/percentage-of-completion",
+   "o_que_extraiu": "Percentual de conclusão por custo (cost-to-cost), planilha WIP e conceitos de faturamento a maior/menor."
+  },
+  {
+   "titulo": "Toolshero — Beyond Budgeting approach explained",
+   "url": "https://www.toolshero.com/financial-management/beyond-budgeting/",
+   "o_que_extraiu": "Origem (Hope e Fraser, BBRT), 12 princípios, forecast rolante e metas adaptativas."
+  },
+  {
+   "titulo": "Umbrex — COSO Internal Control–Integrated Framework",
+   "url": "https://umbrex.com/resources/frameworks/governance-frameworks/coso-internal-control-integrated-framework/",
+   "o_que_extraiu": "Cinco componentes do COSO e aplicação proporcional em empresas pequenas, com controles compensatórios."
+  },
+  {
+   "titulo": "Receita Federal — Programa Remessa Conforme: o que é, como funciona",
+   "url": "https://www.gov.br/receitafederal/pt-br/assuntos/aduana-e-comercio-exterior/manuais/remessas-postal-e-expressa/programa-remessa-conforme-o-que-e-como-funciona",
+   "o_que_extraiu": "Regras de tributação de remessas internacionais (imposto de importação e ICMS); reforça que importação pela empresa deve ser validada com o contador."
+  },
+  {
+   "titulo": "SEFAZ-MT — Regras para implantação da CBS e do IBS a partir de 2026",
+   "url": "https://www5.sefaz.mt.gov.br/en/w/contribuintes-devem-ficar-atentos-%C3%A0s-regras-para-implanta%C3%A7%C3%A3o-da-cbs-e-do-ibs-a-partir-de-2026",
+   "o_que_extraiu": "2026 como ano de teste da CBS/IBS com destaque em documentos fiscais; transição até 2033."
+  },
+  {
+   "titulo": "Contabilizei — Fator R no Simples Nacional",
+   "url": "https://www.contabilizei.com.br/contabilidade-online/fator-r-simples-nacional/",
+   "o_que_extraiu": "Conceito de Fator R (folha 12 meses / receita bruta 12 meses, limiar de 28% entre anexos III e V) — usado só como conceito a validar com o contador."
+  }
+ ]
+};

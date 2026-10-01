@@ -5,10 +5,10 @@ import { h, panel, stamp } from "../dom.js";
 
 export function telaConselho(root) {
   root.append(
-    panel({ title: "Conselho consultivo da VOICE", subtitle: "Nove diretores especialistas, cada um responsável por um setor. São personas fictícias que aplicam métodos consagrados; as metas que propõem só valem depois da sua aprovação." },
+    panel({ title: "Conselho consultivo da VOICE", subtitle: "Nove diretores especialistas, cada um responsável por um setor. São personas fictícias com o manual de atuação de um profissional sênior da área (pesquisa com fontes); as metas que propõem só valem depois da sua aprovação. Clique para abrir o manual." },
       h("div", { class: "grade-cartoes conselho" }, CATALOGO.map((s) => {
         const d = s.diretor;
-        return h("a", { class: "panel panel-tight conselho-cartao", href: `#/setor/${s.id}/diretor` },
+        return h("a", { class: "panel panel-tight conselho-cartao", href: `#/setor/${s.id}/manual` },
           h("div", { class: "row" }, stamp(s.sigla, "live"), h("span", { class: "field-hint" }, s.nome)),
           h("p", { class: "conselho-nome" }, d.nome),
           h("p", { class: "conselho-titulo" }, d.titulo),

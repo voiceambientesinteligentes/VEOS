@@ -1,0 +1,933 @@
+// GERADO por scripts/gerar-catalogo.mjs a partir de setores/*.json - nao editar a mao.
+export default {
+ "setor": "posvenda",
+ "resumo": "Manual de atuação da Diretoria de Pós-venda e Experiência do Cliente (CXO) do VEOS: como um diretor sênior de CX/serviços técnicos transforma pedidos do fundador em diagnóstico, plano, entregável e critério de qualidade. Combina service desk (ITIL/HDI), Net Promoter System com ciclo fechado, Customer Success (resultado desejado, saúde da base, renovação), desenho de serviço (jornada e blueprint) e o Código de Defesa do Consumidor aplicado a garantia de equipamentos importados. Tudo que não tem fonte ou dado da VOICE é tratado como proposta ou lacuna, nunca como meta oficial.",
+ "competencias": [
+  {
+   "area": "Estratégia de experiência do cliente",
+   "o_que_domina": "Traduz a promessa da marca (alto padrão, 'funciona sem esforço') em padrões de serviço mensuráveis por fase da jornada; alinha CX a receita (retenção, recorrência, indicação) e a custo (garantia, retrabalho).",
+   "sinal_de_senioridade": "Apresenta a estratégia de CX em termos financeiros (receita recorrente, custo de garantia, valor de indicação) e diz o que NÃO fará agora, com justificativa."
+  },
+  {
+   "area": "Gestão de service desk e SLA",
+   "o_que_domina": "Catálogo de serviços, matriz impacto × urgência (P1–P4), SLA de resposta e solução por cobertura, escalonamento funcional (N1→N2→fabricante) e hierárquico, gestão de fila e capacidade.",
+   "sinal_de_senioridade": "Desenha SLA a partir da capacidade real da equipe e do histórico de chamados, não copiado de mercado; distingue SLA (com cliente) de OLA (com Operações/Compras/fabricante)."
+  },
+  {
+   "area": "Gestão de incidentes e de problemas",
+   "o_que_domina": "Separa incidente (restaurar o serviço rápido, com contorno) de problema (eliminar a causa raiz); mantém base de erros conhecidos e soluções de contorno por sistema (rede, iluminação, áudio/vídeo, cortinas, Home Assistant).",
+   "sinal_de_senioridade": "Prioriza problemas pela quantidade de incidentes que geram e pelo risco de repetição, e leva mudanças de padrão de instalação a Operações com evidência."
+  },
+  {
+   "area": "Garantia, CDC e gestão de reclamações",
+   "o_que_domina": "Prazos do CDC (arts. 18, 20, 26, 32, 50, 51), diferença entre garantia legal e contratual, vício aparente × oculto, responsabilidade solidária com fabricante/importador, termo de garantia por escrito, tratamento de reclamação (princípios da ISO 10002).",
+   "sinal_de_senioridade": "Antecipa o risco do prazo de 30 dias do art. 18 §1º para equipamento importado (estoque de giro/equipamento reserva) e encaminha casos jurídicos ao advogado em vez de interpretar sozinho."
+  },
+  {
+   "area": "Contratos de suporte e receita recorrente",
+   "o_que_domina": "Desenho de modalidades (essencial/premium/corporativo), escopo, exclusões, SLA, preventivas, franquia de horas, reajuste, conversão de garantia em contrato e renovação.",
+   "sinal_de_senioridade": "Precifica contrato junto com Finanças a partir de custo real por cliente (horas, deslocamento, peças) e acompanha rentabilidade por contrato, não só o volume vendido."
+  },
+  {
+   "area": "Manutenção preventiva",
+   "o_que_domina": "Planos por sistema (firmware, backups de configuração, baterias, ventilação de racks, Wi-Fi, certificados, atualizações do Home Assistant), checklists e calendário anual.",
+   "sinal_de_senioridade": "Mede a preventiva pela redução de corretivas e P1, não pelo número de visitas feitas."
+  },
+  {
+   "area": "Customer Success (gestão proativa da base)",
+   "o_que_domina": "Resultado desejado do cliente (Lincoln Murphy: resultado necessário + experiência adequada), onboarding/entrega técnica, saúde do cliente (implantação, engajamento, adoção, retorno), plano de sucesso e expansão.",
+   "sinal_de_senioridade": "Sabe dizer, para cada cliente relevante, qual é o resultado que ele comprou ('casa que funciona sozinha', 'sala de reunião que liga na primeira') e se está sendo entregue."
+  },
+  {
+   "area": "Voz do cliente e mensuração (NPS, CSAT, CES)",
+   "o_que_domina": "Desenho de pesquisa (momento, pergunta, canal, amostra), NPS relacional × transacional, CSAT e CES, leitura de comentários abertos, viés de amostra pequena.",
+   "sinal_de_senioridade": "Não comemora nem pune por variação de NPS com poucas respostas; reporta número absoluto de respostas e lê cada comentário."
+  },
+  {
+   "area": "Desenho de serviço (jornada e blueprint)",
+   "o_que_domina": "Mapa de jornada (fases, ações, pensamentos, emoções, pontos de contato) e service blueprint (palco, bastidor, processos de apoio, evidências, linhas de visibilidade).",
+   "sinal_de_senioridade": "Usa o mapa para atribuir dono a cada lacuna e transformar em backlog, não como pôster."
+  },
+  {
+   "area": "Recuperação de serviço e gestão de crise com cliente",
+   "o_que_domina": "Roteiro de retorno ao detrator, desculpa e reparação proporcionais, comunicação proativa em falha grave, alçada de cortesia.",
+   "sinal_de_senioridade": "Resolve o problema e a relação ao mesmo tempo, registra o custo da cortesia e não transforma exceção em regra."
+  },
+  {
+   "area": "Gestão de fornecedores e logística reversa",
+   "o_que_domina": "RMA com fabricantes/distribuidores, prazos de reposição de importados, estoque de peças críticas, equipamento reserva para empréstimo.",
+   "sinal_de_senioridade": "Mantém lista de itens críticos com prazo de reposição conhecido e plano B para cada um antes de a falha acontecer."
+  },
+  {
+   "area": "Liderança de equipe técnica e de atendimento",
+   "o_que_domina": "Escalas, plantão, capacitação técnica e comportamental, huddles, reconhecimento, base de conhecimento.",
+   "sinal_de_senioridade": "Equipe resolve sem depender do diretor; conhecimento está escrito, não na cabeça de um técnico."
+  },
+  {
+   "area": "Integração com Comercial, Operações, Marketing e Finanças",
+   "o_que_domina": "Passagem de bastão venda→obra→pós-venda (o que foi prometido), devolução de causas para Operações, indicação para Comercial, cases para Marketing, faturamento recorrente e provisão de garantia com Finanças.",
+   "sinal_de_senioridade": "Recusa receber projeto sem entrega técnica documentada (as built, senhas, inventário de equipamentos, termo de garantia)."
+  },
+  {
+   "area": "Dados, ferramentas e automação de atendimento",
+   "o_que_domina": "Modelo de dados de chamado, contrato, visita e pesquisa; sentinelas/alertas; monitoramento remoto; relatórios.",
+   "sinal_de_senioridade": "Exige campos obrigatórios mínimos (causa raiz, cobertura, prazos) e trata dado ausente como lacuna, não como zero."
+  }
+ ],
+ "frameworks": [
+  {
+   "nome": "Net Promoter System (NPS com ciclo interno e externo)",
+   "autor_ou_origem": "Fred Reichheld / Bain & Company",
+   "quando_usar": "Medir lealdade da base e transformar feedback em ação individual (ciclo interno) e estrutural (ciclo externo).",
+   "como_aplicar": [
+    "Pergunta-padrão de 0 a 10: 'Qual a probabilidade de você recomendar a VOICE a um amigo ou colega?' + pergunta aberta 'por quê?'.",
+    "Classificar: promotores 9–10, neutros 7–8, detratores 0–6; NPS = % promotores − % detratores.",
+    "Definir momentos: transacional (após chamado, após entrega) e relacional (anual).",
+    "Ciclo interno: devolver o comentário ao responsável, retorno pessoal ao detrator, coaching do supervisor.",
+    "Huddle semanal para discutir comentários e o que a equipe muda sozinha.",
+    "Ciclo externo: backlog de causas estruturais com dono, prazo e status levado à direção."
+   ]
+  },
+  {
+   "nome": "Customer Effort Score (CES) e redução de esforço",
+   "autor_ou_origem": "Matthew Dixon, Karen Freeman e Nicholas Toman (CEB, hoje Gartner) — HBR, 2010",
+   "quando_usar": "Diagnosticar atrito no suporte: repetição de contato, troca de canal, cliente tendo que explicar de novo.",
+   "como_aplicar": [
+    "Após o fechamento do chamado, perguntar o quanto foi fácil resolver (escala de concordância).",
+    "Medir recontato: o cliente voltou a falar do mesmo assunto em 7–30 dias?",
+    "Antecipar o 'próximo problema' (ex.: após troca de roteador, revisar todos os dispositivos dependentes).",
+    "Evitar troca de canal: quem abriu pelo WhatsApp é atendido até o fim por ali.",
+    "Focar em resolver bem na primeira vez, não apenas em responder rápido."
+   ]
+  },
+  {
+   "nome": "Gestão de incidentes, problemas e níveis de serviço",
+   "autor_ou_origem": "ITIL 4 (AXELOS/PeopleCert) e HDI Support Center",
+   "quando_usar": "Estruturar o atendimento técnico: prioridade, SLA, escalonamento e eliminação de causa raiz.",
+   "como_aplicar": [
+    "Matriz impacto × urgência gerando P1–P4 (impacto: quantos ambientes/sistemas/pessoas; urgência: segurança, evento, rotina da casa).",
+    "SLA de resposta e solução por prioridade e por cobertura (garantia, contrato, avulso).",
+    "Escalonamento funcional N1 remoto → N2 campo → fabricante; hierárquico ao CXO em P1 e SLA vencido.",
+    "Registrar solução de contorno e erro conhecido na base de conhecimento.",
+    "Abrir 'problema' quando houver reincidência ou várias ocorrências da mesma causa; tratar com 5 Porquês.",
+    "Revisar SLA mensalmente contra capacidade e histórico."
+   ]
+  },
+  {
+   "nome": "Customer Success orientado ao Resultado Desejado",
+   "autor_ou_origem": "Lincoln Murphy (Sixteen Ventures); Nick Mehta, Dan Steinman e Lincoln Murphy — 'Customer Success' (Wiley, 2016)",
+   "quando_usar": "Gestão proativa da base instalada: entrega, adoção, renovação e expansão.",
+   "como_aplicar": [
+    "Registrar na entrega o Resultado Necessário (o que o cliente precisa) e a Experiência Adequada (como quer ser atendido).",
+    "Planejar marcos de valor: treinamento, acompanhamento 30/90 dias, revisão anual.",
+    "Segmentar a base (residencial alto padrão, corporativo, com/sem contrato) e definir cobertura por segmento.",
+    "Acompanhar saúde e agir antes do vencimento de garantia/contrato.",
+    "Repassar expansão e indicação ao Comercial com contexto."
+   ]
+  },
+  {
+   "nome": "Pontuação de saúde do cliente (DEAR adaptado)",
+   "autor_ou_origem": "Gainsight (Deployment, Engagement, Adoption, ROI)",
+   "quando_usar": "Priorizar a carteira e prever risco de não renovação ou detração.",
+   "como_aplicar": [
+    "Implantação: entrega técnica completa, pendências de obra fechadas.",
+    "Engajamento: contato nos últimos 90 dias, preventivas realizadas, respostas a pesquisas.",
+    "Adoção: cliente usa cenas/aplicativo; chamados de 'como usar' em queda.",
+    "Retorno: NPS/CSAT, ausência de P1 reincidente, percepção de valor do contrato.",
+    "Classificar verde/amarelo/vermelho e definir ação para amarelos e vermelhos; calibrar pesos com dados da VOICE."
+   ]
+  },
+  {
+   "nome": "Mapa da jornada do cliente",
+   "autor_ou_origem": "Prática de design de serviço/UX — Nielsen Norman Group",
+   "quando_usar": "Entender e redesenhar a experiência do pós-entrega (entrega técnica → garantia → contrato → renovação → indicação).",
+   "como_aplicar": [
+    "Definir objetivo de negócio e persona/cenário (ex.: cliente residencial no 1º ano após a entrega).",
+    "Pesquisar com dados qualitativos: entrevistas, comentários de NPS, chamados.",
+    "Mapear fases, ações, pensamentos, emoções, pontos de contato e canais.",
+    "Construir com Comercial, Operações e técnicos, não sozinho.",
+    "Listar lacunas e atribuir dono e prazo a cada uma; manter o mapa vivo."
+   ]
+  },
+  {
+   "nome": "Service Blueprint",
+   "autor_ou_origem": "G. Lynn Shostack (HBR, 1984); formato atual difundido pelo Nielsen Norman Group",
+   "quando_usar": "Quando uma falha de experiência depende de bastidor (Compras, estoque, agenda de técnicos, fabricante).",
+   "como_aplicar": [
+    "Escolher uma jornada específica (ex.: chamado de equipamento com defeito em garantia).",
+    "Mapear ações do cliente, palco (o que ele vê), bastidor, processos de apoio e evidências.",
+    "Traçar linhas de interação, visibilidade e interação interna.",
+    "Marcar pontos de falha, esperas e tempos.",
+    "Redesenhar e converter em procedimento e OLA entre setores."
+   ]
+  },
+  {
+   "nome": "SERVQUAL (cinco dimensões da qualidade de serviço)",
+   "autor_ou_origem": "Parasuraman, Zeithaml e Berry (Journal of Retailing, 1988)",
+   "quando_usar": "Diagnosticar onde está a lacuna entre expectativa e percepção do serviço.",
+   "como_aplicar": [
+    "Avaliar confiabilidade (faz o prometido), responsividade (presteza), segurança (competência/confiança), empatia e tangíveis (técnico, uniforme, relatório, organização do rack).",
+    "Comparar expectativa × percepção em entrevistas ou pesquisa anual.",
+    "Atacar primeiro confiabilidade, que é a base para clientes de alto padrão.",
+    "Traduzir lacunas em padrões de serviço e treinamento."
+   ]
+  },
+  {
+   "nome": "Tratamento de reclamações (ISO 10002)",
+   "autor_ou_origem": "ISO 10002:2018 — Gestão da qualidade, satisfação do cliente, diretrizes para tratamento de reclamações",
+   "quando_usar": "Formalizar como a VOICE recebe, registra, responde e aprende com reclamações (inclusive Procon, consumidor.gov.br e redes).",
+   "como_aplicar": [
+    "Princípios: acessibilidade, responsividade, objetividade, transparência, confidencialidade, foco no cliente, responsabilização e melhoria contínua.",
+    "Canal claro e fácil; registro de toda reclamação com protocolo.",
+    "Confirmação de recebimento, investigação, resposta com decisão fundamentada.",
+    "Definir alçada de reparação e quem decide.",
+    "Análise periódica de causas e revisão do processo."
+   ]
+  },
+  {
+   "nome": "Recuperação de serviço",
+   "autor_ou_origem": "McCollough e Bharadwaj (1992) — 'paradoxo da recuperação'; meta-análises posteriores com resultados mistos",
+   "quando_usar": "Após falha percebida pelo cliente (P1, atraso de peça, visita perdida).",
+   "como_aplicar": [
+    "Reconhecer rápido e pessoalmente; pedir desculpas pelo que é responsabilidade da VOICE.",
+    "Conter (solução de contorno, equipamento reserva) antes de resolver definitivamente.",
+    "Informar prazo realista e atualizar antes de o cliente cobrar.",
+    "Reparar proporcionalmente dentro da alçada, registrando custo.",
+    "Não contar com o 'paradoxo': a evidência indica que só funciona em falhas leves com recuperação excelente; o melhor é não falhar."
+   ]
+  },
+  {
+   "nome": "Análise de causa raiz (5 Porquês e Ishikawa)",
+   "autor_ou_origem": "Taiichi Ohno (Sistema Toyota de Produção); Kaoru Ishikawa",
+   "quando_usar": "Chamados reincidentes, P1 e causas mais frequentes do mês.",
+   "como_aplicar": [
+    "Descrever o problema com fatos (cliente, sistema, data, sintoma).",
+    "Perguntar 'por quê?' até chegar a causa sob controle da VOICE.",
+    "Usar espinha de peixe (método, material/equipamento, mão de obra, meio/infraestrutura, medição) quando houver várias causas.",
+    "Definir ação, dono e data; verificar eficácia em 90 dias."
+   ]
+  },
+  {
+   "nome": "Garantia legal e contratual pelo CDC",
+   "autor_ou_origem": "Lei nº 8.078/1990 — Código de Defesa do Consumidor (planalto.gov.br)",
+   "quando_usar": "Sempre que houver defeito, reclamação de vício, redação do termo de garantia ou contrato de suporte.",
+   "como_aplicar": [
+    "Art. 26: reclamação de vício aparente caduca em 90 dias para serviços e produtos duráveis, contados da entrega/término; vício oculto conta de quando o defeito fica evidente (§3º); reclamação comprovada obsta a decadência até resposta negativa inequívoca (§2º, I).",
+    "Art. 18 §1º: vício não sanado em até 30 dias permite ao consumidor exigir troca, devolução atualizada ou abatimento; prazo pode ser convencionado entre 7 e 180 dias (§2º), em adesão por cláusula separada e expressa.",
+    "Art. 20: no serviço viciado o consumidor pode exigir reexecução sem custo, devolução ou abatimento.",
+    "Art. 50: garantia contratual é complementar à legal, por termo escrito que diga em que consiste, forma, prazo, lugar e ônus do consumidor.",
+    "Art. 51, I: cláusula que exonere ou atenue responsabilidade por vício é nula (com consumidor pessoa jurídica, indenização pode ser limitada em situações justificáveis).",
+    "Art. 32: fabricantes e importadores devem assegurar peças de reposição enquanto houver fabricação/importação e por período razoável depois.",
+    "Interpretações (ex.: soma de prazos legal + contratual, cliente corporativo como consumidor) = validar com advogado."
+   ]
+  },
+  {
+   "nome": "Competências CX da CXPA (base CCXP)",
+   "autor_ou_origem": "Customer Experience Professionals Association (CXPA)",
+   "quando_usar": "Estruturar o programa de CX e autoavaliar maturidade do setor.",
+   "como_aplicar": [
+    "Insights e entendimento do cliente: voz do cliente, pesquisa, personas.",
+    "Estratégia de CX alinhada ao negócio e à marca.",
+    "Métricas, medição e retorno (ROI).",
+    "Desenho, implementação e inovação da experiência.",
+    "Cultura e responsabilização: CX como compromisso de toda a empresa."
+   ]
+  }
+ ],
+ "procedimentos": [
+  {
+   "pedido": "Um cliente importante está furioso porque a casa ficou sem internet/automação. Resolve isso.",
+   "perguntas_antes": [
+    "Quem é o cliente, qual sistema está fora e desde quando?",
+    "Há risco de segurança (portão, alarme, CFTV, acesso)?",
+    "Está coberto por garantia, contrato ou é avulso?",
+    "Já houve contato nosso hoje? Quem falou com ele e o que foi prometido?",
+    "É reincidência?"
+   ],
+   "passos": [
+    "Classificar P1/P2 pela matriz impacto × urgência e registrar o chamado no VEOS.",
+    "Ligar pessoalmente (CXO ou coordenação) em até o SLA de resposta, ouvir sem interromper e confirmar o impacto.",
+    "Diagnóstico remoto imediato (monitoramento, acesso remoto, provedor de internet).",
+    "Se não resolver remoto, enviar técnico com prioridade e equipamento reserva.",
+    "Combinar com o cliente horário da próxima atualização e cumprir antes do prazo.",
+    "Após restaurar, confirmar com o cliente, registrar causa raiz e abrir 'problema' se reincidente.",
+    "Avaliar reparação dentro da alçada e registrar a cortesia.",
+    "Enviar pesquisa pós-chamado e agendar retorno de 7 dias."
+   ],
+   "entregavel": "Chamado registrado com linha do tempo, causa raiz, solução, comunicação ao cliente e resumo de 5 linhas ao fundador (situação, contenção, causa, prevenção, custo).",
+   "criterios_de_qualidade": [
+    "Cliente nunca precisou cobrar atualização.",
+    "Causa raiz registrada, não 'reiniciado'.",
+    "Ação preventiva definida se a causa for da VOICE.",
+    "Custo de cortesia registrado."
+   ],
+   "quando_escalar": "Ao fundador se houver risco de segurança, ameaça de ação judicial/Procon, exposição pública, necessidade de cortesia acima da alçada ou troca de equipamento fora da garantia."
+  },
+  {
+   "pedido": "Monte nossa política de SLA e prioridades de atendimento.",
+   "perguntas_antes": [
+    "Quantos técnicos e quais horários/plantões temos hoje?",
+    "Qual o histórico de chamados (volume, tipo, tempo) — existe no VEOS?",
+    "Quais coberturas existem (garantia, contratos, avulso) e o que já foi prometido em contrato?",
+    "Haverá atendimento fora do horário comercial? Remunerado como?"
+   ],
+   "passos": [
+    "Levantar volume e distribuição de chamados por sistema e prioridade (ou declarar lacuna).",
+    "Definir matriz impacto × urgência com exemplos reais da VOICE para P1–P4.",
+    "Propor SLA de resposta e solução por prioridade e cobertura, compatível com a capacidade.",
+    "Definir regras de pausa do relógio (aguardando cliente, aguardando peça importada) e comunicação nesses estados.",
+    "Definir escalonamento funcional e hierárquico e OLAs com Compras/Operações.",
+    "Configurar sentinelas no VEOS e simular com casos passados.",
+    "Submeter à direção como PROPOSTA; após aprovação, registrar na Biblioteca e comunicar à equipe e aos clientes com contrato."
+   ],
+   "entregavel": "Tabela P1–P4 com definição, exemplos, SLA de resposta/solução por cobertura, regras de pausa e escalonamento, em status PROPOSTA.",
+   "criterios_de_qualidade": [
+    "Cada prioridade tem exemplos concretos dos sistemas da VOICE.",
+    "SLA cabe na capacidade medida (ou marcada como hipótese).",
+    "Regra clara para peça importada.",
+    "Nada prometido ao cliente antes da aprovação."
+   ],
+   "quando_escalar": "Aprovação do fundador obrigatória (impacta custo, escala de plantão e contratos); Jurídico se alterar cláusula contratual vigente."
+  },
+  {
+   "pedido": "Quero vender contrato de manutenção para os clientes. Cria isso.",
+   "perguntas_antes": [
+    "Quantos projetos entregues e quantas garantias vencem nos próximos 12 meses?",
+    "Qual o custo real de uma visita (hora técnica, deslocamento) e de suporte remoto?",
+    "Que sistemas/fabricantes exigem atualização periódica?",
+    "Há contratos já vendidos com condições diferentes?"
+   ],
+   "passos": [
+    "Levantar custo por cliente com Finanças (horas, deslocamento, peças) ou declarar lacuna.",
+    "Desenhar modalidades (essencial, premium, corporativo) com escopo, exclusões, preventivas/ano, SLA e franquia.",
+    "Definir política de reajuste e de serviços fora do escopo (avulso).",
+    "Redigir minuta e enviar a advogado para conformidade com o CDC (art. 51) e termo claro.",
+    "Precificar com Finanças e validar margem.",
+    "Criar fluxo de oferta 60 dias antes do fim da garantia e modelo de proposta.",
+    "Pilotar com 3–5 clientes promotores e ajustar."
+   ],
+   "entregavel": "Pacote de contrato de suporte: quadro de modalidades, minuta revisada, precificação aprovada por Finanças e fluxo de oferta no VEOS.",
+   "criterios_de_qualidade": [
+    "Escopo e exclusões escritos de forma que o cliente entenda.",
+    "Preço cobre custo real com margem definida por Finanças.",
+    "Não confunde contrato com garantia legal (que é obrigatória e não pode ser vendida)."
+   ],
+   "quando_escalar": "Preço, desconto e texto jurídico vão ao fundador e ao advogado; gasto com ferramenta paga não."
+  },
+  {
+   "pedido": "Um equipamento importado deu defeito e o fornecedor diz que a troca leva 60 dias. E agora?",
+   "perguntas_antes": [
+    "Quando foi a entrega/instalação e qual a garantia (legal, contratual, do fabricante)?",
+    "O sistema está parado ou degradado? Há contorno?",
+    "Temos equipamento reserva ou similar em estoque?",
+    "O cliente já reclamou formalmente e quando?"
+   ],
+   "passos": [
+    "Registrar data da reclamação (obsta a decadência — CDC art. 26 §2º, I).",
+    "Conter: instalar equipamento reserva/empréstimo ou reconfigurar contorno.",
+    "Abrir RMA com fabricante/distribuidor e pedir prazo por escrito; buscar fornecedor alternativo no Brasil.",
+    "Lembrar que, se o vício não for sanado em 30 dias, o consumidor pode exigir troca, devolução ou abatimento (art. 18 §1º); avaliar troca por equivalente em estoque.",
+    "Comunicar ao cliente o plano, prazos e atualizações proativas.",
+    "Registrar custo e incluir o item na lista de peças críticas.",
+    "Encaminhar ao advogado se houver divergência sobre responsabilidade ou prazo."
+   ],
+   "entregavel": "Plano de contenção e reposição com prazos, comunicação ao cliente e registro no chamado (estado aguardando_peca com data prevista).",
+   "criterios_de_qualidade": [
+    "Cliente não ficou sem funcionalidade essencial sem contorno.",
+    "Prazos do CDC monitorados.",
+    "Item crítico entrou no plano de estoque de reserva."
+   ],
+   "quando_escalar": "Ao fundador se a solução exigir troca por modelo superior, compra fora do orçamento, devolução de valor ou houver ameaça de Procon/ação."
+  },
+  {
+   "pedido": "Qual é o nosso NPS? Montem a pesquisa.",
+   "perguntas_antes": [
+    "Quantos clientes ativos temos e com contato atualizado?",
+    "Já houve pesquisa antes? Com que pergunta e escala?",
+    "Quem vai fazer o retorno aos detratores?",
+    "Há consentimento para contato (LGPD)?"
+   ],
+   "passos": [
+    "Definir momentos (30 dias pós-entrega, pós-chamado, relacional anual) e canal (WhatsApp/e-mail).",
+    "Usar a pergunta-padrão 0–10 + 'por quê?'; opcional CES no pós-chamado.",
+    "Enviar, registrar respostas no VEOS e classificar.",
+    "Retorno pessoal a detratores (48 h, proposta) e neutros; agradecer promotores e pedir indicação.",
+    "Agrupar comentários por tema e levar causas à direção.",
+    "Reportar NPS com número de respostas e taxa de resposta; em amostra pequena, reportar casos, não só o número."
+   ],
+   "entregavel": "Relatório de NPS: nota, n de respostas, taxa de resposta, temas, lista de detratores com status do retorno e ações do ciclo externo.",
+   "criterios_de_qualidade": [
+    "Todos os detratores com retorno registrado.",
+    "Número de respostas sempre informado.",
+    "Comparação só entre períodos com a mesma metodologia."
+   ],
+   "quando_escalar": "Ao fundador quando houver ≥ 2 detratores no mês, detrator de projeto relevante ou tema estrutural (ex.: falha de instalação recorrente)."
+  },
+  {
+   "pedido": "Um cliente reclamou no Reclame Aqui / Procon / consumidor.gov.br.",
+   "perguntas_antes": [
+    "Qual o canal, a data de registro e o prazo de resposta?",
+    "O que o cliente pede exatamente?",
+    "Qual o histórico do caso no VEOS (chamados, contrato, garantia)?",
+    "Há risco jurídico ou de imagem?"
+   ],
+   "passos": [
+    "Registrar protocolo e prazo (no consumidor.gov.br a empresa participante tem até 10 dias para responder).",
+    "Levantar fatos e documentos (contrato, termo de garantia, relatórios de visita).",
+    "Contatar o cliente diretamente antes da resposta pública, buscar solução.",
+    "Redigir resposta factual, cordial, sem dados sensíveis, como RASCUNHO para aprovação.",
+    "Consultar advogado em Procon ou se houver pedido de indenização.",
+    "Após solução, pedir que o cliente avalie/encerre e registrar causa e ação de melhoria."
+   ],
+   "entregavel": "Rascunho de resposta + dossiê do caso + proposta de solução dentro da alçada, para aprovação humana.",
+   "criterios_de_qualidade": [
+    "Prazo do canal cumprido.",
+    "Resposta sem expor dados do cliente (LGPD) e sem admitir o que não foi apurado.",
+    "Nenhuma mensagem enviada sem aprovação."
+   ],
+   "quando_escalar": "Sempre ao fundador (exposição pública) e ao advogado quando for Procon, ação judicial ou pedido de indenização."
+  },
+  {
+   "pedido": "Escreve o termo de garantia da VOICE.",
+   "perguntas_antes": [
+    "Qual garantia contratual a VOICE quer oferecer além da legal (prazo, o que cobre)?",
+    "Quais garantias dos fabricantes se aplicam por equipamento?",
+    "O que fica excluído (mau uso, intervenção de terceiros, surtos elétricos, provedor de internet)?",
+    "Existe termo atual ou política registrada?"
+   ],
+   "passos": [
+    "Mapear garantia legal (CDC art. 26) e garantias dos fabricantes por item.",
+    "Propor garantia contratual da instalação (decisão de negócio do fundador).",
+    "Redigir conforme art. 50 parágrafo único: em que consiste, forma, prazo, lugar e ônus do consumidor.",
+    "Checar que nenhuma cláusula exonera ou atenua responsabilidade por vício (art. 51, I).",
+    "Enviar ao advogado para revisão.",
+    "Definir entrega do termo preenchido na entrega técnica, com manual de uso."
+   ],
+   "entregavel": "Minuta de termo de garantia em status PROPOSTA, com lista de decisões que cabem ao fundador e parecer jurídico pendente.",
+   "criterios_de_qualidade": [
+    "Linguagem clara para o cliente.",
+    "Nenhum prazo ou cobertura inventado sem decisão do fundador.",
+    "Revisão jurídica registrada antes do uso."
+   ],
+   "quando_escalar": "Prazo e cobertura da garantia contratual = decisão do fundador; texto final = advogado."
+  },
+  {
+   "pedido": "Por que temos tantos chamados? Quero reduzir.",
+   "perguntas_antes": [
+    "Qual período e quantos chamados? Causa raiz está preenchida?",
+    "Quais sistemas, fabricantes e projetos concentram chamados?",
+    "Quantos são dúvida de uso × defeito × configuração?"
+   ],
+   "passos": [
+    "Extrair chamados do período e medir completude da causa raiz (lacuna declarada se baixa).",
+    "Pareto por sistema, causa e projeto.",
+    "5 Porquês nas três maiores causas e nos reincidentes.",
+    "Separar ações: padrão de instalação (Operações), equipamento (Compras), programação, treinamento do cliente, preventiva.",
+    "Definir dono e prazo e medir efeito em 90 dias."
+   ],
+   "entregavel": "Análise de Pareto com causas, ações, donos, prazos e meta de redução proposta.",
+   "criterios_de_qualidade": [
+    "Baseada em dados do VEOS, não em impressão.",
+    "Cada ação com dono fora do Pós-venda quando a causa está a montante.",
+    "Verificação de eficácia agendada."
+   ],
+   "quando_escalar": "Ao fundador quando a ação exigir troca de fornecedor/padrão de equipamento ou investimento."
+  },
+  {
+   "pedido": "Como está a saúde da nossa carteira de clientes? Quem pode cancelar ou não renovar?",
+   "perguntas_antes": [
+    "Quais contratos e garantias vencem nos próximos 90 dias?",
+    "Que sinais temos por cliente (chamados, NPS, preventivas, último contato)?"
+   ],
+   "passos": [
+    "Montar pontuação de saúde DEAR adaptada (implantação, engajamento, adoção, retorno).",
+    "Classificar verde/amarelo/vermelho.",
+    "Para vermelhos: ligação do CXO, plano de recuperação e data.",
+    "Para verdes com vencimento: proposta de renovação/expansão.",
+    "Reportar receita recorrente em risco."
+   ],
+   "entregavel": "Painel de saúde da carteira com lista priorizada de ações e receita recorrente em risco.",
+   "criterios_de_qualidade": [
+    "Critérios de pontuação explícitos.",
+    "Lacunas de dado declaradas.",
+    "Ação definida para todo cliente vermelho."
+   ],
+   "quando_escalar": "Ao fundador para clientes estratégicos em vermelho ou concessões comerciais na renovação."
+  },
+  {
+   "pedido": "Organiza a entrega técnica para o cliente não ligar depois perdido.",
+   "perguntas_antes": [
+    "O que hoje é entregue (as built, senhas, inventário, treinamento)?",
+    "Quem participa da entrega (Operações, Pós-venda, cliente, arquiteto)?",
+    "Quais dúvidas mais aparecem nos primeiros 30 dias?"
+   ],
+   "passos": [
+    "Definir checklist de entrega técnica: inventário com números de série, as built, credenciais em cofre, backups, termo de garantia, manual de uso.",
+    "Treinamento do cliente e de funcionários da casa (governanta, segurança).",
+    "Registro da garantia no VEOS e agendamento automático de 30 e 90 dias.",
+    "Pesquisa pós-entrega 30 dias.",
+    "Pós-venda só aceita o projeto com checklist completo."
+   ],
+   "entregavel": "Checklist e roteiro de entrega técnica + modelo de 'guia da casa' para o cliente.",
+   "criterios_de_qualidade": [
+    "Nenhum projeto em garantia sem inventário e termo.",
+    "Queda de chamados de 'como usar' nos 90 dias seguintes."
+   ],
+   "quando_escalar": "Ao fundador se Operações e Pós-venda divergirem sobre o critério de aceite."
+  },
+  {
+   "pedido": "Quero mais indicações dos clientes.",
+   "perguntas_antes": [
+    "Quantos promotores temos e quantos já foram convidados a indicar?",
+    "Há programa de benefício por indicação aprovado?",
+    "Arquitetos e parceiros contam como fonte?"
+   ],
+   "passos": [
+    "Listar promotores (9–10) e clientes com alta saúde.",
+    "Pedir indicação no momento certo (após resolução elogiada, revisão anual).",
+    "Repassar cada indicação ao Comercial no mesmo dia, com contexto.",
+    "Propor programa de reconhecimento (decisão e custo do fundador).",
+    "Medir indicações → oportunidades → vendas."
+   ],
+   "entregavel": "Plano de indicação com lista de promotores, roteiro de pedido, fluxo de repasse e indicador de conversão.",
+   "criterios_de_qualidade": [
+    "Nenhuma indicação sem repasse registrado.",
+    "Não pedir indicação a cliente com chamado aberto ou detrator.",
+    "Uso de imagem/case só com autorização registrada (via Marketing)."
+   ],
+   "quando_escalar": "Benefício financeiro ou brinde: decisão do fundador."
+  },
+  {
+   "pedido": "Faça um relatório mensal do pós-venda para mim.",
+   "perguntas_antes": [
+    "Que decisões o fundador quer tomar com o relatório?",
+    "Que dados estão confiáveis no VEOS?"
+   ],
+   "passos": [
+    "Puxar indicadores do mês (SLA, P1, reincidência, NPS, preventivas, renovação, receita recorrente, custo de garantia).",
+    "Comparar com mês anterior e com metas PROPOSTAS (marcadas como tal).",
+    "Destacar 3 fatos, 3 riscos e 3 decisões pedidas.",
+    "Listar lacunas de dado."
+   ],
+   "entregavel": "Relatório de 1 página + anexo de dados, separando fato, inferência e proposta.",
+   "criterios_de_qualidade": [
+    "Toda meta com status (oficial × proposta).",
+    "Dado ausente aparece como lacuna, não zero.",
+    "Pedido de decisão explícito."
+   ],
+   "quando_escalar": "Não se aplica; o próprio relatório é o canal de escalonamento."
+  },
+  {
+   "pedido": "Um cliente quer atendimento grátis fora da garantia. Dou ou não?",
+   "perguntas_antes": [
+    "O defeito pode ser vício oculto ainda dentro do prazo legal (art. 26 §3º)?",
+    "Qual o valor do atendimento e o histórico/valor do cliente?",
+    "Há precedente na Biblioteca?"
+   ],
+   "passos": [
+    "Verificar se não é obrigação legal (vício oculto, serviço mal executado — art. 20).",
+    "Consultar precedentes na Biblioteca.",
+    "Se for cortesia, comparar com a alçada aprovada.",
+    "Responder ao cliente com elegância, registrando a cortesia ou o orçamento.",
+    "Oferecer contrato de suporte para o futuro."
+   ],
+   "entregavel": "Decisão registrada (obrigação legal, cortesia dentro da alçada ou orçamento) com justificativa.",
+   "criterios_de_qualidade": [
+    "Não nega o que é direito legal do cliente.",
+    "Cortesia registrada e não vira regra.",
+    "Precedente consultado e citado."
+   ],
+   "quando_escalar": "Ao fundador quando o valor exceder a alçada ou não houver alçada definida."
+  }
+ ],
+ "indicadores": [
+  {
+   "nome": "NPS (relacional e transacional)",
+   "formula": "% promotores (9–10) − % detratores (0–6) no período; sempre reportar n de respostas",
+   "para_que_serve": "Medir lealdade e propensão à indicação.",
+   "frequencia": "Transacional contínuo; consolidado trimestral; relacional anual",
+   "referencia": "Escala e classificação: Bain/Net Promoter System. Meta: definir com dados da VOICE (≥ 70 está registrado como PROPOSTA no setor)."
+  },
+  {
+   "nome": "Customer Effort Score (CES) pós-chamado",
+   "formula": "% de respostas 'concordo/concordo totalmente' a 'a VOICE facilitou resolver meu problema' (ou média da escala)",
+   "para_que_serve": "Detectar atrito no suporte, que prediz deslealdade.",
+   "frequencia": "Mensal",
+   "referencia": "Dixon, Freeman e Toman (HBR, 2010): 96% dos clientes com interação de alto esforço ficam mais desleais, contra 9% com baixo esforço. Meta: definir com dados da VOICE."
+  },
+  {
+   "nome": "CSAT pós-atendimento",
+   "formula": "Respostas 4–5 (escala 1–5) ÷ total de respostas × 100",
+   "para_que_serve": "Avaliar a qualidade de cada atendimento/visita.",
+   "frequencia": "Mensal",
+   "referencia": "definir com dados da VOICE"
+  },
+  {
+   "nome": "Tempo de primeira resposta por prioridade",
+   "formula": "Mediana (abertura → primeira resposta) por P1–P4",
+   "para_que_serve": "Garantir que o cliente se sinta atendido.",
+   "frequencia": "Semanal/mensal",
+   "referencia": "definir com dados da VOICE (P1 ≤ 1 h está como PROPOSTA no setor)"
+  },
+  {
+   "nome": "Cumprimento de SLA de solução",
+   "formula": "Chamados resolvidos no prazo ÷ chamados resolvidos × 100 (com pausas documentadas)",
+   "para_que_serve": "Medir confiabilidade da promessa.",
+   "frequencia": "Mensal",
+   "referencia": "definir com dados da VOICE (≥ 90% como PROPOSTA)"
+  },
+  {
+   "nome": "Resolução no primeiro contato / remota",
+   "formula": "Chamados resolvidos sem recontato e sem visita ÷ chamados fechados × 100",
+   "para_que_serve": "Eficiência e menor esforço do cliente.",
+   "frequencia": "Mensal",
+   "referencia": "definir com dados da VOICE"
+  },
+  {
+   "nome": "Taxa de reincidência",
+   "formula": "Chamados com mesmo problema no mesmo cliente em 90 dias ÷ chamados fechados × 100",
+   "para_que_serve": "Qualidade da solução e da causa raiz.",
+   "frequencia": "Mensal",
+   "referencia": "definir com dados da VOICE"
+  },
+  {
+   "nome": "Completude de causa raiz",
+   "formula": "Chamados fechados com causa raiz preenchida ÷ chamados fechados × 100",
+   "para_que_serve": "Confiabilidade da análise de problemas.",
+   "frequencia": "Mensal",
+   "referencia": "definir com dados da VOICE"
+  },
+  {
+   "nome": "Preventivas no prazo",
+   "formula": "Preventivas realizadas até a data prevista ÷ previstas × 100",
+   "para_que_serve": "Cumprimento do contrato e prevenção de falhas.",
+   "frequencia": "Mensal",
+   "referencia": "definir com dados da VOICE"
+  },
+  {
+   "nome": "Conversão de garantia em contrato e renovação",
+   "formula": "(Garantias convertidas + contratos renovados) ÷ vencimentos do período × 100",
+   "para_que_serve": "Saúde da receita recorrente.",
+   "frequencia": "Trimestral",
+   "referencia": "definir com dados da VOICE"
+  },
+  {
+   "nome": "Receita recorrente mensal de suporte (MRR) e retenção de receita",
+   "formula": "Soma dos valores mensais ativos; retenção = MRR atual dos clientes do início do período ÷ MRR inicial × 100",
+   "para_que_serve": "Previsibilidade financeira e valor da base.",
+   "frequencia": "Mensal",
+   "referencia": "Reichheld/Bain (citado em HBR, 2014): aumentar a retenção em 5% eleva lucros de 25% a 95% — referência geral, não meta. Valor-alvo: definir com dados da VOICE."
+  },
+  {
+   "nome": "Custo de garantia e assistência sobre receita",
+   "formula": "Custo real (horas, deslocamento, peças, cortesias) de garantia ÷ receita líquida dos projetos × 100",
+   "para_que_serve": "Comparar com a provisão de 2% da Política V1 sec.6.",
+   "frequencia": "Trimestral",
+   "referencia": "Provisão de 2% (Política de Saúde Financeira V1 sec.6) é referência interna; meta de custo: definir com dados da VOICE."
+  },
+  {
+   "nome": "Tempo de reposição de peça (RMA)",
+   "formula": "Mediana de dias entre a abertura do RMA e o equipamento reinstalado, por fabricante",
+   "para_que_serve": "Gerenciar o risco do prazo de 30 dias do CDC art. 18 §1º e dimensionar estoque reserva.",
+   "frequencia": "Mensal",
+   "referencia": "Limite legal de 30 dias para sanar vício (CDC art. 18 §1º, salvo convenção entre 7 e 180 dias). Meta interna: definir com dados da VOICE."
+  },
+  {
+   "nome": "Indicações geradas e convertidas",
+   "formula": "Indicações repassadas; oportunidades abertas; vendas fechadas originadas de indicação",
+   "para_que_serve": "Mostrar o pós-venda como fonte de receita.",
+   "frequencia": "Mensal",
+   "referencia": "definir com dados da VOICE"
+  }
+ ],
+ "rotinas": [
+  {
+   "cadencia": "diária",
+   "atividade": "Triagem de chamados por prioridade; conferir P1/P2 abertos, prazos que vencem hoje e chamados parados."
+  },
+  {
+   "cadencia": "diária",
+   "atividade": "Verificar alertas de monitoramento remoto e agenda de técnicos."
+  },
+  {
+   "cadencia": "diária",
+   "atividade": "Conferir detratores e reclamações públicas (Reclame Aqui, Google, consumidor.gov.br se aderido) sem retorno."
+  },
+  {
+   "cadencia": "semanal",
+   "atividade": "Huddle de experiência: comentários de clientes, detratores, reconhecimentos e ações locais."
+  },
+  {
+   "cadencia": "semanal",
+   "atividade": "Revisar RMAs e peças importadas em trânsito contra prazos do CDC."
+  },
+  {
+   "cadencia": "semanal",
+   "atividade": "Repasse de indicações e oportunidades ao Comercial e cases ao Marketing."
+  },
+  {
+   "cadencia": "mensal",
+   "atividade": "Relatório de indicadores ao fundador (fato, risco, decisão pedida)."
+  },
+  {
+   "cadencia": "mensal",
+   "atividade": "Pareto de causas e 5 Porquês dos principais problemas com Operações."
+  },
+  {
+   "cadencia": "mensal",
+   "atividade": "Gerar agenda de preventivas e acompanhamentos de 30/90 dias; conferir garantias e contratos que vencem em 60 dias."
+  },
+  {
+   "cadencia": "mensal",
+   "atividade": "Atualizar base de conhecimento e lista de peças críticas."
+  },
+  {
+   "cadencia": "trimestral",
+   "atividade": "Revisão da carteira: saúde dos clientes, receita recorrente, renovações, rentabilidade por contrato."
+  },
+  {
+   "cadencia": "trimestral",
+   "atividade": "Custo de garantia × provisão de 2% com Finanças."
+  },
+  {
+   "cadencia": "trimestral",
+   "atividade": "Revisão de SLA vs capacidade e treinamento da equipe."
+  },
+  {
+   "cadencia": "anual",
+   "atividade": "Pesquisa relacional de NPS com toda a base e revisão anual do sistema de cada cliente com contrato."
+  },
+  {
+   "cadencia": "anual",
+   "atividade": "Revisão do mapa da jornada, do termo de garantia, das modalidades de contrato e do reajuste (com Finanças e advogado)."
+  }
+ ],
+ "armadilhas": [
+  "Tratar a garantia legal como cortesia ou produto vendável: ela é obrigatória pelo CDC e cláusula que a reduza é nula (art. 51, I).",
+  "Ignorar o prazo de 30 dias do art. 18 §1º em equipamentos importados com reposição longa — sem equipamento reserva, o cliente pode exigir troca, devolução ou abatimento.",
+  "Não registrar a data da reclamação do cliente (ela obsta a decadência e é prova).",
+  "Prometer SLA copiado do mercado sem capacidade de cumprir.",
+  "Fechar chamado com 'reiniciado' sem causa raiz: o ciclo externo fica cego e o problema volta.",
+  "Comemorar ou punir por NPS com poucas respostas; comparar números de metodologias diferentes.",
+  "Enviar pesquisa e não dar retorno ao detrator — é pior do que não perguntar.",
+  "Pedir indicação a cliente com chamado aberto ou insatisfeito.",
+  "Dar cortesias sem registro e sem alçada: vira expectativa e precedente informal.",
+  "Contar com o 'paradoxo da recuperação' como estratégia: a evidência é mista e só vale para falhas leves.",
+  "Aceitar projeto sem entrega técnica documentada (inventário, senhas, as built, termo).",
+  "Vender contrato de suporte sem conhecer custo real por cliente e descobrir prejuízo na renovação.",
+  "Responder reclamação pública com dados pessoais do cliente ou admitindo o que não foi apurado.",
+  "Enviar mensagens a clientes automaticamente sem aprovação humana (regra do VEOS: rascunho + ação humana).",
+  "Interpretar sozinho questões jurídicas (soma de prazos de garantia, cliente PJ como consumidor) em vez de levar ao advogado."
+ ],
+ "aplicacao_voice": [
+  "Cliente de alto padrão espera atendimento pessoal: retorno por voz do CXO em P1 e detratores, nunca só mensagem automática.",
+  "Equipamentos importados com reposição longa: manter lista de itens críticos (controladores, módulos de iluminação, motores de cortina, roteadores/APs, processadores de áudio) com prazo conhecido e equipamento reserva para empréstimo — base para cumprir CDC art. 18 §1º.",
+  "Monitoramento remoto (Home Assistant, rede) permite abrir chamado antes do cliente perceber: canal 'monitoramento_remoto' já existe no registro de chamado.",
+  "Entrega técnica com inventário de números de série, credenciais em cofre, backups de configuração e termo de garantia preenchido (CDC art. 50).",
+  "Treinar também funcionários da casa (governanta, caseiro, segurança) — eles geram boa parte das dúvidas de uso.",
+  "Arquitetos e designers são fonte de indicação e influenciam a percepção: incluí-los na pesquisa e no repasse ao Comercial.",
+  "Clientes corporativos podem não ser 'consumidor' no sentido do CDC conforme o caso: tratar como HIPÓTESE A VALIDAR com advogado.",
+  "O Decreto nº 11.034/2022 (SAC) aplica-se a serviços regulados pelo Poder Executivo federal; não usar seus prazos como obrigação da VOICE sem validação jurídica, apenas como inspiração.",
+  "Contratos de suporte são a principal alavanca de receita recorrente: oferta 60 dias antes do fim da garantia, com histórico do período.",
+  "Custo de garantia comparado com a provisão de 2% (Política V1 sec.6); metas do setor permanecem PROPOSTA até decisão do fundador.",
+  "Toda meta, alçada de cortesia, prazo de garantia contratual e preço de contrato = decisão do fundador registrada na Biblioteca; consultar precedentes antes.",
+  "Dados reais de clientes ficam só no banco (repositório público) e respeitam LGPD."
+ ],
+ "formacao_referencia": [
+  {
+   "nome": "Certified Customer Experience Professional (CCXP)",
+   "instituicao": "CXPA — Customer Experience Professionals Association",
+   "url": "https://www.cxpa.org/earn-your-ccxp/competencies",
+   "o_que_cobre": "Cinco competências: insights e entendimento do cliente (22%), estratégia de CX (20%), métricas, medição e ROI (20%), desenho, melhoria e inovação da experiência (19%), cultura e responsabilização (19%)."
+  },
+  {
+   "nome": "HDI Support Center Manager (HDI-SCM)",
+   "instituicao": "HDI",
+   "url": "https://www.thinkhdi.com/education/courses/hdi-support-center-manager",
+   "o_que_cobre": "Estratégia do centro de suporte, gestão financeira, tecnologia e suporte de serviços, gestão de níveis de serviço (SLA, OLA, catálogo), métricas e relatórios, liderança, incidentes e problemas, autoatendimento."
+  },
+  {
+   "nome": "Fundamentos da Gestão do Sucesso do Cliente (especialização)",
+   "instituicao": "FIA — Fundação Instituto de Administração, via Coursera",
+   "url": "https://www.coursera.org/specializations/fundamentos-da-gestao-do-sucesso-do-cliente",
+   "o_que_cobre": "Negócios de assinatura e receita recorrente; organização centrada na jornada; competências do especialista em sucesso do cliente; dez leis do Customer Success, KPIs, retenção e cultura."
+  },
+  {
+   "nome": "Experiência do Cliente (curso online)",
+   "instituicao": "FGV Educação Executiva",
+   "url": "https://educacao-executiva.fgv.br/cursos/online/curta-media-duracao-online/experiencia-do-cliente",
+   "o_que_cobre": "Produtos, serviços e experiências; expectativas do cliente; economia da experiência; jornada do cliente; componentes e maturidade de CX; tendências (30 h)."
+  },
+  {
+   "nome": "Customer Service Fundamentals",
+   "instituicao": "Coursera",
+   "url": "https://www.coursera.org/learn/customer-service-fundamentals",
+   "o_que_cobre": "Comunicação clara e empática, resolução estruturada de problemas, padrões de serviço, sistemas de chamados e CRM."
+  },
+  {
+   "nome": "ITIL 4 Foundation",
+   "instituicao": "PeopleCert / AXELOS",
+   "url": "https://www.axelos.com/certifications/itil-service-management/itil-4-foundation",
+   "o_que_cobre": "Conceitos de gestão de serviços, cadeia de valor, práticas de gestão de incidentes, problemas, requisições, central de serviço e níveis de serviço."
+  },
+  {
+   "nome": "Customer-Centric CRM Strategy and Management (especialização)",
+   "instituicao": "Coursera",
+   "url": "https://www.coursera.org/specializations/customer-centric-crm-strategy-management",
+   "o_que_cobre": "Melhoria da experiência do cliente, retenção, análise de clientes e gestão de relacionamento."
+  }
+ ],
+ "bibliografia": [
+  {
+   "obra": "The Ultimate Question 2.0: How Net Promoter Companies Thrive in a Customer-Driven World",
+   "autor": "Fred Reichheld e Rob Markey"
+  },
+  {
+   "obra": "The Loyalty Effect",
+   "autor": "Frederick F. Reichheld"
+  },
+  {
+   "obra": "Customer Success: How Innovative Companies Are Reducing Churn and Growing Recurring Revenue",
+   "autor": "Nick Mehta, Dan Steinman e Lincoln Murphy"
+  },
+  {
+   "obra": "The Effortless Experience",
+   "autor": "Matthew Dixon, Nick Toman e Rick DeLisi"
+  },
+  {
+   "obra": "Outside In: The Power of Putting Customers at the Center of Your Business",
+   "autor": "Harley Manning e Kerry Bodine"
+  },
+  {
+   "obra": "This Is Service Design Doing",
+   "autor": "Marc Stickdorn, Markus Edgar Hormess, Adam Lawrence e Jakob Schneider"
+  },
+  {
+   "obra": "Setting the Table",
+   "autor": "Danny Meyer"
+  },
+  {
+   "obra": "The New Gold Standard (Ritz-Carlton)",
+   "autor": "Joseph A. Michelli"
+  },
+  {
+   "obra": "Delivering Quality Service: Balancing Customer Perceptions and Expectations",
+   "autor": "Valarie Zeithaml, A. Parasuraman e Leonard Berry"
+  },
+  {
+   "obra": "ITIL 4 Foundation",
+   "autor": "AXELOS"
+  },
+  {
+   "obra": "Código de Defesa do Consumidor Comentado",
+   "autor": "Ada Pellegrini Grinover et al. (autores do anteprojeto)"
+  }
+ ],
+ "fontes": [
+  {
+   "titulo": "Lei nº 8.078/1990 — Código de Defesa do Consumidor (texto compilado)",
+   "url": "https://www.planalto.gov.br/ccivil_03/leis/l8078compilado.htm",
+   "o_que_extraiu": "Texto literal dos arts. 14, 18 (§§1º–3º), 20, 26 (prazos de 30/90 dias, obstação e vício oculto), 27 (prescrição de 5 anos), 32 (peças de reposição), 50 (garantia contratual complementar por termo escrito) e 51, I (nulidade de cláusula que exonere responsabilidade)."
+  },
+  {
+   "titulo": "Decreto nº 11.034/2022 — SAC",
+   "url": "https://www.planalto.gov.br/ccivil_03/_ato2019-2022/2022/decreto/D11034.htm",
+   "o_que_extraiu": "Art. 1º: aplica-se aos fornecedores de serviços regulados pelo Poder Executivo federal (não diretamente à VOICE)."
+  },
+  {
+   "titulo": "Net Promoter System — Measuring your Net Promoter Score (Bain & Company)",
+   "url": "https://www.netpromotersystem.com/about/measuring-your-net-promoter-score/",
+   "o_que_extraiu": "Pergunta, escala 0–10, categorias (promotores 9–10, neutros 7–8, detratores 0–6) e fórmula do NPS."
+  },
+  {
+   "titulo": "Net Promoter System — Inner Loop (Bain & Company)",
+   "url": "https://www.netpromotersystem.com/about/net-promoter-system-framework/inner-loop/",
+   "o_que_extraiu": "Ciclo interno: feedback direto e imediato nas palavras do cliente, coaching do supervisor, huddles e ligação com o ciclo externo."
+  },
+  {
+   "titulo": "Stop Trying to Delight Your Customers — Harvard Business Review (2010)",
+   "url": "https://hbr.org/2010/07/stop-trying-to-delight-your-customers",
+   "o_que_extraiu": "Origem do Customer Effort Score; táticas de redução de esforço; 96% × 9% de deslealdade conforme esforço."
+  },
+  {
+   "titulo": "The Value of Keeping the Right Customers — Harvard Business Review (2014)",
+   "url": "https://hbr.org/2014/10/the-value-of-keeping-the-right-customers",
+   "o_que_extraiu": "Aquisição custa 5 a 25 vezes mais que retenção; Reichheld/Bain: +5% de retenção eleva lucros de 25% a 95%."
+  },
+  {
+   "titulo": "Service Blueprints: Definition — Nielsen Norman Group",
+   "url": "https://www.nngroup.com/articles/service-blueprints-definition/",
+   "o_que_extraiu": "Componentes do blueprint (ações do cliente, palco, bastidor, processos de apoio, evidências) e as três linhas."
+  },
+  {
+   "titulo": "Customer Journey Mapping — Nielsen Norman Group",
+   "url": "https://www.nngroup.com/articles/customer-journey-mapping/",
+   "o_que_extraiu": "Componentes do mapa de jornada e passos de criação com pesquisa qualitativa e donos para lacunas."
+  },
+  {
+   "titulo": "Core CX Competencies — CXPA",
+   "url": "https://www.cxpa.org/earn-your-ccxp/competencies",
+   "o_que_extraiu": "Cinco competências e pesos do exame CCXP (via resultados de busca; página não renderizou no fetch)."
+  },
+  {
+   "titulo": "HDI Support Center Manager",
+   "url": "https://www.thinkhdi.com/education/courses/hdi-support-center-manager",
+   "o_que_extraiu": "Tópicos: estratégia, gestão financeira, tecnologia e suporte, gestão de níveis de serviço, métricas, incidentes e problemas (via resultados de busca)."
+  },
+  {
+   "titulo": "Fundamentos da Gestão do Sucesso do Cliente — Coursera/FIA",
+   "url": "https://www.coursera.org/specializations/fundamentos-da-gestao-do-sucesso-do-cliente",
+   "o_que_extraiu": "Ementa dos quatro cursos (receita recorrente, jornada, competências, dez leis e KPIs)."
+  },
+  {
+   "titulo": "Experiência do Cliente — FGV Educação Executiva",
+   "url": "https://educacao-executiva.fgv.br/cursos/online/curta-media-duracao-online/experiencia-do-cliente",
+   "o_que_extraiu": "Ementa e carga de 30 h (via resultados de busca; página não renderizou no fetch)."
+  },
+  {
+   "titulo": "Customer Success is a Simple Concept — Sixteen Ventures (Lincoln Murphy)",
+   "url": "https://sixteenventures.com/customer-success-simple",
+   "o_que_extraiu": "Definição de Customer Success e Resultado Desejado = Resultado Necessário + Experiência Adequada."
+  },
+  {
+   "titulo": "Build a foundational health scoring framework using DEAR — Gainsight Community",
+   "url": "https://communities.gainsight.com/predictive-health-scoring-321/build-a-foundational-health-scoring-framework-using-dear-26486",
+   "o_que_extraiu": "Componentes da pontuação de saúde: implantação, engajamento, adoção e ROI."
+  },
+  {
+   "titulo": "The Ten Laws of Customer Success — Gainsight",
+   "url": "https://www.gainsight.com/blog/the-ten-laws-of-customer-success/",
+   "o_que_extraiu": "Customer Success como compromisso de cima para baixo, vender ao cliente certo, medir saúde, tempo até o valor."
+  },
+  {
+   "titulo": "ISO 10002:2018 — Guidelines for complaints handling in organizations",
+   "url": "https://www.iso.org/standard/71580.html",
+   "o_que_extraiu": "Escopo da norma; princípios (via ANSI blog e resultados de busca): compromisso, acessibilidade, responsividade, objetividade, transparência, confidencialidade, melhoria contínua."
+  },
+  {
+   "titulo": "Service recovery paradox — Wikipedia",
+   "url": "https://en.wikipedia.org/wiki/Service_recovery_paradox",
+   "o_que_extraiu": "Origem (McCollough e Bharadwaj, 1992) e evidência mista: paradoxo limitado a falhas leves com recuperação superior."
+  },
+  {
+   "titulo": "SERVQUAL — Wikipedia",
+   "url": "https://en.wikipedia.org/wiki/SERVQUAL",
+   "o_que_extraiu": "Cinco dimensões (confiabilidade, responsividade, segurança, empatia, tangíveis) e lógica expectativa × percepção."
+  },
+  {
+   "titulo": "Como funciona o Consumidor.gov.br",
+   "url": "https://www.consumidor.gov.br/pages/conteudo/publico/1",
+   "o_que_extraiu": "Empresa participante tem até 10 dias para responder; consumidor avalia em até 20 dias (via resultados de busca)."
+  },
+  {
+   "titulo": "Customer Service Fundamentals — Coursera",
+   "url": "https://www.coursera.org/learn/customer-service-fundamentals",
+   "o_que_extraiu": "Conteúdo: comunicação empática, resolução estruturada, padrões de serviço, ticketing e CRM."
+  },
+  {
+   "titulo": "ITIL Incident Priority Matrix — referência de impacto × urgência",
+   "url": "https://wiki.en.it-processmaps.com/index.php/Checklist_Incident_Priority",
+   "o_que_extraiu": "Prioridade derivada de impacto e urgência; distinção incidente × problema."
+  }
+ ]
+};
