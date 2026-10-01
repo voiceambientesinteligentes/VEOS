@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "veos": {
+      "command": "node",
+      "args": [
+        "scripts/mcp/veos-mcp.mjs"
+      ]
+    }
+  }
+}

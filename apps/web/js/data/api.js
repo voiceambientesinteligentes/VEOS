@@ -87,6 +87,8 @@ export const api = {
   mensagemCriar: (dados) => request("POST", "mensagens", dados, { "Idempotency-Key": crypto.randomUUID() }),
   mensagemMarcar: (id, estado, dados = {}) => request("POST", `mensagens/${encodeURIComponent(id)}/${estado}`, dados, { "Idempotency-Key": crypto.randomUUID() }),
   resumo: () => request("GET", "resumo"),
+  contaMcp: () => request("POST", "conta/mcp", {}, { "Idempotency-Key": crypto.randomUUID() }),
+  contaSairDeTudo: () => request("POST", "conta/sair-de-tudo", {}, { "Idempotency-Key": crypto.randomUUID() }),
   caixaPrevisao: () => request("GET", "fluxo/caixa"),
   fluxoParcelas: (estado = "aberta") => request("GET", `fluxo/parcelas?estado=${encodeURIComponent(estado)}`),
   fluxoEstoque: (busca = "", pagina = 1) => request("GET", `fluxo/estoque?${new URLSearchParams({ busca, pagina: String(pagina) })}`),

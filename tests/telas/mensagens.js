@@ -53,6 +53,6 @@ rodar(async (v) => {
   }
   if (caso === "conta") {
     await telaConta(v, { nome: "Fernando TESTE", email: "f@teste.invalid", papel: "direcao", aal: "aal1", exige_mfa: false }, { fatoresMfa: async () => [] });
-    if (!v.textContent.includes("Avisos no navegador")) throw new Error("painel de avisos ausente");
+    if (!v.textContent.includes("Avisos no navegador") || !v.textContent.includes("Acesso do Claude Code (MCP)")) throw new Error("paineis de avisos/MCP ausentes");
   }
 });

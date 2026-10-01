@@ -9,7 +9,7 @@ import { setorPorId } from "../componentes.js";
 import { desligarAvisos, ligado, ligarAvisos, suportado } from "../notificar.js";
 
 const SITE = "https://voiceambientesinteligentes.github.io/VEOS/";
-const ACOES = { convidado: "Convidado", papel: "Papel alterado", desativado: "Desativado", reativado: "Reativado", mfa_exigido: "MFA exigido", mfa_dispensado: "MFA dispensado" };
+const ACOES = { mcp_acesso: "Acesso do Claude Code criado", convidado: "Convidado", papel: "Papel alterado", desativado: "Desativado", reativado: "Reativado", mfa_exigido: "MFA exigido", mfa_dispensado: "MFA dispensado" };
 export const nomeSetor = (papel) => (setorPorId[papel] ? `${setorPorId[papel].sigla} · ${setorPorId[papel].nome}` : papel);
 
 function seletorPapel(id, papeis, atual) {
@@ -179,9 +179,38 @@ export async function telaConta(root, eu, mfa = auth) {
         h("p", null, "Sessão atual: ", eu.aal === "aal2" ? stamp("com código do app", "ok") : stamp("só link do e-mail", "neutral"))),
       panel({ title: "Verificação em duas etapas (MFA)", subtitle: "Gratuita: usa o app autenticador do celular." }, area),
       painelAvisos(),
+      painelMcp(eu),
     ].filter(Boolean));
   }
   await desenhar();
+}
+
+function painelMcp(eu, chamar = api) {
+  const saida = h("div", { role: "status" });
+  const gerar = h("button", { class: "btn btn-ghost", type: "button", disabled: Boolean(eu.exige_mfa) }, "Criar acesso do Claude Code");
+  gerar.addEventListener("click", async () => {
+    if (!confirm("Criar um acesso do Claude Code com as suas permissões? O código aparece uma única vez.")) return;
+    gerar.disabled = true;
+    clear(saida);
+    try {
+      const r = await chamar.contaMcp();
+      const cmd = `node scripts/mcp/veos-mcp.mjs --configurar ${r.refresh_token}`;
+      const copiar = h("button", { class: "btn btn-ghost", type: "button" }, "Copiar comando");
+      copiar.addEventListener("click", async () => { try { await navigator.clipboard.writeText(cmd); copiar.textContent = "Copiado"; } catch { copiar.textContent = "Selecione e copie"; } });
+      saida.append(h("p", { class: "notice notice-warn" }, r.aviso), h("p", null, "No terminal, dentro da pasta VEOS, rode uma vez:"), h("pre", { class: "rascunho-corpo mfa-chave" }, cmd), h("div", { class: "row" }, copiar));
+    } catch (e) {
+      saida.append(errorNotice(e.message));
+      gerar.disabled = false;
+    }
+  });
+  const sairTudo = h("button", { class: "btn btn-ghost", type: "button" }, "Sair de todas as sessões");
+  sairTudo.addEventListener("click", async () => {
+    if (!confirm("Encerrar todas as sessões (navegadores e Claude Code)? Você precisará entrar de novo.")) return;
+    try { await chamar.contaSairDeTudo(); location.reload(); } catch (e) { saida.append(errorNotice(e.message)); }
+  });
+  return panel({ title: "Acesso do Claude Code (MCP)", subtitle: "Permite ao Claude Code consultar o VEOS e registrar ideias, propostas, tarefas e rascunhos com as SUAS permissões. Decisões, aprovações e envios continuam pela tela." },
+    eu.exige_mfa ? h("p", { class: "field-hint" }, "Seu acesso exige MFA: o MCP não está disponível para este perfil.") : null,
+    h("div", { class: "row" }, gerar, sairTudo), saida);
 }
 
 function painelAvisos() {
