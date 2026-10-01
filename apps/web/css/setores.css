@@ -262,3 +262,20 @@ a.pill { text-decoration: none; }
 .busca-item { display: flex; gap: var(--s3); align-items: baseline; padding: 8px 10px; border-radius: var(--radius-s); cursor: pointer; }
 .busca-item.is-sel, .busca-item:hover { background: var(--bg-4); }
 .busca-tipo { font-size: var(--fs-xs); color: var(--text-2); min-width: 72px; }
+
+/* Catalogo de produtos */
+.produtos-grade { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: var(--s4); }
+.produto-cartao { display: flex; flex-direction: column; gap: 4px; padding: var(--s3); border: 1px solid var(--line); border-radius: var(--radius-s); background: var(--bg-2); color: var(--text-0); text-decoration: none; height: 100%; }
+.produto-cartao:hover { border-color: var(--gold-line); }
+.produto-foto { width: 100%; aspect-ratio: 1; object-fit: contain; background: #fff; border-radius: var(--radius-s); }
+.produto-sem-foto { display: grid; place-items: center; color: #777; font-size: var(--fs-xs); }
+.produto-foto-grande { width: 260px; max-width: 100%; flex: none; }
+.produto-foto-mini { width: 84px; flex: none; }
+.produto-codigo { font-size: var(--fs-xs); color: var(--gold-2); letter-spacing: .04em; }
+.produto-nome { font-size: var(--fs-s); line-height: 1.3; }
+.produto-precos { font-size: var(--fs-xs); color: var(--text-1); }
+.produto-topo { display: flex; gap: var(--s4); align-items: flex-start; flex-wrap: wrap; }
+.produto-dados { flex: 1 1 280px; min-width: 0; }
+.produto-fonte { display: flex; gap: var(--s3); align-items: flex-start; }
+.produto-fonte > .stack-s { min-width: 0; flex: 1; overflow-wrap: anywhere; }
+@media (max-width: 600px) { .produtos-grade { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s2); } }

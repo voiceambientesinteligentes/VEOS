@@ -13,5 +13,6 @@ if (!env.SUPABASE_SERVICE_ROLE_KEY) {
   const por = (n) => chaves.find((k) => k.name === n)?.api_key;
   Object.assign(env, { SUPABASE_URL: `https://${REF}.supabase.co`, SUPABASE_ANON_KEY: por("anon"), SUPABASE_SERVICE_ROLE_KEY: por("service_role") });
 }
-const r = spawnSync(process.execPath, [arquivo, ...process.argv.slice(3)], { env, stdio: "inherit" });
+const exe = arquivo.endsWith(".py") ? "python" : process.execPath;
+const r = spawnSync(exe, [arquivo, ...process.argv.slice(3)], { env, stdio: "inherit" });
 process.exit(r.status ?? 1);

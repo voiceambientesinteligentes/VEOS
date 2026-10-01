@@ -24,6 +24,7 @@ import { telaTermoAceite } from "./ui/views/obra.js";
 import { telaProposta, telaPropostas } from "./ui/views/proposta.js";
 import { telaMensagens } from "./ui/views/mensagens.js";
 import { telaIndependencia } from "./ui/views/independencia.js";
+import { telaProduto, telaProdutos, telaRevisaoProdutos } from "./ui/views/produtos.js";
 import { iniciarAvisos } from "./ui/notificar.js";
 import { abrirBusca, ligarAtalhos } from "./ui/busca_global.js";
 import { telaCompra, telaCompras, telaContasPagar, telaNovaCompra } from "./ui/views/compras.js";
@@ -115,6 +116,8 @@ const TELAS = {
   "#/pedidos": { fn: telaPedidos, titulo: ["Pedidos", "Orçamento aceito → estoque → parcelas → nota fiscal → recebimento"] },
   "#/estoque": { fn: (root) => telaEstoque(root), titulo: ["Estoque", "Saldo físico, reservas dos pedidos e custo médio"] },
   "#/sistema/acessos": { fn: telaAcessos, titulo: ["Acessos a dados pessoais", "LGPD: quem abriu fichas de clientes, pedidos e exportações"] },
+  "#/produtos": { fn: telaProdutos, titulo: ["Catálogo de produtos", "Catálogo próprio do VEOS: fotos, ficha técnica, compras e preços"] },
+  "#/produtos/revisao": { fn: telaRevisaoProdutos, titulo: ["Revisar produtos", "Possíveis duplicados com o Zoho e agrupamentos a conferir"] },
   "#/sistema/independencia": { fn: telaIndependencia, titulo: ["Independência do Zoho", "Uso real por módulo, cobertura do VEOS e roteiro de desligamento"] },
   "#/mensagens": { fn: telaMensagens, titulo: ["Caixa de saída", "Mensagens preparadas: você revisa, envia e marca como enviada"] },
   "#/propostas": { fn: telaPropostas, titulo: ["Propostas", "Proposta comercial em PDF a partir do orçamento do Zoho"] },
@@ -205,6 +208,7 @@ function montarMenu() {
       h("span", { class: "nav-label", id: "nav-operacao" }, "Operação"),
       link("#/pedidos", "PED", "Pedidos"),
       link("#/estoque", "EST", "Estoque"),
+      link("#/produtos", "PROD", "Catálogo de produtos"),
       link("#/compras", "COM", "Compras"),
       link("#/recebimentos", "REC", "Recebimentos e faturamento"),
       ["direcao", "financas"].includes(eu.papel) ? link("#/contas-pagar", "PAG", "Contas a pagar") : null),
@@ -247,10 +251,14 @@ async function navegar() {
   const bibRota = /^#\/biblioteca\/(governanca|decisoes|aprendizados|referencias|politicas|revisoes|consultar)$/.exec(rotaBase());
   const bibReg = /^#\/biblioteca\/r\/([0-9a-f-]{36})$/.exec(rotaBase());
   const contratoRota = /^#\/pedidos\/([0-9a-f-]{36})\/contrato$/.exec(rotaBase());
+  const produtoRota = /^#\/produtos\/([0-9a-f-]{36})$/.exec(rotaBase());
   const propostaRota = /^#\/propostas\/([0-9]{5,25})$/.exec(rotaBase());
   const aceiteRota = /^#\/pedidos\/([0-9a-f-]{36})\/aceite$/.exec(rotaBase());
   const compraRota = /^#\/compras\/([0-9a-f-]{36})$/.exec(rotaBase());
-  if (propostaRota) {
+  if (produtoRota) {
+    rota = "#/produtos";
+    def = { fn: (root) => telaProduto(root, produtoRota[1]), titulo: ["Produto", "Nomes, variantes de origem, ficha técnica, compras e preços"] };
+  } else if (propostaRota) {
     rota = "#/propostas";
     def = { fn: (root) => telaProposta(root, propostaRota[1]), titulo: ["Proposta comercial", "Identidade VOICE · imprimir ou salvar em PDF · envio por rascunho"] };
   } else if (aceiteRota) {
@@ -318,7 +326,7 @@ async function iniciar(mensagem) {
   }
   montarMenu();
   iniciarAvisos();
-  if (!TELAS[rotaBase()] && !/^#\/(projetos|setor|zoho|pedidos|estoque|biblioteca|compras|propostas)\//.test(location.hash)) history.replaceState(null, "", "#/orbita");
+  if (!TELAS[rotaBase()] && !/^#\/(projetos|setor|zoho|pedidos|estoque|biblioteca|compras|propostas|produtos)\//.test(location.hash)) history.replaceState(null, "", "#/orbita");
   navegar();
 }
 

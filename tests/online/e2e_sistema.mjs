@@ -94,6 +94,17 @@ try {
   assert.equal(vr.status, 200, JSON.stringify(vr.dados).slice(0, 300)); assert.ok(vr.dados.fluxo && vr.dados.biblioteca);
   ok("varredura da direcao roda as vigias do fluxo (compras/contas/exposicao) e da Biblioteca sem erro");
 
+  // catalogo de produtos (so leitura e recusas)
+  const cat = await req("/functions/v1/api/produtos", { token });
+  assert.equal(cat.status, 200); assert.ok(cat.dados.total >= 1, "catalogo vazio");
+  const comFoto = cat.dados.produtos.find((p) => p.foto);
+  assert.ok(comFoto); assert.equal((await fetch(comFoto.foto)).status, 200); ok(`catalogo: ${cat.dados.total} produtos; foto abre pela URL assinada`);
+  const ficha = await req(`/functions/v1/api/produtos/${comFoto.id}`, { token });
+  assert.equal(ficha.status, 200); assert.ok(Array.isArray(ficha.dados.fontes) && ficha.dados.pode.preco); ok("ficha do produto com fontes, compras e vinculos");
+  assert.equal((await req(`/functions/v1/api/produtos/${comFoto.id}/preco`, { method: "POST", token, headers: chave(), body: { campo: "preco_venda", valor: "0.00", motivo: "TESTE" } })).status, 400); ok("preco zero recusado (sem valor = lacuna)");
+  const rev = await req("/functions/v1/api/produtos/revisao", { token });
+  assert.equal(rev.status, 200); ok(`revisao: ${rev.dados.vinculos.length} possivel(is) duplicado(s), ${rev.dados.agrupamentos.length} agrupamento(s) a conferir`);
+
   // caixa de saida e resumo do dia (a mensagem TESTE e descartada no fim)
   const rs = await req("/functions/v1/api/resumo", { token });
   assert.equal(rs.status, 200); assert.equal(rs.dados.resumos.length, 9); ok("resumo do dia dos 9 setores (direcao)");
@@ -127,6 +138,7 @@ try {
   assert.equal((await req("/functions/v1/api/fluxo/contas-pagar", { token })).status, 403); ok("vendas nao ve contas a pagar -> 403");
   const rv = await req("/functions/v1/api/resumo", { token });
   assert.ok(!rv.dados.resumos.some((r) => r.setor === "financas")); ok("vendas nao recebe o resumo do Financeiro (setor restrito)");
+  assert.equal((await req(`/functions/v1/api/produtos/${comFoto.id}/preco`, { method: "POST", token, headers: chave(), body: { campo: "preco_venda", valor: "100.00", motivo: "TESTE" } })).status, 403); ok("vendas nao define preco de venda -> 403");
 } finally {
   await papel(user.id, "vendas", false); // TESTE fica inativo
 }
