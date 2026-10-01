@@ -82,6 +82,8 @@ try {
   assert.equal(pj.status, 200); ok(`projetos do Zoho para ligar ao pedido: ${pj.dados.projetos.length}`);
   const semPed = await req("/functions/v1/api/fluxo/pedidos/00000000-0000-0000-0000-000000000000/horas", { method: "POST", token, headers: chave(), body: { data: "2026-10-01", pessoa: "TESTE", horas: "30" } });
   assert.equal(semPed.status, 400); ok("horas acima de 24 por lancamento -> 400");
+  const apr = await req("/functions/v1/api/fluxo/pedidos/00000000-0000-0000-0000-000000000000/aprendizado", { method: "POST", token, headers: chave(), body: {} });
+  assert.equal(apr.status, 404, JSON.stringify(apr.dados)); ok("aprendizado de margem de pedido inexistente -> 404 (nada gravado)");
   const cx = await req("/functions/v1/api/fluxo/caixa", { token });
   assert.equal(cx.dados.meses.length, 9); ok("previsao de caixa: 2 meses atras ate 6 a frente");
   const inval = await req("/functions/v1/api/fluxo/compras", { method: "POST", token, headers: chave(), body: { fornecedor_nome: "Fornecedor TESTE", itens: [{ item_id: "nao-existe-TESTE", quantidade: "1", custo_unit: "10.00" }], parcelas: [{ vencimento: "2026-12-01", valor: "10.00" }] } });

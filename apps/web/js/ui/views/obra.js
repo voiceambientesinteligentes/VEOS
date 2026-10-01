@@ -115,3 +115,29 @@ export async function telaTermoAceite(root, id) {
   root.append(h("p", { class: "nao-imprimir" }, h("a", { href: `#/pedidos/${id}` }, `‹ Pedido ${p.numero}`)), form, doc);
   montar();
 }
+
+// ---------------------------------------------------------------- margem orcada x realizada
+const pctTxt = (v) => (v === null || v === undefined ? "—" : `${String(v).replace(".", ",")}%`);
+export function painelMargem(d, id, eu, recarregar) {
+  const m = d.margem;
+  const c = m.custo_real;
+  const saida = h("div", { role: "status" });
+  const podeRegistrar = ["direcao", "financas"].includes(eu?.papel) && ["entregue", "faturado", "concluido"].includes(d.pedido.estado) && !d.aprendizado;
+  const registrar = acao(botao("Registrar aprendizado na Biblioteca"), saida, async () => {
+    const r = await api.fluxoAcao(id, "aprendizado");
+    await recarregar(`Aprendizado ${r.codigo} registrado (hipótese a validar).`);
+  });
+  const desvio = m.desvio_pp === null ? "—" : `${Number(m.desvio_pp) > 0 ? "+" : ""}${String(m.desvio_pp).replace(".", ",")} p.p.`;
+  return panel({ title: "Margem: orçada × realizada", subtitle: "Margem bruta (preço − custo direto). Não é a margem de contribuição oficial da Política V1.",
+    actions: m.completo ? stamp("Custo real completo", "ok") : stamp("Parcial", "warn") },
+    table({ caption: "Custos do pedido", head: ["", "Valor"], align: ["", "r"], rows: [
+      ["Receita do pedido", brl(m.receita)], ["Custo orçado (cadastro)", m.custo_orcado === null ? "incompleto" : brl(m.custo_orcado)],
+      ["Materiais comprados para o pedido", brl(c.materiais_comprados)], ["Materiais do estoque (custo médio)", brl(c.materiais_estoque)],
+      ["Outras despesas do pedido", brl(c.outras_despesas)], ["Mão de obra (horas × custo/hora)", brl(c.mao_de_obra)], ["Custo real", brl(c.total)],
+      ["Margem orçada", pctTxt(m.margem_orcada_pct)], ["Margem realizada", pctTxt(m.margem_realizada_pct)], ["Desvio (realizada − orçada)", desvio]] }),
+    m.lacunas.length ? h("p", { class: "notice notice-warn" }, `Lacunas: ${m.lacunas.join("; ")}.`) : null,
+    d.aprendizado ? h("p", null, "Aprendizado na Biblioteca: ", h("a", { href: `#/biblioteca/r/${d.aprendizado.id}` }, d.aprendizado.codigo), ` (${d.aprendizado.estado})`) : null,
+    podeRegistrar ? h("div", { class: "row" }, registrar) : null,
+    h("p", { class: "field-hint" }, "Ao concluir o pedido (última parcela recebida), o VEOS registra este comparativo na Biblioteca como hipótese para a equipe validar."),
+    saida);
+}

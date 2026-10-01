@@ -48,6 +48,36 @@ async function vigiar() {
   try { await vigiarFluxo(); } catch (e) { console.error("vigia do fluxo", e); }
 }
 
+const pct = (v: unknown) => (v === null || v === undefined ? "—" : `${String(v).replace(".", ",")}%`);
+const reais = (v: unknown) => `R$ ${Number(v ?? 0).toFixed(2).replace(".", ",").replace(/\B(?=(\d{3})+(?!\d))/g, ".")}`;
+
+/** Aprendizado (hipotese) na Biblioteca com a margem orcada x realizada do pedido. Uma vez por pedido. */
+export async function registrarAprendizadoMargem(id: string, eu: Membro) {
+  const [ja] = await servico(`/rest/v1/biblioteca_vinculos?para_externo=eq.pedido:${id}&relacao=eq.aprendizado_de&select=de_id,registro:biblioteca_registros!biblioteca_vinculos_de_id_fkey(codigo)&limit=1`);
+  if (ja) return { codigo: ja.registro?.codigo, repetido: true };
+  const [p] = await servico(`/rest/v1/pedidos?id=eq.${id}&select=numero,cliente_nome,estado`);
+  if (!p) throw new HttpError(404, "pedido inexistente");
+  const m = await servico("/rest/v1/rpc/pedido_margem", { method: "POST", body: JSON.stringify({ p_pedido: id }) });
+  const c = m.custo_real;
+  const desvio = m.desvio_pp === null ? "não calculado (custo real incompleto)" : `${Number(m.desvio_pp) > 0 ? "+" : ""}${String(m.desvio_pp).replace(".", ",")} p.p.`;
+  const conteudo = [
+    `Pedido ${p.numero} (${p.cliente_nome}), situação ${p.estado}. Margem BRUTA (preço − custo direto); não é a margem de contribuição oficial da Política V1.`,
+    `Receita ${reais(m.receita)} · custo orçado ${m.custo_orcado === null ? "incompleto" : reais(m.custo_orcado)} (margem ${pct(m.margem_orcada_pct)}).`,
+    `Custo real ${reais(c.total)}: materiais comprados ${reais(c.materiais_comprados)}, do estoque ${reais(c.materiais_estoque)}, outras despesas ${reais(c.outras_despesas)}, mão de obra ${reais(c.mao_de_obra)}.`,
+    `Margem realizada ${pct(m.margem_realizada_pct)}; desvio ${desvio}.`,
+    m.lacunas.length ? `Lacunas: ${m.lacunas.join("; ")}.` : "Custo real completo.",
+    "Hipótese a validar: as causas do desvio (preço de compra, perdas, horas, frete) ainda não foram analisadas. Valide com a equipe antes de virar regra.",
+  ].join("\n");
+  const r = await servico("/rest/v1/rpc/bib_criar", { method: "POST", body: JSON.stringify({ p: {
+    usuario: eu.user_id, tipo: "aprendizado", estado: "hipotese", titulo: `Margem realizada do pedido ${p.numero}: ${pct(m.margem_orcada_pct)} orçada × ${pct(m.margem_realizada_pct)} realizada`.slice(0, 200),
+    conteudo, assuntos: ["margem", "custo", "pedido"], setores: ["financas", "operacoes"], resultado_observado: `desvio ${desvio}`,
+    dados: { origem: "margem_realizada", pedido_id: id, margem: m },
+    fontes: [{ tipo: "interna", natureza: m.completo ? "fato_verificado" : "inferencia", titulo: `Pedido ${p.numero}: compras, estoque, contas e horas registrados no VEOS`, data_fonte: new Date().toISOString().slice(0, 10), acessada: true }],
+  } }) });
+  await servico("/rest/v1/biblioteca_vinculos", { method: "POST", body: JSON.stringify({ de_id: r.id, para_externo: `pedido:${id}`, relacao: "aprendizado_de", criado_por: eu.user_id }) });
+  return { codigo: r.codigo, id: r.id, repetido: false };
+}
+
 async function pedidoCompleto(id: string) {
   const [[pedido], itens, parcelas, notas, historico, anexos] = await Promise.all([
     servico(`/rest/v1/pedidos?id=eq.${id}&select=*`),
@@ -69,15 +99,17 @@ async function pedidoCompleto(id: string) {
   for (const r of reservas) reservado.set(r.item_id, (reservado.get(r.item_id) ?? 0) + (r.tipo === "reserva" ? num(r.quantidade) : -num(r.quantidade)));
   const saldo = new Map(saldos.map((s: { item_id: string }) => [s.item_id, s]));
   const pid = pedido.projeto_zoho_id;
-  const [caixa, compras, horas, projeto, tarefas] = await Promise.all([
+  const [caixa, compras, horas, projeto, tarefas, margem, aprendizado] = await Promise.all([
     caixaPedido(id, pedido.valor_total),
     servico(`/rest/v1/compras?pedido_id=eq.${id}&select=id,numero,fornecedor_nome,estado,valor_total,previsao_entrega&order=criado_em`),
     servico(`/rest/v1/pedido_horas?pedido_id=eq.${id}&select=id,data,pessoa,horas,custo_hora,descricao,criado_em&order=data.desc,id.desc`),
     pid ? servico(`/rest/v1/zoho_registros?produto=eq.projects&modulo=eq.projects&zoho_id=eq.${encodeURIComponent(pid)}&select=zoho_id,nome,status:dados->status,pct:dados->>percent_complete,fim:dados->>end_date`) : [],
+    servico("/rest/v1/rpc/pedido_margem", { method: "POST", body: JSON.stringify({ p_pedido: id }) }),
+    servico(`/rest/v1/biblioteca_vinculos?para_externo=eq.pedido:${id}&relacao=eq.aprendizado_de&select=registro:biblioteca_registros!biblioteca_vinculos_de_id_fkey(id,codigo,estado)&limit=1`),
     pid ? servico(`/rest/v1/zoho_registros?produto=eq.projects&modulo=eq.tasks&excluido=is.false&or=(dados->project->>id.eq.${encodeURIComponent(pid)},dados->>projeto.eq.${encodeURIComponent(pid)})&select=zoho_id,nome,status:dados->status,pct:dados->>completion_percentage,concluida:dados->>is_completed,fim:dados->>end_date,lista:dados->tasklist->>name,horas:dados->log_hours&order=nome&limit=300`) : [],
   ]);
   return {
-    pedido, parcelas, notas, historico, anexos, caixa, compras, horas, obra: pid ? { projeto: projeto[0] ?? null, tarefas } : null,
+    pedido, parcelas, notas, historico, anexos, caixa, compras, horas, margem, aprendizado: aprendizado[0]?.registro ?? null, obra: pid ? { projeto: projeto[0] ?? null, tarefas } : null,
     itens: itens.map((i: Record<string, any>) => ({ ...i, reservado_pedido: i.item_id ? reservado.get(i.item_id) ?? 0 : null, estoque: i.item_id ? saldo.get(i.item_id) ?? { fisico: 0, reservado: 0 } : null })),
   };
 }
@@ -290,6 +322,9 @@ export async function rotearFluxo(req: Request, partes: string[], eu: Membro) {
       const descricao = texto(corpo.descricao, 300);
       if (num(corpo.horas) < 0 && !descricao) throw new HttpError(400, "correção (horas negativas) exige descrição");
       r = await servico("/rest/v1/rpc/pedido_lancar_horas", { method: "POST", body: JSON.stringify({ p: { chave: `${eu.user_id}:${chave}`, usuario: eu.user_id, pedido_id: b, data: corpo.data, pessoa, horas: corpo.horas, custo_hora: corpo.custo_hora || null, descricao } }) });
+    } else if (c === "aprendizado") {
+      exigir(eu, FINANCEIRO);
+      return await registrarAprendizadoMargem(b, eu);
     } else if (c === "aceite") {
       exigir(eu, OPERACAO);
       if (!DATA_RE.test(String(corpo.data))) throw new HttpError(400, "data do aceite inválida");
@@ -325,6 +360,11 @@ export async function rotearFluxo(req: Request, partes: string[], eu: Membro) {
     if (!MONEY_RE.test(String(corpo.valor)) || num(corpo.valor) <= 0) throw new HttpError(400, "valor recebido inválido");
     const r = await servico("/rest/v1/rpc/parcela_receber", { method: "POST", body: JSON.stringify({ p_parcela: b, p_data: corpo.data, p_valor: corpo.valor, p_usuario: eu.user_id }) });
     await vigiar();
+    // ultima parcela concluiu o pedido: margem orcada x realizada vira aprendizado (hipotese) na Biblioteca
+    const [x] = await servico(`/rest/v1/parcelas?id=eq.${b}&select=pedido:pedidos(id,estado)`);
+    if (x?.pedido?.estado === "concluido") {
+      try { return { ...r, aprendizado: await registrarAprendizadoMargem(x.pedido.id, eu) }; } catch (e) { console.error("aprendizado da margem", e); }
+    }
     return r;
   }
   if (post && a === "estoque" && !b) {

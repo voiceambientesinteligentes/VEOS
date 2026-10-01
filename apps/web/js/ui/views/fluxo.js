@@ -6,7 +6,7 @@ import { parseMoneyInput } from "../../domain/controls.js";
 import { formatBRL, formatDate, formatDateTime } from "../../domain/format.js";
 import { clear, errorNotice, field, h, method, panel, stamp, stat, table } from "../dom.js";
 import { barrasMensais } from "../grafico.js";
-import { painelAceite, painelHoras, painelObra } from "./obra.js";
+import { painelAceite, painelHoras, painelMargem, painelObra } from "./obra.js";
 
 const ESTADOS = {
   rascunho: ["Rascunho", "neutral"], confirmado: ["Confirmado", "live"], entregue: ["Entregue", "warn"],
@@ -93,6 +93,7 @@ export async function telaPedido(root, id, eu) {
             i.tipo === "produto" && i.item_id ? (Number(i.reservado_pedido) < Number(i.quantidade) && p.estado === "confirmado" ? stamp(`${qtd(i.reservado_pedido)} (faltam ${qtd(i.quantidade - i.reservado_pedido)})`, "risk") : qtd(i.reservado_pedido)) : "—",
             i.estoque ? `${qtd(i.estoque.fisico)} / ${qtd(i.estoque.reservado)}` : "—"]) })),
       d.caixa ? painelCaixa(d) : null,
+      d.margem && p.estado !== "rascunho" ? painelMargem(d, id, eu, (m) => api.fluxoPedido(id).then((x) => { d = x; desenhar(m); })) : null,
       ["confirmado", "entregue", "faturado", "concluido"].includes(p.estado) ? painelObra(d, id, (m) => api.fluxoPedido(id).then((x) => { d = x; desenhar(m); })) : null,
       ["confirmado", "entregue", "faturado", "concluido"].includes(p.estado) ? painelHoras(d, id, (m) => api.fluxoPedido(id).then((x) => { d = x; desenhar(m); })) : null,
       !["rascunho", "cancelado"].includes(p.estado) ? painelAceite(d, id, (m) => api.fluxoPedido(id).then((x) => { d = x; desenhar(m); })) : null,
