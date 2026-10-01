@@ -279,3 +279,5 @@ a.pill { text-decoration: none; }
 .produto-fonte { display: flex; gap: var(--s3); align-items: flex-start; }
 .produto-fonte > .stack-s { min-width: 0; flex: 1; overflow-wrap: anywhere; }
 @media (max-width: 600px) { .produtos-grade { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s2); } }
+.produtos-grade > li { list-style: none; }
+.produtos-grade > li::marker { content: none; }

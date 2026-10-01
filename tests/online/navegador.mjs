@@ -11,7 +11,8 @@ import { chromium } from "playwright";
 const URL_BASE = process.env.SUPABASE_URL, ANON = process.env.SUPABASE_ANON_KEY, SERVICE = process.env.SUPABASE_SERVICE_ROLE_KEY;
 if (!URL_BASE || !ANON || !SERVICE) throw new Error("defina SUPABASE_URL, SUPABASE_ANON_KEY e SUPABASE_SERVICE_ROLE_KEY");
 const SITE = process.env.VEOS_SITE ?? "https://voiceambientesinteligentes.github.io/VEOS/";
-const EMAIL = "teste-navegador@veos-teste.invalid";
+// GitHub Actions usa usuarios TESTE proprios (nao colide com execucao local ao mesmo tempo)
+const EMAIL = `teste-navegador${process.env.CI ? "-ci" : ""}@veos-teste.invalid`;
 const admin = { apikey: SERVICE, Authorization: `Bearer ${SERVICE}`, "Content-Type": "application/json" };
 const TELAS = [
   "#/visao", "#/orbita", "#/radar", "#/mensagens", "#/conselho", "#/integracoes", "#/biblioteca/governanca", "#/biblioteca/decisoes", "#/biblioteca/revisoes",
@@ -68,6 +69,14 @@ async function percorrer(nome, viewport, telas) {
     const sw = await pg.evaluate(async () => Boolean(await navigator.serviceWorker?.getRegistration().catch(() => null)));
     const pwa = { manifesto: m?.short_name ?? null, sw };
     (pwa.manifesto === "VEOS" && pwa.sw ? oks : falhas).push(`PWA: manifesto ${pwa.manifesto ?? "ausente"}, service worker ${pwa.sw ? "registrado" : "ausente"}`);
+    const falhasImg = [];
+    pg.on("response", (r) => { if (r.url().includes("/storage/v1/") && r.status() >= 400) falhasImg.push(`${r.status()} ${r.url().split("?")[0].split("/").pop()}`); });
+    pg.on("console", (m) => { if (/Content Security Policy/.test(m.text()) && /img/.test(m.text())) falhasImg.push("CSP bloqueou imagem"); });
+    await pg.goto(`${SITE}#/produtos`, { waitUntil: "networkidle" });
+    await pg.waitForFunction(() => [...document.querySelectorAll("img.produto-foto")].filter((x) => x.getBoundingClientRect().top < innerHeight).reduce((ok, x, _, l) => ok && l.length > 0 && x.complete, true) && document.querySelectorAll("img.produto-foto").length > 0, null, { timeout: 20000 }).catch(() => {});
+    if (falhasImg.length) falhas.push(`fotos: ${[...new Set(falhasImg)].slice(0, 3).join(" | ")}`);
+    const fotos = await pg.evaluate(() => { const i = [...document.querySelectorAll("img.produto-foto")].filter((x) => x.getBoundingClientRect().top < innerHeight); return { total: i.length, ok: i.filter((x) => x.complete && x.naturalWidth > 0).length }; });
+    (fotos.total && fotos.ok === fotos.total ? oks : falhas).push(`catalogo: ${fotos.ok}/${fotos.total} fotos carregadas`);
     await pg.keyboard.press("Control+k");
     await pg.waitForTimeout(300);
     await pg.keyboard.type("saude");

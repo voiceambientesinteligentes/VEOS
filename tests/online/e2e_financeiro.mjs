@@ -30,8 +30,8 @@ async function api(token, metodo, rota, body, chave = randomUUID()) {
   return { status: r.status, dados: await r.json() };
 }
 
-const vendas = await usuario("teste-automatizado@veos-teste.invalid", "vendas");
-const fin = await usuario("teste-financas@veos-teste.invalid", "financas");
+const vendas = await usuario(`teste-automatizado${process.env.CI ? "-ci" : ""}@veos-teste.invalid`, "vendas");
+const fin = await usuario(`teste-financas${process.env.CI ? "-ci" : ""}@veos-teste.invalid`, "financas");
 
 assert.equal((await api(vendas, "GET", "projetos")).status, 403); ok.push("vendas nao acessa o Financeiro -> 403");
 

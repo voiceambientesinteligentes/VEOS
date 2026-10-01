@@ -43,8 +43,8 @@ const campoFaltando = tipo.campos.find((c) => c.id === s.gatilho.campo);
 const exemplo = (c) => ({ texto: "TESTE", texto_longo: "TESTE", dinheiro: "1000.00", numero: "1", data: "2026-12-31", opcao: c.opcoes?.[0], email: "teste@veos-teste.invalid", telefone: "+55 11 99999-0000", sim_nao: true })[c.tipo];
 const obrigatorios = Object.fromEntries(tipo.campos.filter((c) => c.obrigatorio && c.id !== s.gatilho.campo).map((c) => [c.id, exemplo(c)]));
 
-const vendasTok = await usuario("teste-automatizado@veos-teste.invalid", "vendas");
-const finTok = await usuario("teste-financas@veos-teste.invalid", "financas");
+const vendasTok = await usuario(`teste-automatizado${process.env.CI ? "-ci" : ""}@veos-teste.invalid`, "vendas");
+const finTok = await usuario(`teste-financas${process.env.CI ? "-ci" : ""}@veos-teste.invalid`, "financas");
 
 // acesso restrito
 assert.equal((await api(vendasTok, "GET", "setor/financas")).status, 403);

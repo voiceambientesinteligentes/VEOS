@@ -12,7 +12,8 @@ import { createInterface } from "node:readline";
 
 const URL_BASE = process.env.SUPABASE_URL, ANON = process.env.SUPABASE_ANON_KEY, SERVICE = process.env.SUPABASE_SERVICE_ROLE_KEY;
 if (!URL_BASE || !ANON || !SERVICE) throw new Error("defina SUPABASE_URL, SUPABASE_ANON_KEY e SUPABASE_SERVICE_ROLE_KEY");
-const EMAIL = "teste-mcp@veos-teste.invalid";
+// GitHub Actions usa usuarios TESTE proprios (nao colide com execucao local ao mesmo tempo)
+const EMAIL = `teste-mcp${process.env.CI ? "-ci" : ""}@veos-teste.invalid`;
 const admin = { apikey: SERVICE, Authorization: `Bearer ${SERVICE}`, "Content-Type": "application/json" };
 const resultados = [];
 const ok = (n) => resultados.push(`ok  ${n}`);
