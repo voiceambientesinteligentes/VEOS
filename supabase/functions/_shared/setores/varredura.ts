@@ -16,8 +16,8 @@ export async function varrer(catalogo: Setor[], setores: string[] | null, origem
   const lista = ids.join(",");
   const [registros, existentes]: [Registro[], (Linha & { setor_id: string })[]] = await Promise.all([
     servico(`/rest/v1/registros?ambiente=eq.TESTE&setor_id=in.(${lista})&select=id,setor_id,tipo,titulo,estado,responsavel,prazo,valor::text,criado_em,atualizado_em,dados&limit=5000`),
-    // alertas do fluxo (FLX_*) e da Biblioteca (BIB_*) sao das vigias proprias, nao do catalogo: ficam fora desta varredura
-    servico(`/rest/v1/alertas?setor_id=in.(${lista})&and=(sentinela.not.like.FLX_*,sentinela.not.like.BIB_*)&select=id,chave,estado,titulo,mensagem,setor_id&limit=5000`),
+    // alertas do fluxo (FLX_*), da Biblioteca (BIB_*) e da saude do sistema (SIS_*) sao das vigias proprias, nao do catalogo: ficam fora desta varredura
+    servico(`/rest/v1/alertas?setor_id=in.(${lista})&and=(sentinela.not.like.FLX_*,sentinela.not.like.BIB_*,sentinela.not.like.SIS_*)&select=id,chave,estado,titulo,mensagem,setor_id&limit=5000`),
   ]);
 
   const desejados = new Map<string, Alerta>();
