@@ -27,6 +27,10 @@ Formato: data · decisão · quem · origem. Propostas ficam separadas até o Fe
 | 30/09/2026 | Portal publicado no **GitHub Pages** (`voiceambientesinteligentes.github.io/VEOS/`): a Netlify pausou as publicações do plano gratuito (créditos do mês esgotados) e o Fernando não vai pagar agora. Workflow `publicar-site`; CSP por meta tag; login e retorno do Zoho apontam para o novo endereço. A Netlify fica congelada na última versão. | mensagem de 30/09 |
 | 30/09/2026 | **Impostos com nota** conforme a tela de negociação validada pelo Fernando (produtos NF-e: PIS 0,65 + COFINS 3 + IRPJ 4,8 + CSLL 2,88 = 11,33%; serviços NFS-e: ISS 2,65%), conforme a tela de negociação validada pelo Fernando. **Substitui** a dedução de Simples Nacional feita pelo Claude. O Claude também rotulou por engano como "Lucro Presumido" (dedução, não consulta): o Fernando informou que o regime é outro; **regime a confirmar**. Overhead de 20% sobre o custo direto e margem antes dos impostos/com nota, como na tela validada; a MC oficial da Política V1 continua exibida como conferência (faixa e alçada). | mensagem de 30/09 |
 | 30/09/2026 | Dados de exemplo sempre marcados TESTE; dados reais numa fase própria. | Plano Mestre §1 |
+| 01/10/2026 | **Sem orçamento de IA no servidor por enquanto (teto zero).** Resolve P-3. Biblioteca BIB-0044 (proposta BIB-0041 aprovada). | pergunta respondida em 01/10 |
+| 01/10/2026 | **O fundador (Fernando) exerce a CEO** até nomeação de outra pessoa. Biblioteca BIB-0045; alçada `ceo_humana` preenchida. | pergunta respondida em 01/10 |
+| 01/10/2026 | Repositório continua **público** (GitHub Pages gratuito exige). Reafirma BIB-0018. | pergunta respondida em 01/10 |
+| 01/10/2026 | Propostas BIB-0037, 0038, 0039, 0040 e 0042: o Fernando pediu que o Claude organizasse e ele corrige no fim. Ficaram **em consulta** com a recomendação do Claude registrada como opinião (não decisão). BIB-0046 (exigir MFA da direção) criada nos mesmos termos. | mensagem de 01/10 |
 
 ## Propostas (aguardando confirmação)
 
@@ -34,7 +38,7 @@ Formato: data · decisão · quem · origem. Propostas ficam separadas até o Fe
 |---|---|---|
 | P-1 | Hospedagem **sem cartão** (a Cloudflare pediu cartão no cadastro, 30/09). Verificado em 30/09: Firebase Spark não exige cartão, mas **Cloud Functions exigem o plano Blaze** (docs oficiais), então não há código no servidor (sem MCP nem vigia online). Vercel Hobby proíbe uso comercial. | **Supabase Free** (Postgres, login, arquivos, Edge Functions para API/MCP/vigia; pausa após 1 semana sem uso, contornável com um ping agendado) + **Netlify Free** para o portal (conta já existe para o site; 300 créditos/mês). Aguardando confirmação. |
 | P-2 | Endereço: subdomínio `veos.<domínio da VOICE>`; o site atual continua na Netlify | subdomínio |
-| P-3 | Orçamento mensal para IA no servidor (respostas na voz dos diretores com o PC desligado) | definir um teto; o vigia funciona sem IA |
+| P-3 | ~~Orçamento mensal para IA no servidor~~ **Decidido em 01/10: teto zero por enquanto** (BIB-0044) | — |
 | P-4 | Item 30: REFERENCIA ou PADRAO | análise da fonte em andamento (etapa E) |
 | P-5 | Siglas existentes: CSO = Vendas/Comercial, CIO = Tecnologia e dados. Manter ou renomear? | manter até decisão |
 | P-6 | Perfis novos: Pós-venda e Administrativo/Pessoas | criar quando houver regras do setor |
@@ -46,3 +50,8 @@ Formato: data · decisão · quem · origem. Propostas ficam separadas até o Fe
 | 30/09/2026 | O repositório Git é `VOICE_360/VEOS/`, só com código e docs. O acervo e as evidências ficam fora do Git. | o acervo tem políticas, evidências com hash e dados que não devem ir ao GitHub |
 | 30/09/2026 | Portal **copiado** (não movido) de `VOICE360-V2/scratch/VEOS-LOCAL/portal` para `VEOS/apps/portal`. A origem continua intacta como histórico. | preservar evidências e caminhos; a cópia foi validada com os mesmos testes |
 | 30/09/2026 | Vigia implementado como módulo novo que reutiliza `cfo_controls` sem alterá-lo. | não duplicar regras já testadas |
+| 01/10/2026 | Vigia da saúde do sistema (SIS_*) roda **dentro do banco** pelo pg_cron, sem chamada HTTP. | não embutir chave em agendamento; mesma regra para tela e vigia |
+| 01/10/2026 | Convite de usuário cria o login **sem enviar e-mail**; a direção avisa a pessoa. Desativar também bloqueia o login no Auth. | nada é enviado sozinho; acesso cortado de fato |
+| 01/10/2026 | MFA por membro (TOTP do Supabase, gratuito); exigir só para quem já cadastrou o app. | evitar trancar alguém fora |
+| 01/10/2026 | Backup pela API (todas as tabelas + anexos + logins), gzip + AES-256-GCM, artefato do Actions por 90 dias; tokens de integração ficam fora. | grátis, sem senha do banco; repositório público exige criptografia |
+| 01/10/2026 | Testes de tela versionados em `tests/telas/` com moldura de celular (iframe 390 px). | o Edge headless não abre janela < ~490 px |

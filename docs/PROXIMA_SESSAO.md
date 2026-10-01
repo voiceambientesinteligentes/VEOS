@@ -1,4 +1,4 @@
-# Próxima sessão — ponto de partida (atualizado em 01/10/2026)
+# Próxima sessão — ponto de partida (atualizado em 01/10/2026, fim da tarde)
 
 ## Prompt para colar no início da próxima conversa
 
@@ -26,24 +26,26 @@ Atue como especialista sênior em engenharia de software, produto e UX.
 - Repositório público: voiceambientesinteligentes/VEOS. Conteúdo real (Biblioteca, Zoho, pedidos) fica só no banco.
 
 ## O que já funciona (resumo)
-Setores vivos (9) e Radar · Negociação ao Vivo (regime pela data: Simples até 31/12/2026 com faixa pelos orçamentos aceitos/faturados; depois alíquotas da tela validada) · Calculadora · Zoho espelho completo + edição nos dois sentidos · Pedidos → estoque → parcelas → NF manual → recebimento, com vigia FLX_* · Biblioteca e governança do fundador (BIB_*) · Contrato do pedido em PDF (imprimir) e anexos PDF privados.
+Setores vivos (9) e Radar · Negociação ao Vivo e Calculadora · Zoho espelho completo + edição nos dois sentidos · Pedidos → estoque → parcelas → NF manual → recebimento, com vigia FLX_* · Biblioteca e governança (BIB_*) · Contrato em PDF e anexos · **P0 (01/10):** validação guiada, saúde do sistema com vigia SIS_*, usuários e acessos com MFA, exportação CSV, backup semanal criptografado, CI com testes locais, telas simuladas e navegador no site publicado.
 
 ## Decisões que dependem do Fernando (registradas na Biblioteca)
-1. Aprovar/ajustar as 6 propostas: papel do fundador; base da faixa do Simples; ticket mínimo R$ 15.000; anexo do Simples para serviços (contador); orçamento de IA (P-3); siglas (P-5).
-2. Lacunas de alçada: assuntos reservados ao fundador; quem exerce a CEO; precedência entre autoridades; quem altera políticas; compras/fornecedores; preços de tabela; contratações; comunicação externa; quem valida ticket < R$ 100 mil; desconto ≤ 2% com MC 30–32%.
+Já decididas em 01/10: IA no servidor = teto zero (BIB-0044); Fernando exerce a CEO (BIB-0045); repositório continua público.
+1. **Revisar as propostas em consulta** (Biblioteca → Revisões), cada uma com a recomendação do Claude registrada como opinião: BIB-0037 papel do fundador (recomenda aprovar); BIB-0038 base da faixa do Simples (aprovar com ajuste: usar o faturado; validar com o contador); BIB-0039 ticket mínimo R$ 15 mil (não aprovar como bloqueio: contraria BIB-0022); BIB-0040 anexo do Simples (depende do contador); BIB-0042 siglas (manter); **BIB-0046 exigir MFA da direção** (aprovar depois de cadastrar o próprio MFA).
+2. Lacunas de alçada: assuntos reservados ao fundador; precedência entre autoridades; quem altera políticas; compras/fornecedores; preços de tabela; contratações; comunicação externa; quem valida ticket < R$ 100 mil; desconto ≤ 2% com MC 30–32%.
 3. Cláusulas do contrato aprovadas pelo jurídico (o VEOS não inventa texto jurídico).
-4. Repositório público × privado (GitHub Pages grátis exige repositório público).
+4. **Segredos do GitHub** (Settings → Secrets and variables → Actions): `SUPABASE_SERVICE_ROLE_KEY` e `BACKUP_SENHA`. Liberam o backup semanal e os testes online no CI.
 
 ## Backlog sugerido (visão de engenharia, produto e UX)
 
 ### P0 — fechar a base com segurança
-1. **Validação real guiada**: roteiro de teste com o Fernando logado (Zoho editar, pedido completo, Biblioteca, contrato, anexo). Registrar resultado e erros na Biblioteca.
-2. **E2E automatizado no CI**: GitHub Actions com usuário TESTE (segredos do repositório), Playwright headless contra o site e a API; o ambiente local bloqueia criar sessão de teste, então o CI é o caminho.
-3. **Usuários e acessos pela tela**: convidar membros, papel por setor, desativar; MFA obrigatório para direção; quem exerce a CEO.
-4. **Backup e exportação**: dump semanal do banco (Action com segredo, arquivo criptografado) + exportar CSV/Excel de pedidos, parcelas, estoque e Biblioteca.
-5. **Saúde do sistema na tela**: última sincronização do Zoho, erros, varreduras, uso dos limites gratuitos (banco 500 MB, chamadas Zoho), com alerta quando falhar.
+Implementado e testado em 01/10 (ver ESTADO_ATUAL). Falta só o que depende do Fernando:
+1. **Validação real guiada**: executar Sistema → Validação guiada logado e registrar (falhas viram incidentes).
+2. **E2E no CI**: cadastrar o segredo `SUPABASE_SERVICE_ROLE_KEY`; conferir a primeira execução do job `online`.
+3. **Usuários e acessos**: cadastrar o próprio MFA (Minha conta) e decidir BIB-0046; dar acesso às pessoas da equipe.
+4. **Backup**: cadastrar `BACKUP_SENHA` e rodar `backup-semanal` manualmente uma vez (Actions → Run workflow); testar a abertura do arquivo.
+5. **Saúde do sistema**: acompanhar os alertas SIS_* no Radar (setor Tecnologia).
 
-### P1 — completar o fluxo da empresa
+### P1 — completar o fluxo da empresa (próximo bloco técnico)
 6. **Painel executivo real** (Visão geral): faturamento, margem orçada × realizada, caixa previsto × realizado, funil do CRM, alertas por setor.
 7. **Compras e contas a pagar**: pedido de compra a partir da falta de estoque; recebimento de mercadoria → entrada de estoque; contas a pagar na previsão de caixa (entradas − saídas); exposição de caixa V1.1 calculada pelos pedidos (unificar com "Projetos e caixa").
 8. **Obra e pós-venda**: tarefas do Zoho Projects ligadas ao pedido (checklist de obra); horas lançadas; termo de aceite; garantia e chamados; contratos de manutenção recorrente.

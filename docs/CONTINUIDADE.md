@@ -61,3 +61,9 @@ Atualize este arquivo ao fim de cada sessão: última ação, resultado e próxi
 - Toda mudança em decisão/política vigente: `bib_revisar` (nova versão). Divergência: `bib_divergir`. Nada de UPDATE direto (a trava recusa).
 - Conteúdo real da Biblioteca fica só no banco (repositório é público).
 - Próximo: o fundador aprova/ajusta as propostas pendentes e preenche as lacunas; depois, perfis individuais dos demais líderes sobre esta base.
+
+## 01/10/2026 (tarde) — P0 completo no código
+- Decisões do Fernando registradas: IA teto zero (BIB-0044), CEO = fundador (BIB-0045), repositório público. Propostas BIB-0037/38/39/40/42 em consulta com recomendação do Claude; BIB-0046 (MFA da direção) criada.
+- Entregas (commits 4d5df53, 53f1ecc, 9f22fa5, 2537d79, 77cf13f, 3e038a9): validação guiada, saúde do sistema + vigia SIS_* no banco, usuários e acessos + MFA, exportação CSV, backup semanal criptografado, CI (local + online + navegador). Registro: BIB-0047; aprendizados validados BIB-0048 (largura mínima do Edge headless) e BIB-0049 (append nativo escreve "null").
+- Corrigido: `apps/portal/.gitignore` ignorava `web/js/data/` (o clone limpo falhava no CI).
+- Próximo: Fernando cadastra os segredos do GitHub, executa a validação guiada e revisa as propostas; técnico: P1.6 Painel executivo real.

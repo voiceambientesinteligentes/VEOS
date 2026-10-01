@@ -1,8 +1,23 @@
-# Estado atual — 30/09/2026
+# Estado atual — 01/10/2026
 
-**Resumo:** o vigia (avisos do CFO sobre orçamentos) **está online** no Supabase e o banco tem a base inicial; o portal ainda roda só no PC. O portal local funciona com dados TESTE. O vigia (sistema vivo)
-existe como protótipo para orçamentos. O pipeline V2 do cérebro segue bloqueado na
-classificação do item 30. **Não está 100%.**
+**Resumo:** o VEOS está online (site no GitHub Pages + Supabase) com setores vivos, Zoho espelhado e editável, fluxo de pedidos, Biblioteca, e — desde 01/10 — validação guiada, saúde do sistema, gestão de usuários com MFA, exportação, backup semanal criptografado e testes no CI. Falta o uso real guiado pelo Fernando e os segredos do GitHub para backup e testes online no CI. O pipeline V2 do cérebro segue bloqueado no item 30. **Não está 100%.**
+
+## P0 — base com segurança (01/10, tarde)
+**Implementado e testado** (testes automatizados + banco em transação desfeita + telas simuladas + online contra o Supabase real e o site publicado)
+- **Validação guiada** (Sistema → Validação guiada): roteiro de 17 passos com login real; cada falha vira incidente na Biblioteca e a rodada vira referência. Telas 4/4.
+- **Saúde do sistema** (Sistema → Saúde): banco e arquivos × limites do plano Free (500 MB / 1 GB), sincronização do Zoho por módulo (chamadas e erros em 24 h), agendamentos pg_cron, chamadas HTTP do agendador, varreduras, usuários. Vigia **SIS_*** roda no banco a cada 10 min (`veos-saude-sistema`, sem HTTP) e cria/resolve alertas no setor Tecnologia. Banco `tests/banco/sistema.sql` 8/8. Estado real em 01/10: 28 MB, 0 alertas.
+- **Usuários e acessos** (Sistema → Usuários, direção): dar acesso (cria o login sem senha e **sem enviar e-mail**; a pessoa entra pelo link), papel por setor (9), desativar com motivo (também bloqueia o login), reativar, histórico append-only; **MFA TOTP gratuito** (Minha conta: QR code + código; no login, código pedido quando a direção exige). Regras no banco (`membro_gerir`): só direção gere, ninguém se desativa, nunca fica sem direção ativa, MFA só exigível de quem já cadastrou. Banco `tests/banco/membros.sql` 13/13; telas 14/14.
+- **Exportar dados** (Sistema → Exportar, direção): CSV para Excel (`;`, vírgula decimal, BOM, proteção contra fórmula) de pedidos, itens, parcelas, NF, estoque, movimentos e Biblioteca.
+- **Backup semanal** (`.github/workflows/backup-semanal.yml`): todas as tabelas + anexos + logins, gzip + AES-256-GCM (senha no segredo `BACKUP_SENHA`), artefato por 90 dias; tokens do Zoho ficam fora. Abrir: `scripts/restaurar-backup.mjs`. Ida e volta conferida localmente (37 tabelas, 0,5 MB); senha errada recusada.
+- **CI** (`.github/workflows/testes.yml`): a cada push, `npm test` + 26 telas simuladas (Chrome); depois de cada publicação e diariamente, testes online da API e **navegador Playwright no site publicado** (30/30 telas, computador e celular 390 px).
+- Testes online: `node scripts/online.mjs tests/online/<arquivo>.mjs` (chaves pela CLI, sem imprimir) ou `npm run test:online`. Resultados 01/10: api 15, financeiro 12, setores 9, sistema 15, navegador 30/30.
+- Telas simuladas: `npm run test:telas` (fontes em `tests/telas/`, com moldura de celular a 390 px reais — o Edge headless não abre janela menor que ~490 px; os testes "de celular" anteriores rodavam a 492 px).
+
+**Dependente do Fernando**
+- Cadastrar no GitHub (Settings → Secrets and variables → Actions) os segredos `SUPABASE_SERVICE_ROLE_KEY` (Supabase → Project Settings → API) e `BACKUP_SENHA` (senha forte criada e guardada por ele). Sem eles, o backup semanal falha com aviso e os testes online do CI não rodam.
+- Executar a validação guiada com login real e cadastrar o próprio MFA; decidir a proposta BIB-0046 (exigir MFA da direção).
+
+**Não validado com uso real**: convite de pessoa real, MFA com app real, CSV aberto no Excel, backup com anexos (bucket vazio em 01/10).
 
 ## Funciona (com evidência)
 
@@ -29,7 +44,7 @@ classificação do item 30. **Não está 100%.**
 - Função `api` (login + cadastro em `membros`): `/me`, `/setores`, `/orcamentos` (GET e POST). POST grava orçamento + avisos + evento numa transação, idempotente. **E2E online: 15/15** (`tests/online/e2e_api.mjs`).
 - Login: Supabase Auth por link mágico; cadastro público **desligado**; membro real: Fernando (direção). Usuário TESTE automatizado (papel vendas) só para testes.
 - Portal online (`apps/web` → `dist/` via `scripts/build-web.mjs`): login, visão geral, avisos do CFO, histórico. Testado servido localmente contra o Supabase real, com a mesma CSP da Netlify (desktop e celular, 0 erros JS).
-- **Portal publicado: https://veos-voice.netlify.app** (Netlify, deploy automático a cada push em `main`). Testado no endereço público com o usuário TESTE: login, 7 setores, aviso do CFO gravado, histórico, celular sem rolagem lateral. A Netlify injeta o script `/.netlify/scripts/hud`, cujo código embutido é bloqueado pela nossa CSP (esperado; não é do VEOS).
+- Portal publicado hoje no **GitHub Pages** (https://voiceambientesinteligentes.github.io/VEOS/); a Netlify (https://veos-voice.netlify.app) ficou congelada. Testado no endereço público com o usuário TESTE: login, 7 setores, aviso do CFO gravado, histórico, celular sem rolagem lateral. A Netlify injeta o script `/.netlify/scripts/hud`, cujo código embutido é bloqueado pela nossa CSP (esperado; não é do VEOS).
 - **Login real verificado (30/09):** Fernando entrou pelo link mágico no endereço público e abriu o histórico.
 
 ## Setor Financeiro online (30/09)
