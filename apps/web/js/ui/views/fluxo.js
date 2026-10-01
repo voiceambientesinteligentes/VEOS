@@ -69,6 +69,7 @@ export async function telaPedido(root, id, eu) {
     if (p.estado === "rascunho") acoes.append(acao(botao("Confirmar pedido", "primary"), saida, refazer(() => api.fluxoAcao(id, "confirmar"))));
     if (p.estado === "confirmado" && faltas.length) acoes.append(acao(botao("Completar reserva"), saida, refazer(() => api.fluxoAcao(id, "reservar"))));
     if (p.estado === "confirmado") acoes.append(acao(botao("Registrar entrega (baixa estoque)", "primary"), saida, refazer(() => { if (!confirm("Registrar a entrega e baixar o estoque dos produtos?")) throw new Error("Cancelado."); return api.fluxoAcao(id, "entregar"); })));
+    if (p.estado !== "cancelado") acoes.append(h("a", { class: "btn btn-ghost", href: `#/pedidos/${id}/contrato` }, "Gerar contrato (PDF)"));
     if (["rascunho", "confirmado"].includes(p.estado) && eu?.papel === "direcao") acoes.append(acao(botao("Cancelar pedido"), saida, refazer(() => {
       const motivo = prompt("Motivo do cancelamento:"); if (!motivo) throw new Error("Informe o motivo."); return api.fluxoAcao(id, "cancelar", { motivo });
     })));
@@ -90,6 +91,7 @@ export async function telaPedido(root, id, eu) {
             i.estoque ? `${qtd(i.estoque.fisico)} / ${qtd(i.estoque.reservado)}` : "—"]) })),
       painelParcelas(d, id, eu, () => api.fluxoPedido(id).then((x) => { d = x; desenhar("Parcelas atualizadas."); })),
       painelNotas(d, id, eu, (r) => { d = r; desenhar("Nota fiscal registrada."); }),
+      painelAnexos(d, id, () => api.fluxoPedido(id).then((x) => { d = x; desenhar("Anexo enviado."); })),
       panel({ title: "Histórico", subtitle: "Não pode ser alterado nem apagado." },
         h("ul", { class: "list-plain stack-s" }, d.historico.map((x) => h("li", null, h("strong", null, x.acao.replace("_", " ")), ` · ${formatDateTime(x.em)}`, Object.keys(x.detalhe ?? {}).length ? h("span", { class: "field-hint" }, ` · ${Object.entries(x.detalhe).map(([k, v]) => `${k}: ${Array.isArray(v) ? v.map((f) => (f && typeof f === "object" ? `${f.nome ?? ""} ${f.falta ? `(falta ${qtd(f.falta)})` : ""}`.trim() : f)).join(", ") || "nenhuma" : v}`).join(" · ")}`) : null)))),
     ].filter(Boolean));
@@ -277,4 +279,91 @@ export async function telaRecebimentos(root) {
         ? table({ head: ["Vencimento", "Pedido", "Cliente", "Parcela", "Valor", ""], align: ["", "", "", "", "r", ""],
             rows: parcelas.map((x) => [formatDate(x.vencimento), h("a", { href: `#/pedidos/${x.pedido.id}` }, x.pedido.numero), x.pedido.cliente_nome, `${x.numero}${x.descricao ? ` · ${x.descricao}` : ""}`, brl(x.valor), x.vencimento < hoje() ? stamp("Vencida", "risk") : ""]) })
         : h("p", { class: "result-empty" }, "Nada em aberto.")));
+}
+
+// ---------------------------------------------------------------- anexos em PDF
+const TIPO_ANEXO = { orcamento: "Orçamento", proposta: "Proposta", contrato: "Contrato assinado", outro: "Outro" };
+function painelAnexos(d, id, recarregar) {
+  const saida = h("div", { role: "status" });
+  const arquivo = h("input", { type: "file", id: "ax-arq", accept: "application/pdf,.pdf", class: "input" });
+  const tipo = h("select", { class: "select", id: "ax-tipo" }, Object.entries(TIPO_ANEXO).map(([k, t]) => h("option", { value: k }, t)));
+  const enviar = botao("Enviar PDF", "primary");
+  acao(enviar, saida, async () => {
+    const f = arquivo.files?.[0];
+    if (!f) throw new Error("Escolha um arquivo PDF.");
+    if (f.type !== "application/pdf" && !/\.pdf$/i.test(f.name)) throw new Error("Só PDF.");
+    if (f.size > 16 * 1024 * 1024) throw new Error("O PDF deve ter até 16 MB.");
+    const dados = { nome: f.name, tipo: tipo.value, tamanho: f.size };
+    const { caminho, url } = await api.fluxoAnexo(id, dados);
+    const r = await fetch(url, { method: "PUT", headers: { "Content-Type": "application/pdf" }, body: f });
+    if (!r.ok) throw new Error(`Falha no envio (${r.status}).`);
+    await api.fluxoAnexo(id, { ...dados, caminho, confirmar: true });
+    await recarregar();
+  });
+  const lista = (d.anexos ?? []).length
+    ? table({ head: ["Arquivo", "Tipo", "Tamanho", "Enviado", ""], rows: d.anexos.map((x) => {
+        const abrir = botao("Abrir");
+        acao(abrir, saida, async () => { const l = await api.fluxoAnexoLink(x.id); window.open(l.url, "_blank", "noopener"); abrir.disabled = false; });
+        return [x.nome, TIPO_ANEXO[x.tipo] ?? x.tipo, `${(x.tamanho / 1024 / 1024).toFixed(2).replace(".", ",")} MB`, formatDateTime(x.enviado_em), abrir];
+      }) })
+    : h("p", { class: "result-empty" }, "Nenhum PDF anexado.");
+  return panel({ title: "Anexos (PDF)", subtitle: "Orçamento, proposta ou contrato assinado. Arquivos privados; o link de abertura vale 5 minutos. Até 16 MB." },
+    lista, h("div", { class: "form-grid" }, field("ax-arq", "Arquivo PDF", arquivo), field("ax-tipo", "Tipo", tipo)), h("div", { class: "row" }, enviar), saida);
+}
+
+// ---------------------------------------------------------------- contrato (imprimir / salvar em PDF)
+// Modelo gerado a partir do pedido. As clausulas juridicas NAO sao inventadas: o texto aprovado
+// pelo juridico/direcao e colado no campo proprio. O navegador salva em PDF pela impressao.
+export async function telaContrato(root, id) {
+  const d = await api.fluxoPedido(id);
+  const p = d.pedido;
+  let cli = null;
+  if (p.cliente_zoho_id) { try { cli = (await api.zohoEspelhoRegistro("books", "contacts", p.cliente_zoho_id)).dados; } catch { cli = null; } }
+  const end = (e) => (e ? [e.address, e.street2, [e.city, e.state].filter(Boolean).join(" - "), e.zip].filter(Boolean).join(", ") : "");
+  const campo = (idc, rot, valor = "", attrs = {}) => field(idc, rot, h("input", { class: "input", id: idc, type: "text", autocomplete: "off", value: valor, ...attrs }));
+  const clausulas = h("textarea", { class: "input", id: "ct-clausulas", rows: 8, placeholder: "Cole aqui as cláusulas aprovadas (garantia, obrigações das partes, rescisão, foro...)." });
+  const doc = h("article", { class: "contrato-doc" });
+  const v = (x) => document.getElementById(x)?.value?.trim() ?? "";
+  const temProduto = d.itens.some((i) => i.tipo === "produto"), temServico = d.itens.some((i) => i.tipo === "servico");
+  function montar() {
+    const linha = (rot, val) => h("p", null, h("strong", null, `${rot}: `), val || "________________________");
+    clear(doc).append(
+      h("h1", null, "Contrato de fornecimento de equipamentos e prestação de serviços"),
+      h("p", { class: "contrato-modelo" }, "Modelo gerado pelo VEOS a partir do pedido. Validar o texto com o jurídico antes de assinar."),
+      h("h2", null, "1. Partes"),
+      linha("CONTRATADA", `${v("ct-emp")}, CNPJ ${v("ct-cnpj-emp")}, com sede em ${v("ct-end-emp")}`),
+      linha("CONTRATANTE", `${v("ct-cli")}, CPF/CNPJ ${v("ct-doc")}, residente/sediado em ${v("ct-end-cli")}`),
+      h("h2", null, "2. Objeto"),
+      h("p", null, `Fornecimento e/ou instalação dos itens abaixo no endereço da obra: ${v("ct-obra") || "________________________"}.`),
+      h("table", { class: "contrato-tabela" }, h("thead", null, h("tr", null, ["Item", "Tipo", "Qtd", "Valor unit.", "Total"].map((t) => h("th", null, t)))),
+        h("tbody", null, d.itens.map((i) => h("tr", null, h("td", null, i.nome), h("td", null, i.tipo === "produto" ? "Produto" : "Serviço"), h("td", null, qtd(i.quantidade)), h("td", null, brl(i.preco_unit)), h("td", null, brl((Number(i.quantidade) * Number(i.preco_unit)).toFixed(2))))))),
+      h("h2", null, "3. Preço e pagamento"),
+      h("p", null, `Valor total do contrato: ${brl(p.valor_total)}${p.condicao ? ` (${p.condicao})` : ""}. Documentos fiscais: ${[temProduto ? "NF-e (produtos)" : null, temServico ? "NFS-e (serviços)" : null].filter(Boolean).join(" e ")}.`),
+      d.parcelas.filter((x) => x.estado !== "cancelada").length
+        ? h("table", { class: "contrato-tabela" }, h("thead", null, h("tr", null, ["Parcela", "Vencimento", "Valor"].map((t) => h("th", null, t)))),
+            h("tbody", null, d.parcelas.filter((x) => x.estado !== "cancelada").map((x) => h("tr", null, h("td", null, `${x.numero}${x.descricao ? ` · ${x.descricao}` : ""}`), h("td", null, formatDate(x.vencimento)), h("td", null, brl(x.valor))))))
+        : h("p", null, "Parcelas: a definir no pedido."),
+      h("h2", null, "4. Prazo"),
+      h("p", null, `Início previsto: ${v("ct-ini") ? formatDate(v("ct-ini")) : "____/____/______"}. Conclusão prevista: ${v("ct-fim") ? formatDate(v("ct-fim")) : "____/____/______"}.`),
+      h("h2", null, "5. Cláusulas gerais"),
+      clausulas.value.trim() ? h("div", { class: "zoho-texto" }, clausulas.value.trim()) : h("p", { class: "contrato-modelo" }, "[Cláusulas aprovadas pelo jurídico ainda não incluídas]"),
+      h("p", { class: "contrato-local" }, `${v("ct-local") || "Balneário Camboriú/SC"}, ${v("ct-data") ? formatDate(v("ct-data")) : "____/____/______"}.`),
+      h("div", { class: "contrato-assinaturas" }, h("div", null, h("span", null, "CONTRATADA"), h("span", null, v("ct-emp"))), h("div", null, h("span", null, "CONTRATANTE"), h("span", null, v("ct-cli")))),
+      h("p", { class: "contrato-rodape" }, `Pedido ${p.numero}${p.orcamento_numero ? ` · orçamento ${p.orcamento_numero}` : ""} · gerado pelo VEOS em ${formatDateTime(new Date().toISOString())}.`));
+  }
+  const imprimir = botao("Imprimir / salvar em PDF", "primary");
+  imprimir.addEventListener("click", () => { montar(); window.print(); });
+  const form = panel({ title: `Contrato do pedido ${p.numero}`, subtitle: "Confira e complete os dados. Depois de assinado, anexe o PDF no pedido (Anexos → Contrato assinado)." },
+    h("div", { class: "form-grid" },
+      campo("ct-emp", "Contratada", "VOICE AUTOMACAO LTDA"), campo("ct-cnpj-emp", "CNPJ da contratada", "12.323.599/0001-83"),
+      campo("ct-end-emp", "Endereço da contratada", "R 2500, 690 - Centro, Balneário Camboriú/SC, 88330-396"),
+      campo("ct-cli", "Contratante", cli?.contact_name ?? p.cliente_nome), campo("ct-doc", "CPF/CNPJ do contratante", cli?.tax_reg_no ?? ""),
+      campo("ct-end-cli", "Endereço do contratante", end(cli?.billing_address)), campo("ct-obra", "Endereço da obra", end(cli?.shipping_address)),
+      campo("ct-ini", "Início previsto", "", { type: "date" }), campo("ct-fim", "Conclusão prevista", "", { type: "date" }),
+      campo("ct-local", "Local", "Balneário Camboriú/SC"), campo("ct-data", "Data", new Date().toISOString().slice(0, 10), { type: "date" })),
+    field("ct-clausulas", "Cláusulas gerais (texto aprovado)", clausulas), h("div", { class: "row" }, imprimir));
+  form.classList.add("nao-imprimir");
+  form.addEventListener("input", montar);
+  root.append(h("p", { class: "nao-imprimir" }, h("a", { href: `#/pedidos/${id}` }, `‹ Pedido ${p.numero}`)), form, doc);
+  montar();
 }

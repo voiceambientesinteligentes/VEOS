@@ -16,7 +16,7 @@ import { telaConselho } from "./ui/views/conselho.js";
 import { telaCalculadora, telaNegociacao } from "./ui/views/precificacao.js";
 import { telaIntegracoes } from "./ui/views/integracoes.js";
 import { PRODUTOS, telaZoho } from "./ui/views/zoho.js";
-import { telaEstoque, telaItemEstoque, telaPedido, telaPedidos, telaRecebimentos } from "./ui/views/fluxo.js";
+import { telaContrato, telaEstoque, telaItemEstoque, telaPedido, telaPedidos, telaRecebimentos } from "./ui/views/fluxo.js";
 import { telaBiblioteca, telaRegistroBiblioteca } from "./ui/views/biblioteca.js";
 import { CATALOGO } from "./data/catalogo.js";
 
@@ -196,7 +196,11 @@ async function navegar() {
   const estoqueRota = /^#\/estoque\/([0-9A-Za-z_-]{1,40})$/.exec(rotaBase());
   const bibRota = /^#\/biblioteca\/(governanca|decisoes|aprendizados|referencias|politicas|revisoes|consultar)$/.exec(rotaBase());
   const bibReg = /^#\/biblioteca\/r\/([0-9a-f-]{36})$/.exec(rotaBase());
-  if (bibRota) {
+  const contratoRota = /^#\/pedidos\/([0-9a-f-]{36})\/contrato$/.exec(rotaBase());
+  if (contratoRota) {
+    rota = "#/pedidos";
+    def = { fn: (root) => telaContrato(root, contratoRota[1]), titulo: ["Contrato", "Gerado do pedido · imprimir ou salvar em PDF"] };
+  } else if (bibRota) {
     rota = `#/biblioteca/${bibRota[1]}`;
     def = { fn: (root) => telaBiblioteca(root, bibRota[1], eu), titulo: ["Biblioteca", "Memória institucional: decisões, aprendizados, referências, políticas e revisões"] };
   } else if (bibReg) {

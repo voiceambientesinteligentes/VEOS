@@ -12,7 +12,15 @@
 //   GET  /fluxo/estoque[?busca=&pagina=]  produtos com saldo
 //   GET  /fluxo/estoque/:item             movimentos do item
 //   POST /fluxo/estoque                   {item_id, tipo: entrada|ajuste, quantidade, custo_unit?, observacao?}
-import { HttpError, lerCorpo, type Membro, servico } from "../_shared/banco.ts";
+import { HttpError, lerCorpo, type Membro, SERVICE, servico, URL_BASE } from "../_shared/banco.ts";
+
+// Storage privado (bucket "anexos"): URLs assinadas de curta duracao, emitidas so pelo servidor.
+async function storage(caminho: string, corpo: unknown) {
+  const r = await fetch(`${URL_BASE}/storage/v1${caminho}`, { method: "POST", headers: { apikey: SERVICE, Authorization: `Bearer ${SERVICE}`, "Content-Type": "application/json" }, body: JSON.stringify(corpo) });
+  const d = await r.json().catch(() => ({}));
+  if (!r.ok) { console.error("storage", caminho, r.status, JSON.stringify(d).slice(0, 200)); throw new HttpError(502, "falha no armazenamento de arquivos"); }
+  return d as Record<string, string>;
+}
 import { vigiarFluxo } from "../_shared/fluxo_vigia.ts";
 
 const VER = ["direcao", "vendas", "operacoes", "financas"];
@@ -37,12 +45,13 @@ async function vigiar() {
 }
 
 async function pedidoCompleto(id: string) {
-  const [[pedido], itens, parcelas, notas, historico] = await Promise.all([
+  const [[pedido], itens, parcelas, notas, historico, anexos] = await Promise.all([
     servico(`/rest/v1/pedidos?id=eq.${id}&select=*`),
     servico(`/rest/v1/pedido_itens?pedido_id=eq.${id}&select=*&order=ordem`),
     servico(`/rest/v1/parcelas?pedido_id=eq.${id}&select=*&order=numero`),
     servico(`/rest/v1/notas_fiscais?pedido_id=eq.${id}&select=*&order=emitida_em`),
     servico(`/rest/v1/pedidos_historico?pedido_id=eq.${id}&select=acao,detalhe,em,usuario&order=id`),
+    servico(`/rest/v1/pedido_anexos?pedido_id=eq.${id}&select=id,nome,tipo,tamanho,enviado_em&order=enviado_em`),
   ]);
   if (!pedido) throw new HttpError(404, "pedido inexistente");
   const ids = [...new Set(itens.filter((i: { tipo: string; item_id: string | null }) => i.tipo === "produto" && i.item_id).map((i: { item_id: string }) => i.item_id))];
@@ -56,7 +65,7 @@ async function pedidoCompleto(id: string) {
   for (const r of reservas) reservado.set(r.item_id, (reservado.get(r.item_id) ?? 0) + (r.tipo === "reserva" ? num(r.quantidade) : -num(r.quantidade)));
   const saldo = new Map(saldos.map((s: { item_id: string }) => [s.item_id, s]));
   return {
-    pedido, parcelas, notas, historico,
+    pedido, parcelas, notas, historico, anexos,
     itens: itens.map((i: Record<string, any>) => ({ ...i, reservado_pedido: i.item_id ? reservado.get(i.item_id) ?? 0 : null, estoque: i.item_id ? saldo.get(i.item_id) ?? { fisico: 0, reservado: 0 } : null })),
   };
 }
@@ -200,6 +209,38 @@ export async function rotearFluxo(req: Request, partes: string[], eu: Membro) {
     } }) });
     await vigiar();
     return r;
+  }
+  if (post && a === "pedidos" && b && c === "anexos") {
+    exigir(eu, VER);
+    if (!UUID_RE.test(b)) throw new HttpError(400, "pedido inválido");
+    const tipo = ["orcamento", "proposta", "contrato", "outro"].includes(String(corpo.tipo)) ? String(corpo.tipo) : "outro";
+    const nome = texto(corpo.nome, 200);
+    const tamanho = num(corpo.tamanho);
+    if (!nome || !/\.pdf$/i.test(nome)) throw new HttpError(400, "envie um arquivo PDF");
+    if (!(tamanho > 0 && tamanho <= 16 * 1024 * 1024)) throw new HttpError(400, "o PDF deve ter até 16 MB");
+    const [ped] = await servico(`/rest/v1/pedidos?id=eq.${b}&select=id`);
+    if (!ped) throw new HttpError(404, "pedido inexistente");
+    if (corpo.confirmar === true) {
+      // depois do envio: confere que o arquivo existe e registra
+      const caminho = String(corpo.caminho ?? "");
+      if (!new RegExp(`^${b}/[0-9a-f-]{36}\\.pdf$`).test(caminho)) throw new HttpError(400, "caminho inválido");
+      const info = await fetch(`${URL_BASE}/storage/v1/object/info/anexos/${caminho}`, { headers: { apikey: SERVICE, Authorization: `Bearer ${SERVICE}` } });
+      if (!info.ok) throw new HttpError(409, "o arquivo não chegou ao armazenamento; envie de novo");
+      await servico("/rest/v1/pedido_anexos", { method: "POST", body: JSON.stringify({ pedido_id: b, caminho, nome, tipo, tamanho, enviado_por: eu.user_id }) });
+      await servico("/rest/v1/pedidos_historico", { method: "POST", body: JSON.stringify({ pedido_id: b, acao: "anexo", detalhe: { nome, tipo }, usuario: eu.user_id }) });
+      return { ok: true };
+    }
+    const caminho = `${b}/${crypto.randomUUID()}.pdf`;
+    const s = await storage(`/object/upload/sign/anexos/${caminho}`, {});
+    return { caminho, url: `${URL_BASE}/storage/v1${s.url}` };
+  }
+  if (post && a === "anexos" && b && c === "link") {
+    exigir(eu, VER);
+    if (!UUID_RE.test(b)) throw new HttpError(400, "anexo inválido");
+    const [x] = await servico(`/rest/v1/pedido_anexos?id=eq.${b}&select=caminho,nome`);
+    if (!x) throw new HttpError(404, "anexo inexistente");
+    const s = await storage(`/object/sign/anexos/${x.caminho}`, { expiresIn: 300 });
+    return { url: `${URL_BASE}/storage/v1${s.signedURL}`, nome: x.nome };
   }
   if (post && a === "pedidos" && b) {
     if (!UUID_RE.test(b)) throw new HttpError(400, "pedido inválido");

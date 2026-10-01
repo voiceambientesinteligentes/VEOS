@@ -70,6 +70,8 @@ export const api = {
   fluxoCriarPedido: (dados) => request("POST", "fluxo/pedidos", dados, { "Idempotency-Key": crypto.randomUUID() }),
   fluxoAcao: (id, acao, dados = {}) => request("POST", `fluxo/pedidos/${encodeURIComponent(id)}/${acao}`, dados, { "Idempotency-Key": crypto.randomUUID() }),
   fluxoReceber: (parcelaId, dados) => request("POST", `fluxo/parcelas/${encodeURIComponent(parcelaId)}/receber`, dados, { "Idempotency-Key": crypto.randomUUID() }),
+  fluxoAnexo: (pedidoId, dados) => request("POST", `fluxo/pedidos/${encodeURIComponent(pedidoId)}/anexos`, dados, { "Idempotency-Key": crypto.randomUUID() }),
+  fluxoAnexoLink: (anexoId) => request("POST", `fluxo/anexos/${encodeURIComponent(anexoId)}/link`, {}, { "Idempotency-Key": crypto.randomUUID() }),
   fluxoParcelas: (estado = "aberta") => request("GET", `fluxo/parcelas?estado=${encodeURIComponent(estado)}`),
   fluxoEstoque: (busca = "", pagina = 1) => request("GET", `fluxo/estoque?${new URLSearchParams({ busca, pagina: String(pagina) })}`),
   fluxoEstoqueItem: (id) => request("GET", `fluxo/estoque/${encodeURIComponent(id)}`),
