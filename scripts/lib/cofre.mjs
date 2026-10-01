@@ -7,7 +7,7 @@ const MAGICO = Buffer.from("VEOSBK1");
 const chave = (senha, sal) => scryptSync(senha, sal, 32, { N: 2 ** 15, r: 8, p: 1, maxmem: 64 * 1024 * 1024 });
 
 function conferirSenha(senha) {
-  if (typeof senha !== "string" || senha.length < 16) throw new Error("senha do backup ausente ou curta (minimo 16 caracteres)");
+  if (typeof senha !== "string" || senha.length < 10) throw new Error("senha do backup ausente ou curta (minimo 10 caracteres)");
 }
 
 export function cifrar(dados, senha) {

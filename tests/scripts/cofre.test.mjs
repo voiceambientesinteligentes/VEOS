@@ -19,6 +19,6 @@ test("senha errada, arquivo alterado e senha curta sao recusados", () => {
   const alterado = Buffer.from(arq);
   alterado[alterado.length - 1] ^= 1;
   assert.throws(() => decifrar(alterado, SENHA), /senha errada ou arquivo corrompido/);
-  assert.throws(() => cifrar(Buffer.from("x"), "curta"), /minimo 16/);
+  assert.throws(() => cifrar(Buffer.from("x"), "curta"), /minimo 10/);
   assert.throws(() => decifrar(Buffer.from("qualquer coisa"), SENHA), /nao e um backup/);
 });

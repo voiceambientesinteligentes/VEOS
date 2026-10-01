@@ -9,7 +9,7 @@ import { cifrar } from "./lib/cofre.mjs";
 
 const URL_BASE = process.env.SUPABASE_URL, SERVICE = process.env.SUPABASE_SERVICE_ROLE_KEY, SENHA = process.env.BACKUP_SENHA;
 if (!URL_BASE || !SERVICE) throw new Error("defina SUPABASE_URL e SUPABASE_SERVICE_ROLE_KEY");
-if (!SENHA || SENHA.length < 16) throw new Error("defina BACKUP_SENHA (minimo 16 caracteres)");
+if (!SENHA || SENHA.length < 10) throw new Error("defina BACKUP_SENHA (minimo 10 caracteres)");
 const PASTA = process.argv[2] ?? "backup";
 const FORA = new Set(["integracoes", "oauth_estados"]); // segredos e estados temporarios
 const PAGINA = 1000, MAX_ARQUIVOS = 300 * 1024 * 1024;
