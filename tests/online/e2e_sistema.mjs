@@ -116,6 +116,8 @@ try {
   }
   ok(`exporta ${conj.dados.conjuntos.length} conjuntos em linhas planas`);
   assert.equal((await req("/functions/v1/api/sistema/exportar/membros", { token })).status, 404); ok("conjunto fora da lista -> 404");
+  const acs = await req(`/functions/v1/api/sistema/acessos?usuario=${user.id}`, { token });
+  assert.equal(acs.status, 200); assert.ok(acs.dados.acessos.some((x) => x.recurso === "exportar:pedidos" && x.acao === "exportacao")); ok("LGPD: exportacao registrada com pessoa e horario");
 
   await papel(user.id, "vendas");
   assert.equal((await req("/functions/v1/api/sistema/membros", { token })).status, 403); ok("vendas nao gere usuarios -> 403");

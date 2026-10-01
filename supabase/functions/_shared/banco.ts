@@ -44,3 +44,12 @@ export async function lerCorpo(req: Request) {
     throw new HttpError(400, "JSON invalido");
   }
 }
+
+/** LGPD: registra a leitura/exportacao/edicao de dados pessoais (quem, o que, quando). Nunca derruba a resposta. */
+export async function registrarAcesso(usuario: string, recurso: string, acao: "leitura" | "exportacao" | "edicao" = "leitura") {
+  try {
+    await servico("/rest/v1/acessos_dados_pessoais", { method: "POST", body: JSON.stringify({ user_id: usuario, recurso: recurso.slice(0, 200), acao }) });
+  } catch (e) {
+    console.error("registro de acesso (LGPD)", e);
+  }
+}

@@ -3,9 +3,10 @@
 //   GET  /sistema/membros        membros, ultimo acesso, MFA, autoridades e historico
 //   POST /sistema/membros        convidar {email, nome, papel}: cria o login (sem enviar e-mail) + membro
 //   POST /sistema/membros/:id    {acao: papel|desativar|reativar|exigir_mfa|dispensar_mfa, papel?, motivo?}
+//   GET  /sistema/acessos?usuario=&recurso=   LGPD: quem acessou dados pessoais (ultimos 300)
 //   GET  /sistema/exportar/:conjunto   linhas planas para CSV (pedidos, itens, parcelas, NF, estoque, Biblioteca)
 // As regras ficam no banco (sistema_saude, membro_gerir); aqui: identidade, Auth admin e validacao.
-import { HttpError, lerCorpo, type Membro, servico, SERVICE, URL_BASE } from "../_shared/banco.ts";
+import { HttpError, lerCorpo, type Membro, registrarAcesso, servico, SERVICE, URL_BASE } from "../_shared/banco.ts";
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
 const CHAVE_RE = /^[A-Za-z0-9-]{16,64}$/;
@@ -78,7 +79,19 @@ export async function rotearSistema(req: Request, partes: string[], eu: Membro) 
       linhas = linhas.map((l) => ({ item_id: l.item_id, item: porId.get(String(l.item_id)) ?? "", ...l }));
     }
     const colunas = [...new Set(linhas.flatMap((l) => Object.keys(l)))];
+    await registrarAcesso(eu.user_id, `exportar:${b}`, "exportacao");
     return { conjunto: b, nome: c.nome, colunas, linhas, truncado, gerado_em: new Date().toISOString() };
+  }
+  if (a === "acessos" && !post) {
+    const q = new URL(req.url).searchParams;
+    const usuario = q.get("usuario"), recurso = (q.get("recurso") ?? "").replace(/[^A-Za-z0-9:._-]/g, "").slice(0, 80);
+    const filtro = `${usuario && UUID_RE.test(usuario) ? `&user_id=eq.${usuario}` : ""}${recurso ? `&recurso=like.${encodeURIComponent(recurso)}*` : ""}`;
+    const [acessos, membros] = await Promise.all([
+      servico(`/rest/v1/acessos_dados_pessoais?select=user_id,recurso,acao,em${filtro}&order=id.desc&limit=300`),
+      servico("/rest/v1/membros?select=user_id,nome"),
+    ]);
+    const nome = new Map(membros.map((m: { user_id: string; nome: string }) => [m.user_id, m.nome]));
+    return { acessos: acessos.map((x: { user_id: string }) => ({ ...x, nome: nome.get(x.user_id) ?? "—" })), membros };
   }
   if (a === "membros" && !b && !post) {
     const [membros, contas, autoridades, historico] = await Promise.all([

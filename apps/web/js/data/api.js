@@ -105,6 +105,7 @@ export const api = {
   // Sistema: saude, usuarios e exportacao (direcao)
   sistemaSaude: () => request("GET", "sistema/saude"),
   sistemaMembros: () => request("GET", "sistema/membros"),
+  sistemaAcessos: (usuario = "") => request("GET", `sistema/acessos${usuario ? `?usuario=${encodeURIComponent(usuario)}` : ""}`),
   sistemaExportar: (conjunto = "") => request("GET", `sistema/exportar${conjunto ? `/${encodeURIComponent(conjunto)}` : ""}`),
   sistemaConvidar: (dados) => request("POST", "sistema/membros", dados, { "Idempotency-Key": crypto.randomUUID() }),
   sistemaMembro: (id, dados) => request("POST", `sistema/membros/${encodeURIComponent(id)}`, dados, { "Idempotency-Key": crypto.randomUUID() }),

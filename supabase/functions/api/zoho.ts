@@ -6,7 +6,9 @@
 //   GET  /zoho/orcamentos?busca=&status=   orcamentos do Books
 //   GET  /zoho/orcamentos/:id     itens + custo de compra
 //   GET  /zoho/crm/etapas         etapas reais do funil (Deals.Stage)
-import { HttpError, lerCorpo, type Membro, servico } from "../_shared/banco.ts";
+import { HttpError, lerCorpo, type Membro, registrarAcesso, servico } from "../_shared/banco.ts";
+const PESSOAIS = new Set(["books.contacts", "crm.Contacts", "crm.Leads", "crm.Accounts"]); // LGPD: fichas com dados pessoais
+
 import { configurado, ESCOPOS, etapasCrm, orcamento, orcamentos, rbt12, urlAutorizacao } from "../_shared/zoho.ts";
 import { sincronizar } from "../_shared/zoho_sync.ts";
 import { camposEditaveis, escrever } from "../_shared/zoho_escrita.ts";
@@ -114,6 +116,7 @@ export async function rotearEspelho(req: Request, partes: string[], eu: Membro) 
     if (!ID_RE.test(id)) throw new HttpError(400, "id inválido");
     const [r] = await servico(`/rest/v1/zoho_registros?produto=eq.${produto}&modulo=eq.${modulo}&zoho_id=eq.${id}&select=zoho_id,nome,dados,modificado_em,detalhe_em,sincronizado_em,excluido`);
     if (!r) throw new HttpError(404, "registro não encontrado no espelho");
+    if (PESSOAIS.has(`${produto}.${modulo}`)) await registrarAcesso(eu.user_id, `zoho:${produto}.${modulo}:${id}`);
     return r;
   }
   throw new HttpError(404, "rota inexistente");

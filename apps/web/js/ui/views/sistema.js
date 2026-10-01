@@ -4,7 +4,7 @@ import { api } from "../../data/api.js";
 import { formatDateTime } from "../../domain/format.js";
 import { formatBytes, haQuanto, ultimaSincronizacao, usoLimite } from "../../domain/sistema.js";
 import { nomeArquivo, paraCSV } from "../../domain/exportar.js";
-import { clear, errorNotice, h, method, panel, stamp, stat, table } from "../dom.js";
+import { clear, errorNotice, field, h, method, panel, stamp, stat, table } from "../dom.js";
 import { SEV_ROTULO, SEV_TOM } from "../componentes.js";
 
 const ESTADO_SYNC = { ok: ["Em dia", "ok"], pendente: ["Pendente", "neutral"], listando: ["Lendo lista", "live"], detalhando: ["Lendo detalhes", "live"], erro: ["Erro", "risk"] };
@@ -133,4 +133,30 @@ function baixarArquivo(nome, conteudo) {
   a.click();
   a.remove();
   setTimeout(() => URL.revokeObjectURL(url), 5000);
+}
+
+// ---------------------------------------------------------------- LGPD: acessos a dados pessoais (direcao)
+const RECURSO = (r) => {
+  const [tipo, resto] = [r.split(":")[0], r.split(":").slice(1).join(":")];
+  if (tipo === "zoho") { const [mod, id] = [resto.split(":")[0], resto.split(":")[1]]; return h("a", { href: `#/zoho/${mod.split(".")[0]}/${mod.split(".")[1]}/${id}` }, `Ficha ${mod} ${id}`); }
+  if (tipo === "pedido") return h("a", { href: `#/pedidos/${resto}` }, "Pedido");
+  if (tipo === "exportar") return `Exportação: ${resto}`;
+  return r;
+};
+export async function telaAcessos(root) {
+  const conteudo = h("div", { class: "stack" });
+  const pessoa = h("select", { class: "select", id: "ac-pessoa" }, h("option", { value: "" }, "Todas as pessoas"));
+  root.append(panel({ title: "Acessos a dados pessoais", subtitle: "Quem abriu fichas de clientes e contatos, pedidos (dados do cliente) e quem exportou dados. Registro permanente (LGPD).", actions: field("ac-pessoa", "Pessoa", pessoa) }, conteudo));
+  let primeira = true;
+  async function desenhar() {
+    const d = await api.sistemaAcessos(pessoa.value);
+    if (primeira) { pessoa.append(...d.membros.map((m) => h("option", { value: m.user_id }, m.nome))); primeira = false; }
+    clear(conteudo).append(d.acessos.length
+      ? table({ caption: "Últimos acessos", head: ["Quando", "Pessoa", "Ação", "O quê"], rows: d.acessos.map((x) => [formatDateTime(x.em), x.nome, x.acao, RECURSO(x.recurso)]) })
+      : h("p", { class: "result-empty" }, "Nenhum acesso registrado."),
+      method("Sobre o registro", "Leitura de ficha de cliente/contato/lead/conta do Zoho, abertura de pedido e exportação de dados ficam registradas com pessoa e horário; o registro não pode ser alterado nem apagado.",
+        "Edições no Zoho pelo VEOS ficam na trilha própria das escritas. Política de retenção e termo de uso interno: propostas na Biblioteca, aguardando decisão."));
+  }
+  pessoa.addEventListener("change", desenhar);
+  await desenhar();
 }

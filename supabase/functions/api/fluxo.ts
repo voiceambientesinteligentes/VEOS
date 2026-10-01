@@ -15,7 +15,7 @@
 //   GET  /fluxo/projetos                  projetos do Zoho Projects (para ligar ao pedido)
 //   POST /fluxo/pedidos/:id/(projeto|horas|aceite)  obra: projeto, horas lancadas, aceite e garantia
 //   /fluxo/compras, /fluxo/contas-pagar, /fluxo/caixa -> compras, contas a pagar e previsao (ver compras.ts)
-import { HttpError, lerCorpo, type Membro, SERVICE, servico, URL_BASE } from "../_shared/banco.ts";
+import { HttpError, lerCorpo, type Membro, registrarAcesso, SERVICE, servico, URL_BASE } from "../_shared/banco.ts";
 
 // Storage privado (bucket "anexos"): URLs assinadas de curta duracao, emitidas so pelo servidor.
 async function storage(caminho: string, corpo: unknown) {
@@ -169,7 +169,9 @@ export async function rotearFluxo(req: Request, partes: string[], eu: Membro) {
   if (!post && a === "pedidos" && b) {
     exigir(eu, VER);
     if (!UUID_RE.test(b)) throw new HttpError(400, "pedido inválido");
-    return await pedidoCompleto(b);
+    const completo = await pedidoCompleto(b);
+    await registrarAcesso(eu.user_id, `pedido:${b}`);
+    return completo;
   }
   if (!post && a === "projetos") {
     exigir(eu, VER);

@@ -27,7 +27,7 @@ import { telaIndependencia } from "./ui/views/independencia.js";
 import { iniciarAvisos } from "./ui/notificar.js";
 import { abrirBusca, ligarAtalhos } from "./ui/busca_global.js";
 import { telaCompra, telaCompras, telaContasPagar, telaNovaCompra } from "./ui/views/compras.js";
-import { telaExportar, telaSaude } from "./ui/views/sistema.js";
+import { telaAcessos, telaExportar, telaSaude } from "./ui/views/sistema.js";
 import { formCodigoMfa, telaConta, telaUsuarios } from "./ui/views/usuarios.js";
 import { CATALOGO } from "./data/catalogo.js";
 
@@ -114,6 +114,7 @@ const TELAS = {
   "#/projetos": { fn: telaProjetos, titulo: ["Projetos e caixa", "Setor Financeiro · exposição e cobertura por fase"] },
   "#/pedidos": { fn: telaPedidos, titulo: ["Pedidos", "Orçamento aceito → estoque → parcelas → nota fiscal → recebimento"] },
   "#/estoque": { fn: (root) => telaEstoque(root), titulo: ["Estoque", "Saldo físico, reservas dos pedidos e custo médio"] },
+  "#/sistema/acessos": { fn: telaAcessos, titulo: ["Acessos a dados pessoais", "LGPD: quem abriu fichas de clientes, pedidos e exportações"] },
   "#/sistema/independencia": { fn: telaIndependencia, titulo: ["Independência do Zoho", "Uso real por módulo, cobertura do VEOS e roteiro de desligamento"] },
   "#/mensagens": { fn: telaMensagens, titulo: ["Caixa de saída", "Mensagens preparadas: você revisa, envia e marca como enviada"] },
   "#/propostas": { fn: telaPropostas, titulo: ["Propostas", "Proposta comercial em PDF a partir do orçamento do Zoho"] },
@@ -227,6 +228,7 @@ function montarMenu() {
       eu.papel === "direcao" ? link("#/sistema/usuarios", "USR", "Usuários e acessos") : null,
       eu.papel === "direcao" ? link("#/sistema/exportar", "EXP", "Exportar dados") : null,
       eu.papel === "direcao" ? link("#/sistema/independencia", "IND", "Independência do Zoho") : null,
+      eu.papel === "direcao" ? link("#/sistema/acessos", "LGPD", "Acessos a dados pessoais") : null,
       link("#/sistema/validacao", "VAL", "Validação guiada"),
       link("#/conta", "EU", "Minha conta")),
   );
