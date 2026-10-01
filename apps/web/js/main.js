@@ -19,7 +19,7 @@ import { PRODUTOS, telaZoho } from "./ui/views/zoho.js";
 import { telaContrato, telaEstoque, telaItemEstoque, telaPedido, telaPedidos, telaRecebimentos } from "./ui/views/fluxo.js";
 import { telaBiblioteca, telaRegistroBiblioteca } from "./ui/views/biblioteca.js";
 import { telaValidacao } from "./ui/views/validacao.js";
-import { telaSaude } from "./ui/views/sistema.js";
+import { telaExportar, telaSaude } from "./ui/views/sistema.js";
 import { formCodigoMfa, telaConta, telaUsuarios } from "./ui/views/usuarios.js";
 import { CATALOGO } from "./data/catalogo.js";
 
@@ -112,6 +112,7 @@ const TELAS = {
   "#/calculadora": { fn: (root) => telaCalculadora(root, fontesZoho), titulo: ["Calculadora de Preços", "Preço mínimo para a margem alvo, já com Simples e provisão de 2%"] },
   "#/sistema/usuarios": { fn: (root) => telaUsuarios(root), titulo: ["Usuários e acessos", "Quem entra no VEOS, em qual setor, com MFA e histórico"] },
   "#/conta": { fn: (root) => telaConta(root, eu), titulo: ["Minha conta", "Seu acesso e a verificação em duas etapas"] },
+  "#/sistema/exportar": { fn: (root) => telaExportar(root), titulo: ["Exportar dados", "Pedidos, parcelas, estoque e Biblioteca em planilha"] },
   "#/sistema/saude": { fn: (root) => telaSaude(root), titulo: ["Saúde do sistema", "Banco, arquivos, sincronização do Zoho, agendamentos e alertas"] },
   "#/sistema/validacao": { fn: (root) => telaValidacao(root), titulo: ["Validação guiada", "Roteiro de teste com login real · o resultado vai para a Biblioteca"] },
   "#/historico": { fn: telaHistorico, titulo: ["Histórico", "Orçamentos TESTE gravados e seus avisos"] },
@@ -205,6 +206,7 @@ function montarMenu() {
       h("span", { class: "nav-label", id: "nav-sistema" }, "Sistema"),
       ["direcao", "tecnologia"].includes(eu.papel) ? link("#/sistema/saude", "SAU", "Saúde do sistema") : null,
       eu.papel === "direcao" ? link("#/sistema/usuarios", "USR", "Usuários e acessos") : null,
+      eu.papel === "direcao" ? link("#/sistema/exportar", "EXP", "Exportar dados") : null,
       link("#/sistema/validacao", "VAL", "Validação guiada"),
       link("#/conta", "EU", "Minha conta")),
   );

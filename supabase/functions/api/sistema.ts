@@ -3,6 +3,7 @@
 //   GET  /sistema/membros        membros, ultimo acesso, MFA, autoridades e historico
 //   POST /sistema/membros        convidar {email, nome, papel}: cria o login (sem enviar e-mail) + membro
 //   POST /sistema/membros/:id    {acao: papel|desativar|reativar|exigir_mfa|dispensar_mfa, papel?, motivo?}
+//   GET  /sistema/exportar/:conjunto   linhas planas para CSV (pedidos, itens, parcelas, NF, estoque, Biblioteca)
 // As regras ficam no banco (sistema_saude, membro_gerir); aqui: identidade, Auth admin e validacao.
 import { HttpError, lerCorpo, type Membro, servico, SERVICE, URL_BASE } from "../_shared/banco.ts";
 
@@ -27,6 +28,27 @@ async function authAdmin(path: string, init: RequestInit = {}) {
 async function usuariosAuth(): Promise<UsuarioAuth[]> {
   return (await authAdmin("users?per_page=1000")).users ?? [];
 }
+// Conjuntos exportaveis (a tela gera o CSV). Ate LIMITE linhas por conjunto, mais recentes primeiro.
+const LIMITE = 10000;
+const CONJUNTOS: Record<string, { nome: string; caminho: string }> = {
+  pedidos: { nome: "Pedidos", caminho: "pedidos?select=*&order=criado_em.desc" },
+  pedido_itens: { nome: "Itens dos pedidos", caminho: "pedido_itens?select=pedido:pedidos(numero,cliente_nome),*&order=pedido_id,ordem" },
+  parcelas: { nome: "Parcelas", caminho: "parcelas?select=pedido:pedidos(numero,cliente_nome),*&order=vencimento.desc" },
+  notas_fiscais: { nome: "Notas fiscais", caminho: "notas_fiscais?select=pedido:pedidos(numero,cliente_nome),*&order=emitida_em.desc" },
+  estoque: { nome: "Estoque (saldos)", caminho: "estoque_saldos?select=*&order=item_id" },
+  estoque_movimentos: { nome: "Movimentos de estoque", caminho: "estoque_movimentos?select=*&order=id.desc" },
+  biblioteca: { nome: "Biblioteca", caminho: "biblioteca_registros?select=codigo,tipo,estado,versao,titulo,conteudo,assuntos,setores,autoridade,autor_nome,registrado_em,vigente_desde,valido_ate,justificativa,condicoes,responsavel,restrito&order=codigo" },
+};
+/** Objeto aninhado vira colunas com prefixo (pedido.numero -> pedido_numero); listas viram texto. */
+export function planificar(linha: Record<string, unknown>, prefixo = ""): Record<string, unknown> {
+  const out: Record<string, unknown> = {};
+  for (const [k, v] of Object.entries(linha)) {
+    if (v && typeof v === "object" && !Array.isArray(v)) Object.assign(out, planificar(v as Record<string, unknown>, `${prefixo}${k}_`));
+    else out[`${prefixo}${k}`] = Array.isArray(v) ? v.join(", ") : v;
+  }
+  return out;
+}
+
 const mfaVerificado = (u?: UsuarioAuth) => (u?.factors ?? []).some((f) => f.factor_type === "totp" && f.status === "verified");
 
 export async function rotearSistema(req: Request, partes: string[], eu: Membro) {
@@ -40,6 +62,21 @@ export async function rotearSistema(req: Request, partes: string[], eu: Membro) 
   const corpo = post ? ((await lerCorpo(req)) ?? {}) : {};
   if (post && !CHAVE_RE.test(req.headers.get("Idempotency-Key") ?? "")) throw new HttpError(400, "Idempotency-Key obrigatorio");
 
+  if (a === "exportar" && !post) {
+    if (!b) return { conjuntos: Object.entries(CONJUNTOS).map(([id, c]) => ({ id, nome: c.nome })) };
+    const c = CONJUNTOS[b];
+    if (!c) throw new HttpError(404, "conjunto inexistente");
+    let linhas: Record<string, unknown>[] = await servico(`/rest/v1/${c.caminho}&limit=${LIMITE + 1}`);
+    const truncado = linhas.length > LIMITE;
+    linhas = linhas.slice(0, LIMITE).map((l) => planificar(l));
+    if (b === "estoque" && linhas.length) {
+      const nomes: { zoho_id: string; nome: string }[] = await servico("/rest/v1/zoho_registros?produto=eq.books&modulo=eq.items&select=zoho_id,nome&limit=20000");
+      const porId = new Map(nomes.map((n) => [n.zoho_id, n.nome]));
+      linhas = linhas.map((l) => ({ item_id: l.item_id, item: porId.get(String(l.item_id)) ?? "", ...l }));
+    }
+    const colunas = [...new Set(linhas.flatMap((l) => Object.keys(l)))];
+    return { conjunto: b, nome: c.nome, colunas, linhas, truncado, gerado_em: new Date().toISOString() };
+  }
   if (a === "membros" && !b && !post) {
     const [membros, contas, autoridades, historico] = await Promise.all([
       servico("/rest/v1/membros?select=user_id,nome,papel,email,ativo,exige_mfa,criado_em,atualizado_em&order=ativo.desc,nome"),

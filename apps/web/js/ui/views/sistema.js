@@ -3,6 +3,7 @@
 import { api } from "../../data/api.js";
 import { formatDateTime } from "../../domain/format.js";
 import { formatBytes, haQuanto, ultimaSincronizacao, usoLimite } from "../../domain/sistema.js";
+import { nomeArquivo, paraCSV } from "../../domain/exportar.js";
 import { clear, errorNotice, h, method, panel, stamp, stat, table } from "../dom.js";
 import { SEV_ROTULO, SEV_TOM } from "../componentes.js";
 
@@ -80,4 +81,53 @@ export async function telaSaude(root) {
   }
   atualizar.addEventListener("click", desenhar);
   await desenhar();
+}
+
+// ---------------------------------------------------------------- exportar (direcao)
+const DESCRICAO = {
+  pedidos: "Número, cliente, estado, valores, condição e datas de cada pedido.",
+  pedido_itens: "Itens de cada pedido com quantidade, preço e custo.",
+  parcelas: "Vencimento, valor, estado e recebimento de cada parcela.",
+  notas_fiscais: "Notas registradas (NF-e e NFS-e) por pedido.",
+  estoque: "Saldo físico, reservado e disponível por item, com custo médio.",
+  estoque_movimentos: "Entradas, saídas, reservas, liberações e ajustes (trilha completa).",
+  biblioteca: "Decisões, políticas, propostas, incidentes, aprendizados e referências (todas as versões).",
+};
+
+export async function telaExportar(root, baixar = baixarArquivo) {
+  const { conjuntos } = await api.sistemaExportar();
+  const saida = h("div", { role: "status" });
+  const itens = conjuntos.map((c) => {
+    const b = h("button", { class: "btn btn-ghost", type: "button" }, "Baixar CSV");
+    b.addEventListener("click", async () => {
+      b.disabled = true;
+      clear(saida);
+      try {
+        const d = await api.sistemaExportar(c.id);
+        baixar(nomeArquivo(c.id), paraCSV(d.colunas, d.linhas));
+        saida.append(h("p", { class: `notice ${d.truncado ? "notice-warn" : "notice-ok"}` }, `${c.nome}: ${d.linhas.length} linha(s) exportada(s)${d.truncado ? " (limite de 10.000: as mais recentes)" : ""}.`));
+      } catch (e) {
+        saida.append(errorNotice(`${c.nome}: ${e.message}`));
+      } finally {
+        b.disabled = false;
+      }
+    });
+    return h("li", { class: "panel panel-tight row" }, h("div", { class: "stack-s exportar-texto" }, h("strong", null, c.nome), h("span", { class: "field-hint" }, DESCRICAO[c.id] ?? "")), b);
+  });
+  root.append(
+    panel({ title: "Exportar dados", subtitle: "Planilhas para abrir no Excel (separador ponto e vírgula, acentos preservados)." },
+      saida, h("ul", { class: "list-plain stack-s" }, itens),
+      method("Sobre os arquivos", "O arquivo é gerado no seu navegador e baixado direto no seu computador; nada é enviado a terceiros.",
+        "Contém dados reais da empresa: guarde em local seguro e não compartilhe fora da equipe.",
+        "Cópia de segurança completa do banco: semanal, criptografada, pelo GitHub Actions (ver Saúde do sistema).")),
+  );
+}
+
+function baixarArquivo(nome, conteudo) {
+  const url = URL.createObjectURL(new Blob([conteudo], { type: "text/csv;charset=utf-8" }));
+  const a = h("a", { href: url, download: nome });
+  document.body.append(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 5000);
 }

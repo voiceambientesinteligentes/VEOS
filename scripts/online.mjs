@@ -1,5 +1,5 @@
 // Roda um teste online (tests/online/*.mjs) com as chaves do projeto obtidas pela CLI do
-// Supabase (ja logada), sem imprimi-las. Uso: node scripts/online.mjs tests/online/e2e_api.mjs
+// Supabase (ja logada), sem imprimi-las. Uso: node scripts/online.mjs tests/online/e2e_api.mjs [args]
 import { execSync, spawnSync } from "node:child_process";
 
 const REF = "vkrwxvnfstvriibjwuvw";
@@ -13,5 +13,5 @@ if (!env.SUPABASE_SERVICE_ROLE_KEY) {
   const por = (n) => chaves.find((k) => k.name === n)?.api_key;
   Object.assign(env, { SUPABASE_URL: `https://${REF}.supabase.co`, SUPABASE_ANON_KEY: por("anon"), SUPABASE_SERVICE_ROLE_KEY: por("service_role") });
 }
-const r = spawnSync(process.execPath, [arquivo], { env, stdio: "inherit" });
+const r = spawnSync(process.execPath, [arquivo, ...process.argv.slice(3)], { env, stdio: "inherit" });
 process.exit(r.status ?? 1);

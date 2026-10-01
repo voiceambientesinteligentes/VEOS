@@ -67,8 +67,21 @@ try {
   assert.equal(me.status, 403); assert.equal(me.dados.erro, "mfa_necessario"); ok("MFA exigido e sessao sem codigo -> 403 mfa_necessario");
   await fetch(`${URL_BASE}/rest/v1/membros?user_id=eq.${user.id}`, { method: "PATCH", headers: admin, body: JSON.stringify({ exige_mfa: false }) });
   assert.equal((await req("/functions/v1/api/me", { token })).dados.aal, "aal1"); ok("/me informa o nivel da sessao (aal1)");
+  // exportacao
+  const conj = await req("/functions/v1/api/sistema/exportar", { token });
+  assert.equal(conj.status, 200); assert.ok(conj.dados.conjuntos.length >= 7);
+  for (const c of conj.dados.conjuntos) {
+    const e = await req(`/functions/v1/api/sistema/exportar/${c.id}`, { token });
+    assert.equal(e.status, 200, `${c.id}: ${JSON.stringify(e.dados).slice(0, 200)}`);
+    assert.ok(Array.isArray(e.dados.linhas) && Array.isArray(e.dados.colunas));
+    assert.ok(e.dados.linhas.every((l) => Object.values(l).every((v) => v === null || typeof v !== "object")), `${c.id}: linhas planas`);
+  }
+  ok(`exporta ${conj.dados.conjuntos.length} conjuntos em linhas planas`);
+  assert.equal((await req("/functions/v1/api/sistema/exportar/membros", { token })).status, 404); ok("conjunto fora da lista -> 404");
+
   await papel(user.id, "vendas");
   assert.equal((await req("/functions/v1/api/sistema/membros", { token })).status, 403); ok("vendas nao gere usuarios -> 403");
+  assert.equal((await req("/functions/v1/api/sistema/exportar/pedidos", { token })).status, 403); ok("vendas nao exporta -> 403");
 } finally {
   await papel(user.id, "vendas", false); // TESTE fica inativo
 }

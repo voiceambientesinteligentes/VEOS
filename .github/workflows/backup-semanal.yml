@@ -1,0 +1,42 @@
+# Copia de seguranca semanal do VEOS (banco + anexos + logins), CRIPTOGRAFADA com a senha do
+# segredo BACKUP_SENHA (AES-256-GCM). O repositorio e publico: o arquivo so abre com a senha.
+# Fica 90 dias nos artefatos da execucao (Actions > backup-semanal > Artifacts).
+# Abrir: BACKUP_SENHA=... node scripts/restaurar-backup.mjs <arquivo.veosbk> <pasta>
+# Segredos necessarios (Settings > Secrets and variables > Actions): SUPABASE_SERVICE_ROLE_KEY, BACKUP_SENHA.
+name: backup-semanal
+on:
+  schedule:
+    - cron: "0 6 * * 0" # domingo 03:00 (Brasilia)
+  workflow_dispatch: {}
+permissions:
+  contents: read
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Conferir segredos
+        env:
+          SR: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          BS: ${{ secrets.BACKUP_SENHA }}
+        run: |
+          if [ -z "$SR" ] || [ -z "$BS" ]; then
+            echo "::error::Cadastre os segredos SUPABASE_SERVICE_ROLE_KEY e BACKUP_SENHA (Settings > Secrets and variables > Actions)"; exit 1
+          fi
+      - name: Gerar copia criptografada
+        env:
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          BACKUP_SENHA: ${{ secrets.BACKUP_SENHA }}
+        run: |
+          export SUPABASE_URL=$(grep -o 'https://[a-z0-9]*\.supabase\.co' apps/web/js/config.js)
+          node scripts/backup.mjs backup
+      - uses: actions/upload-artifact@v4
+        with:
+          name: veos-backup-${{ github.run_number }}
+          path: backup/*.veosbk
+          retention-days: 90
+          if-no-files-found: error
