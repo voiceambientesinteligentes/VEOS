@@ -91,6 +91,10 @@ classificação do item 30. **Não está 100%.**
 - Assuntos reservados ao fundador; quem exerce a CEO; regra de precedência entre autoridades/escopos; quem altera políticas; alçadas de compras, preços de tabela, contratações, comunicação externa, orçamento de IA; validação de ticket abaixo de R$ 100 mil; desconto até 2% com MC 30–32%.
 - Propostas: papel do fundador; base da faixa do Simples; ticket mínimo R$ 15.000; anexo do Simples para serviços; P-3; P-5.
 
+## PDF (01/10)
+- Contrato gerado do pedido (`#/pedidos/<id>/contrato`): dados do pedido, cliente (Zoho), itens, parcelas, prazo e cláusulas coladas pelo usuário; imprimir/salvar em PDF. Testado em tela simulada e impresso em PDF (Edge headless).
+- Anexos PDF no pedido: bucket privado `anexos` (até 16 MB, só PDF), envio e abertura por URL assinada (5 min). **Implementado, não validado com login real.**
+
 ## GitHub
 - `origin` = https://github.com/voiceambientesinteligentes/VEOS (branch `main`), **público** por decisão do Fernando. Push verificado: commit remoto = local.
 
