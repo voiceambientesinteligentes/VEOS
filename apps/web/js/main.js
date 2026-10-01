@@ -18,6 +18,7 @@ import { telaIntegracoes } from "./ui/views/integracoes.js";
 import { PRODUTOS, telaZoho } from "./ui/views/zoho.js";
 import { telaContrato, telaEstoque, telaItemEstoque, telaPedido, telaPedidos, telaRecebimentos } from "./ui/views/fluxo.js";
 import { telaBiblioteca, telaRegistroBiblioteca } from "./ui/views/biblioteca.js";
+import { telaValidacao } from "./ui/views/validacao.js";
 import { CATALOGO } from "./data/catalogo.js";
 
 const el = {
@@ -107,6 +108,7 @@ const TELAS = {
   "#/integracoes": { fn: (root) => telaIntegracoes(root, eu), titulo: ["Integrações", "Zoho Books, CRM e Projects · somente leitura"] },
   "#/negociacao": { fn: (root) => telaNegociacao(root, fontesZoho), titulo: ["Negociação ao Vivo", "Desconto, custos e Simples → margem e alçada pela Política V1"] },
   "#/calculadora": { fn: (root) => telaCalculadora(root, fontesZoho), titulo: ["Calculadora de Preços", "Preço mínimo para a margem alvo, já com Simples e provisão de 2%"] },
+  "#/sistema/validacao": { fn: (root) => telaValidacao(root), titulo: ["Validação guiada", "Roteiro de teste com login real · o resultado vai para a Biblioteca"] },
   "#/historico": { fn: telaHistorico, titulo: ["Histórico", "Orçamentos TESTE gravados e seus avisos"] },
 };
 
@@ -181,6 +183,9 @@ function montarMenu() {
       link("#/projetos", "PRJ", "Projetos e caixa"),
       link("#/cfo", "ORÇ", "Avisos de orçamento"),
       link("#/historico", "HIST", "Histórico de orçamentos")),
+    h("div", { class: "nav-group", role: "group", "aria-labelledby": "nav-sistema" },
+      h("span", { class: "nav-label", id: "nav-sistema" }, "Sistema"),
+      link("#/sistema/validacao", "VAL", "Validação guiada")),
   );
   clear(el.status).append(h("span", { class: "pill tone-ok" }, h("span", { class: "dot" }), eu.email), botaoSair);
 }

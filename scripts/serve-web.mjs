@@ -15,7 +15,11 @@ createServer((req, res) => {
   if (rel.startsWith("..")) return res.writeHead(400).end();
   try {
     const corpo = readFileSync(join(RAIZ, rel));
-    res.writeHead(200, { ...CABECALHOS, "Content-Type": TIPOS[extname(rel)] || "application/octet-stream", "Cache-Control": "no-cache" });
+    // telas simuladas (/_teste/): a moldura de celular precisa embutir a tela num iframe
+    const cab = rel.replace(/\\/g, "/").startsWith("_teste/")
+      ? { ...CABECALHOS, "Content-Security-Policy": CABECALHOS["Content-Security-Policy"].replace("frame-ancestors 'none'", "frame-ancestors 'self'; frame-src 'self'") }
+      : CABECALHOS;
+    res.writeHead(200, { ...cab, "Content-Type": TIPOS[extname(rel)] || "application/octet-stream", "Cache-Control": "no-cache" });
     res.end(corpo);
   } catch {
     res.writeHead(404, CABECALHOS).end("nao encontrado");

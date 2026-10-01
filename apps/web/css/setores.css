@@ -206,3 +206,6 @@
   .app, main, #conteudo, #view { display: block !important; padding: 0 !important; margin: 0 !important; background: #fff !important; }
   .contrato-doc { padding: 0; max-width: none; border-radius: 0; }
 }
+
+/* Botao de escolha marcado (ex.: resultado de cada passo da validacao guiada) */
+.btn[aria-pressed="true"] { border-color: var(--gold); background: var(--bg-4); color: var(--gold-2); font-weight: 600; }

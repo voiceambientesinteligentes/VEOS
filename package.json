@@ -10,6 +10,7 @@
     "test:portal": "cd apps/portal && python -m unittest discover -s tests && node --test tests/js/domain.test.mjs tests/js/controls.test.mjs",
     "paridade:gerar": "python tests/regras/gerar_paridade.py",
     "supabase": "npx -y supabase@2.118.0",
-    "deploy:vigia": "npx -y supabase@2.118.0 functions deploy vigia --use-api --project-ref vkrwxvnfstvriibjwuvw"
+    "deploy:vigia": "npx -y supabase@2.118.0 functions deploy vigia --use-api --project-ref vkrwxvnfstvriibjwuvw",
+    "test:telas": "node scripts/testar-telas.mjs"
   }
 }
