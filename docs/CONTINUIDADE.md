@@ -54,3 +54,10 @@ Atualize este arquivo ao fim de cada sessão: última ação, resultado e próxi
   com as duas leituras lado a lado.
 - Vigia: próximos eventos (exposição de caixa V1.1, cobertura de fase V1 sec.10).
 - P04: esboço do esquema de cadastros compartilhados e setores.
+
+## 01/10/2026 — Biblioteca e governança do fundador
+- Etapa pedida: governança transversal + perfil do fundador (não redefinir os outros líderes ainda).
+- Antes de qualquer recomendação/ação relevante: `POST /api/biblioteca/consultar` (ou `bib_consultar` no banco). Precedente orienta, não autoriza; substituído/expirado/fora do escopo não vale; exceção não vira regra; sem precedente: informar.
+- Toda mudança em decisão/política vigente: `bib_revisar` (nova versão). Divergência: `bib_divergir`. Nada de UPDATE direto (a trava recusa).
+- Conteúdo real da Biblioteca fica só no banco (repositório é público).
+- Próximo: o fundador aprova/ajusta as propostas pendentes e preenche as lacunas; depois, perfis individuais dos demais líderes sobre esta base.

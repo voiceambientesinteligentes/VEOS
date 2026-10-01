@@ -74,6 +74,14 @@ export const api = {
   fluxoEstoque: (busca = "", pagina = 1) => request("GET", `fluxo/estoque?${new URLSearchParams({ busca, pagina: String(pagina) })}`),
   fluxoEstoqueItem: (id) => request("GET", `fluxo/estoque/${encodeURIComponent(id)}`),
   fluxoMovimento: (dados) => request("POST", "fluxo/estoque", dados, { "Idempotency-Key": crypto.randomUUID() }),
+  // Biblioteca (memoria institucional e governanca)
+  bibListar: (filtros = {}) => request("GET", `biblioteca?${new URLSearchParams(Object.entries(filtros).filter(([, v]) => v !== "" && v !== null && v !== undefined))}`),
+  bibGovernanca: () => request("GET", "biblioteca/governanca"),
+  bibRegistro: (id) => request("GET", `biblioteca/${encodeURIComponent(id)}`),
+  bibCriar: (dados) => request("POST", "biblioteca", dados, { "Idempotency-Key": crypto.randomUUID() }),
+  bibConsultar: (dados) => request("POST", "biblioteca/consultar", dados, { "Idempotency-Key": crypto.randomUUID() }),
+  bibAcao: (id, acao, dados = {}) => request("POST", `biblioteca/${encodeURIComponent(id)}/${acao}`, dados, { "Idempotency-Key": crypto.randomUUID() }),
+  bibResponderParecer: (pid, dados) => request("POST", `biblioteca/pareceres/${encodeURIComponent(pid)}/responder`, dados, { "Idempotency-Key": crypto.randomUUID() }),
   // Salvar = vigia avalia e o servidor grava orcamento + avisos. Uma chave por clique:
   // se a rede repetir o envio, o servidor nao duplica o registro.
   vigiaOrcamento: (entrada) =>

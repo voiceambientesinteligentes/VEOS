@@ -25,14 +25,13 @@ function modelo(setor: string, id: string, vars: Record<string, string>) {
 
 export async function vigiarFluxo(agora = Date.now()) {
   const hoje = dia(agora);
-  const [faltas, parcelas, entregues, confirmados, aceitos, pedidosOrc, existentes]: Obj[][] = await Promise.all([
+  const [faltas, parcelas, entregues, confirmados, aceitos, pedidosOrc]: Obj[][] = await Promise.all([
     servico("/rest/v1/rpc/fluxo_faltas", { method: "POST", body: "{}" }),
     servico(`/rest/v1/parcelas?estado=eq.aberta&vencimento=lte.${dia(agora + 3 * DIA)}&select=id,numero,vencimento,valor,pedido:pedidos(id,numero,cliente_nome,estado)&limit=1000`),
     servico(`/rest/v1/pedidos?estado=eq.entregue&entregue_em=lt.${new Date(agora - 2 * DIA).toISOString()}&select=id,numero,cliente_nome,valor_total,entregue_em&limit=500`),
     servico(`/rest/v1/pedidos?estado=eq.confirmado&confirmado_em=lt.${new Date(agora - 15 * DIA).toISOString()}&select=id,numero,cliente_nome,confirmado_em&limit=500`),
     servico(`/rest/v1/zoho_registros?produto=eq.books&modulo=eq.estimates&excluido=is.false&dados->>status=eq.accepted&dados->>date=gte.${dia(agora - 30 * DIA)}&select=zoho_id,nome,data:dados->>date,total:dados->>total&limit=500`),
     servico("/rest/v1/pedidos?orcamento_zoho_id=not.is.null&estado=neq.cancelado&select=orcamento_zoho_id&limit=5000"),
-    servico("/rest/v1/alertas?sentinela=like.FLX_*&select=id,chave,estado,titulo,mensagem&limit=5000"),
   ]);
   const alvos = new Map<string, Alvo>();
   const add = (a: Omit<Alvo, "fonte" | "rascunhos" | "tarefas" | "notificar"> & Partial<Alvo>) =>
@@ -89,7 +88,13 @@ export async function vigiarFluxo(agora = Date.now()) {
       tarefas: [{ titulo: `Criar o pedido do orçamento ${o.nome}`.slice(0, 240), papel: "assistente_comercial", prazo: hoje }] });
   }
 
-  // sincroniza a tabela de alertas (mesma regra da varredura dos setores)
+  return await sincronizarAlertas("FLX_", alvos, agora);
+}
+
+/** Sincroniza os alertas de um prefixo (FLX_, BIB_): cria, atualiza, reativa e resolve sozinho. */
+export async function sincronizarAlertas(prefixo: string, alvos: Map<string, Alvo>, agora = Date.now()) {
+  const hoje = dia(agora);
+  const existentes: Obj[] = await servico(`/rest/v1/alertas?sentinela=like.${prefixo}*&select=id,chave,estado,titulo,mensagem&limit=5000`);
   const porChave = new Map(existentes.map((e) => [e.chave, e]));
   const linha = (a: Alvo) => ({ chave: a.chave, setor_id: a.setor, sentinela: a.sentinela, severidade: a.severidade, titulo: a.titulo.slice(0, 300), mensagem: a.mensagem.slice(0, 2000), fonte: a.fonte, registro_id: null, rascunhos: a.rascunhos, notificar: a.notificar });
   const inserir: unknown[] = [], tarefas: unknown[] = [];
@@ -109,4 +114,31 @@ export async function vigiarFluxo(agora = Date.now()) {
   if (resolver.length) await servico(`/rest/v1/alertas?id=in.(${resolver.join(",")})`, { method: "PATCH", body: JSON.stringify({ estado: "resolvido", resolvido_em: agoraIso, atualizado_em: agoraIso }) });
   if (tarefas.length) await servico("/rest/v1/tarefas?on_conflict=chave", { method: "POST", headers: { Prefer: "resolution=ignore-duplicates" }, body: JSON.stringify(tarefas) });
   return { ativos: alvos.size, novos, resolvidos: resolver.length };
+}
+
+/**
+ * Vigia da Biblioteca: pareceres vencidos viram "sem resposta" (nunca aprovacao) e geram alerta
+ * para quem conclui; conflitos encaminhados a CEO/fundador ficam visiveis no Radar da direcao.
+ */
+export async function vigiarBiblioteca(agora = Date.now()) {
+  await servico("/rest/v1/rpc/bib_expirar_pareceres", { method: "POST", body: "{}" });
+  const [semResposta, encaminhados]: Obj[][] = await Promise.all([
+    servico("/rest/v1/biblioteca_pareceres?estado=eq.sem_resposta&select=id,setor_id,participacao,responsavel_conclusao,prazo,registro:biblioteca_registros(id,codigo,titulo,estado)&limit=500"),
+    servico("/rest/v1/biblioteca_pareceres?estado=eq.pendente&encaminhamento=not.is.null&select=id,encaminhamento,motivo,registro:biblioteca_registros(id,codigo,titulo)&limit=500"),
+  ]);
+  const alvos = new Map<string, Alvo>();
+  for (const p of semResposta) {
+    if (!p.registro || !["rascunho", "em_consulta", "aberta", "em_analise"].includes(p.registro.estado)) continue;
+    alvos.set(`BIB_PARECER_SEM_RESPOSTA:${p.id}`, { chave: `BIB_PARECER_SEM_RESPOSTA:${p.id}`, setor: "direcao", sentinela: "BIB_PARECER_SEM_RESPOSTA", severidade: "MEDIO",
+      titulo: `Parecer sem resposta: ${p.setor_id} em ${p.registro.codigo}`,
+      mensagem: `O setor ${p.setor_id} (${p.participacao}) não respondeu até ${dataBR(p.prazo)} sobre "${p.registro.titulo}". Ausência de resposta NÃO é aprovação: ${p.responsavel_conclusao} decide como concluir (novo prazo, decisão com a informação disponível ou encaminhamento).`,
+      fonte: "Biblioteca do VEOS (governança de pareceres)", notificar: [String(p.responsavel_conclusao)], rascunhos: [], tarefas: [] });
+  }
+  for (const p of encaminhados) {
+    if (!p.registro) continue;
+    alvos.set(`BIB_CONFLITO_ENCAMINHADO:${p.id}`, { chave: `BIB_CONFLITO_ENCAMINHADO:${p.id}`, setor: "direcao", sentinela: "BIB_CONFLITO_ENCAMINHADO", severidade: p.encaminhamento === "fundador" ? "ALTO" : "MEDIO",
+      titulo: `Conflito encaminhado ${p.encaminhamento === "fundador" ? "ao fundador" : "à CEO"}: ${p.registro.codigo}`,
+      mensagem: `${p.registro.titulo}. Motivo: ${p.motivo}`, fonte: "Biblioteca do VEOS (encaminhamento de conflitos)", notificar: [p.encaminhamento === "fundador" ? "fundador" : "CEO"], rascunhos: [], tarefas: [] });
+  }
+  return await sincronizarAlertas("BIB_", alvos, agora);
 }

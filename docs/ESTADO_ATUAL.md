@@ -70,6 +70,27 @@ classificação do item 30. **Não está 100%.**
 - Menu **Operação**: Pedidos, Estoque, Recebimentos e faturamento (previsão por mês).
 - **Projects arquivados**: lista pela API clássica a cada hora; tarefas 1x/dia com cursor.
 
+## Biblioteca e governança (01/10)
+**Implementado e testado**
+- Banco (`20261001100000_biblioteca.sql`): registros tipados (preferência, ideia, proposta, decisão, política, exceção, erro/incidente, aprendizado, referência) com estados por tipo; versões (`serie`/`versao`, `substitui`/`substituido_por`); data de registro ≠ data de vigência; fontes com natureza (fato verificado, opinião da fonte, inferência, hipótese) e "acessada"; vínculos entre registros e com objetos do VEOS; pareceres (informado/consultado/aprovador, prazo, quem conclui); encaminhamento à CEO/fundador; trilha append-only; consultas a precedentes registradas.
+- Regras no banco, iguais para todos (inclusive o fundador): decisão/política/exceção só com autoridade + confirmação explícita + justificativa; trava contra alteração silenciosa de registro fechado (revisão = nova versão); rejeição exige motivo preservado; divergência exige problema/argumento/aplicação/benefícios/riscos/alternativa e vira proposta ligada (sem evidência acessada = HIPÓTESE A VALIDAR); só membros do setor respondem parecer; consultado não aprova; prazo vencido = "sem resposta" (nunca aprovação); aprendizado só validado com verificação; incidente só verificado com evidência; registros restritos invisíveis até na busca.
+- Teste de aceite: `tests/banco/biblioteca.sql` — 20/20 (os 16 cenários pedidos), transação desfeita. Rodar: `npx supabase db query --linked -f tests/banco/biblioteca.sql`.
+- Carga real (só no banco, fora do Git): fundador; 17 alçadas (7 com fonte na Política V1/V1.1 e 10 LACUNAS); 2 políticas e 15 decisões confirmadas; hospedagem v1 → v2 (Netlify → GitHub Pages) com incidente ligado; 4 incidentes; 2 aprendizados em verificação; 2 referências; 6 propostas pendentes do fundador.
+- Menu **Biblioteca**: Governança, Decisões e precedentes, Erros e aprendizados, Pesquisas e referências, Políticas vigentes, Revisões em andamento, Consultar precedentes. Filtros por assunto, setor, tipo, situação, responsável e período. Ficha com versões, fontes, relações, pareceres e histórico; ações de divergir, pedir parecer, encaminhar, aprovar/rejeitar, revisar, revogar, mudar situação e adicionar fonte. Telas conferidas com dados simulados (desktop e celular).
+- Radar: pedido de parecer vira tarefa do setor; vigia `BIB_*` alerta parecer sem resposta e conflito encaminhado (rodando na função saude).
+- Negociação ao Vivo consulta precedentes antes de salvar a proposta ou fechar o pedido; a consulta fica registrada com a referência (proposta:/pedido:) e os códigos aplicáveis vão no resumo do pedido.
+
+**Implementado, ainda não validado com uso real**
+- Fluxo completo pela tela com login (criar, divergir, pedir/responder parecer, revisar) — testado no banco e em tela simulada, não com sessão real.
+
+**Dependente de integração**
+- Líderes com IA: pareceres e recomendações dos diretores dependem de atuação humana. A busca de precedentes é por regras (texto, escopo, validade, versão), não raciocínio de IA. Processo das 3 lentes: registro manual (referências + divergência), sem pesquisa automática.
+- Hoje só existe um usuário humano (direção): pareceres de outros setores ficam pendentes até haver membros nesses setores.
+
+**Pendente de decisão de negócio** (estão em Biblioteca → Revisões/Governança)
+- Assuntos reservados ao fundador; quem exerce a CEO; regra de precedência entre autoridades/escopos; quem altera políticas; alçadas de compras, preços de tabela, contratações, comunicação externa, orçamento de IA; validação de ticket abaixo de R$ 100 mil; desconto até 2% com MC 30–32%.
+- Propostas: papel do fundador; base da faixa do Simples; ticket mínimo R$ 15.000; anexo do Simples para serviços; P-3; P-5.
+
 ## GitHub
 - `origin` = https://github.com/voiceambientesinteligentes/VEOS (branch `main`), **público** por decisão do Fernando. Push verificado: commit remoto = local.
 

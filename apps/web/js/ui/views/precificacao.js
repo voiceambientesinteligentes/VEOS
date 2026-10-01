@@ -8,6 +8,7 @@ import { FONTE_POLITICA, FONTE_SIMPLES, IMPOSTOS_PADRAO, OVERHEAD_PADRAO, SIMPLE
 import { parseMoneyInput } from "../../domain/controls.js";
 import { formatBRL, toScaled } from "../../domain/format.js";
 import { clear, field, h, method, panel, stamp, stat } from "../dom.js";
+import { renderConsulta } from "./biblioteca.js";
 
 const FAIXA = {
   VERDE: ["Política V1: verde · MC ≥ 35%", "ok"],
@@ -253,8 +254,20 @@ export function telaNegociacao(root, fontes = null) {
     montarAcoes(r);
   }
 
+  // Precedentes (Biblioteca): consultados antes de salvar proposta ou fechar pedido.
+  const termosPrecedentes = (r) => ["desconto", "margem", "ticket", "negociação", "proposta", r.descontoRs > 0n ? "alçada" : "", r.comNota.impostos !== null ? "imposto" : ""].filter(Boolean).join(" OR ");
+  async function consultarPrecedentes(r, referencia, alvo) {
+    if (!fontes?.consultarPrecedentes) return null;
+    const c = await fontes.consultarPrecedentes({ termos: termosPrecedentes(r), setor: "vendas", contexto: "negociacao", referencia });
+    if (alvo) renderConsulta(alvo, c);
+    return c;
+  }
+
   function montarAcoes(r) {
     const saida = h("div", { role: "status" });
+    const precedentes = h("div", { class: "stack-s precedentes", "aria-live": "polite" });
+    const verPrec = botao("Consultar precedentes (Biblioteca)");
+    verPrec.addEventListener("click", async () => { verPrec.disabled = true; clear(precedentes).append(h("p", { class: "muted" }, "Consultando…")); try { await consultarPrecedentes(r, null, precedentes); } catch (e) { clear(precedentes).append(h("p", { class: "field-error" }, e.message)); } finally { verPrec.disabled = false; } });
     const proposta = botao("Salvar como proposta no Comercial");
     proposta.addEventListener("click", async () => {
       clear(saida);
@@ -262,7 +275,10 @@ export function telaNegociacao(root, fontes = null) {
       try { reg = paraProposta(r, { cliente: cliente.value, referencia: referencia.value, condicao: condicao.value }); } catch (e) { return saida.append(h("p", { class: "field-error" }, e.message)); }
       proposta.disabled = true;
       try {
+        const antes = await consultarPrecedentes(r, null, precedentes).catch(() => null);
+        if (antes?.conflitos?.length && !confirm("Há conflito entre precedentes (veja abaixo). Salvar a proposta mesmo assim? O conflito deve ir à autoridade competente.")) { proposta.disabled = false; return; }
         const res = await fontes.salvarProposta(reg);
+        if (res?.id) await consultarPrecedentes(r, `proposta:${res.id}`).catch(() => null);
         const al = res.alertas_do_registro ?? [];
         saida.append(h("p", { class: "notice notice-ok" }, `Proposta salva no Comercial (${reg.estado === "aguardando_direcao" ? "aguardando a direção" : "rascunho"}). `, h("a", { href: "#/setor/vendas/registros" }, "Abrir no Comercial")),
           al.length ? h("ul", { class: "list-plain stack-s" }, al.map((a) => h("li", null, h("strong", null, a.titulo), h("p", { class: "field-hint" }, a.mensagem)))) : null);
@@ -276,15 +292,22 @@ export function telaNegociacao(root, fontes = null) {
       if (!confirm(`Criar o pedido de ${cliente.value.trim()} por ${brl(r.liquido)}? Em seguida você define as parcelas, que entram na previsão de caixa.`)) return;
       fechar.disabled = true;
       try {
+        const antes = await consultarPrecedentes(r, null, precedentes).catch(() => null);
+        if (antes?.conflitos?.length && !confirm("Há conflito entre precedentes (veja abaixo). Criar o pedido mesmo assim? O conflito deve ir à autoridade competente.")) { fechar.disabled = false; return; }
+        const aplicaveis = (antes?.considerados ?? []).filter((x) => x.aplicavel).map((x) => x.codigo);
         const res = await fontes.criarPedido({ negociacao: {
           cliente: cliente.value.trim(), cliente_zoho_id: orcamento?.cliente_zoho_id ?? null, orcamento_zoho_id: orcamento?.zoho_id ?? null, orcamento_numero: referencia.value.trim() || orcamento?.numero || null,
           valor_total: fixo2(r.liquido), condicao: condicao.value.trim() || null, itens: ultimo.itensPedido,
-          resumo: { tabela: fixo2(r.tabela), desconto: fixo2(r.descontoRs), impostos: r.comNota.impostos === null ? null : fixo2(r.comNota.impostos), custo_total: fixo2(r.custoTotal), margem_com_nota: pctH(r.comNota.margemH), mc_politica: pctH(r.pctH), alcada: r.alcada.nivel },
+          resumo: { precedentes: aplicaveis, consulta: antes?.consulta_id ?? null, tabela: fixo2(r.tabela), desconto: fixo2(r.descontoRs), impostos: r.comNota.impostos === null ? null : fixo2(r.comNota.impostos), custo_total: fixo2(r.custoTotal), margem_com_nota: pctH(r.comNota.margemH), mc_politica: pctH(r.pctH), alcada: r.alcada.nivel },
         } });
+        await consultarPrecedentes(r, `pedido:${res.id}`).catch(() => null);
         location.hash = `#/pedidos/${res.id}`;
       } catch (e) { fechar.disabled = false; saida.append(h("p", { class: "field-error" }, `Não foi possível criar o pedido: ${e.message}`)); }
     });
-    if (fontes?.salvarProposta || fontes?.criarPedido) acoes.append(h("div", { class: "row" }, fontes.salvarProposta ? proposta : null, fontes.criarPedido ? fechar : null), saida);
+    if (fontes?.salvarProposta || fontes?.criarPedido) acoes.append(
+      panel({ title: "Precedentes", subtitle: "Antes de salvar ou fechar, o VEOS consulta a Biblioteca (decisões, políticas e aprendizados que valem para o Comercial). Busca por regras, não IA. Precedente orienta; não autoriza." },
+        h("div", { class: "row" }, verPrec), precedentes),
+      h("div", { class: "row" }, fontes.salvarProposta ? proposta : null, fontes.criarPedido ? fechar : null), saida);
   }
 
   // lista de orcamentos do Zoho (esquerda), carregada ao abrir

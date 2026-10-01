@@ -17,6 +17,7 @@ import { telaCalculadora, telaNegociacao } from "./ui/views/precificacao.js";
 import { telaIntegracoes } from "./ui/views/integracoes.js";
 import { PRODUTOS, telaZoho } from "./ui/views/zoho.js";
 import { telaEstoque, telaItemEstoque, telaPedido, telaPedidos, telaRecebimentos } from "./ui/views/fluxo.js";
+import { telaBiblioteca, telaRegistroBiblioteca } from "./ui/views/biblioteca.js";
 import { CATALOGO } from "./data/catalogo.js";
 
 const el = {
@@ -30,7 +31,7 @@ const el = {
 const SITUACAO = { OK: ["OK", "ok"], REVISAR: ["Revisar", "warn"], BLOQUEAR_ENVIO: ["Não enviar", "risk"] };
 let eu = null;
 // Fontes automaticas da Negociacao ao Vivo (Zoho); a tela funciona sem elas.
-const fontesZoho = { rbt12: api.zohoRbt12, orcamentos: api.zohoOrcamentos, orcamento: api.zohoOrcamento, salvarProposta: api.criarRegistro, criarPedido: api.fluxoCriarPedido };
+const fontesZoho = { rbt12: api.zohoRbt12, orcamentos: api.zohoOrcamentos, orcamento: api.zohoOrcamento, salvarProposta: api.criarRegistro, criarPedido: api.fluxoCriarPedido, consultarPrecedentes: api.bibConsultar };
 const rotaBase = () => location.hash.split("?")[0];
 let atual = null;
 
@@ -153,6 +154,15 @@ function montarMenu() {
       link("#/ia", "✦", "IA VEOS"),
       link("#/conselho", "◇", "Conselho"),
       link("#/integracoes", "⇄", "Integrações")),
+    h("div", { class: "nav-group", role: "group", "aria-labelledby": "nav-biblioteca" },
+      h("span", { class: "nav-label", id: "nav-biblioteca" }, "Biblioteca"),
+      link("#/biblioteca/governanca", "GOV", "Governança"),
+      link("#/biblioteca/decisoes", "DEC", "Decisões e precedentes"),
+      link("#/biblioteca/aprendizados", "APR", "Erros e aprendizados"),
+      link("#/biblioteca/referencias", "REF", "Pesquisas e referências"),
+      link("#/biblioteca/politicas", "POL", "Políticas vigentes"),
+      link("#/biblioteca/revisoes", "REV", "Revisões em andamento"),
+      link("#/biblioteca/consultar", "CON", "Consultar precedentes")),
     h("div", { class: "nav-group", role: "group", "aria-labelledby": "nav-operacao" },
       h("span", { class: "nav-label", id: "nav-operacao" }, "Operação"),
       link("#/pedidos", "PED", "Pedidos"),
@@ -184,7 +194,15 @@ async function navegar() {
   const zohoRota = /^#\/zoho\/(books|crm|projects)(?:\/([A-Za-z0-9_]+)(?:\/([0-9A-Za-z_-]+))?)?$/.exec(rotaBase());
   const pedidoRota = /^#\/pedidos\/([0-9a-f-]{36})$/.exec(rotaBase());
   const estoqueRota = /^#\/estoque\/([0-9A-Za-z_-]{1,40})$/.exec(rotaBase());
-  if (pedidoRota) {
+  const bibRota = /^#\/biblioteca\/(governanca|decisoes|aprendizados|referencias|politicas|revisoes|consultar)$/.exec(rotaBase());
+  const bibReg = /^#\/biblioteca\/r\/([0-9a-f-]{36})$/.exec(rotaBase());
+  if (bibRota) {
+    rota = `#/biblioteca/${bibRota[1]}`;
+    def = { fn: (root) => telaBiblioteca(root, bibRota[1], eu), titulo: ["Biblioteca", "Memória institucional: decisões, aprendizados, referências, políticas e revisões"] };
+  } else if (bibReg) {
+    rota = "#/biblioteca/decisoes";
+    def = { fn: (root) => telaRegistroBiblioteca(root, bibReg[1], eu), titulo: ["Biblioteca", "Registro, versões, fontes, pareceres e histórico"] };
+  } else if (pedidoRota) {
     rota = "#/pedidos";
     def = { fn: (root) => telaPedido(root, pedidoRota[1], eu), titulo: ["Pedido", "Itens, estoque, parcelas, notas fiscais e histórico"] };
   } else if (estoqueRota) {
@@ -232,7 +250,7 @@ async function iniciar(mensagem) {
     return telaLogin(e.status === 403 ? "Este e-mail não tem acesso ao VEOS. Fale com a direção." : e.message);
   }
   montarMenu();
-  if (!TELAS[rotaBase()] && !/^#\/(projetos|setor|zoho|pedidos|estoque)\//.test(location.hash)) history.replaceState(null, "", "#/orbita");
+  if (!TELAS[rotaBase()] && !/^#\/(projetos|setor|zoho|pedidos|estoque|biblioteca)\//.test(location.hash)) history.replaceState(null, "", "#/orbita");
   navegar();
 }
 

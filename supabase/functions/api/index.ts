@@ -6,6 +6,7 @@
 //   /api/projetos...      -> setor Financeiro (ver financeiro.ts; direcao e financas)
 //   /api/zoho/...        -> Zoho: espelho, edicao nos dois sentidos (ver zoho.ts)
 //   /api/fluxo/...       -> pedidos, estoque, parcelas, NF (ver fluxo.ts)
+//   /api/biblioteca/...  -> memoria institucional e governanca (ver biblioteca.ts)
 //   /api/radar, /setor, /registros, /tarefas, /alertas -> setores vivos (ver setores.ts)
 // Escritas exigem header Idempotency-Key (repetir nao duplica).
 // Identidade: token do Supabase Auth validado no servidor + cadastro ativo em `membros`.
@@ -16,6 +17,7 @@ import { rotearFinanceiro } from "./financeiro.ts";
 import { rotearSetores } from "./setores.ts";
 import { rotearZoho } from "./zoho.ts";
 import { rotearFluxo } from "./fluxo.ts";
+import { rotearBiblioteca } from "./biblioteca.ts";
 
 const ORIGENS = [
   /^https:\/\/voiceambientesinteligentes\.github\.io$/,
@@ -59,6 +61,7 @@ async function rotear(req: Request, rota: string) {
   const partes = rota.split("/");
   if (partes[0] === "zoho") return await rotearZoho(req, partes, eu);
   if (partes[0] === "fluxo") return await rotearFluxo(req, partes, eu);
+  if (partes[0] === "biblioteca") return await rotearBiblioteca(req, partes, eu);
   if (partes[0] === "projetos") return await rotearFinanceiro(req, partes, eu);
   if (["radar", "setor", "registros", "tarefas", "alertas"].includes(partes[0])) return await rotearSetores(req, partes, eu);
   if (req.method === "GET" && rota === "me") return eu;

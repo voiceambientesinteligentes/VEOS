@@ -28,3 +28,15 @@ EM VALIDAÇÃO · CONCLUÍDA. Sem percentual global.
 2. Vigia avisa sobre orçamento TESTE que não fecha, com regra e fonte.
 3. CFO e CMO respondem via MCP com fonte, versão e lacunas (dados TESTE).
 4. Tudo acima funcionando com o PC da VOICE desligado.
+
+## Etapa: Biblioteca e governança (01/10/2026)
+| Item | Situação |
+|---|---|
+| Registros tipados, estados, versões, vigência | Implementado e testado (banco 20/20) |
+| Autoridade, confirmação explícita, trava contra alteração silenciosa | Implementado e testado |
+| Divergência fundamentada / hipótese a validar | Implementado e testado |
+| Pareceres (informado/consultado/aprovador), sem resposta ≠ aprovação, encaminhamento CEO/fundador | Implementado e testado; respostas dependem de membros humanos nos setores |
+| Consulta a precedentes integrada (Negociação: proposta e pedido) | Implementado; validado em banco e tela simulada |
+| Menu Biblioteca (7 áreas, filtros, ficha, ações) | Implementado; validado em tela simulada |
+| Recomendações por IA dos líderes / 3 lentes automáticas | Dependente de integração (IA) |
+| Assuntos reservados, CEO humana, precedência, alçadas faltantes | Pendente de decisão do fundador |

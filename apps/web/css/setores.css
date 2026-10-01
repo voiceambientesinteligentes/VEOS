@@ -177,3 +177,12 @@
 .orc-filtros .input { flex: 1 1 160px; width: auto; }
 .orc-filtros .select { flex: 0 0 150px; width: 150px; }
 .orc-filtros .btn { flex: 0 0 auto; }
+
+/* Biblioteca */
+.bib-abas { flex-wrap: wrap; gap: 4px; }
+.bib-abas a.tab { text-decoration: none; padding: 8px 12px; color: var(--text-1); border-bottom: 2px solid transparent; }
+.bib-abas a.tab.ativo { color: var(--text-0); border-bottom-color: var(--gold); }
+.bib-filtros { grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); }
+.bib-setores { flex-wrap: wrap; gap: var(--s3); }
+.bib-confirma { padding: var(--s2) var(--s3); border: 1px solid var(--gold-line); border-radius: var(--radius-s, 8px); }
+.precedentes .panel-tight { padding: var(--s2) var(--s3); }
