@@ -1,5 +1,6 @@
 // Edge Function "api" - servidor do portal VEOS online.
 //   GET  /api/me          -> membro autenticado
+//   GET  /api/painel      -> painel executivo (direcao e financas)
 //   GET  /api/setores     -> setores e diretores
 //   GET  /api/orcamentos  -> ultimos orcamentos com avisos
 //   POST /api/orcamentos  -> vigia avalia e grava orcamento + avisos + evento
@@ -81,6 +82,10 @@ async function rotear(req: Request, rota: string) {
   if (partes[0] === "projetos") return await rotearFinanceiro(req, partes, eu);
   if (["radar", "setor", "registros", "tarefas", "alertas"].includes(partes[0])) return await rotearSetores(req, partes, eu);
   if (req.method === "GET" && rota === "me") return eu;
+  if (req.method === "GET" && rota === "painel") {
+    if (!["direcao", "financas"].includes(eu.papel)) throw new HttpError(403, "somente direção e finanças");
+    return await servico("/rest/v1/rpc/painel_executivo", { method: "POST", body: JSON.stringify({ p_meses: 12 }) });
+  }
   if (req.method === "GET" && rota === "setores") {
     const [setores, diretores] = await Promise.all([
       servico("/rest/v1/setores?select=id,sigla,nome,descricao&ativo=is.true&order=sigla"),

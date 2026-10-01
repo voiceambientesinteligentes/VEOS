@@ -215,3 +215,20 @@
 .mfa-chave { word-break: break-all; }
 a.pill { text-decoration: none; }
 .exportar-texto { flex: 1 1 220px; min-width: 0; }
+
+/* Graficos (paleta validada no fundo escuro: #a8862f / #2fa3bb, ΔE CVD 17,9) */
+.grafico-fig { margin: 0; }
+.grafico { width: 100%; height: auto; display: block; }
+.grafico-grade { stroke: var(--line); stroke-width: 1; }
+.grafico-base { stroke: var(--line-2); stroke-width: 1; }
+.grafico-eixo { fill: var(--text-2); font-size: 11px; font-family: inherit; }
+.grafico-alvo { fill: transparent; }
+.grafico-mes:hover .grafico-alvo, .grafico-mes:focus .grafico-alvo { fill: var(--bg-3); }
+.grafico-mes:focus { outline: none; }
+.serie-1 { fill: #a8862f; }
+.serie-2 { fill: #2fa3bb; }
+.serie-1-bg { background: #a8862f; }
+.serie-2-bg { background: #2fa3bb; }
+.grafico-legenda { display: flex; flex-wrap: wrap; gap: var(--s4); font-size: var(--fs-s); color: var(--text-1); margin-bottom: var(--s2); }
+.grafico-legenda-item { display: inline-flex; align-items: center; gap: var(--s2); }
+.grafico-chave { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }

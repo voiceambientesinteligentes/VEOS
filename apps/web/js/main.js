@@ -19,6 +19,7 @@ import { PRODUTOS, telaZoho } from "./ui/views/zoho.js";
 import { telaContrato, telaEstoque, telaItemEstoque, telaPedido, telaPedidos, telaRecebimentos } from "./ui/views/fluxo.js";
 import { telaBiblioteca, telaRegistroBiblioteca } from "./ui/views/biblioteca.js";
 import { telaValidacao } from "./ui/views/validacao.js";
+import { telaPainel } from "./ui/views/painel.js";
 import { telaExportar, telaSaude } from "./ui/views/sistema.js";
 import { formCodigoMfa, telaConta, telaUsuarios } from "./ui/views/usuarios.js";
 import { CATALOGO } from "./data/catalogo.js";
@@ -101,7 +102,7 @@ const TELAS = {
   "#/conselho": { fn: telaConselho, titulo: ["Conselho consultivo", "Os diretores especialistas da VOICE"] },
   "#/ia": { fn: (root, signal) => renderIA(root, signal), titulo: ["IA VEOS", "Comando por voz"] },
   "#/orbita": { fn: telaOrbita, titulo: ["Órbita", "Os setores em órbita do VEOS"] },
-  "#/visao": { fn: telaVisao, titulo: ["Visão geral", "VEOS online · VOICE Ambientes Inteligentes"] },
+  "#/visao": { fn: (root) => (["direcao", "financas"].includes(eu.papel) ? telaPainel(root) : telaVisao(root)), titulo: ["Visão geral", "Painel executivo: vendas, faturamento, caixa, funil e alertas"] },
   "#/cfo": { fn: telaAvisos, titulo: ["Avisos de orçamento", "Vigia: orçamento salvo → avisos do CFO com regra e fonte"] },
   "#/projetos": { fn: telaProjetos, titulo: ["Projetos e caixa", "Setor Financeiro · exposição e cobertura por fase"] },
   "#/pedidos": { fn: telaPedidos, titulo: ["Pedidos", "Orçamento aceito → estoque → parcelas → nota fiscal → recebimento"] },
@@ -170,6 +171,7 @@ function montarMenu() {
   clear(el.nav).append(
     h("div", { class: "nav-group", role: "group", "aria-labelledby": "nav-cmd" },
       h("span", { class: "nav-label", id: "nav-cmd" }, "Comando"),
+      ["direcao", "financas"].includes(eu.papel) ? link("#/visao", "▦", "Visão geral") : null,
       link("#/orbita", "◉", "Órbita"),
       link("#/radar", "◈", "Radar"),
       link("#/ia", "✦", "IA VEOS"),

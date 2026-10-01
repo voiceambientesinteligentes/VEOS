@@ -14,11 +14,11 @@ const SITE = process.env.VEOS_SITE ?? "https://voiceambientesinteligentes.github
 const EMAIL = "teste-navegador@veos-teste.invalid";
 const admin = { apikey: SERVICE, Authorization: `Bearer ${SERVICE}`, "Content-Type": "application/json" };
 const TELAS = [
-  "#/orbita", "#/radar", "#/conselho", "#/integracoes", "#/biblioteca/governanca", "#/biblioteca/decisoes", "#/biblioteca/revisoes",
+  "#/visao", "#/orbita", "#/radar", "#/conselho", "#/integracoes", "#/biblioteca/governanca", "#/biblioteca/decisoes", "#/biblioteca/revisoes",
   "#/pedidos", "#/estoque", "#/recebimentos", "#/zoho/books", "#/zoho/crm", "#/setor/financas", "#/setor/vendas",
   "#/negociacao", "#/calculadora", "#/projetos", "#/sistema/saude", "#/sistema/usuarios", "#/sistema/exportar", "#/sistema/validacao", "#/conta",
 ];
-const CELULAR = ["#/orbita", "#/radar", "#/pedidos", "#/biblioteca/revisoes", "#/negociacao", "#/sistema/saude", "#/sistema/usuarios", "#/conta"];
+const CELULAR = ["#/visao", "#/orbita", "#/radar", "#/pedidos", "#/biblioteca/revisoes", "#/negociacao", "#/sistema/saude", "#/sistema/usuarios", "#/conta"];
 const membro = (user_id, ativo) => fetch(`${URL_BASE}/rest/v1/membros`, { method: "POST", headers: { ...admin, Prefer: "resolution=merge-duplicates" }, body: JSON.stringify({ user_id, nome: "Usuario TESTE navegador", papel: "direcao", ativo }) });
 
 // usuario TESTE e sessao

@@ -67,6 +67,11 @@ try {
   assert.equal(me.status, 403); assert.equal(me.dados.erro, "mfa_necessario"); ok("MFA exigido e sessao sem codigo -> 403 mfa_necessario");
   await fetch(`${URL_BASE}/rest/v1/membros?user_id=eq.${user.id}`, { method: "PATCH", headers: admin, body: JSON.stringify({ exige_mfa: false }) });
   assert.equal((await req("/functions/v1/api/me", { token })).dados.aal, "aal1"); ok("/me informa o nivel da sessao (aal1)");
+  // painel executivo
+  const pn = await req("/functions/v1/api/painel", { token });
+  assert.equal(pn.status, 200, JSON.stringify(pn.dados)); assert.equal(pn.dados.meses.length, 12); assert.ok(Array.isArray(pn.dados.funil_crm));
+  ok(`painel executivo: 12 meses, ${pn.dados.orcamentos.length} situacoes de orcamento, ${pn.dados.funil_crm.length} etapas no CRM`);
+
   // exportacao
   const conj = await req("/functions/v1/api/sistema/exportar", { token });
   assert.equal(conj.status, 200); assert.ok(conj.dados.conjuntos.length >= 7);
@@ -82,6 +87,7 @@ try {
   await papel(user.id, "vendas");
   assert.equal((await req("/functions/v1/api/sistema/membros", { token })).status, 403); ok("vendas nao gere usuarios -> 403");
   assert.equal((await req("/functions/v1/api/sistema/exportar/pedidos", { token })).status, 403); ok("vendas nao exporta -> 403");
+  assert.equal((await req("/functions/v1/api/painel", { token })).status, 403); ok("vendas nao ve o painel executivo -> 403");
 } finally {
   await papel(user.id, "vendas", false); // TESTE fica inativo
 }

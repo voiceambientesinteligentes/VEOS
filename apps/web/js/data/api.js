@@ -32,6 +32,7 @@ const codigoTeste = () => {
 export const api = {
   me: () => request("GET", "me"),
   setores: () => request("GET", "setores"),
+  painel: () => request("GET", "painel"),
   orcamentos: () => request("GET", "orcamentos"),
   projetos: () => request("GET", "projetos"),
   radar: () => request("GET", "radar"),
