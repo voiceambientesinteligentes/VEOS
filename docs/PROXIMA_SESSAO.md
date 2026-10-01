@@ -44,6 +44,13 @@ Já decididas em 01/10: IA no servidor = teto zero (BIB-0044); Fernando exerce a
 4. Sistema → Usuários: dar acesso à equipe (cada pessoa entra pelo link do e-mail).
 5. (Opcional) Minha conta → Acesso do Claude Code: `node scripts/mcp/veos-mcp.mjs --configurar <código>` e o Claude Code passa a ler o VEOS pelo MCP `veos`.
 
+## Para o FINAL do projeto (decidir junto com o Fernando, só quando ele pedir)
+- **Mesclar o catálogo do VEOS com os itens do Zoho** — plano completo na Biblioteca **BIB-0077**: revisar duplicados e itens "Conferir", definir preços de venda, enviar/aposentar itens no Zoho, ligar estoque/compras/pedidos ao catálogo do VEOS, importar os demais itens do Zoho e desligar o módulo de itens.
+
+## Catálogo de produtos (01/10, noite)
+- Catálogo próprio no VEOS (Operação → Catálogo de produtos): 139 produtos importados do inventário AliExpress (`scripts/importar_aliexpress.py`, idempotente, preserva decisões manuais), 157 variantes, ficha técnica, 380 compras de origem, fotos no Storage privado. 5 compras pessoais excluídas (histórico preservado); 3 talvez pessoais em "Conferir" (PRD-0005, PRD-0101, PRD-0119).
+- Preço de compra = último preço pago (sem frete/impostos); preço de venda = lacuna. Simulador pelo markup do Sebrae (BIB-0074); alçada de preço proposta (BIB-0075).
+
 ## Backlog sugerido (próximos blocos técnicos)
 1. **Catálogo de itens próprio** (maior dependência do Zoho: base de estoque, compras e pedidos) — ver Sistema → Independência do Zoho.
 2. **Clientes e fornecedores próprios**, unificando Books e CRM.

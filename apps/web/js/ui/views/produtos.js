@@ -8,7 +8,7 @@ import { custoAquisicao, precoSugerido } from "../../domain/preco.js";
 import { clear, errorNotice, field, h, method, panel, stamp, stat, table } from "../dom.js";
 
 const brl = (v) => (v === null || v === undefined || v === "" ? "—" : formatBRL(String(Number(v).toFixed(2))));
-const SIT = { ativo: ["Ativo", "ok"], inativo: ["Inativo", "neutral"], revisar: ["Conferir agrupamento", "warn"] };
+const SIT = { ativo: ["Ativo", "ok"], inativo: ["Inativo", "neutral"], revisar: ["Conferir", "warn"], excluido: ["Excluído", "risk"] };
 const foto = (url, alt, cls = "produto-foto") => (url ? h("img", { src: url, alt, class: cls, loading: "lazy" }) : h("div", { class: `${cls} produto-sem-foto`, role: "img", "aria-label": "sem foto" }, "sem foto"));
 
 export async function telaProdutos(root) {

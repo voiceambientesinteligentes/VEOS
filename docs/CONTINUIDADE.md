@@ -74,3 +74,8 @@ Atualize este arquivo ao fim de cada sessão: última ação, resultado e próxi
 - Não implementados de propósito: IA (teto zero), NF integrada (custo), domínio (precisa do domínio), dados reais nos registros dos setores (decisão).
 - Verificação: bancos 106/106; telas 70/70; online 15+12+9+33+6; navegador no site publicado 42/42 (inclui PWA e Ctrl+K); CI verde.
 - Próximo: Fernando executa a validação guiada, decide as propostas e cadastra os segredos; técnico: catálogo de itens próprio.
+
+## 01/10/2026 (noite) — catálogo de produtos
+- Importado o inventário AliExpress do fundador para o catálogo próprio (commits 0e11b9e, 8826b8d e seguintes). Registros: BIB-0074 (Sebrae), BIB-0075 (alçada de preço, proposta), BIB-0076 (importação), BIB-0077 (mesclagem Zoho × VEOS, para o fim do projeto).
+- Fundador: excluir compras pessoais (feito: 5; 3 em dúvida) e deixar a mesclagem com o Zoho para o final, decidindo juntos.
+- Testes online agora usam usuários TESTE separados no GitHub Actions (antes colidiam com a execução local).

@@ -111,7 +111,10 @@ for cod, rs in por_prd.items():
         "imagem": f"{cod}.jpg" if os.path.exists(os.path.join(IMAGENS, "por_produto", f"{cod}.jpg")) else None,
         "atualizado_em": datetime.datetime.now(datetime.timezone.utc).isoformat(),
     })
-antes = {p["codigo"]: p for p in req("GET", "/rest/v1/produtos?select=id,codigo,custo_ultimo&limit=10000")}
+antes = {p["codigo"]: p for p in req("GET", "/rest/v1/produtos?select=id,codigo,custo_ultimo,situacao&limit=10000")}
+for p in produtos:  # reimportar nao desfaz decisao manual (excluido, inativo, conferido)
+    if p["codigo"] in antes:
+        p["situacao"] = antes[p["codigo"]]["situacao"]
 req("POST", "/rest/v1/produtos?on_conflict=codigo", produtos, {"Prefer": "resolution=merge-duplicates"})
 ids = {p["codigo"]: p["id"] for p in req("GET", "/rest/v1/produtos?select=id,codigo&limit=10000")}
 hist = [{"produto_id": ids[p["codigo"]], "campo": "custo_ultimo", "de": antes.get(p["codigo"], {}).get("custo_ultimo"), "para": p["custo_ultimo"],

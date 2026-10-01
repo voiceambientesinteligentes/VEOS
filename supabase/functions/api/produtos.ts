@@ -42,7 +42,7 @@ export async function rotearProdutos(req: Request, partes: string[], eu: Membro)
     const pagina = Math.max(1, Math.min(200, Number(q.get("pagina") ?? 1) || 1));
     const filtros = [
       busca ? `&or=(nome.ilike.*${encodeURIComponent(busca)}*,codigo.ilike.*${encodeURIComponent(busca)}*,marca.ilike.*${encodeURIComponent(busca)}*,modelo.ilike.*${encodeURIComponent(busca)}*)` : "",
-      ["ativo", "inativo", "revisar"].includes(q.get("situacao") ?? "") ? `&situacao=eq.${q.get("situacao")}` : "",
+      ["ativo", "inativo", "revisar", "excluido"].includes(q.get("situacao") ?? "") ? `&situacao=eq.${q.get("situacao")}` : "&situacao=neq.excluido", // excluidos so quando pedidos
     ].join("");
     const r = await fetch(`${URL_BASE}/rest/v1/produtos?select=id,codigo,nome,marca,modelo,unidade,tipo,situacao,custo_ultimo,custo_data,preco_venda,imagem,zoho_item_id,origem${filtros}&order=codigo&limit=60&offset=${(pagina - 1) * 60}`, {
       headers: { apikey: SERVICE, Authorization: `Bearer ${SERVICE}`, Prefer: "count=exact" },
@@ -114,7 +114,7 @@ export async function rotearProdutos(req: Request, partes: string[], eu: Membro)
     const campos: Record<string, unknown> = {};
     for (const [k, max] of [["nome", 200], ["descricao", 5000], ["categoria", 80], ["unidade", 20], ["observacao", 2000]] as const) if (k in corpo) campos[k] = txt(corpo[k], max);
     if ("situacao" in corpo) {
-      if (!["ativo", "inativo", "revisar"].includes(String(corpo.situacao))) throw new HttpError(400, "situação inválida");
+      if (!["ativo", "inativo", "revisar", "excluido"].includes(String(corpo.situacao))) throw new HttpError(400, "situação inválida");
       campos.situacao = corpo.situacao;
     }
     if ("nome" in campos && !campos.nome) throw new HttpError(400, "o nome não pode ficar vazio");
