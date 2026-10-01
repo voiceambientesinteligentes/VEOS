@@ -46,6 +46,14 @@ const json = (req: Request, status: number, body: unknown) =>
     headers: { ...cors(req), "Content-Type": "application/json; charset=utf-8", "Cache-Control": "no-store" },
   });
 
+function lerClaims(token: string): Record<string, string> {
+  try {
+    return JSON.parse(atob(token.split(".")[1].replace(/-/g, "+").replace(/_/g, "/")));
+  } catch {
+    return {};
+  }
+}
+
 async function membro(req: Request): Promise<Membro> {
   const token = (req.headers.get("Authorization") ?? "").replace(/^Bearer\s+/i, "");
   if (!token) throw new HttpError(401, "login necessario");
@@ -53,9 +61,14 @@ async function membro(req: Request): Promise<Membro> {
   if (!r.ok) throw new HttpError(401, "sessao invalida ou expirada");
   const user = await r.json();
   if (!user?.id) throw new HttpError(401, "sessao invalida");
-  const rows = await servico(`/rest/v1/membros?user_id=eq.${encodeURIComponent(user.id)}&ativo=is.true&select=user_id,nome,papel`);
+  const rows = await servico(`/rest/v1/membros?user_id=eq.${encodeURIComponent(user.id)}&ativo=is.true&select=user_id,nome,papel,exige_mfa`);
   if (!rows?.length) throw new HttpError(403, "usuario sem acesso ao VEOS");
-  return { ...rows[0], email: user.email as string };
+  // MFA exigido pela direcao: a sessao precisa ter passado pelo codigo (aal2). O token ja foi
+  // validado pelo Auth acima; aqui so se le a claim.
+  const { exige_mfa, ...m } = rows[0];
+  const aal = lerClaims(token).aal ?? "aal1";
+  if (exige_mfa && aal !== "aal2") throw new HttpError(403, "mfa_necessario");
+  return { ...m, email: user.email as string, aal, exige_mfa };
 }
 
 async function rotear(req: Request, rota: string) {

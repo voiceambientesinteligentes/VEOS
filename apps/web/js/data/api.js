@@ -86,6 +86,9 @@ export const api = {
   bibResponderParecer: (pid, dados) => request("POST", `biblioteca/pareceres/${encodeURIComponent(pid)}/responder`, dados, { "Idempotency-Key": crypto.randomUUID() }),
   // Sistema: saude, usuarios e exportacao (direcao)
   sistemaSaude: () => request("GET", "sistema/saude"),
+  sistemaMembros: () => request("GET", "sistema/membros"),
+  sistemaConvidar: (dados) => request("POST", "sistema/membros", dados, { "Idempotency-Key": crypto.randomUUID() }),
+  sistemaMembro: (id, dados) => request("POST", `sistema/membros/${encodeURIComponent(id)}`, dados, { "Idempotency-Key": crypto.randomUUID() }),
   // Salvar = vigia avalia e o servidor grava orcamento + avisos. Uma chave por clique:
   // se a rede repetir o envio, o servidor nao duplica o registro.
   vigiaOrcamento: (entrada) =>

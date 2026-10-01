@@ -209,3 +209,8 @@
 
 /* Botao de escolha marcado (ex.: resultado de cada passo da validacao guiada) */
 .btn[aria-pressed="true"] { border-color: var(--gold); background: var(--bg-4); color: var(--gold-2); font-weight: 600; }
+
+/* MFA: QR legivel em fundo claro e chave quebrando linha no celular */
+.mfa-qr { background: #fff; padding: 8px; border-radius: var(--radius-s); width: 180px; height: 180px; }
+.mfa-chave { word-break: break-all; }
+a.pill { text-decoration: none; }

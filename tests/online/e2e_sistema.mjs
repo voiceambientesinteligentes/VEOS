@@ -39,6 +39,36 @@ try {
   assert.ok(s.dados.agendamentos.some((j) => j.nome === "veos-saude-sistema"));
   ok(`direcao le a saude: banco ${Math.round(s.dados.banco_bytes / 1048576)} MB, ${s.dados.alertas.length} alerta(s), ${s.dados.agendamentos.length} agendamentos`);
   assert.equal((await req("/rest/v1/rpc/sistema_saude", { method: "POST", token, body: {} })).status >= 400, true); ok("usuario nao chama sistema_saude direto no banco");
+
+  // usuarios e acessos
+  const chave = () => ({ "Idempotency-Key": crypto.randomUUID() });
+  const lista1 = await req("/functions/v1/api/sistema/membros", { token });
+  assert.equal(lista1.status, 200); assert.ok(lista1.dados.membros.some((m) => m.user_id === user.id && m.teste)); ok("direcao lista membros (TESTE marcado)");
+  const CONV = "convite-teste@veos-teste.invalid";
+  let conv = lista1.dados.membros.find((m) => m.email === CONV);
+  if (!conv) {
+    const c = await req("/functions/v1/api/sistema/membros", { method: "POST", token, headers: chave(), body: { nome: "Convite TESTE", email: CONV, papel: "operacoes" } });
+    assert.equal(c.status, 200, JSON.stringify(c.dados));
+    conv = { user_id: c.dados.user_id, ativo: true };
+    ok("convite cria login e membro (sem enviar e-mail)");
+  } else ok("convite TESTE ja existia (execucao anterior)");
+  if (!conv.ativo) assert.equal((await req(`/functions/v1/api/sistema/membros/${conv.user_id}`, { method: "POST", token, headers: chave(), body: { acao: "reativar" } })).status, 200);
+  const dup = await req("/functions/v1/api/sistema/membros", { method: "POST", token, headers: chave(), body: { nome: "Convite TESTE", email: CONV, papel: "operacoes" } });
+  assert.equal(dup.status, 400); ok("convidar de novo -> 400 (ja tem cadastro)");
+  assert.equal((await req(`/functions/v1/api/sistema/membros/${conv.user_id}`, { method: "POST", token, headers: chave(), body: { acao: "desativar" } })).status, 400); ok("desativar sem motivo -> 400");
+  assert.equal((await req(`/functions/v1/api/sistema/membros/${conv.user_id}`, { method: "POST", token, headers: chave(), body: { acao: "desativar", motivo: "TESTE automatizado" } })).status, 200);
+  const banido = await (await fetch(`${URL_BASE}/auth/v1/admin/users/${conv.user_id}`, { headers: admin })).json();
+  assert.ok(banido.banned_until && Date.parse(banido.banned_until) > Date.now()); ok("desativar bloqueia o login no Auth");
+  assert.equal((await req(`/functions/v1/api/sistema/membros/${user.id}`, { method: "POST", token, headers: chave(), body: { acao: "exigir_mfa" } })).status, 400); ok("exigir MFA de quem nao cadastrou -> 400");
+
+  // MFA exigido: sessao sem codigo (aal1) recebe 403 mfa_necessario
+  await fetch(`${URL_BASE}/rest/v1/membros?user_id=eq.${user.id}`, { method: "PATCH", headers: admin, body: JSON.stringify({ exige_mfa: true }) });
+  const me = await req("/functions/v1/api/me", { token });
+  assert.equal(me.status, 403); assert.equal(me.dados.erro, "mfa_necessario"); ok("MFA exigido e sessao sem codigo -> 403 mfa_necessario");
+  await fetch(`${URL_BASE}/rest/v1/membros?user_id=eq.${user.id}`, { method: "PATCH", headers: admin, body: JSON.stringify({ exige_mfa: false }) });
+  assert.equal((await req("/functions/v1/api/me", { token })).dados.aal, "aal1"); ok("/me informa o nivel da sessao (aal1)");
+  await papel(user.id, "vendas");
+  assert.equal((await req("/functions/v1/api/sistema/membros", { token })).status, 403); ok("vendas nao gere usuarios -> 403");
 } finally {
   await papel(user.id, "vendas", false); // TESTE fica inativo
 }

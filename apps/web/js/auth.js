@@ -80,3 +80,40 @@ export async function sair() {
     await fetch(`${SUPABASE_URL}/auth/v1/logout`, { method: "POST", headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${t}` } }).catch(() => {});
   }
 }
+
+// ---------------------------------------------------------------- MFA (TOTP, app autenticador)
+async function authUsuario(method, path, body) {
+  const t = await token();
+  if (!t) throw new Error("sessão expirada");
+  const r = await fetch(`${SUPABASE_URL}/auth/v1/${path}`, {
+    method,
+    headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${t}`, "Content-Type": "application/json" },
+    body: body === undefined ? undefined : JSON.stringify(body),
+  });
+  const dados = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error(dados.msg || dados.message || dados.error_description || `falha (${r.status})`);
+  return dados;
+}
+
+/** Fatores TOTP da conta (verificados e pendentes). */
+export async function fatoresMfa() {
+  const u = await authUsuario("GET", "user");
+  return (u.factors ?? []).filter((f) => f.factor_type === "totp");
+}
+
+/** Inicia o cadastro: devolve { id, totp: { qr_code, secret, uri } }. Pendentes antigos sao descartados. */
+export async function cadastrarMfa() {
+  for (const f of await fatoresMfa()) if (f.status !== "verified") await authUsuario("DELETE", `factors/${f.id}`).catch(() => {});
+  return await authUsuario("POST", "factors", { factor_type: "totp", friendly_name: `VEOS ${new Date().toISOString().slice(0, 10)}` });
+}
+
+/** Confere o codigo de 6 digitos; a sessao passa a ser aal2 (tokens novos). */
+export async function verificarMfa(fatorId, codigo) {
+  const desafio = await authUsuario("POST", `factors/${fatorId}/challenge`, {});
+  const t = await authUsuario("POST", `factors/${fatorId}/verify`, { challenge_id: desafio.id, code: String(codigo).replace(/\D/g, "") });
+  guardar({ ...deTokens(t), email: t.user?.email ?? sessao?.email ?? null });
+}
+
+export async function removerMfa(fatorId) {
+  await authUsuario("DELETE", `factors/${fatorId}`);
+}

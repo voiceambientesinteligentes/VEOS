@@ -20,6 +20,7 @@ import { telaContrato, telaEstoque, telaItemEstoque, telaPedido, telaPedidos, te
 import { telaBiblioteca, telaRegistroBiblioteca } from "./ui/views/biblioteca.js";
 import { telaValidacao } from "./ui/views/validacao.js";
 import { telaSaude } from "./ui/views/sistema.js";
+import { formCodigoMfa, telaConta, telaUsuarios } from "./ui/views/usuarios.js";
 import { CATALOGO } from "./data/catalogo.js";
 
 const el = {
@@ -109,6 +110,8 @@ const TELAS = {
   "#/integracoes": { fn: (root) => telaIntegracoes(root, eu), titulo: ["Integrações", "Zoho Books, CRM e Projects · somente leitura"] },
   "#/negociacao": { fn: (root) => telaNegociacao(root, fontesZoho), titulo: ["Negociação ao Vivo", "Desconto, custos e Simples → margem e alçada pela Política V1"] },
   "#/calculadora": { fn: (root) => telaCalculadora(root, fontesZoho), titulo: ["Calculadora de Preços", "Preço mínimo para a margem alvo, já com Simples e provisão de 2%"] },
+  "#/sistema/usuarios": { fn: (root) => telaUsuarios(root), titulo: ["Usuários e acessos", "Quem entra no VEOS, em qual setor, com MFA e histórico"] },
+  "#/conta": { fn: (root) => telaConta(root, eu), titulo: ["Minha conta", "Seu acesso e a verificação em duas etapas"] },
   "#/sistema/saude": { fn: (root) => telaSaude(root), titulo: ["Saúde do sistema", "Banco, arquivos, sincronização do Zoho, agendamentos e alertas"] },
   "#/sistema/validacao": { fn: (root) => telaValidacao(root), titulo: ["Validação guiada", "Roteiro de teste com login real · o resultado vai para a Biblioteca"] },
   "#/historico": { fn: telaHistorico, titulo: ["Histórico", "Orçamentos TESTE gravados e seus avisos"] },
@@ -138,6 +141,19 @@ function telaLogin(mensagem) {
     }
   });
   clear(el.view).append(panel({ title: "VEOS", subtitle: "Portal executivo da VOICE Ambientes Inteligentes" }, form));
+}
+
+// Direcao exige MFA: a sessao do link precisa do codigo do app antes de abrir o VEOS.
+function telaMfa() {
+  el.title.textContent = "Entrar";
+  el.sub.textContent = "Verificação em duas etapas";
+  clear(el.nav);
+  const sairBtn = h("button", { class: "btn btn-ghost", type: "button" }, "Sair");
+  sairBtn.addEventListener("click", async () => { await sair(); telaLogin(); });
+  clear(el.status).append(sairBtn);
+  const box = h("div", { class: "stack" });
+  clear(el.view).append(box);
+  formCodigoMfa(box, () => iniciar()).catch((e) => box.append(errorNotice(e.message)));
 }
 
 // ---------------------------------------------------------------- moldura
@@ -187,10 +203,12 @@ function montarMenu() {
       link("#/historico", "HIST", "Histórico de orçamentos")),
     h("div", { class: "nav-group", role: "group", "aria-labelledby": "nav-sistema" },
       h("span", { class: "nav-label", id: "nav-sistema" }, "Sistema"),
-      link("#/sistema/saude", "SAU", "Saúde do sistema"),
-      link("#/sistema/validacao", "VAL", "Validação guiada")),
+      ["direcao", "tecnologia"].includes(eu.papel) ? link("#/sistema/saude", "SAU", "Saúde do sistema") : null,
+      eu.papel === "direcao" ? link("#/sistema/usuarios", "USR", "Usuários e acessos") : null,
+      link("#/sistema/validacao", "VAL", "Validação guiada"),
+      link("#/conta", "EU", "Minha conta")),
   );
-  clear(el.status).append(h("span", { class: "pill tone-ok" }, h("span", { class: "dot" }), eu.email), botaoSair);
+  clear(el.status).append(h("a", { class: "pill tone-ok", href: "#/conta", title: "Minha conta" }, h("span", { class: "dot" }), eu.email), botaoSair);
 }
 
 async function navegar() {
@@ -258,6 +276,7 @@ async function iniciar(mensagem) {
   try {
     eu = await api.me();
   } catch (e) {
+    if (e.status === 403 && e.message === "mfa_necessario") return telaMfa();
     await sair();
     return telaLogin(e.status === 403 ? "Este e-mail não tem acesso ao VEOS. Fale com a direção." : e.message);
   }
