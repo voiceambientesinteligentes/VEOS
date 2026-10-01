@@ -1,0 +1,22 @@
+{
+  "name": "VEOS · VOICE Ambientes Inteligentes",
+  "short_name": "VEOS",
+  "description": "Portal executivo da VOICE: setores vivos, Radar, pedidos, Biblioteca e Zoho.",
+  "lang": "pt-BR",
+  "start_url": "./#/orbita",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0a0b0d",
+  "theme_color": "#0a0b0d",
+  "icons": [
+    { "src": "icons/icone-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icons/icone-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icons/icone-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" },
+    { "src": "icons/icone.svg", "sizes": "any", "type": "image/svg+xml" }
+  ],
+  "shortcuts": [
+    { "name": "Radar", "url": "./#/radar" },
+    { "name": "Pedidos", "url": "./#/pedidos" },
+    { "name": "Caixa de saída", "url": "./#/mensagens" }
+  ]
+}

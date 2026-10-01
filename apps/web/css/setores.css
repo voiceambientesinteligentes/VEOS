@@ -252,3 +252,13 @@ a.pill { text-decoration: none; }
   .proposta-topo { flex-wrap: wrap; }
   .contrato-tabela { display: block; overflow-x: auto; }
 }
+
+/* Busca global (Ctrl+K) */
+.busca-botao kbd { font-family: inherit; font-size: var(--fs-xs); color: var(--text-2); border: 1px solid var(--line-2); border-radius: 4px; padding: 0 4px; margin-left: 6px; }
+@media (max-width: 600px) { .busca-botao kbd { display: none; } }
+.busca-dialogo { width: min(640px, calc(100vw - 32px)); max-height: 70vh; margin: 10vh auto auto; padding: var(--s4); border: 1px solid var(--line-2); border-radius: var(--radius-m, 12px); background: var(--bg-2); color: var(--text-0); }
+.busca-dialogo::backdrop { background: rgba(0, 0, 0, .6); }
+.busca-lista { margin: var(--s3) 0; max-height: 50vh; overflow-y: auto; }
+.busca-item { display: flex; gap: var(--s3); align-items: baseline; padding: 8px 10px; border-radius: var(--radius-s); cursor: pointer; }
+.busca-item.is-sel, .busca-item:hover { background: var(--bg-4); }
+.busca-tipo { font-size: var(--fs-xs); color: var(--text-2); min-width: 72px; }

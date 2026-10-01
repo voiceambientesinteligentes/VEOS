@@ -25,6 +25,7 @@ import { telaProposta, telaPropostas } from "./ui/views/proposta.js";
 import { telaMensagens } from "./ui/views/mensagens.js";
 import { telaIndependencia } from "./ui/views/independencia.js";
 import { iniciarAvisos } from "./ui/notificar.js";
+import { abrirBusca, ligarAtalhos } from "./ui/busca_global.js";
 import { telaCompra, telaCompras, telaContasPagar, telaNovaCompra } from "./ui/views/compras.js";
 import { telaExportar, telaSaude } from "./ui/views/sistema.js";
 import { formCodigoMfa, telaConta, telaUsuarios } from "./ui/views/usuarios.js";
@@ -320,4 +321,8 @@ async function iniciar(mensagem) {
 }
 
 window.addEventListener("hashchange", navegar);
+ligarAtalhos(el.nav);
+document.getElementById("busca-botao")?.addEventListener("click", () => eu && abrirBusca(el.nav));
+// PWA: instalavel no celular; o service worker so guarda os arquivos do site (nunca dados)
+if ("serviceWorker" in navigator && location.protocol === "https:") navigator.serviceWorker.register("sw.js").catch(() => {});
 iniciar();

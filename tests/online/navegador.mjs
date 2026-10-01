@@ -60,6 +60,21 @@ async function percorrer(nome, viewport, telas) {
     if (errosJs.length) prob.push(`erro JS: ${errosJs.join(" | ").slice(0, 300)}`);
     (prob.length ? falhas : oks).push(`${nome} ${t}${prob.length ? ` -> ${prob.join("; ")}` : ""}`);
   }
+  if (nome === "computador") {
+    // PWA e busca global no site publicado
+    const pwa = await pg.evaluate(async () => {
+      const m = await fetch(document.querySelector('link[rel="manifest"]').href).then((r) => r.json()).catch(() => null);
+      const reg = await navigator.serviceWorker?.getRegistration().catch(() => null);
+      return { manifesto: m?.short_name ?? null, sw: Boolean(reg) };
+    });
+    (pwa.manifesto === "VEOS" && pwa.sw ? oks : falhas).push(`PWA: manifesto ${pwa.manifesto ?? "ausente"}, service worker ${pwa.sw ? "registrado" : "ausente"}`);
+    await pg.keyboard.press("Control+k");
+    await pg.waitForTimeout(300);
+    await pg.keyboard.type("saude");
+    await pg.waitForTimeout(500);
+    const achou = await pg.evaluate(() => document.querySelector(".busca-dialogo")?.textContent.includes("Saúde do sistema") ?? false);
+    (achou ? oks : falhas).push("busca global (Ctrl+K) encontra telas");
+  }
   await ctx.close();
 }
 try {
