@@ -24,6 +24,8 @@ secrets/
 
 # Dados reais nunca entram neste repositorio (somente fixture sintetica TESTE)
 data/
+# ...exceto o codigo da camada de dados do portal (nao contem dados)
+!web/js/data/
 engine/fixtures/*
 !engine/fixtures/*TESTE*.json
 !engine/fixtures/cfo-demo.json
