@@ -47,6 +47,11 @@ Já decididas em 01/10: IA no servidor = teto zero (BIB-0044); Fernando exerce a
 ## Para o FINAL do projeto (decidir junto com o Fernando, só quando ele pedir)
 - **Mesclar o catálogo do VEOS com os itens do Zoho** — plano completo na Biblioteca **BIB-0077**: revisar duplicados e itens "Conferir", definir preços de venda, enviar/aposentar itens no Zoho, ligar estoque/compras/pedidos ao catálogo do VEOS, importar os demais itens do Zoho e desligar o módulo de itens.
 
+## IA dos diretores pela assinatura (01/10, noite)
+- Claude Pro/Max e ChatGPT Plus NÃO incluem API (a API é paga à parte). Caminho sem custo implantado: **Perguntar aos diretores** (site) → fila no banco → o Claude Code (plano Max) lê pelo MCP (`veos_perguntas_pendentes`, `veos_manual_diretor`), responde e grava (`veos_responder_pergunta`). Resposta sempre rotulada "IA · opinião, não decisão".
+- Para usar: Minha conta → Acesso do Claude Code (uma vez) e, no VS Code, pedir "responda as perguntas pendentes dos diretores".
+- Respostas instantâneas no site exigem API paga (decisão de custo: hoje teto zero, BIB-0044).
+
 ## Manuais dos diretores (01/10, noite)
 - 9 manuais de atuação de nível sênior (`setores/manuais/*.json`, pesquisa com fontes: competências, frameworks, 13 procedimentos por diretor com perguntas/passos/entrega/critérios/quando escalar, indicadores com fórmula, rotinas, armadilhas, aplicação na VOICE, cursos/certificações de referência, bibliografia). Validados pelo gerador de catálogo; carregados sob demanda.
 - Onde aparecem: aba **Manual** em cada setor (com "O que você precisa?"), Conselho, tela **IA VEOS** (mostra o procedimento do diretor para o pedido falado/digitado, sem IA paga) e MCP `veos_manual_diretor` para o Claude Code.

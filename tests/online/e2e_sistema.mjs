@@ -106,6 +106,14 @@ try {
   const rev = await req("/functions/v1/api/produtos/revisao", { token });
   assert.equal(rev.status, 200); ok(`revisao: ${rev.dados.vinculos.length} possivel(is) duplicado(s), ${rev.dados.agrupamentos.length} agrupamento(s) a conferir`);
 
+  // perguntas aos diretores (pergunta TESTE criada e cancelada)
+  const pq = await req("/functions/v1/api/diretores/perguntas", { method: "POST", token, headers: chave(), body: { setor_id: "marketing", pergunta: "[TESTE automatizado] pergunta de teste" } });
+  assert.equal(pq.status, 200, JSON.stringify(pq.dados));
+  assert.equal((await req(`/functions/v1/api/diretores/perguntas/${pq.dados.id}/responder`, { method: "POST", token, headers: chave(), body: { resposta: "curta", motor: "TESTE" } })).status, 400); ok("resposta vazia/curta recusada");
+  assert.equal((await req(`/functions/v1/api/diretores/perguntas/${pq.dados.id}/cancelar`, { method: "POST", token, headers: chave(), body: {} })).status, 200);
+  const lp = await req("/functions/v1/api/diretores/perguntas", { token });
+  assert.ok(lp.dados.perguntas.some((p) => p.id === pq.dados.id && p.estado === "cancelada")); ok("pergunta ao diretor: criada, listada e cancelada");
+
   // caixa de saida e resumo do dia (a mensagem TESTE e descartada no fim)
   const rs = await req("/functions/v1/api/resumo", { token });
   assert.equal(rs.status, 200); assert.equal(rs.dados.resumos.length, 9); ok("resumo do dia dos 9 setores (direcao)");
@@ -140,6 +148,7 @@ try {
   const rv = await req("/functions/v1/api/resumo", { token });
   assert.ok(!rv.dados.resumos.some((r) => r.setor === "financas")); ok("vendas nao recebe o resumo do Financeiro (setor restrito)");
   assert.equal((await req(`/functions/v1/api/produtos/${comFoto.id}/preco`, { method: "POST", token, headers: chave(), body: { campo: "preco_venda", valor: "100.00", motivo: "TESTE" } })).status, 403); ok("vendas nao define preco de venda -> 403");
+  assert.equal((await req(`/functions/v1/api/diretores/perguntas/${pq.dados.id}/responder`, { method: "POST", token, headers: chave(), body: { resposta: "resposta TESTE longa o bastante", motor: "TESTE" } })).status, 403); ok("vendas nao grava resposta de IA -> 403");
 } finally {
   await papel(user.id, "vendas", false); // TESTE fica inativo
 }

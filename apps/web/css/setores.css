@@ -288,3 +288,7 @@ a.pill { text-decoration: none; }
 .manual-proc[open] > summary { margin-bottom: var(--s2); }
 .manual-proc ol, .manual-proc ul { margin: 4px 0 4px 1.2em; padding: 0; }
 .manual-rotulo { font-size: var(--fs-xs); color: var(--gold-2); text-transform: uppercase; letter-spacing: .05em; margin: 6px 0 2px; }
+
+/* Perguntas aos diretores */
+.pergunta-texto { white-space: pre-line; }
+.resposta-ia { border-left: 3px solid var(--gold); padding-left: var(--s3); }

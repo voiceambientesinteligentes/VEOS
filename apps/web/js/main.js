@@ -24,6 +24,7 @@ import { telaTermoAceite } from "./ui/views/obra.js";
 import { telaProposta, telaPropostas } from "./ui/views/proposta.js";
 import { telaMensagens } from "./ui/views/mensagens.js";
 import { telaIndependencia } from "./ui/views/independencia.js";
+import { telaDiretores } from "./ui/views/diretores.js";
 import { telaProduto, telaProdutos, telaRevisaoProdutos } from "./ui/views/produtos.js";
 import { iniciarAvisos } from "./ui/notificar.js";
 import { abrirBusca, ligarAtalhos } from "./ui/busca_global.js";
@@ -119,6 +120,7 @@ const TELAS = {
   "#/produtos": { fn: telaProdutos, titulo: ["Catálogo de produtos", "Catálogo próprio do VEOS: fotos, ficha técnica, compras e preços"] },
   "#/produtos/revisao": { fn: telaRevisaoProdutos, titulo: ["Revisar produtos", "Possíveis duplicados com o Zoho e agrupamentos a conferir"] },
   "#/sistema/independencia": { fn: telaIndependencia, titulo: ["Independência do Zoho", "Uso real por módulo, cobertura do VEOS e roteiro de desligamento"] },
+  "#/diretores": { fn: telaDiretores, titulo: ["Perguntar aos diretores", "Respostas da IA (Claude) na voz de cada diretor, pelo manual de atuação"] },
   "#/mensagens": { fn: telaMensagens, titulo: ["Caixa de saída", "Mensagens preparadas: você revisa, envia e marca como enviada"] },
   "#/propostas": { fn: telaPropostas, titulo: ["Propostas", "Proposta comercial em PDF a partir do orçamento do Zoho"] },
   "#/compras": { fn: telaCompras, titulo: ["Compras", "Faltas de estoque, compras registradas e recebimento de mercadoria"] },
@@ -194,6 +196,7 @@ function montarMenu() {
       link("#/mensagens", "✉", "Caixa de saída"),
       link("#/ia", "✦", "IA VEOS"),
       link("#/conselho", "◇", "Conselho"),
+      link("#/diretores", "?", "Perguntar aos diretores"),
       link("#/integracoes", "⇄", "Integrações")),
     h("div", { class: "nav-group", role: "group", "aria-labelledby": "nav-biblioteca" },
       h("span", { class: "nav-label", id: "nav-biblioteca" }, "Biblioteca"),

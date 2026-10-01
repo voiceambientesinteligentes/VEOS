@@ -25,6 +25,7 @@ import { rotearSistema } from "./sistema.ts";
 import { rotearNotificacoes } from "./notificacoes.ts";
 import { rotearConta } from "./conta.ts";
 import { rotearProdutos } from "./produtos.ts";
+import { rotearDiretores } from "./diretores.ts";
 
 const ORIGENS = [
   /^https:\/\/voiceambientesinteligentes\.github\.io$/,
@@ -85,6 +86,7 @@ async function rotear(req: Request, rota: string) {
   if (partes[0] === "sistema") return await rotearSistema(req, partes, eu);
   if (partes[0] === "conta") return await rotearConta(req, partes, eu);
   if (partes[0] === "produtos") return await rotearProdutos(req, partes, eu);
+  if (partes[0] === "diretores") return await rotearDiretores(req, partes, eu);
   if (partes[0] === "mensagens" || partes[0] === "resumo") return await rotearNotificacoes(req, partes, eu);
   if (partes[0] === "projetos") return await rotearFinanceiro(req, partes, eu);
   if (["radar", "setor", "registros", "tarefas", "alertas"].includes(partes[0])) return await rotearSetores(req, partes, eu);

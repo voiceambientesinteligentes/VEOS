@@ -15,7 +15,7 @@ const SITE = process.env.VEOS_SITE ?? "https://voiceambientesinteligentes.github
 const EMAIL = `teste-navegador${process.env.CI ? "-ci" : ""}@veos-teste.invalid`;
 const admin = { apikey: SERVICE, Authorization: `Bearer ${SERVICE}`, "Content-Type": "application/json" };
 const TELAS = [
-  "#/visao", "#/orbita", "#/radar", "#/mensagens", "#/conselho", "#/integracoes", "#/biblioteca/governanca", "#/biblioteca/decisoes", "#/biblioteca/revisoes",
+  "#/visao", "#/orbita", "#/radar", "#/diretores", "#/mensagens", "#/conselho", "#/integracoes", "#/biblioteca/governanca", "#/biblioteca/decisoes", "#/biblioteca/revisoes",
   "#/pedidos", "#/estoque", "#/recebimentos", "#/produtos", "#/produtos/revisao", "#/compras", "#/compras/nova", "#/contas-pagar", "#/zoho/books", "#/zoho/crm", "#/setor/financas", "#/setor/vendas", "#/setor/marketing/manual", "#/setor/direcao/manual",
   "#/negociacao", "#/propostas", "#/calculadora", "#/projetos", "#/sistema/saude", "#/sistema/usuarios", "#/sistema/exportar", "#/sistema/validacao", "#/conta",
 ];

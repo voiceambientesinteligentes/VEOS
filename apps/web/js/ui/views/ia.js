@@ -86,7 +86,8 @@ export function renderIA(root, signal) {
         const p = m && procedimentoPara(m, texto);
         if (signal.aborted || !p) return falar(r.fala);
         comoAge.append(h("p", null, h("strong", null, `Como o ${setor.sigla} age neste pedido:`)), cartaoProcedimento(p, true),
-          h("a", { class: "btn btn-ghost", href: `#/setor/${setor.id}/manual` }, "Abrir o manual completo"));
+          h("div", { class: "row" }, h("a", { class: "btn btn-ghost", href: `#/setor/${setor.id}/manual` }, "Abrir o manual completo"),
+            h("a", { class: "btn btn-primary", href: `#/diretores?${new URLSearchParams({ setor: setor.id, pergunta: texto })}` }, `Pedir resposta ao ${setor.sigla}`)));
         falar(`Pedido para o ${setor.sigla}. Procedimento: ${p.pedido}. Primeiro passo: ${p.passos[0]}`);
       }).catch(() => falar(r.fala));
       else falar(r.fala);
