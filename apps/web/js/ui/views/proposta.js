@@ -5,6 +5,7 @@ import { api } from "../../data/api.js";
 import { formatBRL, formatDate, formatDateTime } from "../../domain/format.js";
 import { agruparItens, rascunhosEnvio, telefoneWhatsApp, totaisProposta } from "../../domain/proposta.js";
 import { clear, errorNotice, field, h, panel, s, stamp, table } from "../dom.js";
+import { botaoCaixaSaida } from "./mensagens.js";
 
 const brl = (v) => formatBRL(String(Number(v ?? 0).toFixed(2)));
 const qtd = (v) => Number(v ?? 0).toLocaleString("pt-BR", { maximumFractionDigits: 3 });
@@ -99,6 +100,9 @@ export async function telaProposta(root, id) {
       h("div", { class: "row" },
         h("a", { class: "btn btn-ghost", href: `mailto:${encodeURIComponent(emailCli)}?subject=${encodeURIComponent(r.assunto)}&body=${encodeURIComponent(r.corpo)}` }, emailCli ? `E-mail para ${emailCli}` : "Rascunho de e-mail"),
         h("a", { class: "btn btn-ghost", href: `https://wa.me/${tel}?text=${encodeURIComponent(r.whatsapp)}`, target: "_blank", rel: "noopener noreferrer" }, tel ? "WhatsApp do cliente" : "WhatsApp (escolher contato)")),
+      h("div", { class: "row" },
+        botaoCaixaSaida({ canal: "email", destinatario: emailCli || null, assunto: r.assunto, corpo: r.corpo, origem: `proposta:${id}` }, "Guardar e-mail na caixa de saída"),
+        botaoCaixaSaida({ canal: "whatsapp", destinatario: foneCli || null, corpo: r.whatsapp, origem: `proposta:${id}` }, "Guardar WhatsApp na caixa de saída")),
       h("details", { class: "rascunho" }, h("summary", null, "Ver texto do e-mail"), h("pre", { class: "rascunho-corpo" }, `${r.assunto}\n\n${r.corpo}`)));
   }
   const form = panel({ title: `Proposta do orçamento ${e.estimate_number ?? ""}`, subtitle: `${e.customer_name ?? ""} · ${brl(tot.total)} · confira, complete e gere o PDF.` },

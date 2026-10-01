@@ -5,6 +5,7 @@ import { CATALOGO } from "../../data/catalogo.js";
 import { formatDateTime } from "../../domain/format.js";
 import { cartaoAlerta, linhaTarefa, SEV_ROTULO, SEV_TOM } from "../componentes.js";
 import { clear, errorNotice, h, panel, stamp, testTag } from "../dom.js";
+import { painelResumoDia } from "./mensagens.js";
 
 const ORDEM_SEV = ["CRITICO", "ALTO", "MEDIO", "INFO"];
 
@@ -13,7 +14,7 @@ export async function telaRadar(root, signal) {
   root.append(conteudo);
 
   async function carregar(msg) {
-    const r = await api.radar();
+    const [r, resumo] = await Promise.all([api.radar(), api.resumo().catch(() => null)]);
     if (signal.aborted) return;
     const porSetor = CATALOGO.filter((s) => r.setores.includes(s.id)).map((s) => {
       const al = r.alertas.filter((a) => a.setor_id === s.id);
@@ -43,6 +44,7 @@ export async function telaRadar(root, signal) {
         msg ? h("p", { class: "field-hint", role: "status" }, msg) : null,
         h("div", { class: "row radar-contagem" }, contagem.length ? contagem.map(([sv, n]) => stamp(`${n} ${SEV_ROTULO[sv]}`, SEV_TOM[sv])) : stamp("Tudo em ordem", "ok")),
         h("div", { class: "radar-setores" }, porSetor)),
+      resumo ? painelResumoDia(resumo.resumos) : h("div"),
       h("div", { class: "radar-colunas" },
         panel({ title: `Alertas ativos (${r.alertas.length})`, subtitle: "Do mais grave ao mais leve. Cada um traz a regra de origem e as ações preparadas." },
           r.alertas.length

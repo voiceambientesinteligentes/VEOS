@@ -94,6 +94,17 @@ try {
   assert.equal(vr.status, 200, JSON.stringify(vr.dados).slice(0, 300)); assert.ok(vr.dados.fluxo && vr.dados.biblioteca);
   ok("varredura da direcao roda as vigias do fluxo (compras/contas/exposicao) e da Biblioteca sem erro");
 
+  // caixa de saida e resumo do dia (a mensagem TESTE e descartada no fim)
+  const rs = await req("/functions/v1/api/resumo", { token });
+  assert.equal(rs.status, 200); assert.equal(rs.dados.resumos.length, 9); ok("resumo do dia dos 9 setores (direcao)");
+  const nm = await req("/functions/v1/api/mensagens", { method: "POST", token, headers: chave(), body: { canal: "email", destinatario: "teste@veos-teste.invalid", assunto: "TESTE automatizado", corpo: "Mensagem TESTE automatizado (descartada pelo teste)", origem: "manual" } });
+  assert.equal(nm.status, 200, JSON.stringify(nm.dados));
+  assert.equal((await req(`/functions/v1/api/mensagens/${nm.dados.id}/descartada`, { method: "POST", token, headers: chave(), body: {} })).status, 400); ok("descartar sem motivo -> 400");
+  assert.equal((await req(`/functions/v1/api/mensagens/${nm.dados.id}/descartada`, { method: "POST", token, headers: chave(), body: { motivo: "TESTE automatizado" } })).status, 200);
+  const desc = await req("/functions/v1/api/mensagens?estado=descartada", { token });
+  assert.ok(desc.dados.mensagens.some((m) => m.id === nm.dados.id)); ok("rascunho criado e descartado com motivo (nada enviado)");
+  assert.equal((await req("/functions/v1/api/mensagens", { method: "POST", token, headers: chave(), body: { canal: "sms", corpo: "x" } })).status, 400); ok("canal fora de e-mail/WhatsApp -> 400");
+
   // exportacao
   const conj = await req("/functions/v1/api/sistema/exportar", { token });
   assert.equal(conj.status, 200); assert.ok(conj.dados.conjuntos.length >= 10);
@@ -112,6 +123,8 @@ try {
   assert.equal((await req("/functions/v1/api/painel", { token })).status, 403); ok("vendas nao ve o painel executivo -> 403");
   assert.equal((await req("/functions/v1/api/fluxo/compras", { token })).status, 403); ok("vendas nao ve compras -> 403");
   assert.equal((await req("/functions/v1/api/fluxo/contas-pagar", { token })).status, 403); ok("vendas nao ve contas a pagar -> 403");
+  const rv = await req("/functions/v1/api/resumo", { token });
+  assert.ok(!rv.dados.resumos.some((r) => r.setor === "financas")); ok("vendas nao recebe o resumo do Financeiro (setor restrito)");
 } finally {
   await papel(user.id, "vendas", false); // TESTE fica inativo
 }

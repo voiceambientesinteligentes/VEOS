@@ -6,6 +6,7 @@ import * as auth from "../../auth.js";
 import { formatDateTime } from "../../domain/format.js";
 import { clear, errorNotice, field, h, method, panel, stamp, table } from "../dom.js";
 import { setorPorId } from "../componentes.js";
+import { desligarAvisos, ligado, ligarAvisos, suportado } from "../notificar.js";
 
 const SITE = "https://voiceambientesinteligentes.github.io/VEOS/";
 const ACOES = { convidado: "Convidado", papel: "Papel alterado", desativado: "Desativado", reativado: "Reativado", mfa_exigido: "MFA exigido", mfa_dispensado: "MFA dispensado" };
@@ -177,9 +178,24 @@ export async function telaConta(root, eu, mfa = auth) {
       panel({ title: eu.nome, subtitle: `${eu.email} · ${nomeSetor(eu.papel)}` },
         h("p", null, "Sessão atual: ", eu.aal === "aal2" ? stamp("com código do app", "ok") : stamp("só link do e-mail", "neutral"))),
       panel({ title: "Verificação em duas etapas (MFA)", subtitle: "Gratuita: usa o app autenticador do celular." }, area),
+      painelAvisos(),
     ].filter(Boolean));
   }
   await desenhar();
+}
+
+function painelAvisos() {
+  const saida = h("div", { role: "status" });
+  const b = h("button", { class: "btn btn-ghost", type: "button", disabled: !suportado() }, ligado() ? "Desligar avisos" : "Ligar avisos no navegador");
+  b.addEventListener("click", async () => {
+    clear(saida);
+    try {
+      if (ligado()) { desligarAvisos(); b.textContent = "Ligar avisos no navegador"; }
+      else { await ligarAvisos(); b.textContent = "Desligar avisos"; }
+    } catch (e) { saida.append(errorNotice(e.message)); }
+  });
+  return panel({ title: "Avisos no navegador", subtitle: "Com o VEOS aberto, avisa alertas altos e críticos novos dos seus setores (confere a cada 5 minutos). Com a aba fechada, não há aviso." },
+    h("div", { class: "row" }, b, ligado() ? stamp("Ligados", "ok") : stamp(suportado() ? "Desligados" : "Navegador sem suporte", "neutral")), saida);
 }
 
 /** Pedido do codigo no login quando a direcao exige MFA (sessao ainda sem codigo). */

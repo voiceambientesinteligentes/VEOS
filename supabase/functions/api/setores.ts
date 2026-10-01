@@ -23,7 +23,7 @@ const DATA_RE = /^\d{4}-\d{2}-\d{2}$/;
 const SETORES = CATALOGO as unknown as Setor[];
 
 export const podeVer = (eu: Membro, setor: string) => !RESTRITOS[setor] || RESTRITOS[setor].includes(eu.papel);
-const acessiveis = (eu: Membro) => SETORES.filter((s) => podeVer(eu, s.id)).map((s) => s.id);
+export const acessiveis = (eu: Membro) => SETORES.filter((s) => podeVer(eu, s.id)).map((s) => s.id);
 
 function setorDe(eu: Membro, id: unknown): Setor {
   const s = SETORES.find((x) => x.id === id);

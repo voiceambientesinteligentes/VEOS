@@ -12,6 +12,15 @@ export const setorPorId = Object.fromEntries(CATALOGO.map((s) => [s.id, s]));
 export const nomePapel = (setor, papel) => (papel === setor?.sigla ? setor.diretor.titulo : setor?.equipe.find((p) => p.papel === papel)?.nome ?? papel ?? "—");
 
 // ---------------------------------------------------------------- alerta
+function botaoGuardar(dados) {
+  const b = h("button", { class: "btn btn-ghost", type: "button" }, "Levar à caixa de saída");
+  b.addEventListener("click", async () => {
+    b.disabled = true;
+    try { await api.mensagemCriar(dados); b.textContent = "Na caixa de saída ✓"; } catch (e) { b.disabled = false; b.textContent = e.message; }
+  });
+  return b;
+}
+
 function botaoCopiar(texto) {
   const b = h("button", { class: "btn btn-ghost", type: "button" }, "Copiar");
   b.addEventListener("click", async () => {
@@ -26,9 +35,10 @@ function botaoCopiar(texto) {
   return b;
 }
 
-function rascunho(r) {
+function rascunho(r, alerta) {
   const texto = r.assunto ? `${r.assunto}\n\n${r.corpo}` : r.corpo;
   const acoes = [botaoCopiar(texto)];
+  if (alerta) acoes.push(botaoGuardar({ canal: r.tipo === "whatsapp" ? "whatsapp" : "email", assunto: r.assunto || null, corpo: r.corpo, setor_id: alerta.setor_id, origem: `alerta:${alerta.chave}`.slice(0, 120) }));
   if (r.tipo === "email") {
     acoes.push(h("a", { class: "btn btn-ghost", href: `mailto:?subject=${encodeURIComponent(r.assunto || "")}&body=${encodeURIComponent(r.corpo)}` }, "Abrir no e-mail"));
   }
@@ -63,7 +73,7 @@ export function cartaoAlerta(a, { aoDispensar } = {}) {
     h("p", { class: "alerta-titulo" }, a.titulo),
     h("p", { class: "alerta-texto" }, a.mensagem),
     (a.notificar || []).length ? h("p", { class: "field-hint" }, `Avisar: ${a.notificar.join(", ")}`) : null,
-    (a.rascunhos || []).map(rascunho),
+    (a.rascunhos || []).map((r) => rascunho(r, a)),
     h("div", { class: "row alerta-rodape" }, h("span", { class: "field-hint" }, a.fonte ? `Fonte: ${a.fonte}` : ""), dispensar));
 }
 

@@ -22,6 +22,8 @@ import { telaValidacao } from "./ui/views/validacao.js";
 import { telaPainel } from "./ui/views/painel.js";
 import { telaTermoAceite } from "./ui/views/obra.js";
 import { telaProposta, telaPropostas } from "./ui/views/proposta.js";
+import { telaMensagens } from "./ui/views/mensagens.js";
+import { iniciarAvisos } from "./ui/notificar.js";
 import { telaCompra, telaCompras, telaContasPagar, telaNovaCompra } from "./ui/views/compras.js";
 import { telaExportar, telaSaude } from "./ui/views/sistema.js";
 import { formCodigoMfa, telaConta, telaUsuarios } from "./ui/views/usuarios.js";
@@ -110,6 +112,7 @@ const TELAS = {
   "#/projetos": { fn: telaProjetos, titulo: ["Projetos e caixa", "Setor Financeiro · exposição e cobertura por fase"] },
   "#/pedidos": { fn: telaPedidos, titulo: ["Pedidos", "Orçamento aceito → estoque → parcelas → nota fiscal → recebimento"] },
   "#/estoque": { fn: (root) => telaEstoque(root), titulo: ["Estoque", "Saldo físico, reservas dos pedidos e custo médio"] },
+  "#/mensagens": { fn: telaMensagens, titulo: ["Caixa de saída", "Mensagens preparadas: você revisa, envia e marca como enviada"] },
   "#/propostas": { fn: telaPropostas, titulo: ["Propostas", "Proposta comercial em PDF a partir do orçamento do Zoho"] },
   "#/compras": { fn: telaCompras, titulo: ["Compras", "Faltas de estoque, compras registradas e recebimento de mercadoria"] },
   "#/compras/nova": { fn: telaNovaCompra, titulo: ["Nova compra", "Itens, fornecedor e parcelas a pagar"] },
@@ -181,6 +184,7 @@ function montarMenu() {
       ["direcao", "financas"].includes(eu.papel) ? link("#/visao", "▦", "Visão geral") : null,
       link("#/orbita", "◉", "Órbita"),
       link("#/radar", "◈", "Radar"),
+      link("#/mensagens", "✉", "Caixa de saída"),
       link("#/ia", "✦", "IA VEOS"),
       link("#/conselho", "◇", "Conselho"),
       link("#/integracoes", "⇄", "Integrações")),
@@ -307,6 +311,7 @@ async function iniciar(mensagem) {
     return telaLogin(e.status === 403 ? "Este e-mail não tem acesso ao VEOS. Fale com a direção." : e.message);
   }
   montarMenu();
+  iniciarAvisos();
   if (!TELAS[rotaBase()] && !/^#\/(projetos|setor|zoho|pedidos|estoque|biblioteca|compras|propostas)\//.test(location.hash)) history.replaceState(null, "", "#/orbita");
   navegar();
 }
