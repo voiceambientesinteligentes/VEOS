@@ -105,7 +105,7 @@ const TELAS = {
   "#/recebimentos": { fn: telaRecebimentos, titulo: ["Recebimentos e faturamento", "Previsão de caixa, parcelas e notas fiscais"] },
   "#/integracoes": { fn: (root) => telaIntegracoes(root, eu), titulo: ["Integrações", "Zoho Books, CRM e Projects · somente leitura"] },
   "#/negociacao": { fn: (root) => telaNegociacao(root, fontesZoho), titulo: ["Negociação ao Vivo", "Desconto, custos e Simples → margem e alçada pela Política V1"] },
-  "#/calculadora": { fn: telaCalculadora, titulo: ["Calculadora de Preços", "Preço mínimo para a margem alvo, já com Simples e provisão de 2%"] },
+  "#/calculadora": { fn: (root) => telaCalculadora(root, fontesZoho), titulo: ["Calculadora de Preços", "Preço mínimo para a margem alvo, já com Simples e provisão de 2%"] },
   "#/historico": { fn: telaHistorico, titulo: ["Histórico", "Orçamentos TESTE gravados e seus avisos"] },
 };
 

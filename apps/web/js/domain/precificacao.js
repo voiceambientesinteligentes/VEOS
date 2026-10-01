@@ -4,7 +4,7 @@
 // ticket espelham supabase/functions/_shared/regras/cfo.ts (paridade em tests/web).
 
 export const FONTE_POLITICA = "Política de Saúde Financeira V1 (sec.2, 3, 4, 6 e 9)";
-export const FONTE_SIMPLES = "LC 123/2006, Anexos I, III e V (redação da LC 155/2016, vigente desde 01/01/2018)";
+export const FONTE_SIMPLES = "LC 123/2006, Anexos I, III, IV e V (redação da LC 155/2016, vigente desde 01/01/2018)";
 
 const RISCO_PCT = 2n; // V1 sec.6
 const ALVO = 35n, NORMAL = 30n, PISO = 25n; // V1 sec.3
@@ -16,6 +16,7 @@ const FAIXAS = (linhas) => linhas.map(([teto, nominal, deduzir]) => ({ teto: tet
 export const SIMPLES = {
   I: { nome: "Anexo I (comércio: venda de equipamentos)", faixas: FAIXAS([[180_000n, 400n, 0n], [360_000n, 730n, 5_940n], [720_000n, 950n, 13_860n], [1_800_000n, 1070n, 22_500n], [3_600_000n, 1430n, 87_300n], [4_800_000n, 1900n, 378_000n]]) },
   III: { nome: "Anexo III (serviços: instalação, programação e manutenção)", faixas: FAIXAS([[180_000n, 600n, 0n], [360_000n, 1120n, 9_360n], [720_000n, 1350n, 17_640n], [1_800_000n, 1600n, 35_640n], [3_600_000n, 2100n, 125_640n], [4_800_000n, 3300n, 648_000n]]) },
+  IV: { nome: "Anexo IV (serviços de obra e instalação; INSS patronal fora do DAS)", faixas: FAIXAS([[180_000n, 450n, 0n], [360_000n, 900n, 8_100n], [720_000n, 1020n, 12_420n], [1_800_000n, 1400n, 39_780n], [3_600_000n, 2200n, 183_780n], [4_800_000n, 3300n, 828_000n]]) },
   V: { nome: "Anexo V (serviços com Fator R abaixo de 28%)", faixas: FAIXAS([[180_000n, 1550n, 0n], [360_000n, 1800n, 4_500n], [720_000n, 1950n, 9_900n], [1_800_000n, 2050n, 17_100n], [3_600_000n, 2300n, 62_100n], [4_800_000n, 3050n, 540_000n]]) },
 };
 
@@ -100,6 +101,8 @@ export const IMPOSTOS_PADRAO = {
   produto: [["PIS", 65n], ["COFINS", 300n], ["IRPJ", 480n], ["CSLL", 288n]],
   servico: [["ISS", 265n], ["PIS", 0n], ["COFINS", 0n], ["IRPJ", 0n], ["CSLL", 0n]],
 };
+// Regime pela data do faturamento: Simples Nacional ate a exclusao registrada na Receita.
+export const SIMPLES_ATE = "2026-12-31"; // CNPJ 12.323.599/0001-83: optante desde 01/01/2024, exclusao em 31/12/2026 (dados abertos da Receita, consulta de 01/10/2026)
 export const OVERHEAD_PADRAO = 2000n; // 20% sobre o custo direto (tela validada pela direcao)
 /** Soma de aliquotas em centesimos de ponto -> Razao de percentual. */
 export const somaAliquotas = (linhas) => ({ num: linhas.reduce((a, [, h_]) => a + h_, 0n), den: 100n });

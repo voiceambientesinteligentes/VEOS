@@ -142,25 +142,23 @@ const reais = (v: unknown) => (typeof v === "number" && Number.isFinite(v) ? v.t
 const dia = (d: Date) => d.toISOString().slice(0, 10);
 
 /**
- * RBT12 do Simples: receita bruta dos 12 meses anteriores ao mes de apuracao (mes atual),
- * somando as faturas do Zoho Books (exceto rascunho e anuladas).
+ * Base da faixa do Simples (decisao em analise do fundador, 01/10/2026): soma dos ORCAMENTOS
+ * aceitos e faturados no Zoho Books (o Books nao tem faturas emitidas). Usa o espelho do VEOS
+ * (sincronizado a cada 2 min). Devolve os 12 meses anteriores ao mes (RBT12) e o ano corrente.
  */
 export async function rbt12(hoje = new Date()) {
   const ini = new Date(Date.UTC(hoje.getUTCFullYear(), hoje.getUTCMonth() - 12, 1));
   const fim = new Date(Date.UTC(hoje.getUTCFullYear(), hoje.getUTCMonth(), 0));
-  let centavos = 0n, faturas = 0, ignoradas = 0;
-  for (let page = 1; page <= 25; page++) {
-    const d = await zohoGet("/books/v3/invoices", { organization_id: ORG_BOOKS, date_start: dia(ini), date_end: dia(fim), per_page: 200, page });
-    for (const f of d.invoices ?? []) {
-      if (["draft", "void"].includes(f.status)) { ignoradas++; continue; }
-      centavos += BigInt(Math.round(Number(f.total) * 100));
-      faturas++;
-    }
-    if (!d.page_context?.has_more_page) {
-      return { valor: `${centavos / 100n}.${String(centavos % 100n).padStart(2, "0")}`, faturas, ignoradas, inicio: dia(ini), fim: dia(fim), fonte: "Zoho Books · faturas (exceto rascunho e anuladas)", completo: true };
-    }
-  }
-  throw new HttpError(502, "mais de 5.000 faturas no período: soma não confiável, confira no Zoho");
+  const anoIni = `${hoje.getUTCFullYear()}-01-01`;
+  const lista = await servico(`/rest/v1/zoho_registros?produto=eq.books&modulo=eq.estimates&excluido=is.false&dados->>status=in.(accepted,invoiced)&dados->>date=gte.${dia(ini) < anoIni ? dia(ini) : anoIni}&select=total:dados->>total,data:dados->>date&limit=10000`);
+  const soma = (f: (d: string) => boolean) => lista.filter((x: { data: string }) => f(x.data)).reduce((a: bigint, x: { total: string }) => a + BigInt(Math.round(Number(x.total) * 100)), 0n);
+  const fmt = (c: bigint) => `${c / 100n}.${String(c % 100n).padStart(2, "0")}`;
+  const noPeriodo = lista.filter((x: { data: string }) => x.data >= dia(ini) && x.data <= dia(fim));
+  return {
+    valor: fmt(soma((d) => d >= dia(ini) && d <= dia(fim))), faturas: noPeriodo.length, quantidade: noPeriodo.length,
+    inicio: dia(ini), fim: dia(fim), ano_valor: fmt(soma((d) => d >= anoIni)), ano: hoje.getUTCFullYear(),
+    fonte: "Zoho Books · orçamentos aceitos e faturados (espelho do VEOS)", completo: true,
+  };
 }
 
 const STATUS_ORC = new Set(["draft", "sent", "accepted", "declined", "expired", "invoiced"]);

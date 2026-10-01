@@ -133,3 +133,8 @@ test("aceite com a tela validada (EST-000962): impostos da tela validada 11,33%,
   assert.equal(r.comNota.lucro, R(1908.97));
   assert.equal(r.comNota.margemH, 3982n); // 39,82% (a tela mostra 39,8%)
 });
+
+test("Simples Anexo IV (servicos de instalacao): faixas da LC 123", () => {
+  assert.equal(aliquotaSimples(R(150000), "IV").efetivaH, 450n);
+  assert.equal(aliquotaSimples(R(360000), "IV").efetivaH, 675n); // (360000 x 9% - 8.100) / 360000 = 6,75%
+});

@@ -4,7 +4,7 @@
 // conferencia da Politica V1 (MC oficial com provisao de 2%, faixas e alcada de desconto).
 // Destinos: "Salvar como proposta" (Comercial) e "Fechar negociacao" (vira pedido no fluxo:
 // estoque, parcelas, NF e caixa). Nada e enviado ao cliente daqui.
-import { FONTE_POLITICA, IMPOSTOS_PADRAO, OVERHEAD_PADRAO, calculadora, negociacao, paraProposta, somaAliquotas } from "../../domain/precificacao.js";
+import { FONTE_POLITICA, FONTE_SIMPLES, IMPOSTOS_PADRAO, OVERHEAD_PADRAO, SIMPLES_ATE, aliquotaSimples, calculadora, negociacao, paraProposta, somaAliquotas } from "../../domain/precificacao.js";
 import { parseMoneyInput } from "../../domain/controls.js";
 import { formatBRL, toScaled } from "../../domain/format.js";
 import { clear, field, h, method, panel, stamp, stat } from "../dom.js";
@@ -70,7 +70,57 @@ function blocoImpostos(tabela, chave, titulo, aoMudar) {
             (() => { const b = botao("+ Imposto"); b.addEventListener("click", () => { tabela[chave].push(["Novo", 0n]); gravarImpostos(tabela); aoMudar(); }); return b; })())
         : h("div", { class: "row imp-chips" }, tabela[chave].map(([nome, v]) => h("span", { class: "imp-chip" }, `${nome} ${pctH(v)}`))));
   }
-  return { el, desenhar };
+  /** No Simples: um so imposto (DAS) com a aliquota efetiva da faixa; sem edicao manual. */
+  function simples(base, valor, aliq) {
+    clear(el).append(h("div", { class: "row imp-cabeca" }, h("strong", null, titulo), h("span", { class: "field-hint" }, `base ${brl(base)}`), h("span", { class: "imp-total" }, `${pctH((aliq.num * 100n + aliq.den / 2n) / aliq.den)} = ${brl(valor)}`)),
+      h("div", { class: "row imp-chips" }, h("span", { class: "imp-chip" }, "Simples Nacional (DAS)")));
+  }
+  return { el, desenhar, simples };
+}
+
+// ---------------------------------------------------------------- regime pela data do faturamento
+// Ate SIMPLES_ATE: Simples Nacional (produtos Anexo I; servicos no anexo escolhido), faixa pela soma
+// dos orcamentos aceitos e faturados dos ultimos 12 meses. Depois: aliquotas da tela validada (editaveis).
+const CHAVE_ANEXO = "veos.simples.anexo_servicos";
+const lerAnexo = () => { try { return localStorage.getItem(CHAVE_ANEXO) || ""; } catch { return ""; } };
+function painelRegime(fontes, aoMudar) {
+  const data = h("input", { class: "input", id: "reg-data", type: "date", value: new Date().toISOString().slice(0, 10) });
+  const rbt = inp("reg-rbt");
+  const anexo = sel("reg-anexo", [["", "Escolha (confirme com o contador)"], ["III", "Anexo III"], ["IV", "Anexo IV (instalação; INSS fora do DAS)"], ["V", "Anexo V"]], lerAnexo());
+  const origemRbt = h("p", { class: "field-hint" }, fontes?.rbt12 ? "Buscando no Zoho Books…" : "Informe a receita dos 12 meses.");
+  const info = h("div", { class: "stack-s", role: "status" });
+  const el = h("div", { class: "stack-s regime" },
+    h("strong", null, "Regime tributário"),
+    h("p", { class: "field-hint" }, `Pela data prevista do faturamento: Simples Nacional até ${dataBR(SIMPLES_ATE)} (exclusão registrada na Receita); depois, as alíquotas da tela validada.`),
+    h("div", { class: "form-grid" }, field("reg-data", "Faturamento previsto em", data), field("reg-rbt", "Base da faixa: últimos 12 meses (R$)", rbt, "Soma dos orçamentos aceitos e faturados no Zoho Books."), field("reg-anexo", "Serviços no Simples", anexo, "CNAE principal na Receita: 4321-5/00 (instalação elétrica).")),
+    origemRbt, info,
+    method("Fonte", "CNPJ 12.323.599/0001-83 (VOICE AUTOMACAO LTDA): optante pelo Simples desde 01/01/2024, exclusão em 31/12/2026 — dados abertos da Receita (minhareceita.org), consulta de 01/10/2026.", FONTE_SIMPLES, "Base da faixa: orientação do fundador (01/10/2026), em análise na Biblioteca."));
+  for (const c of [data, rbt]) c.addEventListener("input", aoMudar);
+  anexo.addEventListener("change", () => { try { localStorage.setItem(CHAVE_ANEXO, anexo.value); } catch { /* ok */ } aoMudar(); });
+  rbt.addEventListener("input", () => { origemRbt.textContent = "Valor digitado (substitui o do Zoho nesta tela)."; });
+  if (fontes?.rbt12) fontes.rbt12().then((r) => {
+    rbt.value = decimalBR(r.valor);
+    origemRbt.textContent = `Automático: ${r.quantidade} orçamento(s) aceitos/faturados de ${dataBR(r.inicio)} a ${dataBR(r.fim)}. No ano de ${r.ano}: ${brl(money(decimalBR(r.ano_valor)))}.`;
+    aoMudar();
+  }).catch((e) => { origemRbt.textContent = `Não deu para ler do Zoho (${e.message}). Digite a receita dos 12 meses.`; });
+  /** Devolve { modo, produto, servico } (Razao %) ou { erro }. */
+  function ler(temServico, blocos) {
+    clear(info);
+    const pos = data.value && data.value > SIMPLES_ATE;
+    if (pos) { info.append(stamp("Após o Simples: alíquotas da tela validada (editáveis abaixo)", "warn")); return { modo: "pos", produto: somaAliquotas(blocos.produto), servico: somaAliquotas(blocos.servico) }; }
+    const base = rbt.value.trim() ? money(rbt.value) : 0n;
+    if (base === null) return { erro: "Receita dos 12 meses inválida." };
+    try {
+      const prod = aliquotaSimples(base, "I");
+      let serv = null;
+      if (anexo.value) serv = aliquotaSimples(base, anexo.value);
+      else if (temServico) return { erro: "Escolha o anexo do Simples para os serviços (confirme com o contador)." };
+      info.append(h("div", { class: "row" }, stamp(`Produtos: ${pctH(prod.efetivaH)} (Anexo I, ${prod.faixa}ª faixa)`, "live"), serv ? stamp(`Serviços: ${pctH(serv.efetivaH)} (Anexo ${anexo.value}, ${serv.faixa}ª faixa)`, "live") : null));
+      if (prod.faixa > 1) info.append(h("p", { class: "notice notice-warn" }, `A receita dos 12 meses já está na ${prod.faixa}ª faixa do Simples: a alíquota subiu.`));
+      return { modo: "simples", produto: prod.efetiva, servico: serv ? serv.efetiva : { num: 0n, den: 1n } };
+    } catch (e) { return { erro: e.message }; }
+  }
+  return { el, ler };
 }
 
 // ---------------------------------------------------------------- Negociacao ao Vivo
@@ -96,6 +146,7 @@ export function telaNegociacao(root, fontes = null) {
   const acoes = h("div", { class: "stack-s" });
   const blocoProd = blocoImpostos(impostos, "produto", "Produtos (NF-e)", () => calcular());
   const blocoServ = blocoImpostos(impostos, "servico", "Serviços / mão de obra (NFS-e)", () => calcular());
+  const regime = painelRegime(fontes, () => calcular());
   let orcamento = null; // { zoho_id, numero, cliente_zoho_id }
   let ultimo = null;    // ultimo calculo valido (para os botoes)
 
@@ -157,12 +208,15 @@ export function telaNegociacao(root, fontes = null) {
     const ov = numero(overhead.value);
     if (ov === null) erros.push("Overhead inválido.");
     const { custos, extras, semCusto, itensPedido } = lerLinhas(erros);
-    const impostosCalc = { produto: somaAliquotas(impostos.produto), servico: somaAliquotas(impostos.servico) };
+    const reg = regime.ler(custos.some((c) => c.tipo === "servico"), impostos);
+    if (reg.erro) erros.push(reg.erro);
+    const impostosCalc = reg.erro ? null : { produto: reg.produto, servico: reg.servico };
     if (erros.length) { blocoProd.desenhar(0n, 0n); blocoServ.desenhar(0n, 0n); return status.append(panel({ title: "Status de viabilidade" }, h("ul", { class: "list-plain" }, erros.map((e) => h("li", { class: "field-error" }, e))))); }
     let r = null;
     try { r = negociacao({ tabela: tab ?? 0n, desconto: { modo: modoDesc, valor: dv }, custos, extras, impostos: impostosCalc, overhead: ov }); } catch (e) { return status.append(panel({ title: "Status de viabilidade" }, h("p", { class: "field-error" }, e.message))); }
-    blocoProd.desenhar(r.receitaProduto ?? 0n, r.receitaProduto !== null ? (r.receitaProduto * impostosCalc.produto.num + 5000n) / 10000n : 0n);
-    blocoServ.desenhar(r.receitaServico ?? 0n, r.receitaServico !== null ? (r.receitaServico * impostosCalc.servico.num + 5000n) / 10000n : 0n);
+    const imp = (base, a) => (base === null ? 0n : (base * a.num * 100n / a.den + 5000n) / 10000n);
+    if (reg.modo === "pos") { blocoProd.desenhar(r.receitaProduto ?? 0n, imp(r.receitaProduto, impostosCalc.produto)); blocoServ.desenhar(r.receitaServico ?? 0n, imp(r.receitaServico, impostosCalc.servico)); }
+    else { blocoProd.simples(r.receitaProduto ?? 0n, imp(r.receitaProduto, impostosCalc.produto), impostosCalc.produto); blocoServ.simples(r.receitaServico ?? 0n, imp(r.receitaServico, impostosCalc.servico), impostosCalc.servico); }
     // resumo dos custos (painel de custos de compra)
     resumoCustos.append(h("dl", { class: "zoho-grade custos-resumo" },
       h("div", { class: "zoho-campo" }, h("dt", null, `Produtos NF-e (${custos.filter((c) => c.tipo === "produto").length})`), h("dd", null, brl(r.custoProduto))),
@@ -195,7 +249,7 @@ export function telaNegociacao(root, fontes = null) {
         "Overhead = custo direto × %. Custo total = direto + overhead + adicionais.",
         "Impostos: a receita é rateada entre produtos e serviços pela participação de cada um no custo direto; cada parte paga as alíquotas do seu bloco (NF-e ou NFS-e).",
         "Margem antes dos impostos = (negociado − custo total) ÷ negociado. Com nota = (negociado − custo total − impostos) ÷ negociado.",
-        `Conferência: ${FONTE_POLITICA}.`, "Alíquotas: as da tela de negociação validada pela direção (regime tributário a confirmar); editáveis.")));
+        `Conferência: ${FONTE_POLITICA}.`, "Impostos: Simples Nacional (DAS pela faixa da receita dos 12 meses) até 31/12/2026; depois, as alíquotas da tela validada (editáveis).")));
     montarAcoes(r);
   }
 
@@ -308,6 +362,7 @@ export function telaNegociacao(root, fontes = null) {
           field("neg-ref", "Referência (orçamento)", referencia), field("neg-condicao", "Condição de pagamento", condicao))),
       panel({ title: "Ajustes financeiros", subtitle: "Desconto concedido, impostos com nota e custos adicionais (RT, comissão, frete)." },
         h("div", { class: "form-grid" }, h("div", { class: "field" }, h("span", { class: "field-label" }, "Desconto em"), descModo), field("neg-desc", "Desconto", descValor, "Política V1: até 2% com MC ≥ 32% é autonomia comercial; acima disso, direção.")),
+        regime.el,
         h("div", { class: "stack-s" }, h("div", { class: "row" }, h("strong", null, "Impostos (com nota)"), restaurarImp), blocoProd.el, blocoServ.el),
         h("div", { class: "stack-s" }, h("div", { class: "row" }, h("strong", null, "Custos adicionais"), addExtra),
           h("div", { class: "table-wrap" }, h("table", { class: "table" }, h("thead", null, h("tr", null, ["Descrição", "Modo", "Valor", ""].map((x) => h("th", { scope: "col" }, x)))), linhasExtra)),
@@ -321,7 +376,7 @@ export function telaNegociacao(root, fontes = null) {
 }
 
 // ---------------------------------------------------------------- Calculadora
-export function telaCalculadora(root) {
+export function telaCalculadora(root, fontes = null) {
   const impostos = lerImpostos();
   const campos = {
     materiais: inp("calc-materiais"), horas: inp("calc-horas"), valorHora: inp("calc-hora"),
@@ -329,6 +384,7 @@ export function telaCalculadora(root) {
     tipo: sel("calc-tipo", [["produto", "Produto (NF-e)"], ["servico", "Serviço (NFS-e)"]], "produto"),
   };
   const saida = h("div", { class: "stack", "aria-live": "polite" });
+  const regime = painelRegime(fontes, () => calcular());
   const restaurar = botao("Restaurar padrões");
   restaurar.addEventListener("click", () => { campos.rateio.value = pctH(OVERHEAD_PADRAO).replace("%", ""); campos.alvo.value = "35"; calcular(); });
   function calcular() {
@@ -337,18 +393,20 @@ export function telaCalculadora(root) {
     const v = (c, nome, fn = money) => { const t = c.value.trim(); if (!t) return 0n; const x = fn(t); if (x === null) erros.push(`${nome}: valor inválido.`); return x ?? 0n; };
     const entrada = { materiais: v(campos.materiais, "Materiais"), horas: v(campos.horas, "Horas", numero), valorHora: v(campos.valorHora, "Valor/hora"), rateioFixo: v(campos.rateio, "Overhead", numero), alvo: v(campos.alvo, "Margem alvo", numero) };
     if (erros.length) return saida.append(h("ul", { class: "list-plain" }, erros.map((e) => h("li", { class: "field-error" }, e))));
-    const aliq = somaAliquotas(impostos[campos.tipo.value]);
+    const reg = regime.ler(campos.tipo.value === "servico", impostos);
+    if (reg.erro) return saida.append(h("p", { class: "field-error" }, reg.erro));
+    const aliq = campos.tipo.value === "produto" ? reg.produto : reg.servico;
     try {
       const r = calculadora({ ...entrada, imposto: aliq });
       if (r.pendencias.length) return saida.append(panel({ title: "Preço mínimo pela política" }, h("p", { class: "result-empty" }, r.pendencias[0])));
-      saida.append(panel({ title: "Preço mínimo pela política", subtitle: `Menor preço em que a margem de contribuição chega a ${pctH(entrada.alvo)} depois dos impostos com nota (${pctH(aliq.num)}) e da provisão de risco de 2%.` },
+      saida.append(panel({ title: "Preço mínimo pela política", subtitle: `Menor preço em que a margem de contribuição chega a ${pctH(entrada.alvo)} depois dos impostos com nota (${pctH((aliq.num * 100n + aliq.den / 2n) / aliq.den)}) e da provisão de risco de 2%.` },
         h("p", { class: "preco-destaque" }, brl(r.preco)),
         h("div", { class: "form-grid" },
           stat("Custo total", brl(r.custo), `mão de obra ${brl(r.maoDeObra)}${r.fixo ? ` · overhead ${brl(r.fixo)}` : ""}`), stat("Markup sobre o custo", `${pctH(r.markupH).replace("%", "")}×`),
-          stat("Impostos com nota", brl(r.impostoRs), pctH(aliq.num)), stat("Receita líquida", brl(r.rl)), stat("Provisão de risco 2%", brl(r.risco)), stat("Margem de contribuição", brl(r.mc), pctH(r.pctH))),
+          stat("Impostos com nota", brl(r.impostoRs), reg.modo === "simples" ? "Simples Nacional (DAS)" : "alíquotas da tela validada"), stat("Receita líquida", brl(r.rl)), stat("Provisão de risco 2%", brl(r.risco)), stat("Margem de contribuição", brl(r.mc), pctH(r.pctH))),
         h("div", { class: "row" }, stamp(FAIXA[r.faixa][0], FAIXA[r.faixa][1])),
         entrada.alvo < 3000n ? h("p", { class: "notice notice-risk" }, "Alvo abaixo de 30%: a política exige autorização da direção (sec.9).") : null,
-        method("Fórmula e fonte", "Preço = custo ÷ ((1 − alíquota) × (1 − 2% − margem alvo)).", "Custo = materiais + mão de obra + overhead.", FONTE_POLITICA, "Alíquotas: as mesmas da Negociação ao Vivo (editáveis lá).")));
+        method("Fórmula e fonte", "Preço = custo ÷ ((1 − alíquota) × (1 − 2% − margem alvo)).", "Custo = materiais + mão de obra + overhead.", FONTE_POLITICA, "Regime e alíquotas: os mesmos da Negociação ao Vivo.")));
     } catch (e) { saida.append(h("p", { class: "field-error" }, e.message)); }
   }
   for (const c of Object.values(campos)) c.addEventListener("input", calcular);
@@ -357,7 +415,8 @@ export function telaCalculadora(root) {
       h("div", { class: "form-grid" },
         field("calc-materiais", "Materiais e equipamentos (R$)", campos.materiais), field("calc-horas", "Horas de trabalho", campos.horas),
         field("calc-hora", "Valor da hora (R$)", campos.valorHora, "Custo da hora da equipe."), field("calc-tipo", "Nota fiscal", campos.tipo),
-        field("calc-rateio", "Overhead (%)", campos.rateio, "Mesmo padrão da Negociação ao Vivo."), field("calc-alvo", "Margem de contribuição alvo (%)", campos.alvo, "Política V1: alvo 35%, mínimo normal 30%."))),
+        field("calc-rateio", "Overhead (%)", campos.rateio, "Mesmo padrão da Negociação ao Vivo."), field("calc-alvo", "Margem de contribuição alvo (%)", campos.alvo, "Política V1: alvo 35%, mínimo normal 30%.")),
+      regime.el),
     saida));
   calcular();
 }
