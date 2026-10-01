@@ -4,7 +4,8 @@
 import { api } from "../../data/api.js";
 import { parseMoneyInput } from "../../domain/controls.js";
 import { formatBRL, formatDate, formatDateTime } from "../../domain/format.js";
-import { clear, errorNotice, field, h, panel, stamp, stat, table } from "../dom.js";
+import { clear, errorNotice, field, h, method, panel, stamp, stat, table } from "../dom.js";
+import { barrasMensais } from "../grafico.js";
 
 const ESTADOS = {
   rascunho: ["Rascunho", "neutral"], confirmado: ["Confirmado", "live"], entregue: ["Entregue", "warn"],
@@ -69,6 +70,7 @@ export async function telaPedido(root, id, eu) {
     if (p.estado === "rascunho") acoes.append(acao(botao("Confirmar pedido", "primary"), saida, refazer(() => api.fluxoAcao(id, "confirmar"))));
     if (p.estado === "confirmado" && faltas.length) acoes.append(acao(botao("Completar reserva"), saida, refazer(() => api.fluxoAcao(id, "reservar"))));
     if (p.estado === "confirmado") acoes.append(acao(botao("Registrar entrega (baixa estoque)", "primary"), saida, refazer(() => { if (!confirm("Registrar a entrega e baixar o estoque dos produtos?")) throw new Error("Cancelado."); return api.fluxoAcao(id, "entregar"); })));
+    if (p.estado === "confirmado" && faltas.length) acoes.append(h("a", { class: "btn btn-ghost", href: `#/compras/nova?pedido=${id}` }, "Comprar o que falta"));
     if (p.estado !== "cancelado") acoes.append(h("a", { class: "btn btn-ghost", href: `#/pedidos/${id}/contrato` }, "Gerar contrato (PDF)"));
     if (["rascunho", "confirmado"].includes(p.estado) && eu?.papel === "direcao") acoes.append(acao(botao("Cancelar pedido"), saida, refazer(() => {
       const motivo = prompt("Motivo do cancelamento:"); if (!motivo) throw new Error("Informe o motivo."); return api.fluxoAcao(id, "cancelar", { motivo });
@@ -89,6 +91,7 @@ export async function telaPedido(root, id, eu) {
           rows: d.itens.map((i) => [i.item_id ? h("a", { href: `#/estoque/${encodeURIComponent(i.item_id)}` }, i.nome) : i.nome, i.tipo === "produto" ? "Produto" : "Serviço", qtd(i.quantidade), brl(i.preco_unit), brl(i.custo_unit),
             i.tipo === "produto" && i.item_id ? (Number(i.reservado_pedido) < Number(i.quantidade) && p.estado === "confirmado" ? stamp(`${qtd(i.reservado_pedido)} (faltam ${qtd(i.quantidade - i.reservado_pedido)})`, "risk") : qtd(i.reservado_pedido)) : "—",
             i.estoque ? `${qtd(i.estoque.fisico)} / ${qtd(i.estoque.reservado)}` : "—"]) })),
+      d.caixa ? painelCaixa(d) : null,
       painelParcelas(d, id, eu, () => api.fluxoPedido(id).then((x) => { d = x; desenhar("Parcelas atualizadas."); })),
       painelNotas(d, id, eu, (r) => { d = r; desenhar("Nota fiscal registrada."); }),
       painelAnexos(d, id, () => api.fluxoPedido(id).then((x) => { d = x; desenhar("Anexo enviado."); })),
@@ -97,6 +100,18 @@ export async function telaPedido(root, id, eu) {
     ].filter(Boolean));
   };
   desenhar();
+}
+
+// Caixa do pedido pela Politica V1.1: recebido efetivo - compromissos (compras e contas do pedido).
+const GATILHO = { ACIONADO: ["Acima de 10%", "risk"], "NAO ACIONADO": ["Dentro de 10%", "ok"] };
+function painelCaixa(d) {
+  const c = d.caixa;
+  const [rot, tom] = GATILHO[c.gatilho] ?? ["Sem contrato", "warn"];
+  return panel({ title: "Caixa do pedido (Política V1.1)", subtitle: "Posição = recebido efetivo − compromissos (compras e contas lançadas para este pedido).", actions: stamp(rot, tom) },
+    h("div", { class: "grid-4" }, stat("Recebido", c.recebido), stat("Compromissos", c.compromissos, `${c.contas} conta(s)`), stat("Posição", c.posicao), stat("Exposição", c.exposicao, c.pct ? `${c.pct} do pedido${c.gatilho === "ACIONADO" ? " · acima de 10%: exige autorização expressa da direção" : ""}` : "—")),
+    d.compras?.length ? table({ caption: "Compras deste pedido", head: ["Compra", "Fornecedor", "Total", "Situação"], align: ["", "", "r", ""],
+      rows: d.compras.map((x) => [h("a", { href: `#/compras/${x.id}` }, x.numero), x.fornecedor_nome, brl(x.valor_total), x.estado]) }) : null,
+    method("Fonte", c.fonte));
 }
 
 function painelParcelas(d, id, eu, recarregar) {
@@ -261,7 +276,7 @@ export async function telaItemEstoque(root, id, eu) {
 
 // ---------------------------------------------------------------- Recebimentos e faturamento
 export async function telaRecebimentos(root) {
-  const [resumo, { parcelas }] = await Promise.all([api.fluxoResumo(), api.fluxoParcelas("aberta")]);
+  const [resumo, { parcelas }, caixa] = await Promise.all([api.fluxoResumo(), api.fluxoParcelas("aberta"), api.caixaPrevisao().catch(() => null)]);
   const maior = Math.max(1, ...resumo.previsao.map((x) => Number(x.valor)));
   const barras = h("ul", { class: "list-plain stack-s previsao" }, resumo.previsao.map((x) => {
     const barra = h("span", { class: "previsao-barra" });
@@ -272,13 +287,32 @@ export async function telaRecebimentos(root) {
     h("div", { class: "form-grid" },
       stat("A receber (aberto)", brl(resumo.a_receber)), stat("Vencido", brl(resumo.vencido)),
       stat("Faturado no mês", brl(resumo.faturado_mes), "soma das NF registradas"), stat("Recebido no mês", brl(resumo.recebido_mes)), stat("Estoque (a custo médio)", brl(resumo.estoque_valor))),
-    panel({ title: "Previsão de recebimentos por mês", subtitle: "Parcelas em aberto dos pedidos (inclui vencidas no mês de vencimento)." },
+    caixa ? painelPrevisaoCaixa(caixa) : panel({ title: "Previsão de recebimentos por mês", subtitle: "Parcelas em aberto dos pedidos (inclui vencidas no mês de vencimento)." },
       resumo.previsao.length ? barras : h("p", { class: "result-empty" }, "Nenhuma parcela em aberto.")),
     panel({ title: "Parcelas em aberto", subtitle: "Registre o recebimento dentro do pedido." },
       parcelas.length
         ? table({ head: ["Vencimento", "Pedido", "Cliente", "Parcela", "Valor", ""], align: ["", "", "", "", "r", ""],
             rows: parcelas.map((x) => [formatDate(x.vencimento), h("a", { href: `#/pedidos/${x.pedido.id}` }, x.pedido.numero), x.pedido.cliente_nome, `${x.numero}${x.descricao ? ` · ${x.descricao}` : ""}`, brl(x.valor), x.vencimento < hoje() ? stamp("Vencida", "risk") : ""]) })
         : h("p", { class: "result-empty" }, "Nada em aberto.")));
+}
+
+// Previsao de caixa (financas e direcao): entradas (parcelas) - saidas (contas a pagar), por mes.
+function painelPrevisaoCaixa(cx) {
+  const ms = cx.meses;
+  const ent = ms.map((m) => Number(m.entradas_previstas) + Number(m.entradas_realizadas));
+  const sai = ms.map((m) => Number(m.saidas_previstas) + Number(m.saidas_realizadas));
+  let acumulado = 0;
+  const linhas = ms.map((m, i) => {
+    const saldo = ent[i] - sai[i];
+    if (m.mes >= cx.mes_atual) acumulado += saldo;
+    return [MES(m.mes) + (m.mes === cx.mes_atual ? " (atual)" : ""), brl(m.entradas_realizadas), brl(m.entradas_previstas), brl(m.saidas_realizadas), brl(m.saidas_previstas), brl(saldo.toFixed(2)), m.mes >= cx.mes_atual ? brl(acumulado.toFixed(2)) : "—"];
+  });
+  const vazio = ent.every((v) => !v) && sai.every((v) => !v);
+  return panel({ title: "Previsão de caixa (entradas − saídas)", subtitle: `Parcelas dos pedidos e contas a pagar. Vencidos ainda em aberto: a receber ${brl(cx.entradas_vencidas)}, a pagar ${brl(cx.saidas_vencidas)}.` },
+    vazio ? h("p", { class: "result-empty" }, "Sem parcelas nem contas a pagar no período.")
+      : barrasMensais({ titulo: "Entradas e saídas por mês", meses: ms.map((m) => m.mes), series: [{ nome: "Entradas", valores: ent.map((v) => v || null) }, { nome: "Saídas", valores: sai.map((v) => v || null) }], formatar: (v) => brl(Number(v).toFixed(2)), compacto: (v) => (v >= 1000 ? `${Math.round(v / 1000)} mil` : String(v)) }),
+    table({ caption: "Caixa por mês", head: ["Mês", "Recebido", "A receber", "Pago", "A pagar", "Saldo do mês", "Acumulado a partir de hoje"], align: ["", "r", "r", "r", "r", "r", "r"], rows: linhas }),
+    method("Como ler", "Realizado: pela data do recebimento ou do pagamento. Previsto: em aberto, pelo vencimento (vencidos ficam no mês em que venceram).", "Não inclui saldo bancário inicial (o VEOS ainda não lê os bancos): o acumulado é a variação do caixa a partir deste mês."));
 }
 
 // ---------------------------------------------------------------- anexos em PDF

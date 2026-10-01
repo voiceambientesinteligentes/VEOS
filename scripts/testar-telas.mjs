@@ -33,7 +33,7 @@ for (const [p, hs, w, hgt] of casos) {
   const prob = [];
   if (attr("pronto") !== "1") prob.push(`tela nao terminou (${dom.length} bytes)`);
   if (attr("erros")) prob.push(`erros JS: ${attr("erros")}`);
-  if (attr("overflow") === "true") prob.push("rolagem lateral");
+  if (attr("overflow") === "true") prob.push(`rolagem lateral${attr("largos") ? ` (${attr("largos")})` : ""}`);
   if (w < 500 && Number(attr("largura")) !== w) prob.push(`largura real ${attr("largura")}px`);
   if (attr("ruins")) prob.push(`texto ruim: ${attr("ruins")}`);
   if (prob.length) falhas++;

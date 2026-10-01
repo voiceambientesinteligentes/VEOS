@@ -17,6 +17,11 @@ export async function rodar(fn, { esperar = 0 } = {}) {
   const ruins = (texto.match(/\b(null|undefined|NaN)\b/g) || []);
   b.dataset.largura = String(window.innerWidth);
   b.dataset.overflow = String(document.documentElement.scrollWidth > window.innerWidth + 1);
+  if (b.dataset.overflow === "true") {
+    // quem estoura a largura (fora das tabelas, que rolam dentro do proprio quadro)
+    b.dataset.largos = [...document.querySelectorAll("#view *")].filter((e) => e.getBoundingClientRect().right > window.innerWidth + 1 && !e.closest(".table-wrap"))
+      .slice(0, 3).map((e) => `${e.tagName.toLowerCase()}.${String(e.className).split(" ")[0]} "${(e.textContent || "").trim().slice(0, 30)}"`).join("; ");
+  }
   b.dataset.ruins = ruins.join(",");
   b.dataset.erros = erros.join(" | ").slice(0, 2000);
   b.dataset.pronto = "1";

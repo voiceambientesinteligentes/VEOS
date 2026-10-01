@@ -12,6 +12,7 @@
 //   GET  /fluxo/estoque[?busca=&pagina=]  produtos com saldo
 //   GET  /fluxo/estoque/:item             movimentos do item
 //   POST /fluxo/estoque                   {item_id, tipo: entrada|ajuste, quantidade, custo_unit?, observacao?}
+//   /fluxo/compras, /fluxo/contas-pagar, /fluxo/caixa -> compras, contas a pagar e previsao (ver compras.ts)
 import { HttpError, lerCorpo, type Membro, SERVICE, servico, URL_BASE } from "../_shared/banco.ts";
 
 // Storage privado (bucket "anexos"): URLs assinadas de curta duracao, emitidas so pelo servidor.
@@ -22,6 +23,7 @@ async function storage(caminho: string, corpo: unknown) {
   return d as Record<string, string>;
 }
 import { vigiarFluxo } from "../_shared/fluxo_vigia.ts";
+import { caixaPedido, rotearCompras } from "./compras.ts";
 
 const VER = ["direcao", "vendas", "operacoes", "financas"];
 const COMERCIAL = ["direcao", "vendas", "financas"];
@@ -64,8 +66,12 @@ async function pedidoCompleto(id: string) {
   const reservado = new Map<string, number>();
   for (const r of reservas) reservado.set(r.item_id, (reservado.get(r.item_id) ?? 0) + (r.tipo === "reserva" ? num(r.quantidade) : -num(r.quantidade)));
   const saldo = new Map(saldos.map((s: { item_id: string }) => [s.item_id, s]));
+  const [caixa, compras] = await Promise.all([
+    caixaPedido(id, pedido.valor_total),
+    servico(`/rest/v1/compras?pedido_id=eq.${id}&select=id,numero,fornecedor_nome,estado,valor_total,previsao_entrega&order=criado_em`),
+  ]);
   return {
-    pedido, parcelas, notas, historico, anexos,
+    pedido, parcelas, notas, historico, anexos, caixa, compras,
     itens: itens.map((i: Record<string, any>) => ({ ...i, reservado_pedido: i.item_id ? reservado.get(i.item_id) ?? 0 : null, estoque: i.item_id ? saldo.get(i.item_id) ?? { fisico: 0, reservado: 0 } : null })),
   };
 }
@@ -77,6 +83,7 @@ export async function rotearFluxo(req: Request, partes: string[], eu: Membro) {
   const corpo = post ? ((await lerCorpo(req)) ?? {}) : {};
   const chave = req.headers.get("Idempotency-Key") ?? "";
   if (post && !CHAVE_RE.test(chave)) throw new HttpError(400, "Idempotency-Key obrigatorio (16-64 caracteres)");
+  if (a === "compras" || a === "contas-pagar" || a === "caixa") return await rotearCompras(req, partes, eu, corpo, chave, vigiar);
 
   // ---------------------------------------------------------------- leitura
   if (!post && a === "resumo") {

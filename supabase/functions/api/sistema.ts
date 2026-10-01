@@ -37,6 +37,9 @@ const CONJUNTOS: Record<string, { nome: string; caminho: string }> = {
   notas_fiscais: { nome: "Notas fiscais", caminho: "notas_fiscais?select=pedido:pedidos(numero,cliente_nome),*&order=emitida_em.desc" },
   estoque: { nome: "Estoque (saldos)", caminho: "estoque_saldos?select=*&order=item_id" },
   estoque_movimentos: { nome: "Movimentos de estoque", caminho: "estoque_movimentos?select=*&order=id.desc" },
+  compras: { nome: "Compras", caminho: "compras?select=*,pedido:pedidos(numero)&order=criado_em.desc" },
+  compra_itens: { nome: "Itens das compras", caminho: "compra_itens?select=compra:compras(numero,fornecedor_nome),*&order=compra_id,ordem" },
+  contas_pagar: { nome: "Contas a pagar", caminho: "contas_pagar?select=compra:compras(numero),pedido:pedidos(numero),*&order=vencimento.desc" },
   biblioteca: { nome: "Biblioteca", caminho: "biblioteca_registros?select=codigo,tipo,estado,versao,titulo,conteudo,assuntos,setores,autoridade,autor_nome,registrado_em,vigente_desde,valido_ate,justificativa,condicoes,responsavel,restrito&order=codigo" },
 };
 /** Objeto aninhado vira colunas com prefixo (pedido.numero -> pedido_numero); listas viram texto. */

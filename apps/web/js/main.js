@@ -20,6 +20,7 @@ import { telaContrato, telaEstoque, telaItemEstoque, telaPedido, telaPedidos, te
 import { telaBiblioteca, telaRegistroBiblioteca } from "./ui/views/biblioteca.js";
 import { telaValidacao } from "./ui/views/validacao.js";
 import { telaPainel } from "./ui/views/painel.js";
+import { telaCompra, telaCompras, telaContasPagar, telaNovaCompra } from "./ui/views/compras.js";
 import { telaExportar, telaSaude } from "./ui/views/sistema.js";
 import { formCodigoMfa, telaConta, telaUsuarios } from "./ui/views/usuarios.js";
 import { CATALOGO } from "./data/catalogo.js";
@@ -107,6 +108,9 @@ const TELAS = {
   "#/projetos": { fn: telaProjetos, titulo: ["Projetos e caixa", "Setor Financeiro · exposição e cobertura por fase"] },
   "#/pedidos": { fn: telaPedidos, titulo: ["Pedidos", "Orçamento aceito → estoque → parcelas → nota fiscal → recebimento"] },
   "#/estoque": { fn: (root) => telaEstoque(root), titulo: ["Estoque", "Saldo físico, reservas dos pedidos e custo médio"] },
+  "#/compras": { fn: telaCompras, titulo: ["Compras", "Faltas de estoque, compras registradas e recebimento de mercadoria"] },
+  "#/compras/nova": { fn: telaNovaCompra, titulo: ["Nova compra", "Itens, fornecedor e parcelas a pagar"] },
+  "#/contas-pagar": { fn: telaContasPagar, titulo: ["Contas a pagar", "Parcelas de compras e contas avulsas"] },
   "#/recebimentos": { fn: telaRecebimentos, titulo: ["Recebimentos e faturamento", "Previsão de caixa, parcelas e notas fiscais"] },
   "#/integracoes": { fn: (root) => telaIntegracoes(root, eu), titulo: ["Integrações", "Zoho Books, CRM e Projects · somente leitura"] },
   "#/negociacao": { fn: (root) => telaNegociacao(root, fontesZoho), titulo: ["Negociação ao Vivo", "Desconto, custos e Simples → margem e alçada pela Política V1"] },
@@ -190,7 +194,9 @@ function montarMenu() {
       h("span", { class: "nav-label", id: "nav-operacao" }, "Operação"),
       link("#/pedidos", "PED", "Pedidos"),
       link("#/estoque", "EST", "Estoque"),
-      link("#/recebimentos", "REC", "Recebimentos e faturamento")),
+      link("#/compras", "COM", "Compras"),
+      link("#/recebimentos", "REC", "Recebimentos e faturamento"),
+      ["direcao", "financas"].includes(eu.papel) ? link("#/contas-pagar", "PAG", "Contas a pagar") : null),
     h("div", { class: "nav-group", role: "group", "aria-labelledby": "nav-zoho" },
       h("span", { class: "nav-label", id: "nav-zoho" }, "Zoho"),
       Object.entries(PRODUTOS).map(([id, p]) => link(`#/zoho/${id}`, id === "books" ? "BKS" : id === "crm" ? "CRM" : "ZPR", `Zoho ${p.nome}`))),
@@ -227,7 +233,11 @@ async function navegar() {
   const bibRota = /^#\/biblioteca\/(governanca|decisoes|aprendizados|referencias|politicas|revisoes|consultar)$/.exec(rotaBase());
   const bibReg = /^#\/biblioteca\/r\/([0-9a-f-]{36})$/.exec(rotaBase());
   const contratoRota = /^#\/pedidos\/([0-9a-f-]{36})\/contrato$/.exec(rotaBase());
-  if (contratoRota) {
+  const compraRota = /^#\/compras\/([0-9a-f-]{36})$/.exec(rotaBase());
+  if (compraRota) {
+    rota = "#/compras";
+    def = { fn: (root) => telaCompra(root, compraRota[1]), titulo: ["Compra", "Itens, recebimento, parcelas a pagar e histórico"] };
+  } else if (contratoRota) {
     rota = "#/pedidos";
     def = { fn: (root) => telaContrato(root, contratoRota[1]), titulo: ["Contrato", "Gerado do pedido · imprimir ou salvar em PDF"] };
   } else if (bibRota) {
@@ -285,7 +295,7 @@ async function iniciar(mensagem) {
     return telaLogin(e.status === 403 ? "Este e-mail não tem acesso ao VEOS. Fale com a direção." : e.message);
   }
   montarMenu();
-  if (!TELAS[rotaBase()] && !/^#\/(projetos|setor|zoho|pedidos|estoque|biblioteca)\//.test(location.hash)) history.replaceState(null, "", "#/orbita");
+  if (!TELAS[rotaBase()] && !/^#\/(projetos|setor|zoho|pedidos|estoque|biblioteca|compras)\//.test(location.hash)) history.replaceState(null, "", "#/orbita");
   navegar();
 }
 

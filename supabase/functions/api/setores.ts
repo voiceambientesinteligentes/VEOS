@@ -12,6 +12,7 @@ import { CATALOGO } from "../_shared/setores/catalogo.ts";
 import type { Setor } from "../_shared/setores/motor.ts";
 import { RegistroInvalido, tipoDoSetor, validarRegistro } from "../_shared/setores/registros.ts";
 import { varrer } from "../_shared/setores/varredura.ts";
+import { vigiarBiblioteca, vigiarFluxo } from "../_shared/fluxo_vigia.ts";
 import { HttpError, lerCorpo, type Membro, servico } from "../_shared/banco.ts";
 
 // Setores com dados sensiveis: so direcao e o proprio setor.
@@ -50,7 +51,11 @@ export async function rotearSetores(req: Request, partes: string[], eu: Membro) 
       return { alertas, tarefas, ultima_varredura: ultima[0] ?? null, setores: acessiveis(eu) };
     }
     if (raiz === "radar" && req.method === "POST" && id === "varrer") {
-      return await varrer(SETORES, acessiveis(eu), `manual:${eu.email}`);
+      const r = await varrer(SETORES, acessiveis(eu), `manual:${eu.email}`);
+      if (eu.papel !== "direcao") return r;
+      // direcao: tambem as vigias proprias (fluxo/compras/caixa e Biblioteca)
+      const [fluxo, biblioteca] = await Promise.all([vigiarFluxo(), vigiarBiblioteca()]);
+      return { ...r, fluxo, biblioteca };
     }
 
     if (raiz === "setor" && req.method === "GET" && id) {

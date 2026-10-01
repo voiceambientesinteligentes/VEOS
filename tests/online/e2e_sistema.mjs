@@ -72,9 +72,25 @@ try {
   assert.equal(pn.status, 200, JSON.stringify(pn.dados)); assert.equal(pn.dados.meses.length, 12); assert.ok(Array.isArray(pn.dados.funil_crm));
   ok(`painel executivo: 12 meses, ${pn.dados.orcamentos.length} situacoes de orcamento, ${pn.dados.funil_crm.length} etapas no CRM`);
 
+  // compras, contas a pagar e caixa (so leitura e recusas: nada e gravado no estoque real)
+  for (const r of ["fluxo/compras", "fluxo/compras/faltas", "fluxo/compras/fornecedores", "fluxo/contas-pagar", "fluxo/caixa"]) {
+    const x = await req(`/functions/v1/api/${r}`, { token });
+    assert.equal(x.status, 200, `${r}: ${JSON.stringify(x.dados).slice(0, 200)}`);
+  }
+  ok("compras, faltas, fornecedores, contas a pagar e previsao de caixa respondem");
+  const cx = await req("/functions/v1/api/fluxo/caixa", { token });
+  assert.equal(cx.dados.meses.length, 9); ok("previsao de caixa: 2 meses atras ate 6 a frente");
+  const inval = await req("/functions/v1/api/fluxo/compras", { method: "POST", token, headers: chave(), body: { fornecedor_nome: "Fornecedor TESTE", itens: [{ item_id: "nao-existe-TESTE", quantidade: "1", custo_unit: "10.00" }], parcelas: [{ vencimento: "2026-12-01", valor: "10.00" }] } });
+  assert.equal(inval.status, 400); assert.match(inval.dados.erro, /catálogo/); ok("compra de produto fora do catalogo -> 400");
+  const catc = await req("/functions/v1/api/fluxo/contas-pagar", { method: "POST", token, headers: chave(), body: { descricao: "x", fornecedor: "y", categoria: "compra", vencimento: "2026-12-01", valor: "10.00" } });
+  assert.equal(catc.status, 400); ok("conta avulsa com categoria compra -> 400");
+  const vr = await req("/functions/v1/api/radar/varrer", { method: "POST", token, headers: chave(), body: {} });
+  assert.equal(vr.status, 200, JSON.stringify(vr.dados).slice(0, 300)); assert.ok(vr.dados.fluxo && vr.dados.biblioteca);
+  ok("varredura da direcao roda as vigias do fluxo (compras/contas/exposicao) e da Biblioteca sem erro");
+
   // exportacao
   const conj = await req("/functions/v1/api/sistema/exportar", { token });
-  assert.equal(conj.status, 200); assert.ok(conj.dados.conjuntos.length >= 7);
+  assert.equal(conj.status, 200); assert.ok(conj.dados.conjuntos.length >= 10);
   for (const c of conj.dados.conjuntos) {
     const e = await req(`/functions/v1/api/sistema/exportar/${c.id}`, { token });
     assert.equal(e.status, 200, `${c.id}: ${JSON.stringify(e.dados).slice(0, 200)}`);
@@ -88,6 +104,8 @@ try {
   assert.equal((await req("/functions/v1/api/sistema/membros", { token })).status, 403); ok("vendas nao gere usuarios -> 403");
   assert.equal((await req("/functions/v1/api/sistema/exportar/pedidos", { token })).status, 403); ok("vendas nao exporta -> 403");
   assert.equal((await req("/functions/v1/api/painel", { token })).status, 403); ok("vendas nao ve o painel executivo -> 403");
+  assert.equal((await req("/functions/v1/api/fluxo/compras", { token })).status, 403); ok("vendas nao ve compras -> 403");
+  assert.equal((await req("/functions/v1/api/fluxo/contas-pagar", { token })).status, 403); ok("vendas nao ve contas a pagar -> 403");
 } finally {
   await papel(user.id, "vendas", false); // TESTE fica inativo
 }

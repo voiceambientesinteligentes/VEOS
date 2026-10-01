@@ -91,6 +91,9 @@ const DESCRICAO = {
   notas_fiscais: "Notas registradas (NF-e e NFS-e) por pedido.",
   estoque: "Saldo físico, reservado e disponível por item, com custo médio.",
   estoque_movimentos: "Entradas, saídas, reservas, liberações e ajustes (trilha completa).",
+  compras: "Compras registradas: fornecedor, pedido atendido, situação, previsão e total.",
+  compra_itens: "Itens de cada compra com quantidade comprada, recebida e custo.",
+  contas_pagar: "Parcelas de compras e contas avulsas: vencimento, valor, situação e pagamento.",
   biblioteca: "Decisões, políticas, propostas, incidentes, aprendizados e referências (todas as versões).",
 };
 
