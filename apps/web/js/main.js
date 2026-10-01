@@ -21,6 +21,7 @@ import { telaBiblioteca, telaRegistroBiblioteca } from "./ui/views/biblioteca.js
 import { telaValidacao } from "./ui/views/validacao.js";
 import { telaPainel } from "./ui/views/painel.js";
 import { telaTermoAceite } from "./ui/views/obra.js";
+import { telaProposta, telaPropostas } from "./ui/views/proposta.js";
 import { telaCompra, telaCompras, telaContasPagar, telaNovaCompra } from "./ui/views/compras.js";
 import { telaExportar, telaSaude } from "./ui/views/sistema.js";
 import { formCodigoMfa, telaConta, telaUsuarios } from "./ui/views/usuarios.js";
@@ -109,6 +110,7 @@ const TELAS = {
   "#/projetos": { fn: telaProjetos, titulo: ["Projetos e caixa", "Setor Financeiro · exposição e cobertura por fase"] },
   "#/pedidos": { fn: telaPedidos, titulo: ["Pedidos", "Orçamento aceito → estoque → parcelas → nota fiscal → recebimento"] },
   "#/estoque": { fn: (root) => telaEstoque(root), titulo: ["Estoque", "Saldo físico, reservas dos pedidos e custo médio"] },
+  "#/propostas": { fn: telaPropostas, titulo: ["Propostas", "Proposta comercial em PDF a partir do orçamento do Zoho"] },
   "#/compras": { fn: telaCompras, titulo: ["Compras", "Faltas de estoque, compras registradas e recebimento de mercadoria"] },
   "#/compras/nova": { fn: telaNovaCompra, titulo: ["Nova compra", "Itens, fornecedor e parcelas a pagar"] },
   "#/contas-pagar": { fn: telaContasPagar, titulo: ["Contas a pagar", "Parcelas de compras e contas avulsas"] },
@@ -207,6 +209,7 @@ function montarMenu() {
     h("div", { class: "nav-group", role: "group", "aria-labelledby": "nav-cfo" },
       h("span", { class: "nav-label", id: "nav-cfo" }, "Ferramentas do CFO"),
       link("#/negociacao", "NEG", "Negociação ao Vivo"),
+      link("#/propostas", "PROP", "Propostas (PDF)"),
       link("#/calculadora", "CALC", "Calculadora de Preços"),
       link("#/projetos", "PRJ", "Projetos e caixa"),
       link("#/cfo", "ORÇ", "Avisos de orçamento"),
@@ -234,9 +237,13 @@ async function navegar() {
   const bibRota = /^#\/biblioteca\/(governanca|decisoes|aprendizados|referencias|politicas|revisoes|consultar)$/.exec(rotaBase());
   const bibReg = /^#\/biblioteca\/r\/([0-9a-f-]{36})$/.exec(rotaBase());
   const contratoRota = /^#\/pedidos\/([0-9a-f-]{36})\/contrato$/.exec(rotaBase());
+  const propostaRota = /^#\/propostas\/([0-9]{5,25})$/.exec(rotaBase());
   const aceiteRota = /^#\/pedidos\/([0-9a-f-]{36})\/aceite$/.exec(rotaBase());
   const compraRota = /^#\/compras\/([0-9a-f-]{36})$/.exec(rotaBase());
-  if (aceiteRota) {
+  if (propostaRota) {
+    rota = "#/propostas";
+    def = { fn: (root) => telaProposta(root, propostaRota[1]), titulo: ["Proposta comercial", "Identidade VOICE · imprimir ou salvar em PDF · envio por rascunho"] };
+  } else if (aceiteRota) {
     rota = "#/pedidos";
     def = { fn: (root) => telaTermoAceite(root, aceiteRota[1]), titulo: ["Termo de aceite", "Gerado do pedido · imprimir ou salvar em PDF"] };
   } else if (compraRota) {
@@ -300,7 +307,7 @@ async function iniciar(mensagem) {
     return telaLogin(e.status === 403 ? "Este e-mail não tem acesso ao VEOS. Fale com a direção." : e.message);
   }
   montarMenu();
-  if (!TELAS[rotaBase()] && !/^#\/(projetos|setor|zoho|pedidos|estoque|biblioteca|compras)\//.test(location.hash)) history.replaceState(null, "", "#/orbita");
+  if (!TELAS[rotaBase()] && !/^#\/(projetos|setor|zoho|pedidos|estoque|biblioteca|compras|propostas)\//.test(location.hash)) history.replaceState(null, "", "#/orbita");
   navegar();
 }
 

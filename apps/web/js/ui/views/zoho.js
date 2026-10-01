@@ -224,7 +224,8 @@ async function fichaRegistro(area, produto, modulo, id, [nome]) {
   area.append(
     h("p", null, h("a", { href: `#/zoho/${produto}/${modulo}` }, `‹ ${nome}`)),
     panel({ title: r.nome ?? id, subtitle: `Zoho ${PRODUTOS[produto].nome} · ${nome} · id ${r.zoho_id}`,
-      actions: h("div", { class: "row" }, r.excluido ? stamp("Excluído no Zoho", "risk") : null, incompleto ? stamp("Ficha resumida: completa na próxima sincronização", "warn") : stamp("Ficha completa", "live"), editar) },
+      actions: h("div", { class: "row" }, r.excluido ? stamp("Excluído no Zoho", "risk") : null, incompleto ? stamp("Ficha resumida: completa na próxima sincronização", "warn") : stamp("Ficha completa", "live"), editar,
+        produto === "books" && modulo === "estimates" ? h("a", { class: "btn btn-ghost", href: `#/propostas/${r.zoho_id}` }, "Proposta em PDF") : null) },
       h("p", { class: "field-hint" }, `Alterado no Zoho: ${r.modificado_em ? formatDateTime(r.modificado_em) : "—"} · copiado para o VEOS: ${formatDateTime(r.sincronizado_em)}`),
       h("div", { class: "stack" }, fichaZoho(produto, modulo, r.dados, rotulo).filter(Boolean)),
       h("details", { class: "zoho-bloco zoho-tecnico" }, h("summary", null, `Todos os campos do Zoho (técnico · ${Object.keys(r.dados).length})`), ficha(r.dados, 1))));

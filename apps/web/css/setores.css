@@ -232,3 +232,23 @@ a.pill { text-decoration: none; }
 .grafico-legenda { display: flex; flex-wrap: wrap; gap: var(--s4); font-size: var(--fs-s); color: var(--text-1); margin-bottom: var(--s2); }
 .grafico-legenda-item { display: inline-flex; align-items: center; gap: var(--s2); }
 .grafico-chave { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
+
+/* Proposta comercial (identidade VOICE: dourado e ciano sobre papel branco) */
+.proposta-topo { display: flex; align-items: center; gap: 14px; border-bottom: 3px solid #a8862f; padding-bottom: 12px; margin-bottom: 18px; }
+.proposta-marca { width: 46px; height: 46px; flex: none; }
+.proposta-empresa { font-size: 1.1rem; font-weight: 700; letter-spacing: .04em; color: #111; margin: 0; }
+.proposta-dados { font-size: .78rem; color: #555; margin: 2px 0 0; }
+.proposta-num { margin-left: auto; text-align: right; display: flex; flex-direction: column; font-size: .8rem; color: #555; }
+.proposta-num strong { font-size: 1.05rem; color: #a8862f; }
+.proposta-cliente { background: #f6f3ea; border-left: 3px solid #2fa3bb; padding: 8px 12px; margin: 10px 0 14px; }
+.proposta-secao { font-size: .95rem; color: #6d561d; margin: 14px 0 4px; }
+.proposta-desc { font-size: .8rem; color: #555; white-space: pre-line; margin-top: 2px; }
+.contrato-tabela .r { text-align: right; white-space: nowrap; }
+.proposta-totais { max-width: 360px; margin-left: auto; }
+.proposta-total td { font-weight: 700; font-size: 1rem; border-top: 2px solid #a8862f; }
+@media (max-width: 600px) {
+  .contrato-doc { padding: 20px 14px; font-size: .88rem; }
+  .contrato-assinaturas { grid-template-columns: 1fr; gap: 36px; }
+  .proposta-topo { flex-wrap: wrap; }
+  .contrato-tabela { display: block; overflow-x: auto; }
+}
