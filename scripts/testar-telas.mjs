@@ -25,7 +25,7 @@ for (const [p, hs, w, hgt] of casos) {
   const perfil = mkdtempSync(join(tmpdir(), "veos-edge-"));
   let dom = "";
   try {
-    dom = execFileSync(EDGE, ["--headless=new", "--disable-gpu", "--no-first-run", `--user-data-dir=${perfil}`, `--window-size=${Math.max(w, 600)},${hgt + 100}`, "--virtual-time-budget=10000", "--dump-dom", w < 500 ? `http://127.0.0.1:8878/_teste/_moldura.html?w=${w}&h=${hgt}&src=${encodeURIComponent(`${p}${hs ? `#${hs}` : ""}`)}` : `http://127.0.0.1:8878/_teste/${p}${hs ? `#${hs}` : ""}`], { encoding: "utf8", timeout: 60000, stdio: ["ignore", "pipe", "ignore"] });
+    dom = execFileSync(EDGE, ["--headless=new", "--disable-gpu", "--no-first-run", ...(process.platform === "linux" ? ["--no-sandbox"] : []), `--user-data-dir=${perfil}`, `--window-size=${Math.max(w, 600)},${hgt + 100}`, "--virtual-time-budget=10000", "--dump-dom", w < 500 ? `http://127.0.0.1:8878/_teste/_moldura.html?w=${w}&h=${hgt}&src=${encodeURIComponent(`${p}${hs ? `#${hs}` : ""}`)}` : `http://127.0.0.1:8878/_teste/${p}${hs ? `#${hs}` : ""}`], { encoding: "utf8", timeout: 60000, stdio: ["ignore", "pipe", "ignore"] });
   } catch (e) {
     dom = String(e.stdout ?? "");
   }

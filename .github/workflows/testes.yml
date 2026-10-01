@@ -1,0 +1,73 @@
+# Testes automaticos do VEOS.
+#  - local: regras, paridade TS x Python, portal e telas simuladas (Chrome headless). Sem segredos.
+#  - online: API real (usuarios TESTE) e navegador (Playwright) no site publicado, depois de cada
+#    publicacao do site, todo dia e sob demanda. Precisa do segredo SUPABASE_SERVICE_ROLE_KEY;
+#    sem ele, o job avisa e nao roda. Os usuarios TESTE ficam inativos no fim.
+name: testes
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_run:
+    workflows: [publicar-site]
+    types: [completed]
+  schedule:
+    - cron: "40 9 * * *" # todo dia 06:40 (Brasilia)
+  workflow_dispatch: {}
+permissions:
+  contents: read
+concurrency:
+  group: testes-${{ github.event_name == 'push' && 'local' || 'online' }}-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  local:
+    if: github.event_name == 'push' || github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: npm test
+      - name: Telas simuladas (computador e celular)
+        run: node scripts/testar-telas.mjs
+
+  online:
+    if: (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success') || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Conferir segredo
+        id: seg
+        run: |
+          if [ -z "$SUPABASE_SERVICE_ROLE_KEY" ]; then
+            echo "::warning::Testes online nao rodaram: cadastre o segredo SUPABASE_SERVICE_ROLE_KEY (Settings > Secrets and variables > Actions)"
+            echo "ok=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "ok=true" >> "$GITHUB_OUTPUT"
+            echo "SUPABASE_URL=$(grep -o 'https://[a-z0-9]*\.supabase\.co' apps/web/js/config.js)" >> "$GITHUB_ENV"
+            echo "SUPABASE_ANON_KEY=$(grep -o 'SUPABASE_ANON_KEY = "[^"]*"' apps/web/js/config.js | cut -d'"' -f2)" >> "$GITHUB_ENV"
+          fi
+      - name: API (usuarios TESTE)
+        if: steps.seg.outputs.ok == 'true'
+        run: |
+          node tests/online/e2e_api.mjs
+          node tests/online/e2e_financeiro.mjs
+          node tests/online/e2e_setores.mjs
+          node tests/online/e2e_sistema.mjs
+      - name: Instalar navegador
+        if: steps.seg.outputs.ok == 'true'
+        run: npm i --no-save --no-audit --no-fund playwright@1.55.0 && npx playwright install --with-deps chromium
+      - name: Navegador no site publicado
+        if: steps.seg.outputs.ok == 'true'
+        run: node tests/online/navegador.mjs
