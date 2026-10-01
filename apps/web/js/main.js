@@ -23,6 +23,7 @@ import { telaPainel } from "./ui/views/painel.js";
 import { telaTermoAceite } from "./ui/views/obra.js";
 import { telaProposta, telaPropostas } from "./ui/views/proposta.js";
 import { telaMensagens } from "./ui/views/mensagens.js";
+import { telaIndependencia } from "./ui/views/independencia.js";
 import { iniciarAvisos } from "./ui/notificar.js";
 import { telaCompra, telaCompras, telaContasPagar, telaNovaCompra } from "./ui/views/compras.js";
 import { telaExportar, telaSaude } from "./ui/views/sistema.js";
@@ -112,6 +113,7 @@ const TELAS = {
   "#/projetos": { fn: telaProjetos, titulo: ["Projetos e caixa", "Setor Financeiro · exposição e cobertura por fase"] },
   "#/pedidos": { fn: telaPedidos, titulo: ["Pedidos", "Orçamento aceito → estoque → parcelas → nota fiscal → recebimento"] },
   "#/estoque": { fn: (root) => telaEstoque(root), titulo: ["Estoque", "Saldo físico, reservas dos pedidos e custo médio"] },
+  "#/sistema/independencia": { fn: telaIndependencia, titulo: ["Independência do Zoho", "Uso real por módulo, cobertura do VEOS e roteiro de desligamento"] },
   "#/mensagens": { fn: telaMensagens, titulo: ["Caixa de saída", "Mensagens preparadas: você revisa, envia e marca como enviada"] },
   "#/propostas": { fn: telaPropostas, titulo: ["Propostas", "Proposta comercial em PDF a partir do orçamento do Zoho"] },
   "#/compras": { fn: telaCompras, titulo: ["Compras", "Faltas de estoque, compras registradas e recebimento de mercadoria"] },
@@ -223,6 +225,7 @@ function montarMenu() {
       ["direcao", "tecnologia"].includes(eu.papel) ? link("#/sistema/saude", "SAU", "Saúde do sistema") : null,
       eu.papel === "direcao" ? link("#/sistema/usuarios", "USR", "Usuários e acessos") : null,
       eu.papel === "direcao" ? link("#/sistema/exportar", "EXP", "Exportar dados") : null,
+      eu.papel === "direcao" ? link("#/sistema/independencia", "IND", "Independência do Zoho") : null,
       link("#/sistema/validacao", "VAL", "Validação guiada"),
       link("#/conta", "EU", "Minha conta")),
   );
