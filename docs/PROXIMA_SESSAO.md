@@ -33,7 +33,7 @@ Já decididas em 01/10: IA no servidor = teto zero (BIB-0044); Fernando exerce a
 1. **Revisar as propostas em consulta** (Biblioteca → Revisões), cada uma com a recomendação do Claude registrada como opinião: BIB-0037 papel do fundador (aprovar); BIB-0038 base da faixa do Simples (aprovar com ajuste: usar o faturado; validar com o contador); BIB-0039 ticket mínimo R$ 15 mil (não aprovar como bloqueio: contraria BIB-0022); BIB-0040 anexo do Simples (contador); BIB-0042 siglas (manter); BIB-0046 MFA da direção (aprovar após cadastrar o próprio MFA); BIB-0051 retenção de dados (LGPD, jurídico); BIB-0052 termo de uso interno (jurídico).
 2. Lacunas de alçada: assuntos reservados ao fundador; precedência entre autoridades; quem altera políticas; compras/fornecedores; preços de tabela; contratações; comunicação externa (envio automático); quem valida ticket < R$ 100 mil; desconto ≤ 2% com MC 30–32%.
 3. Textos jurídicos: cláusulas do contrato e texto do termo de aceite (o VEOS só monta os dados).
-4. **Segredos do GitHub** (Settings → Secrets and variables → Actions): `SUPABASE_SERVICE_ROLE_KEY` (Supabase → Project Settings → API) e `BACKUP_SENHA` (senha forte, guardada por você). Liberam o backup semanal e os testes online no CI.
+4. ~~Segredos do GitHub~~ **Feito em 01/10**: `SUPABASE_SERVICE_ROLE_KEY` e `BACKUP_SENHA` criados; backup manual e testes online no CI executados com sucesso.
 5. **Dados reais nos registros dos setores** (hoje só TESTE): liberar quando quiser usar os catálogos dos setores (chamados, contratos de suporte, obras...) com dados reais.
 6. NF integrada (custo do emissor) e domínio próprio (comprar/apontar o domínio).
 

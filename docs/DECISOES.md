@@ -29,6 +29,7 @@ Formato: data · decisão · quem · origem. Propostas ficam separadas até o Fe
 | 30/09/2026 | Dados de exemplo sempre marcados TESTE; dados reais numa fase própria. | Plano Mestre §1 |
 | 01/10/2026 | **Sem orçamento de IA no servidor por enquanto (teto zero).** Resolve P-3. Biblioteca BIB-0044 (proposta BIB-0041 aprovada). | pergunta respondida em 01/10 |
 | 01/10/2026 | **O fundador (Fernando) exerce a CEO** até nomeação de outra pessoa. Biblioteca BIB-0045; alçada `ceo_humana` preenchida. | pergunta respondida em 01/10 |
+| 01/10/2026 | Senha do backup definida pelo Fernando (11 caracteres); mínimo do script reduzido de 16 para 10 por decisão dele, após o aviso de que o arquivo fica baixável no GitHub público. | pergunta respondida em 01/10 |
 | 01/10/2026 | Repositório continua **público** (GitHub Pages gratuito exige). Reafirma BIB-0018. | pergunta respondida em 01/10 |
 | 01/10/2026 | Propostas BIB-0037, 0038, 0039, 0040 e 0042: o Fernando pediu que o Claude organizasse e ele corrige no fim. Ficaram **em consulta** com a recomendação do Claude registrada como opinião (não decisão). BIB-0046 (exigir MFA da direção) criada nos mesmos termos. | mensagem de 01/10 |
 
