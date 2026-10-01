@@ -67,3 +67,10 @@ Atualize este arquivo ao fim de cada sessão: última ação, resultado e próxi
 - Entregas (commits 4d5df53, 53f1ecc, 9f22fa5, 2537d79, 77cf13f, 3e038a9): validação guiada, saúde do sistema + vigia SIS_* no banco, usuários e acessos + MFA, exportação CSV, backup semanal criptografado, CI (local + online + navegador). Registro: BIB-0047; aprendizados validados BIB-0048 (largura mínima do Edge headless) e BIB-0049 (append nativo escreve "null").
 - Corrigido: `apps/portal/.gitignore` ignorava `web/js/data/` (o clone limpo falhava no CI).
 - Próximo: Fernando cadastra os segredos do GitHub, executa a validação guiada e revisa as propostas; técnico: P1.6 Painel executivo real.
+
+## 01/10/2026 (noite) — P1 e P2
+- P1: painel executivo (fea98cf), compras e contas a pagar (fa8fffb), obra no pedido (ac34276), margem realizada (ad732b8), proposta em PDF (ba17dd4), notificações (8d2ac04). Registro BIB-0050.
+- P2: MCP do VEOS (07b2fd3), independência do Zoho (44f02de), busca Ctrl+K e PWA (925822f), LGPD (0303411). Propostas LGPD BIB-0051/0052.
+- Não implementados de propósito: IA (teto zero), NF integrada (custo), domínio (precisa do domínio), dados reais nos registros dos setores (decisão).
+- Verificação: bancos 106/106; telas 70/70; online 15+12+9+33+6; navegador no site publicado 42/42 (inclui PWA e Ctrl+K); CI verde.
+- Próximo: Fernando executa a validação guiada, decide as propostas e cadastra os segredos; técnico: catálogo de itens próprio.

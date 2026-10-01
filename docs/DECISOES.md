@@ -55,3 +55,8 @@ Formato: data · decisão · quem · origem. Propostas ficam separadas até o Fe
 | 01/10/2026 | MFA por membro (TOTP do Supabase, gratuito); exigir só para quem já cadastrou o app. | evitar trancar alguém fora |
 | 01/10/2026 | Backup pela API (todas as tabelas + anexos + logins), gzip + AES-256-GCM, artefato do Actions por 90 dias; tokens de integração ficam fora. | grátis, sem senha do banco; repositório público exige criptografia |
 | 01/10/2026 | Testes de tela versionados em `tests/telas/` com moldura de celular (iframe 390 px). | o Edge headless não abre janela < ~490 px |
+| 01/10/2026 | Painel e margem usam **margem bruta** (preço − custo direto), rotulada como tal; a MC oficial da Política V1 continua só na Negociação. | não confundir indicadores; a MC exige impostos/comissão/provisão por pedido |
+| 01/10/2026 | Compras são **registro** do que a equipe comprou (não enviam pedido ao fornecedor); parcelas da compra somam o total. | regra de envio humano; previsão de caixa confiável |
+| 01/10/2026 | Prazos de alerta de aceite (7 dias) e garantia (60 dias) reaproveitam as **propostas** do catálogo e são rotulados assim. | não inventar prazo; uma fonte só |
+| 01/10/2026 | MCP com sessão própria criada pelo servidor (magic link verificado), mesmas permissões do usuário; sem decisões nem envios. | Claude Code sob as mesmas regras, sem derrubar a sessão do navegador |
+| 01/10/2026 | Service worker só guarda arquivos do site (rede primeiro); nunca dados da API. | PWA sem risco de dado velho ou vazamento local |

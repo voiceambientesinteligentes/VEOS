@@ -2,6 +2,27 @@
 
 **Resumo:** o VEOS está online (site no GitHub Pages + Supabase) com setores vivos, Zoho espelhado e editável, fluxo de pedidos, Biblioteca, e — desde 01/10 — validação guiada, saúde do sistema, gestão de usuários com MFA, exportação, backup semanal criptografado e testes no CI. Falta o uso real guiado pelo Fernando e os segredos do GitHub para backup e testes online no CI. O pipeline V2 do cérebro segue bloqueado no item 30. **Não está 100%.**
 
+## P1 e P2 (01/10, noite)
+**Implementado e testado** (banco em transação desfeita, telas simuladas a 1366 e 390 px, online contra o Supabase real, navegador no site publicado)
+- **Painel executivo** (Visão geral, direção e finanças): vendas aceitas por mês (orçamentos aceitos no Books), faturado (NF registradas; o Books não tem faturas → lacuna explícita), caixa previsto × recebido, pedidos com **margem bruta orçada** (não é a MC oficial), funil do CRM (negócios sem valor no Zoho → aviso), orçamentos por situação, alertas por setor. Gráficos com paleta validada para o fundo escuro. Banco 8/8.
+- **Compras e contas a pagar**: faltas de estoque → compra registrada (o VEOS não envia ao fornecedor) → recebimento (entrada no estoque pelo custo da compra e reserva automática dos pedidos) → parcelas viram contas a pagar; contas avulsas; **previsão de caixa entradas − saídas**; **caixa do pedido pela Política V1.1** (mesma `exposicao()` com paridade testada); alertas de conta vencida, compra atrasada e exposição > 10%. Banco 16/16.
+- **Obra no pedido**: projeto do Zoho Projects como checklist, horas da equipe (custo para a margem), aceite e garantia (prazo informado, nunca presumido), termo de aceite em PDF (texto colado do jurídico), alertas de aceite pendente (7 dias) e garantia terminando (60 dias) — prazos = propostas do catálogo. Banco 11/11.
+- **Margem realizada**: compras recebidas + estoque pelo custo médio + despesas + horas × orçado; lacunas explícitas; ao concluir o pedido vira **aprendizado (hipótese)** na Biblioteca. Banco 5/5.
+- **Proposta comercial em PDF** com a identidade da VOICE a partir do orçamento do Zoho (seções, descrições, termos e notas da própria VOICE), sem custo/margem; envio por rascunho de e-mail/WhatsApp.
+- **Notificações**: caixa de saída (de alertas, propostas ou à mão; uma pessoa envia e marca, fica registrado), resumo do dia por setor no Radar, aviso no navegador (aba aberta) para alertas altos/críticos. Banco 8/8.
+- **MCP do VEOS** (`scripts/mcp/veos-mcp.mjs`, `.mcp.json`): 14 ferramentas para o Claude Code com a sessão do próprio usuário (separada da do navegador), pelas mesmas regras; cria só ideia/proposta/tarefa/rascunho. Acesso criado em Minha conta. Online 6/6 (protocolo real).
+- **Independência do Zoho** (Sistema): mapa por módulo — uso real, cobertura do VEOS e o que falta — e roteiro de desligamento.
+- **UX**: busca global (Ctrl+K ou /), PWA instalável (manifesto, ícones, service worker só com arquivos do site), selo "Somente dados TESTE" substituído.
+- **LGPD**: registro permanente de acesso a dados pessoais (fichas de clientes/contatos do Zoho, pedidos, exportações) e tela para a direção.
+- Totais em 01/10: bancos 106/106 cenários; telas simuladas 70/70; online api 15, financeiro 12, setores 9, sistema 33, mcp 6; navegador no site publicado 42/42 telas (computador e celular), PWA e busca conferidos.
+
+**Depende de decisão ou de terceiros (não implementado de propósito)**
+- IA dos diretores (P2.12): teto zero decidido (BIB-0044).
+- NF integrada (P2.15): custo do serviço emissor — decisão do fundador.
+- Domínio próprio (P2.16): precisa do domínio e do acesso ao DNS (passos em PROXIMA_SESSAO).
+- Retenção de dados e termo de uso (LGPD): propostas BIB-0051 e BIB-0052 (jurídico).
+- Registros dos setores com dados reais: hoje só TESTE (decisão "dados reais numa fase própria").
+
 ## P0 — base com segurança (01/10, tarde)
 **Implementado e testado** (testes automatizados + banco em transação desfeita + telas simuladas + online contra o Supabase real e o site publicado)
 - **Validação guiada** (Sistema → Validação guiada): roteiro de 17 passos com login real; cada falha vira incidente na Biblioteca e a rodada vira referência. Telas 4/4.

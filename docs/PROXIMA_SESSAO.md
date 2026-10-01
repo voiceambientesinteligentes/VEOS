@@ -1,4 +1,4 @@
-# Próxima sessão — ponto de partida (atualizado em 01/10/2026, fim da tarde)
+# Próxima sessão — ponto de partida (atualizado em 01/10/2026, noite)
 
 ## Prompt para colar no início da próxima conversa
 
@@ -26,41 +26,32 @@ Atue como especialista sênior em engenharia de software, produto e UX.
 - Repositório público: voiceambientesinteligentes/VEOS. Conteúdo real (Biblioteca, Zoho, pedidos) fica só no banco.
 
 ## O que já funciona (resumo)
-Setores vivos (9) e Radar · Negociação ao Vivo e Calculadora · Zoho espelho completo + edição nos dois sentidos · Pedidos → estoque → parcelas → NF manual → recebimento, com vigia FLX_* · Biblioteca e governança (BIB_*) · Contrato em PDF e anexos · **P0 (01/10):** validação guiada, saúde do sistema com vigia SIS_*, usuários e acessos com MFA, exportação CSV, backup semanal criptografado, CI com testes locais, telas simuladas e navegador no site publicado.
+Setores vivos (9) e Radar · Negociação e Calculadora · Zoho espelho + edição · Pedidos → estoque → parcelas → NF → recebimento · Biblioteca e governança · Contrato e termo de aceite em PDF · **P0** (validação guiada, saúde do sistema, usuários e MFA, exportação, backup criptografado, CI) · **P1** (painel executivo, compras e contas a pagar, previsão de caixa, caixa do pedido V1.1, obra no pedido, margem realizada, proposta em PDF, caixa de saída, resumo do dia, avisos) · **P2** (MCP do VEOS, independência do Zoho, busca Ctrl+K, PWA, registro LGPD).
 
 ## Decisões que dependem do Fernando (registradas na Biblioteca)
 Já decididas em 01/10: IA no servidor = teto zero (BIB-0044); Fernando exerce a CEO (BIB-0045); repositório continua público.
-1. **Revisar as propostas em consulta** (Biblioteca → Revisões), cada uma com a recomendação do Claude registrada como opinião: BIB-0037 papel do fundador (recomenda aprovar); BIB-0038 base da faixa do Simples (aprovar com ajuste: usar o faturado; validar com o contador); BIB-0039 ticket mínimo R$ 15 mil (não aprovar como bloqueio: contraria BIB-0022); BIB-0040 anexo do Simples (depende do contador); BIB-0042 siglas (manter); **BIB-0046 exigir MFA da direção** (aprovar depois de cadastrar o próprio MFA).
-2. Lacunas de alçada: assuntos reservados ao fundador; precedência entre autoridades; quem altera políticas; compras/fornecedores; preços de tabela; contratações; comunicação externa; quem valida ticket < R$ 100 mil; desconto ≤ 2% com MC 30–32%.
-3. Cláusulas do contrato aprovadas pelo jurídico (o VEOS não inventa texto jurídico).
-4. **Segredos do GitHub** (Settings → Secrets and variables → Actions): `SUPABASE_SERVICE_ROLE_KEY` e `BACKUP_SENHA`. Liberam o backup semanal e os testes online no CI.
+1. **Revisar as propostas em consulta** (Biblioteca → Revisões), cada uma com a recomendação do Claude registrada como opinião: BIB-0037 papel do fundador (aprovar); BIB-0038 base da faixa do Simples (aprovar com ajuste: usar o faturado; validar com o contador); BIB-0039 ticket mínimo R$ 15 mil (não aprovar como bloqueio: contraria BIB-0022); BIB-0040 anexo do Simples (contador); BIB-0042 siglas (manter); BIB-0046 MFA da direção (aprovar após cadastrar o próprio MFA); BIB-0051 retenção de dados (LGPD, jurídico); BIB-0052 termo de uso interno (jurídico).
+2. Lacunas de alçada: assuntos reservados ao fundador; precedência entre autoridades; quem altera políticas; compras/fornecedores; preços de tabela; contratações; comunicação externa (envio automático); quem valida ticket < R$ 100 mil; desconto ≤ 2% com MC 30–32%.
+3. Textos jurídicos: cláusulas do contrato e texto do termo de aceite (o VEOS só monta os dados).
+4. **Segredos do GitHub** (Settings → Secrets and variables → Actions): `SUPABASE_SERVICE_ROLE_KEY` (Supabase → Project Settings → API) e `BACKUP_SENHA` (senha forte, guardada por você). Liberam o backup semanal e os testes online no CI.
+5. **Dados reais nos registros dos setores** (hoje só TESTE): liberar quando quiser usar os catálogos dos setores (chamados, contratos de suporte, obras...) com dados reais.
+6. NF integrada (custo do emissor) e domínio próprio (comprar/apontar o domínio).
 
-## Backlog sugerido (visão de engenharia, produto e UX)
+## Primeiros passos com login real (sugestão)
+1. Minha conta: cadastrar o app autenticador (MFA) e ligar os avisos do navegador.
+2. Sistema → Validação guiada: percorrer os 17 passos e registrar.
+3. Biblioteca → Revisões: decidir as propostas acima.
+4. Sistema → Usuários: dar acesso à equipe (cada pessoa entra pelo link do e-mail).
+5. (Opcional) Minha conta → Acesso do Claude Code: `node scripts/mcp/veos-mcp.mjs --configurar <código>` e o Claude Code passa a ler o VEOS pelo MCP `veos`.
 
-### P0 — fechar a base com segurança
-Implementado e testado em 01/10 (ver ESTADO_ATUAL). Falta só o que depende do Fernando:
-1. **Validação real guiada**: executar Sistema → Validação guiada logado e registrar (falhas viram incidentes).
-2. **E2E no CI**: cadastrar o segredo `SUPABASE_SERVICE_ROLE_KEY`; conferir a primeira execução do job `online`.
-3. **Usuários e acessos**: cadastrar o próprio MFA (Minha conta) e decidir BIB-0046; dar acesso às pessoas da equipe.
-4. **Backup**: cadastrar `BACKUP_SENHA` e rodar `backup-semanal` manualmente uma vez (Actions → Run workflow); testar a abertura do arquivo.
-5. **Saúde do sistema**: acompanhar os alertas SIS_* no Radar (setor Tecnologia).
-
-### P1 — completar o fluxo da empresa (próximo bloco técnico)
-6. **Painel executivo real** (Visão geral): faturamento, margem orçada × realizada, caixa previsto × realizado, funil do CRM, alertas por setor.
-7. **Compras e contas a pagar**: pedido de compra a partir da falta de estoque; recebimento de mercadoria → entrada de estoque; contas a pagar na previsão de caixa (entradas − saídas); exposição de caixa V1.1 calculada pelos pedidos (unificar com "Projetos e caixa").
-8. **Obra e pós-venda**: tarefas do Zoho Projects ligadas ao pedido (checklist de obra); horas lançadas; termo de aceite; garantia e chamados; contratos de manutenção recorrente.
-9. **Margem realizada**: ao concluir o pedido, comparar custo real (compras + horas) com o orçado e gerar aprendizado na Biblioteca.
-10. **Proposta comercial em PDF com a identidade da VOICE** (substitui o PDF do Zoho) e envio por rascunho + botão.
-11. **Notificações**: caixa de saída de mensagens com aprovação humana (e-mail/WhatsApp), resumo diário por setor, aviso no navegador.
-
-### P2 — inteligência e independência do Zoho
-12. **IA dos diretores** (após P-3): respostas e pareceres sugeridos, sempre rotulados como IA, citando registros da Biblioteca e dados; voz na aba IA VEOS; processo das 3 lentes com fontes reais.
-13. **MCP do VEOS** para o Claude Code consultar e operar com as mesmas regras e permissões.
-14. **Desligamento do Zoho por módulo**: catálogo de itens, clientes, orçamentos e CRM próprios; checklist de migração; leitura final e arquivamento.
-15. **Emissão de NF integrada** (depende de serviço e custo: decisão do fundador).
-16. **Domínio próprio** (ex.: veos.voiceambientesinteligentes.com) no GitHub Pages.
-17. **UX**: busca global (Ctrl+K), PWA instalável no celular, estados vazios com orientação, atalhos, acessibilidade, modo de impressão nas telas principais.
-18. **LGPD**: política de retenção dos dados de clientes do espelho, registro de acesso a dados pessoais, termo de uso interno.
+## Backlog sugerido (próximos blocos técnicos)
+1. **Catálogo de itens próprio** (maior dependência do Zoho: base de estoque, compras e pedidos) — ver Sistema → Independência do Zoho.
+2. **Clientes e fornecedores próprios**, unificando Books e CRM.
+3. **Orçamento criado e salvo no VEOS** (a Negociação já calcula) → proposta PDF direto do VEOS.
+4. **Funil comercial próprio** (leads e negócios) e agenda de atividades.
+5. **Saldo bancário/conciliação** (a previsão de caixa não tem saldo inicial) — via extrato OFX/CSV importado, grátis.
+6. **Aviso com a aba fechada** (Web Push com VAPID; gratuito, exige chave nos segredos).
+7. Domínio próprio: quando houver o domínio — `CNAME` em `apps/web`, DNS (CNAME para voiceambientesinteligentes.github.io), incluir a origem em `supabase/functions/api/index.ts` (ORIGENS) e na lista de redirecionamento do Auth do Supabase.
 
 ## Limites do ambiente (para não perder tempo)
 - O classificador bloqueia criar sessão de login de teste e matar processos em massa: teste telas com página local + dados simulados (`dist/_teste/`, servidor `node scripts/serve-web.mjs`, Edge headless na porta 9230) e regras no banco com `tests/banco/*.sql` (transação desfeita).

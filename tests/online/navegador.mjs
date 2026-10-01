@@ -62,11 +62,11 @@ async function percorrer(nome, viewport, telas) {
   }
   if (nome === "computador") {
     // PWA e busca global no site publicado
-    const pwa = await pg.evaluate(async () => {
-      const m = await fetch(document.querySelector('link[rel="manifest"]').href).then((r) => r.json()).catch(() => null);
-      const reg = await navigator.serviceWorker?.getRegistration().catch(() => null);
-      return { manifesto: m?.short_name ?? null, sw: Boolean(reg) };
-    });
+    // o manifesto e lido pelo Playwright (a CSP do site so deixa a pagina chamar a API)
+    const url = await pg.evaluate(() => document.querySelector('link[rel="manifest"]')?.href ?? null);
+    const m = url ? await ctx.request.get(url).then((r) => r.json()).catch(() => null) : null;
+    const sw = await pg.evaluate(async () => Boolean(await navigator.serviceWorker?.getRegistration().catch(() => null)));
+    const pwa = { manifesto: m?.short_name ?? null, sw };
     (pwa.manifesto === "VEOS" && pwa.sw ? oks : falhas).push(`PWA: manifesto ${pwa.manifesto ?? "ausente"}, service worker ${pwa.sw ? "registrado" : "ausente"}`);
     await pg.keyboard.press("Control+k");
     await pg.waitForTimeout(300);
