@@ -114,6 +114,16 @@ try {
   const lp = await req("/functions/v1/api/diretores/perguntas", { token });
   assert.ok(lp.dados.perguntas.some((p) => p.id === pq.dados.id && p.estado === "cancelada")); ok("pergunta ao diretor: criada, listada e cancelada");
 
+  // ferramentas do CFO (somente leitura aqui: o formulario real do fundador nao recebe dado TESTE)
+  const cf = await req("/functions/v1/api/cfo/formulario", { token });
+  assert.equal(cf.status, 200); assert.equal(typeof cf.dados.respostas, "object"); ok("CFO: formulario vigente lido");
+  assert.equal((await req("/functions/v1/api/cfo/formulario", { method: "POST", token, headers: chave(), body: { secao: "inexistente", dados: {} } })).status, 400); ok("CFO: secao invalida recusada");
+  assert.equal((await req("/functions/v1/api/cfo/formulario", { method: "POST", token, headers: chave(), body: { secao: "fixos", dados: { "x y": 1 } } })).status, 400); ok("CFO: campo com nome invalido recusado");
+  const co = await req("/functions/v1/api/cfo/orcamentos", { token });
+  assert.equal(co.status, 200); assert.ok(Array.isArray(co.dados.orcamentos) && co.dados.rbt12); ok(`CFO: orcamentos resumidos (${co.dados.orcamentos.length}) e faturamento 12 meses`);
+  const cp = await req("/functions/v1/api/cfo/produtos", { token });
+  assert.equal(cp.status, 200); assert.ok(cp.dados.produtos.every((x) => Array.isArray(x.compras))); ok(`CFO: produtos com compras (${cp.dados.produtos.length})`);
+
   // caixa de saida e resumo do dia (a mensagem TESTE e descartada no fim)
   const rs = await req("/functions/v1/api/resumo", { token });
   assert.equal(rs.status, 200); assert.equal(rs.dados.resumos.length, 9); ok("resumo do dia dos 9 setores (direcao)");
@@ -149,6 +159,7 @@ try {
   assert.ok(!rv.dados.resumos.some((r) => r.setor === "financas")); ok("vendas nao recebe o resumo do Financeiro (setor restrito)");
   assert.equal((await req(`/functions/v1/api/produtos/${comFoto.id}/preco`, { method: "POST", token, headers: chave(), body: { campo: "preco_venda", valor: "100.00", motivo: "TESTE" } })).status, 403); ok("vendas nao define preco de venda -> 403");
   assert.equal((await req(`/functions/v1/api/diretores/perguntas/${pq.dados.id}/responder`, { method: "POST", token, headers: chave(), body: { resposta: "resposta TESTE longa o bastante", motor: "TESTE" } })).status, 403); ok("vendas nao grava resposta de IA -> 403");
+  assert.equal((await req("/functions/v1/api/cfo/orcamentos", { token })).status, 403); ok("vendas nao abre o diagnostico do CFO -> 403");
 } finally {
   await papel(user.id, "vendas", false); // TESTE fica inativo
 }

@@ -1,6 +1,28 @@
-# Estado atual — 01/10/2026
+# Estado atual — 02/10/2026
 
 **Resumo:** o VEOS está online (site no GitHub Pages + Supabase) com setores vivos, Zoho espelhado e editável, fluxo de pedidos, Biblioteca, e — desde 01/10 — validação guiada, saúde do sistema, gestão de usuários com MFA, exportação, backup semanal criptografado e testes no CI. Falta o uso real guiado pelo Fernando e os segredos do GitHub para backup e testes online no CI. O pipeline V2 do cérebro segue bloqueado no item 30. **Não está 100%.**
+
+## Precificação e diagnóstico do CFO (02/10)
+Pedido do Fernando: preço correto dos produtos pelas skills do CFO, informações para o preço da mão de obra, análise dos pedidos/orçamentos e formulário para o que falta.
+- **Formulário do CFO** (`#/cfo/formulario`, direção e financeiro): 7 seções (impostos e contador, compras e importação, equipe e mão de obra, custos fixos, vendas e recebimento, dívidas, o que aconteceu nos pedidos). Cada gravação é uma nova versão (`formulario_respostas`, append-only; vigente = última por seção).
+- **Preço dos produtos e da hora** (`#/cfo/precos`): preço mínimo pela Política V1, com P = C / [(1 − t)(1 − 2% − alvo) − v] nas metas de 35, 30 e 25%. O custo no Brasil vem do preço pago × fator de importação, nesta ordem: valor informado, último pedido do produto após 12/05/2026, regra do Remessa Conforme com câmbio, mediana de 1,205 até R$ 280 (acima disso, lacuna). Há também o cenário hipotético "compra no CNPJ" (fator 1,928). A tela mostra o custo e o preço da hora (metodologia Sebrae), o preço por serviço (tempo-padrão) e o faturamento mínimo do mês (fixos + pró-labore + parcelas). Sem alíquota informada pelo contador, o imposto é uma SIMULAÇÃO rotulada: Simples Anexo I para produto e III para serviço, pelo RBT12 do Zoho. 2027 fica como lacuna.
+- **Diagnóstico dos orçamentos** (`#/cfo/diagnostico`): sinais por orçamento aceito do Zoho:
+  - desconto fora da alçada;
+  - mão de obra tirada no desconto;
+  - item abaixo do custo ou a preço zero;
+  - item sem custo;
+  - valor global;
+  - sem imposto;
+  - sem condição de pagamento;
+  - indicador no campo vendedor;
+  - MC estimada abaixo de 30% ou 25%.
+- Evidência do fator de importação, medida nos pedidos de um item só: **1,446 antes de 12/05/2026** (II 20% + ICMS 17%) e **1,205 depois** (II 0%, regra que só vale para pessoa física). Isso indica compras no CPF e revenda pelo CNPJ, o que é risco fiscal a levar ao contador.
+- Testes:
+  - domínio: 8 testes, incluindo a paridade com a Calculadora;
+  - telas: 92/92;
+  - banco: `tests/banco/formulario_cfo.sql`, 6/6;
+  - online: e2e_sistema 47/47.
+- Os dados reais da análise ficam só no banco (respostas do CFO e Biblioteca); nada vai para o repositório.
 
 ## P1 e P2 (01/10, noite)
 **Implementado e testado** (banco em transação desfeita, telas simuladas a 1366 e 390 px, online contra o Supabase real, navegador no site publicado)

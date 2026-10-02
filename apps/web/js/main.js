@@ -25,6 +25,7 @@ import { telaProposta, telaPropostas } from "./ui/views/proposta.js";
 import { telaMensagens } from "./ui/views/mensagens.js";
 import { telaIndependencia } from "./ui/views/independencia.js";
 import { telaDiretores } from "./ui/views/diretores.js";
+import { telaDiagnosticoCfo, telaFormularioCfo, telaPrecosCfo } from "./ui/views/cfo.js";
 import { telaProduto, telaProdutos, telaRevisaoProdutos } from "./ui/views/produtos.js";
 import { iniciarAvisos } from "./ui/notificar.js";
 import { abrirBusca, ligarAtalhos } from "./ui/busca_global.js";
@@ -112,6 +113,9 @@ const TELAS = {
   "#/ia": { fn: (root, signal) => renderIA(root, signal), titulo: ["IA VEOS", "Comando por voz"] },
   "#/orbita": { fn: telaOrbita, titulo: ["Órbita", "Os setores em órbita do VEOS"] },
   "#/visao": { fn: (root) => (["direcao", "financas"].includes(eu.papel) ? telaPainel(root) : telaVisao(root)), titulo: ["Visão geral", "Painel executivo: vendas, faturamento, caixa, funil e alertas"] },
+  "#/cfo/diagnostico": { fn: telaDiagnosticoCfo, titulo: ["Diagnóstico dos orçamentos", "CFO: desconto, mão de obra, imposto e margem de cada orçamento aceito"] },
+  "#/cfo/precos": { fn: telaPrecosCfo, titulo: ["Preço dos produtos e da hora", "CFO: preço mínimo pela Política V1 com custo real de importação"] },
+  "#/cfo/formulario": { fn: telaFormularioCfo, titulo: ["Formulário do CFO", "O que o CFO precisa saber de você para preço, mão de obra e dívidas"] },
   "#/cfo": { fn: telaAvisos, titulo: ["Avisos de orçamento", "Vigia: orçamento salvo → avisos do CFO com regra e fonte"] },
   "#/projetos": { fn: telaProjetos, titulo: ["Projetos e caixa", "Setor Financeiro · exposição e cobertura por fase"] },
   "#/pedidos": { fn: telaPedidos, titulo: ["Pedidos", "Orçamento aceito → estoque → parcelas → nota fiscal → recebimento"] },
@@ -223,6 +227,9 @@ function montarMenu() {
       CATALOGO.map((s) => link(`#/setor/${s.id}`, s.sigla, s.nome))),
     h("div", { class: "nav-group", role: "group", "aria-labelledby": "nav-cfo" },
       h("span", { class: "nav-label", id: "nav-cfo" }, "Ferramentas do CFO"),
+      ["direcao", "financas"].includes(eu.papel) ? link("#/cfo/diagnostico", "DIAG", "Diagnóstico dos orçamentos") : null,
+      ["direcao", "financas"].includes(eu.papel) ? link("#/cfo/precos", "PREÇO", "Preço dos produtos e da hora") : null,
+      ["direcao", "financas"].includes(eu.papel) ? link("#/cfo/formulario", "FORM", "Formulário do CFO") : null,
       link("#/negociacao", "NEG", "Negociação ao Vivo"),
       link("#/propostas", "PROP", "Propostas (PDF)"),
       link("#/calculadora", "CALC", "Calculadora de Preços"),
