@@ -30,11 +30,7 @@ Pedido do Fernando: completar o formulário com subdivisões, pesquisar os tempo
 
 **Estoque estratégico** (`#/cfo/estoque`): curva de itens dos projetos orçados (versões contam uma vez), lote sugerido e momento do dólar. A compra só é liberada pelo gatilho do CFO: reserva de 3 meses e nenhuma dívida em atraso.
 
-**Achados:**
-- **Mão de obra:** as horas cobradas batem com o cálculo (83 contra 84 h no Studio We.Arch, com 65% de produtividade).
-- **Produto:** a 2× o custo, com 15% de comissão mais indicação, fica em 29% de margem.
-- **Ponto de equilíbrio:** cerca de R$ 105 mil/mês.
-- **Funil:** 54 projetos orçados em 12 meses, somando R$ 1,44 mi.
+**Achados:** os números da empresa (horas, margem, ponto de equilíbrio, funil) ficam só no banco: resposta do CFO em "Perguntar aos diretores", Plano da VOICE e BIB-0086/0087. Nunca no repositório público.
 
 **Biblioteca:**
 - BIB-0084: tempos (SINAPI e IPVM);

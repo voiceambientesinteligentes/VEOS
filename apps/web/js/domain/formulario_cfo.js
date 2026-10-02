@@ -37,7 +37,7 @@ export const SECOES = [
     campos: [
       grupo("g_origem", "Onde e como compra"),
       { id: "comprador", rotulo: "As compras no AliExpress são feitas no CPF ou no CNPJ?", tipo: "opcao", opcoes: [["cpf", "CPF (pessoa física)"], ["cnpj", "CNPJ da VOICE"], ["ambos", "Os dois"]] },
-      { id: "preco_inclui_impostos", rotulo: "O \"preço unitário pago\" da planilha já inclui os impostos de importação?", tipo: "opcao", opcoes: SN, ajuda: "Confira num pedido: no de 28/09/2026 o preço unitário é R$ 220,93 e o total pago R$ 266,23 (+20,5%)." },
+      { id: "preco_inclui_impostos", rotulo: "O \"preço unitário pago\" da planilha já inclui os impostos de importação?", tipo: "opcao", opcoes: SN, ajuda: "Confira num pedido do AliExpress: compare o preço unitário com o total pago (com impostos)." },
       { id: "fator_manual", rotulo: "Se souber: quanto o produto custa a mais até chegar (ex.: 1,20 = 20% a mais)", tipo: "numero", ajuda: "Em branco = o VEOS mede nos seus pedidos." },
       { id: "perdas_pct", rotulo: "Perdas: % de peças com defeito, extravio ou devolução", tipo: "pct" },
       { id: "prazo_entrega_dias", rotulo: "Prazo médio de entrega das importações (dias)", tipo: "numero" },
