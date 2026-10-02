@@ -26,6 +26,7 @@ import { telaMensagens } from "./ui/views/mensagens.js";
 import { telaIndependencia } from "./ui/views/independencia.js";
 import { telaDiretores } from "./ui/views/diretores.js";
 import { telaDiagnosticoCfo, telaFormularioCfo, telaPrecosCfo } from "./ui/views/cfo.js";
+import { telaEstoqueEstrategico, telaPlano } from "./ui/views/estrategia.js";
 import { telaProduto, telaProdutos, telaRevisaoProdutos } from "./ui/views/produtos.js";
 import { iniciarAvisos } from "./ui/notificar.js";
 import { abrirBusca, ligarAtalhos } from "./ui/busca_global.js";
@@ -113,6 +114,8 @@ const TELAS = {
   "#/ia": { fn: (root, signal) => renderIA(root, signal), titulo: ["IA VEOS", "Comando por voz"] },
   "#/orbita": { fn: telaOrbita, titulo: ["Órbita", "Os setores em órbita do VEOS"] },
   "#/visao": { fn: (root) => (["direcao", "financas"].includes(eu.papel) ? telaPainel(root) : telaVisao(root)), titulo: ["Visão geral", "Painel executivo: vendas, faturamento, caixa, funil e alertas"] },
+  "#/plano": { fn: telaPlano, titulo: ["Plano da VOICE", "Metas, ações e rotinas propostas pelos diretores e decididas por você"] },
+  "#/cfo/estoque": { fn: telaEstoqueEstrategico, titulo: ["Estoque estratégico", "Itens mais usados, lote sugerido e o momento do dólar"] },
   "#/cfo/diagnostico": { fn: telaDiagnosticoCfo, titulo: ["Diagnóstico dos orçamentos", "CFO: desconto, mão de obra, imposto e margem de cada orçamento aceito"] },
   "#/cfo/precos": { fn: telaPrecosCfo, titulo: ["Preço dos produtos e da hora", "CFO: preço mínimo pela Política V1 com custo real de importação"] },
   "#/cfo/formulario": { fn: telaFormularioCfo, titulo: ["Formulário do CFO", "O que o CFO precisa saber de você para preço, mão de obra e dívidas"] },
@@ -195,6 +198,7 @@ function montarMenu() {
     h("div", { class: "nav-group", role: "group", "aria-labelledby": "nav-cmd" },
       h("span", { class: "nav-label", id: "nav-cmd" }, "Comando"),
       ["direcao", "financas"].includes(eu.papel) ? link("#/visao", "▦", "Visão geral") : null,
+      link("#/plano", "★", "Plano da VOICE"),
       link("#/orbita", "◉", "Órbita"),
       link("#/radar", "◈", "Radar"),
       link("#/mensagens", "✉", "Caixa de saída"),
@@ -230,6 +234,7 @@ function montarMenu() {
       ["direcao", "financas"].includes(eu.papel) ? link("#/cfo/diagnostico", "DIAG", "Diagnóstico dos orçamentos") : null,
       ["direcao", "financas"].includes(eu.papel) ? link("#/cfo/precos", "PREÇO", "Preço dos produtos e da hora") : null,
       ["direcao", "financas"].includes(eu.papel) ? link("#/cfo/formulario", "FORM", "Formulário do CFO") : null,
+      ["direcao", "financas"].includes(eu.papel) ? link("#/cfo/estoque", "ESTQ", "Estoque estratégico") : null,
       link("#/negociacao", "NEG", "Negociação ao Vivo"),
       link("#/propostas", "PROP", "Propostas (PDF)"),
       link("#/calculadora", "CALC", "Calculadora de Preços"),

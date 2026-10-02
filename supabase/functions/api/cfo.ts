@@ -5,6 +5,7 @@
 //   POST /cfo/formulario                 {secao, dados}  -> nova versao da secao (historico preservado)
 //   GET  /cfo/orcamentos                 orcamentos do espelho do Zoho resumidos (linhas com tipo e custo do item)
 //   GET  /cfo/produtos                   catalogo com compras (para o fator de importacao) e preco atual no Zoho
+//   GET  /cfo/cambio                     dolar PTAX (Banco Central) dos ultimos 45 dias
 import { HttpError, lerCorpo, type Membro, registrarAcesso, servico } from "../_shared/banco.ts";
 import { rbt12 } from "../_shared/zoho.ts";
 
@@ -82,6 +83,7 @@ export async function rotearCfo(req: Request, partes: string[], eu: Membro) {
     await registrarAcesso(eu.user_id, "cfo:diagnostico:orcamentos");
     return { orcamentos, rbt12: faturamento, fonte: "Espelho do Zoho Books no VEOS (orçamentos e cadastro de itens)" };
   }
+  if (a === "cambio" && !post) return await cambio();
   if (a === "produtos" && !post) {
     const [produtos, compras, vinculos] = await Promise.all([
       servico("/rest/v1/produtos?situacao=in.(ativo,revisar)&tipo=eq.produto&select=id,codigo,nome,categoria,situacao,custo:custo_ultimo,custo_data,preco_venda,unidade&order=codigo&limit=5000"),
@@ -109,4 +111,20 @@ export async function rotearCfo(req: Request, partes: string[], eu: Membro) {
     };
   }
   throw new HttpError(404, "rota inexistente");
+}
+
+// Dolar PTAX do Banco Central (API publica Olinda). Datas no formato MM-DD-AAAA entre aspas simples.
+async function cambio() {
+  const mdy = (d: Date) => `${String(d.getUTCMonth() + 1).padStart(2, "0")}-${String(d.getUTCDate()).padStart(2, "0")}-${d.getUTCFullYear()}`;
+  const fim = new Date(), ini = new Date(Date.now() - 45 * 864e5);
+  const url = `https://olinda.bcb.gov.br/olinda/servico/PTAX/versao/v1/odata/CotacaoDolarPeriodo(dataInicial=@dataInicial,dataFinalCotacao=@dataFinalCotacao)?@dataInicial='${mdy(ini)}'&@dataFinalCotacao='${mdy(fim)}'&$top=100&$format=json`;
+  try {
+    const r = await fetch(url, { signal: AbortSignal.timeout(8000) });
+    if (!r.ok) throw new Error(String(r.status));
+    const d = await r.json();
+    const serie = (d.value ?? []).map((x: { cotacaoVenda: number; cotacaoCompra: number; dataHoraCotacao: string }) => ({ data: String(x.dataHoraCotacao).slice(0, 10), venda: x.cotacaoVenda, compra: x.cotacaoCompra }));
+    return { serie, fonte: "Banco Central do Brasil · PTAX (API Olinda)", ok: serie.length > 0 };
+  } catch (e) {
+    return { serie: [], fonte: "Banco Central do Brasil · PTAX (API Olinda)", ok: false, erro: `cotação indisponível agora (${(e as Error).message})` };
+  }
 }

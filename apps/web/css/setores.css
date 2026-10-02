@@ -299,3 +299,13 @@ a.pill { text-decoration: none; }
 .lista-linha { border: 1px solid var(--line); }
 .cfo-orc > summary { cursor: pointer; display: flex; flex-wrap: wrap; gap: var(--s2); align-items: center; overflow-wrap: anywhere; }
 .cfo-orc[open] > summary { margin-bottom: var(--s3); }
+.cfo-grupo { font-size: 0.95rem; margin: var(--s3) 0 0; color: var(--text-1, inherit); border-bottom: 1px solid var(--line); padding-bottom: 4px; }
+.lista-sugestao { border-style: dashed; }
+.cfo-largo { grid-column: 1 / -1; }
+.cfo-analise .stat-context { overflow-wrap: anywhere; }
+.cfo-pontos { margin: 0; padding-left: 1.2em; }
+.plano-dados { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 2px var(--s3); margin: 0; }
+.plano-dados dt { color: var(--text-2, inherit); font-size: 0.85rem; }
+.plano-dados dd { margin: 0; overflow-wrap: anywhere; }
+.plano-cancelado { opacity: 0.6; }
+.plano-feito { border-left: 3px solid var(--ok, #2fa37a); }

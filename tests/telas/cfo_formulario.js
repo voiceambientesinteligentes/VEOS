@@ -11,7 +11,14 @@ api.cfoSalvarSecao = async (secao, dados) => { salvos.push({ secao, dados }); re
 rodar(async (v) => {
   await telaFormularioCfo(v);
   const t = v.textContent;
-  for (const s of ["1. Impostos e contador", "6. Dívidas e parcelamentos", "7. O que aconteceu nos pedidos", "EST-T001"]) if (!t.includes(s)) throw new Error(`falta: ${s}`);
+  for (const s of ["1. Impostos e contador", "4. Tempos de serviço", "5. Você, Fernando", "8. Dívidas e caixa", "9. O que aconteceu nos orçamentos", "EST-T001", "Dólar e momento da compra", "convertido da versão anterior"]) if (!t.includes(s)) throw new Error(`falta: ${s}`);
+  // lista antiga de tempos convertida para o formato estruturado
+  const tempos = v.querySelector("#sec-tempos");
+  if (tempos.querySelectorAll(".lista-linha").length !== 5 || tempos.querySelector("[data-sub=dispositivo]").value !== "interruptor") throw new Error("tempos não convertidos");
+  if (![...tempos.querySelectorAll("[data-sub=obs]")].some((x) => x.value.includes("sem unidade no original"))) throw new Error("tempo sem unidade não sinalizado");
+  [...tempos.querySelectorAll("button")].find((b) => b.textContent.includes("Sugestões da pesquisa")).click();
+  if (tempos.querySelectorAll(".lista-sugestao").length < 10) throw new Error("sugestões não entraram");
+  if (v.querySelector("#f-voce-retirada_media_real").value !== "18000") throw new Error("retirada não migrou para a seção 5");
   if (v.querySelector("[data-sub=nome]")?.value !== "Técnico TESTE") throw new Error("lista da equipe não carregou");
   if (t.includes("EST-T003")) throw new Error("orçamento recusado não entra na seção 7");
   // numero invalido e recusado; valido e gravado
@@ -41,4 +48,14 @@ rodar(async (v) => {
   v.querySelector("#form-pedidos").requestSubmit();
   await espera();
   if (salvos[2]?.dados.por_orcamento?.["EST-T001"]?.recebido !== "10.000") throw new Error(JSON.stringify(salvos[2]));
+  // numero invalido dentro de uma lista e recusado
+  const lt = tempos.querySelector(".lista-linha [data-sub=tempo]");
+  lt.value = "muito";
+  v.querySelector("#form-tempos").requestSubmit();
+  await espera();
+  if (salvos.length !== 3 || !tempos.textContent.includes("sem número")) throw new Error("lista com número inválido foi gravada");
+  lt.value = "15";
+  v.querySelector("#form-tempos").requestSubmit();
+  await espera();
+  if (salvos[3]?.secao !== "tempos" || salvos[3].dados.itens.length < 15) throw new Error(JSON.stringify(salvos[3]).slice(0, 200));
 });

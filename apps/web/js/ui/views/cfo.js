@@ -4,8 +4,10 @@
 import { api } from "../../data/api.js";
 import { diagnosticoParams, impostosSimulados } from "../../domain/cfo_cenarios.js";
 import { resumir, SINAIS } from "../../domain/diagnostico.js";
+import { analisarOrcamento } from "../../domain/analise_orcamento.js";
+import { projetos } from "../../domain/estoque_sugerido.js";
 import { custoNoBrasil, FAIXAS, faixa, faturamentoMinimo, fatorProduto, margem, precoPolitica } from "../../domain/formacao_preco.js";
-import { numeroBR, parametros, progresso, SECOES } from "../../domain/formulario_cfo.js";
+import { comCompatibilidade, numeroBR, parametros, progresso, SECOES, SUGESTOES_TEMPOS, temTextoExtra } from "../../domain/formulario_cfo.js";
 import { formatBRL, formatDateTime } from "../../domain/format.js";
 import { clear, errorNotice, field, h, method, panel, stamp, stat, table } from "../dom.js";
 
@@ -25,21 +27,36 @@ function controle(c, id, valor) {
 }
 const rotulo = (c) => `${c.rotulo}${c.tipo === "pct" && !/%/.test(c.rotulo) ? " (%)" : ""}`;
 
-function lista(c, prefixo, valores = []) {
+const NUMERICOS = ["numero", "moeda", "pct"];
+
+function lista(c, prefixo, valores = [], { sugestoes = null } = {}) {
   const corpo = h("div", { class: "stack-s" });
+  let seq = 0;
   const linha = (v = {}) => {
-    const n = corpo.children.length;
-    const el = h("div", { class: "panel panel-tight lista-linha" });
+    const n = seq++;
+    const el = h("div", { class: `panel panel-tight lista-linha${v.origem === "pesquisa" ? " lista-sugestao" : ""}` });
     const remover = h("button", { class: "btn btn-ghost btn-mini", type: "button" }, "Remover");
     remover.addEventListener("click", () => el.remove());
-    el.append(h("div", { class: "form-grid" }, c.campos.map((s) => { const id = `${prefixo}-${n}-${s.id}`; const ctl = controle(s, id, v[s.id]); ctl.dataset.sub = s.id; return field(id, rotulo(s), ctl, s.ajuda); })), h("div", { class: "row" }, remover));
+    el.append(h("div", { class: "form-grid" }, c.campos.map((s) => { const id = `${prefixo}-${n}-${s.id}`; const ctl = controle(s, id, v[s.id]); ctl.dataset.sub = s.id; ctl.dataset.tipo = s.tipo; return field(id, rotulo(s), ctl, s.ajuda); })), h("div", { class: "row" }, v.origem === "pesquisa" ? stamp("sugestão da pesquisa: confirme ou ajuste", "warn") : null, remover));
     corpo.append(el);
   };
   for (const v of valores) linha(v);
   const add = h("button", { class: "btn btn-ghost", type: "button" }, "+ Adicionar linha");
   add.addEventListener("click", () => linha());
-  const el = h("div", { class: "stack-s", dataset: { lista: c.id } }, h("strong", null, c.rotulo), corpo, h("div", { class: "row" }, add));
+  const botoes = h("div", { class: "row" }, add);
+  if (sugestoes) {
+    const sug = h("button", { class: "btn btn-ghost", type: "button" }, `+ Sugestões da pesquisa (${sugestoes.length})`);
+    sug.addEventListener("click", () => {
+      const tem = new Set([...corpo.querySelectorAll("[data-sub=descricao]")].map((x) => x.value.trim().toLowerCase()));
+      let n = 0;
+      for (const x of sugestoes) if (!tem.has(x.descricao.toLowerCase())) { linha(x); n += 1; }
+      sug.textContent = n ? `${n} sugestões adicionadas: confira e salve` : "Sugestões já estão na lista";
+    });
+    botoes.append(sug);
+  }
+  const el = h("div", { class: "stack-s", dataset: { lista: c.id } }, h("strong", null, c.rotulo), corpo, botoes);
   el.ler = () => [...corpo.children].map((l) => Object.fromEntries([...l.querySelectorAll("[data-sub]")].map((x) => [x.dataset.sub, x.value.trim()]))).filter((o) => Object.values(o).some(Boolean));
+  el.invalidos = () => [...corpo.querySelectorAll("[data-sub]")].filter((x) => NUMERICOS.includes(x.dataset.tipo) && x.value.trim() && numeroBR(x.value) === null);
   return el;
 }
 
@@ -50,47 +67,71 @@ function porOrcamento(c, valores = {}, aceitos = []) {
     const v = valores[o.numero] ?? {};
     el.append(h("details", { class: "panel panel-tight cfo-orc", dataset: { numero: o.numero } },
       h("summary", null, `${o.numero} · ${dataBR(o.data)} · ${o.cliente} · ${brl(o.total)}`, o.status === "draft" ? stamp("rascunho no Zoho", "neutral") : null, Object.keys(v).length ? stamp("respondido", "ok") : null),
-      h("div", { class: "form-grid" }, c.campos.map((s) => { const id = `po-${o.numero}-${s.id}`; const ctl = controle(s, id, v[s.id]); ctl.dataset.sub = s.id; return field(id, s.rotulo, ctl); }))));
+      h("div", { class: "form-grid" }, c.campos.map((s) => { const id = `po-${o.numero}-${s.id}`; const ctl = controle(s, id, v[s.id]); ctl.dataset.sub = s.id; ctl.dataset.tipo = s.tipo; return field(id, s.rotulo, ctl); }))));
   }
   el.ler = () => Object.fromEntries([...el.querySelectorAll(".cfo-orc")].map((d) => [d.dataset.numero, Object.fromEntries([...d.querySelectorAll("[data-sub]")].map((x) => [x.dataset.sub, x.value.trim()]).filter(([, x]) => x))]).filter(([, o]) => Object.keys(o).length));
+  el.invalidos = () => [...el.querySelectorAll("[data-sub]")].filter((x) => NUMERICOS.includes(x.dataset.tipo) && x.value.trim() && numeroBR(x.value) === null);
   return el;
 }
 
+/** Campos da secao na ordem, quebrando a grade nos grupos (subdivisoes). */
+function montarCampos(s, d, aceitos) {
+  const ctls = [];
+  const blocos = [];
+  let grade = null;
+  for (const c of s.campos) {
+    if (c.tipo === "grupo") { grade = null; blocos.push(h("h3", { class: "cfo-grupo" }, c.rotulo)); continue; }
+    if (c.tipo === "lista" || c.tipo === "orcamentos") {
+      grade = null;
+      const el = c.tipo === "lista" ? lista(c, `${s.id}-${c.id}`, d[c.id] ?? [], { sugestoes: s.id === "tempos" && c.id === "itens" ? SUGESTOES_TEMPOS : null }) : porOrcamento(c, d[c.id] ?? {}, aceitos);
+      ctls.push({ c, el });
+      blocos.push(el);
+      continue;
+    }
+    const id = `f-${s.id}-${c.id}`;
+    const ctl = controle(c, id, d[c.id]);
+    ctls.push({ c, ctl, id });
+    if (!grade) { grade = h("div", { class: "form-grid" }); blocos.push(grade); }
+    const lido = NUMERICOS.includes(c.tipo) && temTextoExtra(d[c.id]) ? `Lido como ${String(numeroBR(d[c.id])).replace(".", ",")}` : null;
+    grade.append(field(id, rotulo(c), ctl, [c.ajuda, lido].filter(Boolean).join(" · ") || null));
+  }
+  return { ctls, blocos };
+}
+
 export async function telaFormularioCfo(root) {
-  const [{ respostas }, orc] = await Promise.all([api.cfoFormulario(), api.cfoOrcamentos().catch(() => ({ orcamentos: [] }))]);
-  // Secao 7: aceitos e tambem os rascunhos desde 2025 (o Zoho nao diz quais fecharam)
+  const [{ respostas: brutas }, orc] = await Promise.all([api.cfoFormulario(), api.cfoOrcamentos().catch(() => ({ orcamentos: [] }))]);
+  const respostas = comCompatibilidade(brutas);
+  // Secao 9: aceitos e tambem os rascunhos desde 2025 (o Zoho nao diz quais fecharam)
   const aceitos = orc.orcamentos.filter((o) => ["accepted", "invoiced"].includes(o.status) || (o.status === "draft" && String(o.data) >= "2025-01-01"));
   const indice = h("ol", { class: "list-plain stack-s" });
-  const desenharIndice = () => clear(indice).append(progresso(respostas).map((p) => h("li", { class: "row" },
+  const desenharIndice = () => clear(indice).append(...progresso(respostas).map((p) => h("li", { class: "row" },
     h("a", { href: `#/cfo/formulario?secao=${p.id}`, "data-secao": p.id }, p.titulo),
     stamp(`${p.feitos}/${p.total}`, p.feitos === p.total ? "ok" : p.feitos ? "warn" : "neutral"),
-    p.em ? h("span", { class: "field-hint" }, `salvo por ${p.por} em ${formatDateTime(p.em)}`) : h("span", { class: "field-hint" }, "não preenchido"))));
+    p.convertido ? h("span", { class: "field-hint" }, "convertido da versão anterior: confira e salve") : p.em ? h("span", { class: "field-hint" }, `salvo por ${p.por} em ${formatDateTime(p.em)}`) : h("span", { class: "field-hint" }, "não preenchido"))));
   desenharIndice();
   indice.addEventListener("click", (e) => { const a = e.target.closest("[data-secao]"); if (!a) return; e.preventDefault(); document.getElementById(`sec-${a.dataset.secao}`)?.scrollIntoView({ behavior: "smooth" }); });
 
   const secoes = SECOES.map((s) => {
     const d = respostas[s.id]?.dados ?? {};
-    const ctls = s.campos.map((c) => {
-      if (c.tipo === "lista") return { c, el: lista(c, `${s.id}-${c.id}`, d[c.id] ?? []) };
-      if (c.tipo === "orcamentos") return { c, el: porOrcamento(c, d[c.id] ?? {}, aceitos) };
-      const id = `f-${s.id}-${c.id}`;
-      return { c, ctl: controle(c, id, d[c.id]), id };
-    });
+    const { ctls, blocos } = montarCampos(s, d, aceitos);
     const saida = h("div", { role: "status" });
     const salvar = h("button", { class: "btn btn-primary", type: "submit" }, "Salvar esta seção");
-    const form = h("form", { class: "stack-s", novalidate: true, id: `form-${s.id}` },
-      h("div", { class: "form-grid" }, ctls.filter((x) => x.ctl).map((x) => field(x.id, rotulo(x.c), x.ctl, x.c.ajuda))),
-      ctls.filter((x) => x.el).map((x) => x.el),
-      h("div", { class: "row" }, salvar), saida);
+    const form = h("form", { class: "stack-s", novalidate: true, id: `form-${s.id}` }, blocos, h("div", { class: "row" }, salvar), saida);
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
       clear(saida);
       const dados = {};
       for (const x of ctls) {
-        if (x.el) { const v = x.el.ler(); if (Array.isArray(v) ? v.length : Object.keys(v).length) dados[x.c.id] = v; continue; }
+        if (x.el) {
+          const ruins = x.el.invalidos();
+          if (ruins.length) { ruins[0].focus(); return saida.append(errorNotice(`"${x.c.rotulo}": há ${ruins.length} campo(s) numérico(s) sem número (ex.: 1.234,56 ou 18).`)); }
+          const v = x.el.ler();
+          if (Array.isArray(v) ? v.length : Object.keys(v).length) dados[x.c.id] = v;
+          continue;
+        }
         const v = x.ctl.value.trim();
         if (!v) continue;
-        if (["numero", "moeda", "pct"].includes(x.c.tipo) && numeroBR(v) === null) return saida.append(errorNotice(`"${x.c.rotulo}": digite só o número (ex.: 1.234,56).`));
+        if (NUMERICOS.includes(x.c.tipo) && numeroBR(v) === null) return saida.append(errorNotice(`"${x.c.rotulo}": digite só o número (ex.: 1.234,56).`));
         dados[x.c.id] = v;
       }
       salvar.disabled = true;
@@ -102,12 +143,14 @@ export async function telaFormularioCfo(root) {
       } catch (err) { saida.append(errorNotice(err.message)); } finally { salvar.disabled = false; }
     });
     return h("section", { class: "panel stack-s", id: `sec-${s.id}` },
-      h("div", { class: "panel-head" }, h("div", null, h("h2", { class: "h3-like" }, s.titulo), h("p", null, s.porque))), form);
+      h("div", { class: "panel-head" }, h("div", null, h("h2", { class: "h3-like" }, s.titulo), h("p", null, s.porque))),
+      respostas[s.id]?.convertido ? h("p", { class: "notice notice-warn" }, "Preenchido a partir das suas respostas anteriores (novo formato). Confira e clique em Salvar para confirmar.") : null,
+      form);
   });
   root.append(
-    panel({ title: "Formulário do CFO", subtitle: "O que preciso saber de você para calcular o preço certo dos produtos e da mão de obra e fechar o diagnóstico de pedidos, impostos e dívidas. Preencha no seu ritmo: cada seção salva separada e guarda o histórico." },
+    panel({ title: "Formulário do CFO", subtitle: "O que preciso saber de você para o preço certo dos produtos e da mão de obra, o diagnóstico e o plano. Preencha no seu ritmo: cada seção salva separada e guarda o histórico." },
       indice,
-      method("Como estas respostas são usadas", "Impostos, cartão, comissão e importação entram na fórmula de preço da Política V1 (tela Preço dos produtos).", "Equipe e produtividade dão o custo da hora; custos fixos, pró-labore e parcelas dão o faturamento mínimo por mês.", "Os pedidos completam o diagnóstico com o que foi de fato recebido e gasto.", "Não sabe um campo? Deixe em branco: ele aparece como lacuna, nunca como zero.")),
+      method("Como estas respostas são usadas", "Impostos, cartão, comissão e importação entram na fórmula de preço da Política V1 (tela Preço dos produtos).", "Equipe, produtividade e tempos de serviço dão o custo da hora e as horas de cada orçamento (Diagnóstico).", "Custos fixos, sua retirada e as parcelas dão o faturamento mínimo e as metas do Plano da VOICE.", "Não sabe um campo? Deixe em branco: ele aparece como lacuna, nunca como zero.")),
     ...secoes,
   );
   const alvo = new URLSearchParams(location.hash.split("?")[1] ?? "").get("secao");
@@ -123,8 +166,11 @@ function painelLacunas(p) {
 
 // ================================================================ precos dos produtos
 export async function telaPrecosCfo(root) {
-  const [{ respostas }, { produtos }, orc] = await Promise.all([api.cfoFormulario(), api.cfoProdutos(), api.cfoOrcamentos().catch(() => ({ rbt12: null }))]);
+  const [{ respostas }, { produtos }, orc, cb] = await Promise.all([api.cfoFormulario(), api.cfoProdutos(), api.cfoOrcamentos().catch(() => ({ rbt12: null })), api.cfoCambio().catch(() => ({ serie: [] }))]);
   const p = parametros(respostas);
+  // dolar do dia (PTAX do Banco Central) + a folga que voce definiu para a variacao ate a compra
+  const ptax = cb.serie?.length ? cb.serie[cb.serie.length - 1] : null;
+  const cambio = ptax ? Math.round(ptax.venda * (1 + (p.margemCambial ?? 0) / 100) * 10000) / 10000 : null;
   const sim = impostosSimulados(orc.rbt12);
   const cenario = h("select", { class: "select", id: "cp-cenario" }, h("option", { value: "2026" }, "Venda até 31/12/2026 (Simples)"), h("option", { value: "2027" }, "Venda a partir de 2027 (fora do Simples)"));
   const tIn = h("input", { class: "input num", id: "cp-t", inputmode: "decimal", autocomplete: "off" });
@@ -154,9 +200,10 @@ export async function telaPrecosCfo(root) {
   function desenhar() {
     const t = numeroBR(tIn.value), v = numeroBR(vIn.value) ?? 0, ts = numeroBR(tsIn.value);
     const q = busca.value.trim().toLowerCase();
-    let abaixoMin = 0, comZoho = 0, semPreco = 0;
+    let abaixoMin = 0, comZoho = 0, semPreco = 0, conflitos = 0;
     const linhas = produtos.map((x) => {
-      const f = fatorProduto(x, { ...p.fator, compra: compra.value });
+      const f = fatorProduto(x, { ...p.fator, cambio, compra: compra.value });
+      if (f.conflito) conflitos += 1;
       const custo = f.fator === null ? null : custoNoBrasil(x.custo, { fator: f.fator, perdas: p.perdas });
       const precos = Object.fromEntries(FAIXAS.map(([k, a]) => [k, t === null ? null : precoPolitica(custo, { t, v, alvo: a })]));
       const atual = x.preco_venda ?? x.zoho.find((z) => z.venda)?.venda ?? null;
@@ -170,7 +217,9 @@ export async function telaPrecosCfo(root) {
       stat("Produtos", String(produtos.length), "ativos e a revisar no catálogo"),
       stat("Com preço atual", String(comZoho), "preço de venda no VEOS ou item igual no Zoho"),
       stat("Preço atual abaixo do mínimo", String(abaixoMin), "MC abaixo de 30% com custo de importação"),
-      stat("Sem preço calculável", String(semPreco), t === null ? "falta a alíquota" : "falta custo ou câmbio (veja a coluna fator)"));
+      stat("Sem preço calculável", String(semPreco), t === null ? "falta a alíquota" : "falta custo ou câmbio (veja a coluna fator)"),
+      stat("Dólar usado", cambio ? `R$ ${String(cambio).replace(".", ",")}` : "—", ptax ? `PTAX de ${dataBR(ptax.data)} (Banco Central)${p.margemCambial ? ` + ${pct(p.margemCambial)} de folga` : " · sem folga cambial definida"}` : "cotação indisponível agora"));
+    if (conflitos) resumo.append(h("p", { class: "notice notice-warn cfo-largo" }, `Você informou que o preço da planilha já inclui os impostos de importação, mas em ${conflitos} produto(s) o total pago no pedido foi maior que o preço unitário (em geral +20,5%). Usei o valor real do pedido. Confira um pedido no AliExpress e ajuste a seção 2 se for o caso.`));
     const vis = linhas.filter(({ x }) => !q || `${x.codigo} ${x.nome}`.toLowerCase().includes(q));
     clear(tabela).append(table({
       caption: `Preço mínimo por produto (Política V1: MC sobre a receita líquida, com provisão de 2%) · ${vis.length} de ${linhas.length}`,
@@ -225,7 +274,7 @@ export async function telaPrecosCfo(root) {
   root.append(
     panel({ title: "Preço correto dos produtos", subtitle: "Ricardo (CFO): o preço sai da margem de contribuição da Política V1 sobre o custo real no Brasil (preço pago × fator de importação), não de um multiplicador fixo." },
       painelLacunas(p),
-      h("div", { class: "form-grid" }, field(cenario.id, "Quando a venda será faturada", cenario), field(tIn.id, "Imposto sobre produto (%)", tIn, origemT), field(tsIn.id, "Imposto sobre serviço (%)", tsIn, origemTs), field(vIn.id, "Cartão + comissão + indicação (% do preço)", vIn, p.cartaoInformado ? "do formulário" : "LACUNA: sem taxa de cartão informada, está 0%"), field(compra.id, "Origem da compra", compra, "O imposto de importação zero até US$ 50 vale só para pessoa física")),
+      h("div", { class: "form-grid" }, field(cenario.id, "Quando a venda será faturada", cenario), field(tIn.id, "Imposto sobre produto (%)", tIn, origemT), field(tsIn.id, "Imposto sobre serviço (%)", tsIn, origemTs), field(vIn.id, "Cartão + comissão + indicação (% do preço)", vIn, p.cartaoInformado ? `do formulário: cartão ${pct(p.vDetalhe.cartao)} + comissão ${pct(p.vDetalhe.comissao)} + indicação ${pct(p.vDetalhe.indicacao)}` : "LACUNA: sem taxa de cartão informada, está 0%"), field(compra.id, "Origem da compra", compra, "O imposto de importação zero até US$ 50 vale só para pessoa física")),
       field(busca.id, "Filtrar", busca), resumo, tabela,
       method("Como o preço é calculado", "Preço mínimo P = Custo ÷ [(1 − imposto) × (1 − 2% − margem) − despesas variáveis]: com esse preço a margem de contribuição oficial fica exatamente na meta (35%), no mínimo normal (30%) ou no piso (25%, só com a direção).",
         "Custo no Brasil = preço pago no AliExpress × fator de importação × (1 + perdas). O fator vem, nesta ordem, do formulário, do pedido mais recente do próprio produto (após 12/05/2026), da regra do Remessa Conforme com o seu câmbio, ou da mediana dos seus pedidos (1,205, só até R$ 280; acima, sem câmbio, fica lacuna).",
@@ -246,6 +295,7 @@ export async function telaDiagnosticoCfo(root) {
   const r = resumir(orc.orcamentos, params);
   const pedidos = respostas.pedidos?.dados?.por_orcamento ?? {};
   root.append(
+    painelRecentes(orc.orcamentos, p, params, simulado),
     panel({ title: "Diagnóstico dos orçamentos", subtitle: `Ricardo (CFO): ${r.quantidade} orçamentos aceitos no Zoho Books, conferidos contra a Política V1. ${orc.fonte}.` },
       h("div", { class: "cfo-stats" },
         stat("Vendido (aceitos)", brl(r.total), `${r.quantidade} orçamentos · conversão ${pct(r.conversaoPct)} dos decididos`),
@@ -253,7 +303,7 @@ export async function telaDiagnosticoCfo(root) {
         stat("Acima da alçada", `${r.acimaAlcada} de ${r.quantidade}`, "desconto acima de 5%"),
         stat("Mão de obra dada", brl(r.maoDeObraDada.servicos), `${r.maoDeObraDada.orcamentos} orçamentos com o serviço tirado no desconto`)),
       simulado ? h("p", { class: "notice notice-warn" }, texto, " ", linkForm("Informar as alíquotas reais")) : null,
-      h("p", { class: "field-hint" }, "Este diagnóstico só vê os orçamentos: o Zoho não tem faturas, recebimentos nem contas lançadas. O que foi realmente recebido e gasto entra pela seção 7 do formulário."),
+      h("p", { class: "field-hint" }, "Este diagnóstico só vê os orçamentos: o Zoho não tem faturas, recebimentos nem contas lançadas. O que foi realmente recebido e gasto entra pela seção 9 do formulário."),
     ),
     panel({ title: "O que está dando errado", subtitle: "Sinais encontrados nos orçamentos aceitos, do mais grave para o menos grave." },
       h("ul", { class: "list-plain stack-s" }, r.sinais.map((s) => h("li", { class: "row" }, stamp(`${s.n}×`, SINAIS[s.id].peso >= 3 ? "risk" : SINAIS[s.id].peso === 2 ? "warn" : "neutral"), h("span", null, s.texto))))),
@@ -272,4 +322,47 @@ export async function telaDiagnosticoCfo(root) {
       "Margem bruta dos produtos = (venda dos produtos − custo de compra do item no Zoho) ÷ venda, antes de desconto e imposto. MC estimada = fórmula oficial (receita líquida − custos − provisão de 2%), com mão de obra a custo-hora do formulário quando houver.",
       "Custo de compra dos serviços no Zoho é R$ 1,00 (sem base): por isso a mão de obra só entra com o custo-hora do formulário."),
   );
+}
+
+// ================================================================ ultimos orcamentos (analise detalhada)
+const PROD_PESQUISA = 65;
+
+/** Analise detalhada dos ultimos projetos (versoes do mesmo cliente contam uma vez) ou de um numero escolhido. */
+function painelRecentes(orcamentos, p, params, simulado) {
+  const recentes = projetos(orcamentos).slice(0, 4);
+  const escolha = h("select", { class: "select", id: "dg-orc" }, h("option", { value: "" }, "Os 4 últimos projetos"),
+    orcamentos.slice().sort((a, b) => String(b.data).localeCompare(String(a.data))).slice(0, 60).map((o) => h("option", { value: o.numero }, `${o.numero} · ${dataBR(o.data)} · ${o.cliente}`)));
+  const corpo = h("div", { class: "stack" });
+  const base = { ...params, produtividade: p.produtividade, comissionamento: p.comissionamento, entregaHoras: p.entregaHoras, metrosPorPonto: p.metrosPorPonto };
+  const produtividadeAlta = p.produtividade !== null && p.produtividade >= 90;
+  function cartao(o) {
+    const a = analisarOrcamento(o, base, p.tempos);
+    const alt = produtividadeAlta ? analisarOrcamento(o, { ...base, produtividade: PROD_PESQUISA }, p.tempos) : null;
+    const versoes = orcamentos.filter((x) => x.cliente === o.cliente && x.numero !== o.numero && Math.abs(new Date(x.data) - new Date(o.data)) <= 10 * 864e5).map((x) => x.numero);
+    return h("article", { class: "panel panel-tight stack-s cfo-analise" },
+      h("div", { class: "row" }, h("strong", null, `${a.numero} · ${a.cliente}`), h("span", { class: "field-hint" }, `${dataBR(a.data)} · ${brl(a.total)}`), versoes.length ? stamp(`+${versoes.length} versão(ões): ${versoes.join(", ")}`, "neutral") : null),
+      h("div", { class: "cfo-stats" },
+        stat("Produtos", brl(a.produtos.venda), a.produtos.multiplicador ? `${String(a.produtos.multiplicador).replace(".", ",")}× o custo · margem ${a.produtos.mc ? pct(a.produtos.mc.pct) : "—"}` : "sem custo cadastrado"),
+        stat("Preço mínimo dos produtos (35%)", brl(a.produtos.precoMeta), a.produtos.precoMeta ? `diferença ${brl(a.produtos.venda - a.produtos.precoMeta)}` : "faltam dados"),
+        stat("Mão de obra", brl(a.mo.valor), a.mo.horasCobradas ? `${a.mo.horasCobradas} h cobradas · ${brl(a.mo.porHora)}/h` : "sem horas no orçamento"),
+        stat("Horas calculadas", `${String(a.mo.horasReais).replace(".", ",")} h`, `${String(a.mo.horasPadrao).replace(".", ",")} h de execução pelos seus tempos · produtividade ${pct(a.mo.premissas.produtividade)}${alt ? ` (com ${PROD_PESQUISA}%: ${String(alt.mo.horasReais).replace(".", ",")} h)` : ""}`),
+        stat("Preço da hora (35%)", brl(a.mo.precoHoraMeta), a.mo.precoHoraMeta ? "pelo custo da hora do formulário" : "falta custo da hora"),
+        stat("Margem do orçamento", a.mcTotal ? pct(a.mcTotal.pct) : "—", a.mcTotal ? `${FAIXA_TXT[faixa(a.mcTotal.pct)]}${simulado ? " · impostos simulados" : ""}` : "faltam dados")),
+      a.pontos.length ? h("ul", { class: "stack-s cfo-pontos" }, a.pontos.map((x) => h("li", null, x))) : h("p", { class: "notice notice-ok" }, "Nenhum ponto de atenção."),
+      a.produtos.abaixo.length ? method(`Produtos abaixo de 30% (${a.produtos.abaixo.length})`, ...a.produtos.abaixo.map((i) => `${i.nome}: cobrado ${brl(i.preco)}, custo ${brl(i.custo)}, margem ${i.mc === null ? "—" : pct(i.mc)} → preço mínimo ${brl(i.meta)}`)) : null,
+      method("Como as horas foram calculadas", ...a.mo.linhas.map((l) => `${l.dispositivo}${l.tecnologia !== "na" ? ` (${l.tecnologia === "sem_fio" ? "sem fio" : "cabeado"})` : ""} × ${l.qtd}: ${l.minUnit} min cada (${l.atividades.join(" + ")})`),
+        a.mo.premissas.cenas ? `Cenas: ${a.mo.premissas.cenas} (hipótese: uma por interruptor)` : null,
+        `+ ${pct(a.mo.premissas.comissionamento)} de testes/comissionamento, + ${String(a.mo.premissas.entrega).replace(".", ",")} h de entrega, ÷ produtividade ${pct(a.mo.premissas.produtividade)}`,
+        a.mo.metrosRede ? `Cabo de rede: ${a.mo.metrosRede} m ÷ ${p.metrosPorPonto} m por ponto` : null,
+        a.mo.faltam.length ? `Sem tempo no catálogo: ${a.mo.faltam.map((f) => `${f.dispositivo} × ${f.qtd}`).join(", ")}` : null));
+  }
+  function desenhar() {
+    const lista = escolha.value ? orcamentos.filter((o) => o.numero === escolha.value) : recentes;
+    clear(corpo).append(...lista.map(cartao)); // append nativo: espalhar a lista
+  }
+  escolha.addEventListener("change", desenhar);
+  desenhar();
+  return panel({ title: "Últimos orçamentos: o que está certo e o que corrigir", subtitle: "CFO e COO: produto contra o preço mínimo da Política (com imposto, comissão e indicação) e horas cobradas contra as horas calculadas pelos equipamentos e pelos seus tempos de serviço." },
+    produtividadeAlta ? h("p", { class: "notice notice-warn" }, `Você informou produtividade de ${pct(p.produtividade)}. Em obra, a pesquisa indica 60–75% (deslocamento, montagem, espera, retrabalho): mostro também o cálculo com ${PROD_PESQUISA}%.`) : null,
+    field(escolha.id, "Ver", escolha), corpo);
 }

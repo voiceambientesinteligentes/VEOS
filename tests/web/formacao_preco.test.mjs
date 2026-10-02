@@ -45,7 +45,10 @@ test("importação: regra vigente, fator medido e custo no Brasil", () => {
   assert.equal(fatorMedido(compras), 1.326);
   assert.deepEqual(fatorProduto({ custo: 100, compras }), { fator: 1.205, origem: "medido no pedido de 2026-06-01" });
   assert.equal(fatorProduto({ custo: 100, compras }, { manual: 1.3 }).fator, 1.3);
-  assert.equal(fatorProduto({ custo: 100, compras }, { incluiImpostos: "sim" }).fator, 1);
+  const conflito = fatorProduto({ custo: 100, compras }, { incluiImpostos: "sim" });
+  assert.equal(conflito.fator, 1.205); // o pedido real vence a resposta, com aviso
+  assert.ok(conflito.conflito);
+  assert.equal(fatorProduto({ custo: 100, compras: [] }, { incluiImpostos: "sim" }).fator, 1);
   assert.equal(fatorProduto({ custo: 500, compras: [] }, { cambio: 5 }).fator, 1.566);
   assert.equal(fatorProduto({ custo: 90, compras: [] }).origem, "mediana dos seus pedidos após 12/05/2026");
   assert.equal(fatorProduto({ custo: 6000, compras: [] }).fator, null); // caro e sem câmbio: lacuna
@@ -111,7 +114,7 @@ test("diagnóstico: resumo da carteira", () => {
 });
 
 test("formulário: progresso e parâmetros (lacunas explícitas)", () => {
-  assert.equal(SECOES.length, 7);
+  assert.equal(SECOES.length, 9);
   assert.equal(numeroBR("1.234,56"), 1234.56);
   assert.equal(numeroBR("6%"), 6);
   assert.equal(numeroBR("4.000"), 4000);

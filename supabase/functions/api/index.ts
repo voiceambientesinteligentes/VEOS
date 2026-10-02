@@ -11,6 +11,7 @@
 //   /api/mensagens, /api/resumo -> caixa de saida e resumo do dia (ver notificacoes.ts)
 //   /api/sistema/...     -> saude do sistema, usuarios e exportacao (ver sistema.ts)
 //   /api/cfo/...         -> formulario do CFO, diagnostico de orcamentos e preco de produtos (ver cfo.ts)
+//   /api/plano/...       -> Plano da VOICE: metas, acoes e rotinas (ver plano.ts)
 //   /api/radar, /setor, /registros, /tarefas, /alertas -> setores vivos (ver setores.ts)
 // Escritas exigem header Idempotency-Key (repetir nao duplica).
 // Identidade: token do Supabase Auth validado no servidor + cadastro ativo em `membros`.
@@ -28,6 +29,7 @@ import { rotearConta } from "./conta.ts";
 import { rotearProdutos } from "./produtos.ts";
 import { rotearDiretores } from "./diretores.ts";
 import { rotearCfo } from "./cfo.ts";
+import { rotearPlano } from "./plano.ts";
 
 const ORIGENS = [
   /^https:\/\/voiceambientesinteligentes\.github\.io$/,
@@ -90,6 +92,7 @@ async function rotear(req: Request, rota: string) {
   if (partes[0] === "produtos") return await rotearProdutos(req, partes, eu);
   if (partes[0] === "diretores") return await rotearDiretores(req, partes, eu);
   if (partes[0] === "cfo") return await rotearCfo(req, partes, eu);
+  if (partes[0] === "plano") return await rotearPlano(req, partes, eu);
   if (partes[0] === "mensagens" || partes[0] === "resumo") return await rotearNotificacoes(req, partes, eu);
   if (partes[0] === "projetos") return await rotearFinanceiro(req, partes, eu);
   if (["radar", "setor", "registros", "tarefas", "alertas"].includes(partes[0])) return await rotearSetores(req, partes, eu);

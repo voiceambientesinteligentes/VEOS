@@ -123,6 +123,13 @@ try {
   assert.equal(co.status, 200); assert.ok(Array.isArray(co.dados.orcamentos) && co.dados.rbt12); ok(`CFO: orcamentos resumidos (${co.dados.orcamentos.length}) e faturamento 12 meses`);
   const cp = await req("/functions/v1/api/cfo/produtos", { token });
   assert.equal(cp.status, 200); assert.ok(cp.dados.produtos.every((x) => Array.isArray(x.compras))); ok(`CFO: produtos com compras (${cp.dados.produtos.length})`);
+  const cc = await req("/functions/v1/api/cfo/cambio", { token });
+  assert.equal(cc.status, 200); assert.ok(Array.isArray(cc.dados.serie)); ok(`CFO: dolar PTAX do Banco Central (${cc.dados.serie.length} dias${cc.dados.ok ? "" : ", indisponivel agora"})`);
+  // plano: leitura e regras (sem alterar os itens reais do fundador)
+  const pl = await req("/functions/v1/api/plano", { token });
+  assert.equal(pl.status, 200); assert.ok(Array.isArray(pl.dados.itens) && pl.dados.pode.aprovar); ok(`plano: ${pl.dados.itens.length} itens lidos`);
+  assert.equal((await req("/functions/v1/api/plano/itens", { method: "POST", token, headers: chave(), body: { area: "financas", fase: "99", tipo: "meta", titulo: "TESTE", descricao: "TESTE" } })).status, 400); ok("plano: fase invalida recusada");
+  if (pl.dados.itens.length) assert.equal((await req(`/functions/v1/api/plano/itens/${pl.dados.itens[0].id}`, { method: "POST", token, headers: chave(), body: {} })).status, 400), ok("plano: mudanca vazia recusada");
 
   // caixa de saida e resumo do dia (a mensagem TESTE e descartada no fim)
   const rs = await req("/functions/v1/api/resumo", { token });
@@ -160,6 +167,10 @@ try {
   assert.equal((await req(`/functions/v1/api/produtos/${comFoto.id}/preco`, { method: "POST", token, headers: chave(), body: { campo: "preco_venda", valor: "100.00", motivo: "TESTE" } })).status, 403); ok("vendas nao define preco de venda -> 403");
   assert.equal((await req(`/functions/v1/api/diretores/perguntas/${pq.dados.id}/responder`, { method: "POST", token, headers: chave(), body: { resposta: "resposta TESTE longa o bastante", motor: "TESTE" } })).status, 403); ok("vendas nao grava resposta de IA -> 403");
   assert.equal((await req("/functions/v1/api/cfo/orcamentos", { token })).status, 403); ok("vendas nao abre o diagnostico do CFO -> 403");
+  const plv = await req("/functions/v1/api/plano", { token });
+  assert.equal(plv.status, 200); assert.ok(!plv.dados.pode.aprovar && plv.dados.itens.every((i) => i.area !== "financas")); ok("vendas ve o plano sem o Financeiro e sem aprovar");
+  const itemV = plv.dados.itens.find((i) => i.estado === "proposto");
+  if (itemV) assert.equal((await req(`/functions/v1/api/plano/itens/${itemV.id}`, { method: "POST", token, headers: chave(), body: { estado: "aprovado" } })).status, 403), ok("vendas nao aprova item do plano -> 403");
 } finally {
   await papel(user.id, "vendas", false); // TESTE fica inativo
 }

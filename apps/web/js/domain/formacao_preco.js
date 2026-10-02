@@ -70,13 +70,17 @@ export const FATOR_CNPJ = Math.round((1.6 / 0.83) * 1000) / 1000; // 1,928
 export function fatorProduto(produto, { manual = null, incluiImpostos = null, cambio = null, compra = "atual" } = {}) {
   if (compra === "cnpj") return { fator: FATOR_CNPJ, origem: "HIPÓTESE: compra no CNPJ, II 60% + ICMS 17% (confirmar com o contador)" };
   if (num(manual) !== null && num(manual) >= 1) return { fator: num(manual), origem: "informado por você" };
-  if (incluiImpostos === "sim") return { fator: 1, origem: "preço já inclui impostos (informado)" };
   const recentes = (produto.compras ?? []).filter((x) => x.unico && String(x.data ?? "") >= VIGENCIA_REGRA)
     .sort((a, b) => String(b.data).localeCompare(String(a.data)));
   for (const x of recentes) {
     const f = num(x.preco_unit) > 0 && num(x.quantidade) > 0 ? x.total_pedido / (x.preco_unit * x.quantidade) : null;
-    if (f !== null && f >= FATOR_MIN && f <= FATOR_MAX) return { fator: Math.round(f * 1000) / 1000, origem: `medido no pedido de ${x.data}` };
+    if (f !== null && f >= FATOR_MIN && f <= FATOR_MAX) {
+      // o pedido real vale mais que a resposta: se voce disse que ja inclui e o pedido mostra +20%, avisa e usa o medido
+      if (incluiImpostos === "sim" && f > 1.1) return { fator: Math.round(f * 1000) / 1000, origem: `medido no pedido de ${x.data} (você informou que o preço já inclui impostos, mas o total pago foi ${Math.round((f - 1) * 100)}% maior: confira)`, conflito: true };
+      return { fator: Math.round(f * 1000) / 1000, origem: `medido no pedido de ${x.data}` };
+    }
   }
+  if (incluiImpostos === "sim") return { fator: 1, origem: "preço já inclui impostos (informado)" };
   const r = fatorRegra(produto.custo, cambio);
   if (r !== null) return { fator: r, origem: "regra vigente do Remessa Conforme (câmbio informado)" };
   if (num(produto.custo) === null) return { fator: null, origem: "sem preço de compra" };

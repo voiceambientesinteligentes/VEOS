@@ -2,6 +2,52 @@
 
 **Resumo:** o VEOS está online (site no GitHub Pages + Supabase) com setores vivos, Zoho espelhado e editável, fluxo de pedidos, Biblioteca, e — desde 01/10 — validação guiada, saúde do sistema, gestão de usuários com MFA, exportação, backup semanal criptografado e testes no CI. Falta o uso real guiado pelo Fernando e os segredos do GitHub para backup e testes online no CI. O pipeline V2 do cérebro segue bloqueado no item 30. **Não está 100%.**
 
+## Plano da VOICE, tempos de serviço e formulário v2 (02/10, noite)
+Pedido do Fernando: completar o formulário com subdivisões, pesquisar os tempos de serviço que faltavam, analisar os 4 últimos orçamentos e montar o plano no VEOS (metas, faturamento, captação, gestão financeira).
+
+**Formulário do CFO v2** (9 seções):
+- novas seções "4. Tempos de serviço" (dispositivo, atividade, tecnologia, unidade e tempo em minutos ou horas) e "5. Você, Fernando" (retirada, pró-labore, papel);
+- subdivisões em grupos;
+- números com texto são aceitos ("3600 MêS" vira 3600, com aviso de "lido como");
+- a lista antiga de tempos e a retirada são convertidas na tela, sem gravar;
+- 18 sugestões de tempos vindas da pesquisa.
+
+**Tempos e composição** (`domain/tempos.js`): calcula as horas de um orçamento a partir dos equipamentos e dos tempos-padrão. Converte "18 MINUTOS" e "16 HORAS".
+
+**Análise detalhada de orçamento** (`domain/analise_orcamento.js`), visível em Diagnóstico → Últimos orçamentos:
+- produto contra o preço mínimo da Política, já com imposto, comissão e indicação;
+- horas cobradas contra horas calculadas, com testes, entrega e produtividade;
+- pontos de atenção.
+
+**Câmbio:** PTAX do Banco Central em `GET /cfo/cambio` (API Olinda). A tela de preços usa o dólar do dia mais a folga cambial.
+
+**Conflito "preço já inclui imposto":** quando o pedido real mostra +20%, vale o pedido e a tela avisa.
+
+**Plano da VOICE** (`#/plano`):
+- tabelas `plano_itens` e `plano_historico` (append-only), função `plano_mudar` com as transições de estado;
+- só a direção aprova, cancela, cria ou edita; o setor do item marca andamento ou feito e faz anotações;
+- 34 itens propostos pelos diretores, gravados no banco com dados reais (fora do repositório).
+
+**Estoque estratégico** (`#/cfo/estoque`): curva de itens dos projetos orçados (versões contam uma vez), lote sugerido e momento do dólar. A compra só é liberada pelo gatilho do CFO: reserva de 3 meses e nenhuma dívida em atraso.
+
+**Achados:**
+- **Mão de obra:** as horas cobradas batem com o cálculo (83 contra 84 h no Studio We.Arch, com 65% de produtividade).
+- **Produto:** a 2× o custo, com 15% de comissão mais indicação, fica em 29% de margem.
+- **Ponto de equilíbrio:** cerca de R$ 105 mil/mês.
+- **Funil:** 54 projetos orçados em 12 meses, somando R$ 1,44 mi.
+
+**Biblioteca:**
+- BIB-0084: tempos (SINAPI e IPVM);
+- BIB-0085: mercado, finanças e câmbio;
+- BIB-0086: aprendizado;
+- BIB-0087: proposta do plano.
+
+**Testes:**
+- telas novas (plano, estoque estratégico e telas do CFO);
+- banco: `tests/banco/plano.sql` 11/11 e `formulario_cfo.sql` 6/6;
+- online: e2e_sistema 53/53;
+- domínio: 74 testes.
+
 ## Precificação e diagnóstico do CFO (02/10)
 Pedido do Fernando: preço correto dos produtos pelas skills do CFO, informações para o preço da mão de obra, análise dos pedidos/orçamentos e formulário para o que falta.
 - **Formulário do CFO** (`#/cfo/formulario`, direção e financeiro): 7 seções (impostos e contador, compras e importação, equipe e mão de obra, custos fixos, vendas e recebimento, dívidas, o que aconteceu nos pedidos). Cada gravação é uma nova versão (`formulario_respostas`, append-only; vigente = última por seção).
