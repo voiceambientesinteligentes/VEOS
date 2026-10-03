@@ -21,13 +21,22 @@ const casos = paginas.flatMap((p) => {
   return (hashes.length ? hashes : [""]).flatMap((hs) => [[p, hs, 1366, 900], [p, hs, 390, 844]]);
 });
 let falhas = 0;
-for (const [p, hs, w, hgt] of casos) {
+/** Abre a tela no navegador headless e devolve o DOM final ("" se o navegador travar). */
+function abrir(p, hs, w, hgt) {
   const perfil = mkdtempSync(join(tmpdir(), "veos-edge-"));
-  let dom = "";
   try {
-    dom = execFileSync(EDGE, ["--headless=new", "--disable-gpu", "--no-first-run", ...(process.platform === "linux" ? ["--no-sandbox"] : []), `--user-data-dir=${perfil}`, `--window-size=${Math.max(w, 600)},${hgt + 100}`, "--virtual-time-budget=10000", "--dump-dom", w < 500 ? `http://127.0.0.1:8878/_teste/_moldura.html?w=${w}&h=${hgt}&src=${encodeURIComponent(`${p}${hs ? `#${hs}` : ""}`)}` : `http://127.0.0.1:8878/_teste/${p}${hs ? `#${hs}` : ""}`], { encoding: "utf8", timeout: 60000, stdio: ["ignore", "pipe", "ignore"] });
+    return execFileSync(EDGE, ["--headless=new", "--disable-gpu", "--no-first-run", ...(process.platform === "linux" ? ["--no-sandbox"] : []), `--user-data-dir=${perfil}`, `--window-size=${Math.max(w, 600)},${hgt + 100}`, "--virtual-time-budget=10000", "--dump-dom", w < 500 ? `http://127.0.0.1:8878/_teste/_moldura.html?w=${w}&h=${hgt}&src=${encodeURIComponent(`${p}${hs ? `#${hs}` : ""}`)}` : `http://127.0.0.1:8878/_teste/${p}${hs ? `#${hs}` : ""}`], { encoding: "utf8", timeout: 60000, stdio: ["ignore", "pipe", "ignore"] });
   } catch (e) {
-    dom = String(e.stdout ?? "");
+    return String(e.stdout ?? "");
+  }
+}
+for (const [p, hs, w, hgt] of casos) {
+  let dom = abrir(p, hs, w, hgt);
+  // navegador headless as vezes trava ao abrir (0 bytes, visto no CI): tenta UMA vez de novo.
+  // So o travamento repete; falha da tela (erro JS, rolagem, texto ruim) nunca e repetida.
+  if (!/data-pronto="1"/.test(dom) && dom.length < 200) {
+    console.log(`aviso ${p}${hs ? `#${hs}` : ""} @${w}px: navegador não terminou (${dom.length} bytes); repetindo uma vez`);
+    dom = abrir(p, hs, w, hgt);
   }
   const attr = (n) => (new RegExp(`<body[^>]*\\sdata-${n}="([^"]*)"`).exec(dom) ?? [])[1];
   const prob = [];
