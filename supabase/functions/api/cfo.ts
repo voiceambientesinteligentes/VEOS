@@ -5,7 +5,8 @@
 //   POST /cfo/formulario                 {secao, dados}  -> nova versao da secao (historico preservado)
 //   GET  /cfo/orcamentos                 orcamentos do espelho do Zoho resumidos (linhas com tipo e custo do item)
 //   GET  /cfo/produtos                   catalogo com compras (para o fator de importacao) e preco atual no Zoho
-//   GET  /cfo/cambio                     dolar PTAX (Banco Central) dos ultimos 45 dias
+//   GET  /cfo/cambio?desde=AAAA-MM-DD    dolar PTAX (Banco Central): 45 dias ou desde a data (max. 2 anos)
+//   GET  /cfo/painel                     contatos (leads) e negocios do CRM por mes, para o painel do dono
 import { HttpError, lerCorpo, type Membro, registrarAcesso, servico } from "../_shared/banco.ts";
 import { rbt12 } from "../_shared/zoho.ts";
 
@@ -83,7 +84,8 @@ export async function rotearCfo(req: Request, partes: string[], eu: Membro) {
     await registrarAcesso(eu.user_id, "cfo:diagnostico:orcamentos");
     return { orcamentos, rbt12: faturamento, fonte: "Espelho do Zoho Books no VEOS (orçamentos e cadastro de itens)" };
   }
-  if (a === "cambio" && !post) return await cambio();
+  if (a === "cambio" && !post) return await cambio(new URL(req.url).searchParams.get("desde"));
+  if (a === "painel" && !post) return await painelDono();
   if (a === "produtos" && !post) {
     const [produtos, compras, vinculos] = await Promise.all([
       servico("/rest/v1/produtos?situacao=in.(ativo,revisar)&tipo=eq.produto&select=id,codigo,nome,categoria,situacao,custo:custo_ultimo,custo_data,preco_venda,unidade&order=codigo&limit=5000"),
@@ -114,10 +116,13 @@ export async function rotearCfo(req: Request, partes: string[], eu: Membro) {
 }
 
 // Dolar PTAX do Banco Central (API publica Olinda). Datas no formato MM-DD-AAAA entre aspas simples.
-async function cambio() {
+async function cambio(desde: string | null) {
   const mdy = (d: Date) => `${String(d.getUTCMonth() + 1).padStart(2, "0")}-${String(d.getUTCDate()).padStart(2, "0")}-${d.getUTCFullYear()}`;
-  const fim = new Date(), ini = new Date(Date.now() - 45 * 864e5);
-  const url = `https://olinda.bcb.gov.br/olinda/servico/PTAX/versao/v1/odata/CotacaoDolarPeriodo(dataInicial=@dataInicial,dataFinalCotacao=@dataFinalCotacao)?@dataInicial='${mdy(ini)}'&@dataFinalCotacao='${mdy(fim)}'&$top=100&$format=json`;
+  const fim = new Date();
+  const limite = Date.now() - 730 * 864e5;
+  const pedido = desde && /^\d{4}-\d{2}-\d{2}$/.test(desde) ? Math.max(Date.parse(desde), limite) : Date.now() - 45 * 864e5;
+  const ini = new Date(pedido);
+  const url = `https://olinda.bcb.gov.br/olinda/servico/PTAX/versao/v1/odata/CotacaoDolarPeriodo(dataInicial=@dataInicial,dataFinalCotacao=@dataFinalCotacao)?@dataInicial='${mdy(ini)}'&@dataFinalCotacao='${mdy(fim)}'&$top=800&$format=json`;
   try {
     const r = await fetch(url, { signal: AbortSignal.timeout(8000) });
     if (!r.ok) throw new Error(String(r.status));
@@ -127,4 +132,22 @@ async function cambio() {
   } catch (e) {
     return { serie: [], fonte: "Banco Central do Brasil · PTAX (API Olinda)", ok: false, erro: `cotação indisponível agora (${(e as Error).message})` };
   }
+}
+
+// Leads e negocios do CRM (espelho) agregados por mes: so contagens, sem dados pessoais.
+async function painelDono() {
+  const [leads, deals] = await Promise.all([
+    servico("/rest/v1/zoho_registros?produto=eq.crm&modulo=eq.Leads&excluido=is.false&select=criado:dados->>Created_Time,origem:dados->>Lead_Source&limit=10000"),
+    servico("/rest/v1/zoho_registros?produto=eq.crm&modulo=eq.Deals&excluido=is.false&select=criado:dados->>Created_Time,etapa:dados->>Stage,valor:dados->>Amount&limit=10000"),
+  ]);
+  const porMes = (lista: { criado: string | null }[]) => {
+    const m: Record<string, number> = {};
+    for (const x of lista) if (x.criado) m[x.criado.slice(0, 7)] = (m[x.criado.slice(0, 7)] ?? 0) + 1;
+    return m;
+  };
+  const origens: Record<string, number> = {};
+  for (const l of leads) { const k = l.origem || "Sem origem"; origens[k] = (origens[k] ?? 0) + 1; }
+  const etapas: Record<string, number> = {};
+  for (const d of deals) { const k = d.etapa || "—"; etapas[k] = (etapas[k] ?? 0) + 1; }
+  return { leadsPorMes: porMes(leads), negociosPorMes: porMes(deals), origens, etapas, fonte: "Zoho CRM (espelho do VEOS): só contagens" };
 }

@@ -20,7 +20,7 @@ test("números com texto junto", () => {
   assert.equal(numeroBR("150 DIA"), 150);
   assert.equal(numeroBR("1500 (VARIAVEL)"), 1500);
   assert.equal(numeroBR("127,5"), 127.5);
-  assert.equal(numeroBR("R$ 11.000,00"), 11000);
+  assert.equal(numeroBR("R$ 7.000,00"), 7000);
   assert.equal(numeroBR("sem valor"), null);
   assert.ok(temTextoExtra("3600 MêS"));
   assert.ok(!temTextoExtra("3.600,00"));
@@ -68,17 +68,25 @@ test("composição: horas-padrão a partir dos equipamentos", () => {
 
 test("compatibilidade v1 -> v2 e parâmetros", () => {
   const v1 = {
-    equipe: { dados: { tempos: [{ servico: "FIAÇÃO PARA INTERRUPTORES DE AUTOMAÇÃO SEM FIO", horas: "15 MINUTOS" }], pessoas: [{ nome: "T", vinculo: "pj", valor: "3600 MêS", horas_mes: "160", campo_pct: "100" }], produtividade_pct: "100", veiculo_mes: "5200" } },
-    fixos: { dados: { itens: [{ descricao: "ALUGUEL", valor: "11000" }, { descricao: "MKT", valor: "1500 (VARIAVEL)" }], pro_labore: "0", retirada_real: "18000" } },
+    equipe: { dados: { tempos: [{ servico: "FIAÇÃO PARA INTERRUPTORES DE AUTOMAÇÃO SEM FIO", horas: "15 MINUTOS" }], pessoas: [{ nome: "T", vinculo: "pj", valor: "3000 MêS", horas_mes: "160", campo_pct: "100" }], produtividade_pct: "100", veiculo_mes: "4000" } },
+    fixos: { dados: { itens: [{ descricao: "ALUGUEL", valor: "7000" }, { descricao: "MKT", valor: "900 (VARIAVEL)" }], pro_labore: "0", retirada_real: "12000" } },
     vendas: { dados: { paga_indicacao: "sim", indicacao_pct: "10", comissao_vendedor_pct: "5", taxa_cartao_pct: "4,5", vendas_cartao_pct: "0" } },
   };
   const c = comCompatibilidade(v1);
   assert.equal(c.tempos.dados.itens[0].dispositivo, "interruptor");
-  assert.equal(c.voce.dados.retirada_media_real, "18000");
+  assert.equal(c.voce.dados.retirada_media_real, "12000");
   const p = parametros(v1);
-  assert.equal(p.fixos, 12500);
+  assert.equal(p.fixos, 7900);
   assert.equal(p.v, 15);
-  assert.equal(p.retirada, 18000);
-  assert.equal(p.hora.custoHora, 55); // (3600 + 5200) / 160
+  assert.equal(p.retirada, 12000);
+  assert.equal(p.hora.custoHora, 43.75); // (3000 + 4000) / 160
   assert.equal(p.tempos.length, 1);
+});
+
+test("serviço a valor fechado entra como valor, não como horas", () => {
+  const cat = [...CAT, { descricao: "Fechadura", dispositivo: "fechadura", atividade: "instalacao", tecnologia: "na", unidade: "dispositivo", tempo: "", valor_fechado: "250" }];
+  const r = composicao([{ nome: "Fechadura TESTE", qtd: 2, tipo: "goods" }], cat);
+  assert.equal(r.valorFechado, 500);
+  assert.equal(r.minutos, 0);
+  assert.equal(r.faltam.length, 0);
 });

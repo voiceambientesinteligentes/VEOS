@@ -7,7 +7,7 @@ export const RESPOSTAS = {
     { servico: "SERVIÇO DE CONFIGURAÇÃO DE REDE (ANTENA)", unidade: "1", horas: "30 MINUTOS" },
     { servico: "ESTRUTURA DO QUADRO GERENCIAL DE REDE", unidade: "1", horas: "16 HORAS" },
     { servico: "INSTALAÇÃO PARA INTERRUPTORES DE AUTOMAÇÃO CABEADA", unidade: "1", horas: "25" }] }, em: "2026-10-02T12:10:00Z", autor_nome: "Fernando TESTE", versoes: 2 },
-  fixos: { dados: { itens: [{ descricao: "Aluguel TESTE", valor: "3.500" }, { descricao: "Marketing TESTE", valor: "900 (VARIAVEL)" }], pro_labore: "0", retirada_real: "18000" }, em: "2026-10-02T12:20:00Z", autor_nome: "Fernando TESTE", versoes: 1 },
+  fixos: { dados: { itens: [{ descricao: "Aluguel TESTE", valor: "3.500" }, { descricao: "Marketing TESTE", valor: "900 (VARIAVEL)" }], pro_labore: "0", retirada_real: "12000" }, em: "2026-10-02T12:20:00Z", autor_nome: "Fernando TESTE", versoes: 1 },
   vendas: { dados: { comissao_vendedor_pct: "5", paga_indicacao: "sim", indicacao_pct: "10", taxa_cartao_pct: "4,5", vendas_cartao_pct: "0" }, em: "2026-10-02T12:25:00Z", autor_nome: "Fernando TESTE", versoes: 1 },
   dividas: { dados: { lista: [{ credor: "Receita TESTE", tipo: "simples", saldo: "20.000", parcela: "700", parcelas_restantes: "30", atraso: "nao" }] }, em: "2026-10-02T12:30:00Z", autor_nome: "Fernando TESTE", versoes: 1 },
 };

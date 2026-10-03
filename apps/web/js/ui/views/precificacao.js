@@ -9,6 +9,9 @@ import { parseMoneyInput } from "../../domain/controls.js";
 import { formatBRL, toScaled } from "../../domain/format.js";
 import { clear, field, h, method, panel, stamp, stat } from "../dom.js";
 import { renderConsulta } from "./biblioteca.js";
+import { api } from "../../data/api.js";
+import { parametros } from "../../domain/formulario_cfo.js";
+import { condicaoSugerida } from "../../domain/condicao.js";
 
 const FAIXA = {
   VERDE: ["Política V1: verde · MC ≥ 35%", "ok"],
@@ -164,16 +167,51 @@ export function telaNegociacao(root, fontes = null) {
     for (const c of [tipo, desc, qtd, total]) c.addEventListener("input", calcular);
     linhasCusto.append(tr);
   }
-  function novoExtra() {
-    const desc = h("input", { class: "input", type: "text", "aria-label": "Descrição", placeholder: "Ex.: RT do arquiteto, comissão, frete", autocomplete: "off" });
-    const modo = sel(null, [["pct", "% do negociado"], ["rs", "R$"]], "pct");
-    const valor = inp(null, { "aria-label": "Valor" });
+  function novoExtra(d = {}) {
+    const desc = h("input", { class: "input", type: "text", "aria-label": "Descrição", placeholder: "Ex.: RT do arquiteto, comissão, frete", autocomplete: "off", value: d.descricao ?? "" });
+    const modo = sel(null, [["pct", "% do negociado"], ["rs", "R$"]], d.modo ?? "pct");
+    const valor = inp(null, { "aria-label": "Valor", value: d.valor ?? "" });
     const rem = botao("×", "ghost", { "aria-label": "Remover custo adicional" });
     const tr = h("tr", null, [desc, modo, valor, rem].map((c) => h("td", null, c)));
+    if (d.canal) tr.dataset.canal = "1";
     rem.addEventListener("click", () => { tr.remove(); calcular(); });
     for (const c of [desc, modo, valor]) c.addEventListener("input", calcular);
     linhasExtra.append(tr);
   }
+
+  // Canal de venda (formulario do CFO, secao 7): lanca comissao e RT/indicacao como custos adicionais.
+  const canal = h("select", { class: "select", id: "neg-canal" }, h("option", { value: "" }, "Sem canal (lançar à mão)"));
+  let canais = [], pFormulario = null;
+  api.cfoFormulario().then(({ respostas }) => {
+    pFormulario = parametros(respostas);
+    canais = pFormulario.canais;
+    for (const c of canais) canal.append(h("option", { value: c.nome }, `${c.nome} · comissão ${String(c.comissao).replace(".", ",")}% + RT ${String(c.rt).replace(".", ",")}%`));
+  }).catch(() => { /* sem acesso ao formulario: canal manual */ });
+  canal.addEventListener("change", () => {
+    for (const tr of [...linhasExtra.rows]) if (tr.dataset.canal) tr.remove();
+    const c = canais.find((x) => x.nome === canal.value);
+    if (c) {
+      if (c.comissao) novoExtra({ descricao: `Comissão de vendedor (${c.nome})`, valor: String(c.comissao).replace(".", ","), canal: true });
+      if (c.rt) novoExtra({ descricao: `RT / indicação (${c.nome})`, valor: String(c.rt).replace(".", ","), canal: true });
+      if (c.outros) novoExtra({ descricao: `Outros custos de venda (${c.nome})`, valor: String(c.outros).replace(".", ","), canal: true });
+    }
+    calcular();
+  });
+
+  // Condicao de pagamento sugerida pelo CFO: sinal que cobre o material, etapas, validade e dolar do dia.
+  const sugerir = botao("Condição sugerida pelo CFO", "ghost", { class: "btn btn-ghost btn-mini" });
+  sugerir.addEventListener("click", async () => {
+    // usa o ultimo calculo valido; sem ele, os custos de produto das linhas e o preco informado
+    const linhas = lerLinhas([]);
+    const custoProd = ultimo ? Number(ultimo.r.custoProduto) / 100 : linhas.custos.filter((x) => x.tipo === "produto").reduce((a, x) => a + Number(x.total) / 100, 0);
+    const totalNeg = ultimo ? Number(ultimo.r.liquido) / 100 : Number(money(tabela.value) ?? 0n) / 100;
+    if (!(totalNeg > 0)) { condicao.placeholder = "Informe o preço ou escolha um orçamento primeiro."; return; }
+    let ptax = null;
+    try { const cb = await api.cfoCambio(); ptax = cb.serie?.length ? cb.serie[cb.serie.length - 1] : null; } catch { /* sem cotacao */ }
+    const c = condicaoSugerida({ custoProdutos: custoProd, total: totalNeg, entradaMinima: pFormulario?.entradaPct ?? 40, validadeDias: pFormulario?.validadeDias ?? 7, ptax });
+    condicao.value = c.texto;
+    calcular();
+  });
 
   function lerLinhas(erros) {
     const semCusto = [];
@@ -316,6 +354,9 @@ export function telaNegociacao(root, fontes = null) {
     const situacao = sel("zoho-status", [["", "Todos os status"], ["draft", "Rascunho"], ["sent", "Enviado"], ["accepted", "Aceito"], ["declined", "Recusado"], ["expired", "Expirado"]], "");
     const atualizar = botao("↻", "ghost", { "aria-label": "Atualizar lista", title: "Atualizar" });
     const lista = h("div", { class: "zoho-lista orc-lista", "aria-live": "polite" });
+    const somar = h("input", { type: "checkbox", id: "neg-somar" });
+    const combinados = new Map(); // zoho_id -> orcamento importado (projeto pedido em partes)
+    somar.addEventListener("change", () => { if (!somar.checked) combinados.clear(); });
     let t;
     async function carregar() {
       clear(lista).append(h("p", { class: "muted" }, "Carregando orçamentos do Zoho Books…"));
@@ -333,7 +374,34 @@ export function telaNegociacao(root, fontes = null) {
         clear(lista).append(h("p", { class: "field-hint" }, e.status === 409 ? "Zoho não conectado. A direção conecta em Integrações." : `Não deu para ler o Zoho: ${e.message}`));
       }
     }
+    function reconstruir() {
+      const os = [...combinados.values()];
+      clear(linhasCusto);
+      if (!os.length) { origem.textContent = "Escolha os orçamentos à esquerda para somar."; tabela.value = ""; descValor.value = ""; calcular(); return; }
+      const somaDe = (k) => os.reduce((a, o) => a + (money(decimalBR(o[k] ?? o.total ?? "0")) ?? 0n), 0n);
+      const sub = somaDe("subtotal"), tot = somaDe("total");
+      orcamento = { zoho_id: os[0].id, numero: os.map((o) => o.numero).join(" + "), cliente_zoho_id: os[0].cliente_id ?? null };
+      cliente.value = os[0].cliente ?? "";
+      tabela.value = decimalBR(fixo2(sub));
+      referencia.value = os.map((o) => o.numero).join(" + ");
+      if (sub > tot) { descValor.value = decimalBR(fixo2(sub - tot)); modoDesc = "rs"; descModo.querySelector('input[value="rs"]').checked = true; } else { descValor.value = ""; }
+      for (const o of os) for (const i of o.itens) {
+        const q = Number(i.quantidade || 1);
+        novoCusto({ tipo: i.tipo, nome: `${i.nome} (${o.numero})`, item_id: i.item_id ?? null, fixo: true, qtd: String(i.quantidade).replace(".", ","), total: i.custo_unit ? decimalBR((Number(i.custo_unit) * q).toFixed(2)) : "", preco_unit: i.venda_unit ?? "0" });
+      }
+      origem.textContent = `Somando ${os.length} orçamento(s): ${os.map((o) => o.numero).join(", ")}. Preço global = soma dos ativos; o cliente pediu em partes, a negociação é do conjunto.`;
+      calcular();
+    }
     async function importar(id, b) {
+      if (somar.checked) {
+        b.disabled = true;
+        try {
+          if (combinados.has(id)) combinados.delete(id); else combinados.set(id, await fontes.orcamento(id));
+          b.classList.toggle("ativo", combinados.has(id));
+          reconstruir();
+        } catch (e) { origem.textContent = `Falha ao importar: ${e.message}`; } finally { b.disabled = false; }
+        return;
+      }
       b.disabled = true;
       try {
         const o = await fontes.orcamento(id);
@@ -358,7 +426,8 @@ export function telaNegociacao(root, fontes = null) {
     atualizar.addEventListener("click", carregar);
     carregar();
     return panel({ title: "Orçamentos e estimativas", subtitle: "Zoho Books. Ao escolher, cliente, preço e itens com o custo de compra do cadastro entram na negociação. Nada é alterado no Zoho." },
-      h("div", { class: "row orc-filtros" }, busca, situacao, atualizar), lista);
+      h("div", { class: "row orc-filtros" }, busca, situacao, atualizar),
+      h("label", { class: "row field-hint", for: "neg-somar" }, somar, "Somar vários orçamentos (projeto pedido em partes): clique para incluir ou tirar"), lista);
   }
 
   const limpar = botao("Limpar tudo");
@@ -382,7 +451,7 @@ export function telaNegociacao(root, fontes = null) {
       panel({ title: "Dados da negociação" }, origem,
         h("div", { class: "form-grid" },
           field("neg-cliente", "Cliente", cliente), field("neg-tabela", "Preço de venda (R$) — total do orçamento", tabela),
-          field("neg-ref", "Referência (orçamento)", referencia), field("neg-condicao", "Condição de pagamento", condicao))),
+          field("neg-ref", "Referência (orçamento)", referencia), field("neg-condicao", "Condição de pagamento", condicao, sugerir), field("neg-canal", "Canal de venda", canal, "Lança comissão e RT/indicação do canal como custos adicionais."))),
       panel({ title: "Ajustes financeiros", subtitle: "Desconto concedido, impostos com nota e custos adicionais (RT, comissão, frete)." },
         h("div", { class: "form-grid" }, h("div", { class: "field" }, h("span", { class: "field-label" }, "Desconto em"), descModo), field("neg-desc", "Desconto", descValor, "Política V1: até 2% com MC ≥ 32% é autonomia comercial; acima disso, direção.")),
         regime.el,

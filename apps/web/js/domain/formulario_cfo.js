@@ -44,6 +44,7 @@ export const SECOES = [
       grupo("g_dolar", "Dólar e momento da compra"),
       { id: "quando_compra", rotulo: "Quando você compra o material da obra?", tipo: "opcao", opcoes: [["antes_sinal", "Antes de receber o sinal"], ["apos_sinal", "Logo após o sinal"], ["inicio_obra", "Quando a obra vai começar"], ["varia", "Varia"]] },
       { id: "margem_cambial_pct", rotulo: "Folga sobre o dólar do dia para cobrir a variação até a compra", tipo: "pct", ajuda: "Pesquisa: 3 a 5% para quem compra em até 30 dias." },
+      { id: "spread_aliexpress_pct", rotulo: "Quanto o dólar do AliExpress costuma ficar acima do oficial (%)", tipo: "pct", ajuda: "Opcional. O VEOS atualiza o custo pela variação do dólar oficial desde a data da compra; este número soma a diferença do AliExpress." },
       { id: "validade_proposta_dias", rotulo: "Validade que você dá às propostas (dias)", tipo: "numero" },
       grupo("g_pagamento", "Como paga as compras"),
       { id: "pagamento_compras", rotulo: "Forma de pagamento", tipo: "opcao", opcoes: [["cartao_parcelado", "Cartão parcelado"], ["cartao_vista", "Cartão à vista"], ["pix", "Pix/boleto à vista"], ["misto", "Misto"]] },
@@ -69,8 +70,13 @@ export const SECOES = [
         { id: "transporte", rotulo: "Transporte por mês (R$)", tipo: "moeda" },
         { id: "beneficios", rotulo: "Outros benefícios por mês (R$)", tipo: "moeda" },
       ] },
-      grupo("g_prod", "Produtividade"),
-      { id: "produtividade_pct", rotulo: "Das horas em obra, quantas % são de execução? (o resto é deslocamento, montagem, espera, retrabalho)", tipo: "pct", ajuda: "Pesquisa: 60–75% em obra; 50% em visitas avulsas. Se não souber, deixe 65%." },
+      grupo("g_prod", "Como é um dia de obra (para calcular a produtividade)", "Trabalhar o dia todo não é o mesmo que executar o dia todo: deslocamento, preparação e espera também são pagos e não aparecem no orçamento."),
+      { id: "jornada_horas_dia", rotulo: "Horas de trabalho por dia", tipo: "numero" },
+      { id: "deslocamento_horas_dia", rotulo: "Horas por dia em deslocamento (ida, volta, entre obras, buscar material)", tipo: "numero" },
+      { id: "preparacao_horas_dia", rotulo: "Horas por dia carregando, organizando, montando bancada e limpando", tipo: "numero" },
+      { id: "espera_horas_dia", rotulo: "Horas por dia esperando (cliente, outras equipes, liberação de área)", tipo: "numero" },
+      { id: "retrabalho_pct", rotulo: "Retrabalho e ajustes (% do tempo de execução)", tipo: "pct" },
+      { id: "produtividade_pct", rotulo: "Ou, se preferir, a % de execução direto", tipo: "pct", ajuda: "Usado só se as horas acima estiverem em branco. Pesquisa: 60–75% em obra." },
       grupo("g_operacao", "Custos da operação de campo (por mês)"),
       { id: "combustivel_mes", rotulo: "Combustível (R$)", tipo: "moeda" },
       { id: "manutencao_veiculo_mes", rotulo: "Manutenção e pneus (R$)", tipo: "moeda" },
@@ -97,6 +103,7 @@ export const SECOES = [
         { id: "unidade", rotulo: "Unidade", tipo: "opcao", opcoes: UNIDADES },
         { id: "tempo", rotulo: "Tempo", tipo: "numero" },
         { id: "unidade_tempo", rotulo: "Em", tipo: "opcao", opcoes: [["min", "minutos"], ["h", "horas"]] },
+        { id: "valor_fechado", rotulo: "Ou valor fechado (R$ por unidade)", tipo: "moeda", ajuda: "Quando o serviço é cobrado por preço fixo e não por hora." },
         { id: "origem", rotulo: "Origem", tipo: "opcao", opcoes: [["voce", "Medido por você"], ["pesquisa", "Sugestão da pesquisa (confirmar)"]] },
         { id: "obs", rotulo: "Observação", tipo: "texto" },
       ] },
@@ -144,10 +151,17 @@ export const SECOES = [
       { id: "taxa_cartao_pct", rotulo: "Taxa média do cartão/maquininha", tipo: "pct" },
       { id: "vendas_cartao_pct", rotulo: "% das vendas recebidas no cartão", tipo: "pct" },
       { id: "taxa_boleto", rotulo: "Custo por boleto emitido (R$)", tipo: "moeda" },
-      { id: "comissao_vendedor_pct", rotulo: "Comissão de vendedor", tipo: "pct" },
+      { id: "canais", rotulo: "Canais de venda (cada orçamento escolhe um)", tipo: "lista", campos: [
+        { id: "nome", rotulo: "Canal", tipo: "texto" },
+        { id: "comissao_pct", rotulo: "Comissão de vendedor", tipo: "pct" },
+        { id: "rt_pct", rotulo: "RT / indicação", tipo: "pct" },
+        { id: "outros_pct", rotulo: "Outros custos de venda", tipo: "pct" },
+        { id: "padrao", rotulo: "Canal padrão?", tipo: "opcao", opcoes: [["sim", "Sim"], ["nao", "Não"]] },
+      ] },
+      { id: "comissao_vendedor_pct", rotulo: "Comissão de vendedor (se não usar canais)", tipo: "pct" },
       { id: "paga_indicacao", rotulo: "Paga comissão a indicadores?", tipo: "opcao", opcoes: SN },
       { id: "indicacao_pct", rotulo: "Quanto paga por indicação", tipo: "pct" },
-      { id: "indicacao_quem", rotulo: "Quem recebe a indicação", tipo: "opcao", opcoes: [["arquitetos", "Arquitetos/designers"], ["outros", "Outros parceiros (eletricista, marceneiro, cliente)"], ["ambos", "Os dois"]], ajuda: "O CAU proíbe o arquiteto de receber RT (BIB-0078)." },
+      { id: "indicacao_quem", rotulo: "Quem recebe a indicação", tipo: "opcao", opcoes: [["arquitetos", "Arquitetos/designers"], ["outros", "Outros parceiros (eletricista, marceneiro, cliente)"], ["ambos", "Os dois"]], ajuda: "Atenção: o Código de Ética do CAU proíbe o arquiteto de receber RT (BIB-0078); o risco é do arquiteto, a decisão é sua." },
       grupo("g_receber", "Como recebe"),
       { id: "condicao_usual", rotulo: "Condições de pagamento que você oferece", tipo: "area" },
       { id: "entrada_pct", rotulo: "Entrada/sinal usual (% do contrato)", tipo: "pct" },
@@ -188,6 +202,22 @@ export const SECOES = [
       { id: "custo_extra", rotulo: "Custo a mais (R$)", tipo: "moeda" },
       { id: "obs", rotulo: "Observação", tipo: "texto" },
     ] }],
+  },
+  {
+    id: "metas", titulo: "10. Metas (as que você aprovar)",
+    porque: "Os números que o painel acompanha. Enquanto estiverem em branco, o painel mostra as PROPOSTAS do CFO e do CSO (calculadas a partir dos seus custos), sempre marcadas como proposta.",
+    campos: [
+      grupo("g_metas_venda", "Vendas"),
+      { id: "meta_vendas_mes", rotulo: "Vendas fechadas por mês (R$)", tipo: "moeda" },
+      { id: "meta_ticket", rotulo: "Ticket médio por projeto (R$)", tipo: "moeda" },
+      { id: "meta_conversao_pct", rotulo: "Taxa de fechamento dos orçamentos", tipo: "pct" },
+      { id: "meta_orcamentos_mes", rotulo: "Orçamentos (projetos) por mês", tipo: "numero" },
+      { id: "meta_leads_mes", rotulo: "Contatos novos (leads) por mês", tipo: "numero" },
+      grupo("g_metas_fin", "Financeiro"),
+      { id: "meta_margem_pct", rotulo: "Margem de contribuição mínima por orçamento", tipo: "pct", ajuda: "Política V1: meta 35%, mínimo 30%." },
+      { id: "meta_reserva_meses", rotulo: "Reserva de caixa (meses de custo fixo + equipe)", tipo: "numero" },
+      { id: "retirada_planejada", rotulo: "Retirada mensal que você quer garantir (R$)", tipo: "moeda" },
+    ],
   },
 ];
 
@@ -267,10 +297,14 @@ export function parametros(respostasBrutas = {}) {
   if (tProduto === null) lacunas.push("Alíquota sobre produto (contador)");
   if (tServico === null) lacunas.push("Alíquota sobre serviço (contador)");
   const cartao = n("vendas", "taxa_cartao_pct"), parteCartao = n("vendas", "vendas_cartao_pct");
-  const comissao = n("vendas", "comissao_vendedor_pct") ?? 0;
-  const indic = g("vendas", "paga_indicacao") === "sim" ? n("vendas", "indicacao_pct") ?? 0 : 0;
   if (cartao === null || parteCartao === null) lacunas.push("Taxa e participação do cartão nas vendas");
-  const v = Math.round(((cartao ?? 0) * (parteCartao ?? 0) / 100 + comissao + indic) * 100) / 100;
+  const canais = canaisDe(respostas.vendas?.dados ?? {});
+  const canalPadrao = canais.find((c) => c.padrao) ?? canais[0];
+  const comissao = canalPadrao.comissao, indic = canalPadrao.rt + canalPadrao.outros;
+  const cartaoEfetivo = Math.round(((cartao ?? 0) * (parteCartao ?? 0) / 100) * 100) / 100;
+  const vDe = (c) => Math.round((cartaoEfetivo + c.comissao + c.rt + c.outros) * 100) / 100;
+  for (const c of canais) c.v = vDe(c);
+  const v = canalPadrao.v;
   const pessoas = (g("equipe", "pessoas") ?? []).map((p) => ({
     ...p, valor: numeroBR(p.valor), encargos_pct: numeroBR(p.encargos_pct),
     beneficios: (numeroBR(p.beneficios) ?? 0) + (numeroBR(p.alimentacao) ?? 0) + (numeroBR(p.transporte) ?? 0),
@@ -279,7 +313,7 @@ export function parametros(respostasBrutas = {}) {
   const partesVeiculo = ["combustivel_mes", "manutencao_veiculo_mes", "seguro_veiculo_mes", "parcela_veiculo_mes"].map((c) => n("equipe", c));
   const veiculo = partesVeiculo.some((x) => x !== null) ? partesVeiculo.reduce((a, x) => a + (x ?? 0), 0) : n("equipe", "veiculo_mes") ?? 0;
   const operacao = veiculo + (n("equipe", "ferramentas_mes") ?? 0);
-  const prodInformada = n("equipe", "produtividade_pct");
+  const prodInformada = produtividadeDe(respostas.equipe?.dados ?? {});
   const hora = custoHora({ equipe: pessoas, operacao, produtividade: prodInformada });
   if (hora.custoHora === null) lacunas.push("Custo da hora (equipe e produtividade)");
   const fixosItens = g("fixos", "itens") ?? [];
@@ -289,7 +323,11 @@ export function parametros(respostasBrutas = {}) {
   const tempos = g("tempos", "itens") ?? [];
   return {
     tProduto, tServico, v, cartaoInformado: cartao !== null,
-    vDetalhe: { cartao: Math.round((cartao ?? 0) * (parteCartao ?? 0)) / 100, comissao, indicacao: indic },
+    vDetalhe: { cartao: cartaoEfetivo, comissao, indicacao: indic }, canais, canalPadrao: canalPadrao.nome,
+    spreadAliexpress: n("compras", "spread_aliexpress_pct") ?? 0,
+    entradaPct: n("vendas", "entrada_pct"), validadeDias: n("compras", "validade_proposta_dias"),
+    metas: Object.fromEntries(["meta_vendas_mes", "meta_ticket", "meta_conversao_pct", "meta_orcamentos_mes", "meta_leads_mes", "meta_margem_pct", "meta_reserva_meses", "retirada_planejada"].map((k) => [k, n("metas", k)])),
+    custoEquipe: hora.custoMensal,
     fator: { manual: n("compras", "fator_manual"), incluiImpostos: g("compras", "preco_inclui_impostos") ?? null },
     margemCambial: n("compras", "margem_cambial_pct"),
     perdas: n("compras", "perdas_pct") ?? 0,
@@ -305,4 +343,31 @@ export function parametros(respostasBrutas = {}) {
     tempos, metrosPorPonto: n("tempos", "metros_por_ponto") ?? 25, comissionamento: n("tempos", "comissionamento_pct"), entregaHoras: n("tempos", "entrega_horas"),
     lacunas,
   };
+}
+
+/**
+ * Produtividade (% das horas pagas que viram execucao) a partir do dia de obra:
+ * (jornada - deslocamento - preparacao - espera) / jornada x (1 - retrabalho). Sem jornada, usa o % informado.
+ */
+export function produtividadeDe(d = {}) {
+  const j = numeroBR(d.jornada_horas_dia);
+  if (j !== null && j > 0) {
+    const perdas = (numeroBR(d.deslocamento_horas_dia) ?? 0) + (numeroBR(d.preparacao_horas_dia) ?? 0) + (numeroBR(d.espera_horas_dia) ?? 0);
+    const r = (numeroBR(d.retrabalho_pct) ?? 0) / 100;
+    return Math.max(0, Math.round(((j - perdas) / j) * (1 - r) * 1000) / 10);
+  }
+  return numeroBR(d.produtividade_pct);
+}
+
+/** Canais de venda com os custos de cada um. Sem lista, monta Direto / Com RT-indicacao / Turn key das respostas antigas. */
+export function canaisDe(d = {}) {
+  const lista = (d.canais ?? []).filter((c) => c.nome).map((c) => ({ nome: c.nome, comissao: numeroBR(c.comissao_pct) ?? 0, rt: numeroBR(c.rt_pct) ?? 0, outros: numeroBR(c.outros_pct) ?? 0, padrao: c.padrao === "sim" }));
+  if (lista.length) return lista;
+  const com = numeroBR(d.comissao_vendedor_pct) ?? 0;
+  const rt = d.paga_indicacao === "sim" ? numeroBR(d.indicacao_pct) ?? 0 : 0;
+  return [
+    { nome: "Com RT/indicação", comissao: com, rt, outros: 0, padrao: rt > 0 },
+    { nome: "Direto (sem indicação)", comissao: com, rt: 0, outros: 0, padrao: rt === 0 },
+    { nome: "Turn key", comissao: com, rt: 0, outros: 0, padrao: false },
+  ];
 }

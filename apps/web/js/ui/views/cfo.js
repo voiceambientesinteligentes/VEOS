@@ -6,7 +6,7 @@ import { diagnosticoParams, impostosSimulados } from "../../domain/cfo_cenarios.
 import { resumir, SINAIS } from "../../domain/diagnostico.js";
 import { analisarOrcamento } from "../../domain/analise_orcamento.js";
 import { projetos } from "../../domain/estoque_sugerido.js";
-import { custoNoBrasil, FAIXAS, faixa, faturamentoMinimo, fatorProduto, margem, precoPolitica } from "../../domain/formacao_preco.js";
+import { custoNoBrasil, FAIXAS, faixa, faturamentoMinimo, fatorProduto, margem, precoPolitica, variacaoDolar } from "../../domain/formacao_preco.js";
 import { comCompatibilidade, numeroBR, parametros, progresso, SECOES, SUGESTOES_TEMPOS, temTextoExtra } from "../../domain/formulario_cfo.js";
 import { formatBRL, formatDateTime } from "../../domain/format.js";
 import { clear, errorNotice, field, h, method, panel, stamp, stat, table } from "../dom.js";
@@ -166,8 +166,12 @@ function painelLacunas(p) {
 
 // ================================================================ precos dos produtos
 export async function telaPrecosCfo(root) {
-  const [{ respostas }, { produtos }, orc, cb] = await Promise.all([api.cfoFormulario(), api.cfoProdutos(), api.cfoOrcamentos().catch(() => ({ rbt12: null })), api.cfoCambio().catch(() => ({ serie: [] }))]);
+  const [{ respostas }, { produtos }, orc] = await Promise.all([api.cfoFormulario(), api.cfoProdutos(), api.cfoOrcamentos().catch(() => ({ rbt12: null }))]);
   const p = parametros(respostas);
+  // dolar desde a compra mais antiga do catalogo (max. 2 anos) para atualizar o custo pela variacao
+  const ultimaCompra = (x) => (x.compras ?? []).map((c) => c.data).filter(Boolean).sort().pop() ?? null;
+  const maisAntiga = produtos.map(ultimaCompra).filter(Boolean).sort()[0] ?? "";
+  const cb = await api.cfoCambio(maisAntiga).catch(() => ({ serie: [] }));
   // dolar do dia (PTAX do Banco Central) + a folga que voce definiu para a variacao ate a compra
   const ptax = cb.serie?.length ? cb.serie[cb.serie.length - 1] : null;
   const cambio = ptax ? Math.round(ptax.venda * (1 + (p.margemCambial ?? 0) / 100) * 10000) / 10000 : null;
@@ -175,6 +179,10 @@ export async function telaPrecosCfo(root) {
   const cenario = h("select", { class: "select", id: "cp-cenario" }, h("option", { value: "2026" }, "Venda até 31/12/2026 (Simples)"), h("option", { value: "2027" }, "Venda a partir de 2027 (fora do Simples)"));
   const tIn = h("input", { class: "input num", id: "cp-t", inputmode: "decimal", autocomplete: "off" });
   const vIn = h("input", { class: "input num", id: "cp-v", inputmode: "decimal", autocomplete: "off", value: String(p.v).replace(".", ",") });
+  const canal = h("select", { class: "select", id: "cp-canal" }, p.canais.map((c) => h("option", { value: c.nome, selected: c.nome === p.canalPadrao }, `${c.nome} (${String(c.v).replace(".", ",")}%)`)));
+  canal.addEventListener("change", () => { const c = p.canais.find((x) => x.nome === canal.value); if (c) vIn.value = String(c.v).replace(".", ","); desenhar(); });
+  const atualizarDolar = h("select", { class: "select", id: "cp-dolar" }, h("option", { value: "sim" }, "Sim: custo de hoje pelo dólar"), h("option", { value: "nao" }, "Não: preço da última compra"));
+  atualizarDolar.addEventListener("change", () => desenhar());
   const tsIn = h("input", { class: "input num", id: "cp-ts", inputmode: "decimal", autocomplete: "off" });
   const origemT = h("span", { class: "field-hint" });
   const origemTs = h("span", { class: "field-hint" });
@@ -204,14 +212,16 @@ export async function telaPrecosCfo(root) {
     const linhas = produtos.map((x) => {
       const f = fatorProduto(x, { ...p.fator, cambio, compra: compra.value });
       if (f.conflito) conflitos += 1;
-      const custo = f.fator === null ? null : custoNoBrasil(x.custo, { fator: f.fator, perdas: p.perdas });
+      const vd = atualizarDolar.value === "sim" ? variacaoDolar(ultimaCompra(x), cb.serie) : null;
+      const fatorDolar = vd ? vd.fator * (1 + (p.spreadAliexpress ?? 0) / 100) : 1;
+      const custo = f.fator === null ? null : custoNoBrasil(x.custo * fatorDolar, { fator: f.fator, perdas: p.perdas });
       const precos = Object.fromEntries(FAIXAS.map(([k, a]) => [k, t === null ? null : precoPolitica(custo, { t, v, alvo: a })]));
       const atual = x.preco_venda ?? x.zoho.find((z) => z.venda)?.venda ?? null;
       const m = atual && custo !== null && t !== null ? margem(atual, custo, { t, v }) : null;
       if (atual) comZoho += 1;
       if (m && m.pct < 30) abaixoMin += 1;
       if (precos.meta === null) semPreco += 1;
-      return { x, f, custo, precos, atual, m };
+      return { x, f, custo, precos, atual, m, vd };
     });
     clear(resumo).append(
       stat("Produtos", String(produtos.length), "ativos e a revisar no catálogo"),
@@ -223,10 +233,11 @@ export async function telaPrecosCfo(root) {
     const vis = linhas.filter(({ x }) => !q || `${x.codigo} ${x.nome}`.toLowerCase().includes(q));
     clear(tabela).append(table({
       caption: `Preço mínimo por produto (Política V1: MC sobre a receita líquida, com provisão de 2%) · ${vis.length} de ${linhas.length}`,
-      head: ["Código", "Produto", "Pago (AliExpress)", "Fator de importação", "Custo no Brasil", "Meta 35%", "Mínimo 30%", "Piso 25%", "Preço atual", "MC do preço atual"],
-      align: ["", "", "r", "r", "r", "r", "r", "r", "r", "r"],
-      rows: vis.map(({ x, f, custo, precos, atual, m }) => [
+      head: ["Código", "Produto", "Pago (AliExpress)", "Dólar desde a compra", "Fator de importação", "Custo no Brasil hoje", "Meta 35%", "Mínimo 30%", "Piso 25%", "Preço atual", "MC do preço atual"],
+      align: ["", "", "r", "r", "r", "r", "r", "r", "r", "r", "r"],
+      rows: vis.map(({ x, f, custo, precos, atual, m, vd }) => [
         h("a", { href: `#/produtos/${x.id}` }, x.codigo), x.nome, brl(x.custo),
+        vd ? h("span", { title: `PTAX ${vd.de.data}: ${vd.de.venda} → ${vd.para.data}: ${vd.para.venda}` }, `${vd.fator >= 1 ? "+" : ""}${String(Math.round((vd.fator - 1) * 1000) / 10).replace(".", ",")}%`) : "—",
         h("span", { title: f.origem }, f.fator === null ? "—" : String(f.fator).replace(".", ",")), brl(custo),
         h("strong", null, brl(precos.meta)), brl(precos.minimo), brl(precos.piso), brl(atual),
         m ? stamp(`${pct(m.pct)} · ${FAIXA_TXT[faixa(m.pct)]}`, FAIXA_TOM[faixa(m.pct)]) : "—",
@@ -274,7 +285,7 @@ export async function telaPrecosCfo(root) {
   root.append(
     panel({ title: "Preço correto dos produtos", subtitle: "Ricardo (CFO): o preço sai da margem de contribuição da Política V1 sobre o custo real no Brasil (preço pago × fator de importação), não de um multiplicador fixo." },
       painelLacunas(p),
-      h("div", { class: "form-grid" }, field(cenario.id, "Quando a venda será faturada", cenario), field(tIn.id, "Imposto sobre produto (%)", tIn, origemT), field(tsIn.id, "Imposto sobre serviço (%)", tsIn, origemTs), field(vIn.id, "Cartão + comissão + indicação (% do preço)", vIn, p.cartaoInformado ? `do formulário: cartão ${pct(p.vDetalhe.cartao)} + comissão ${pct(p.vDetalhe.comissao)} + indicação ${pct(p.vDetalhe.indicacao)}` : "LACUNA: sem taxa de cartão informada, está 0%"), field(compra.id, "Origem da compra", compra, "O imposto de importação zero até US$ 50 vale só para pessoa física")),
+      h("div", { class: "form-grid" }, field(cenario.id, "Quando a venda será faturada", cenario), field(tIn.id, "Imposto sobre produto (%)", tIn, origemT), field(tsIn.id, "Imposto sobre serviço (%)", tsIn, origemTs), field(vIn.id, "Cartão + comissão + indicação (% do preço)", vIn, p.cartaoInformado ? `do formulário: cartão ${pct(p.vDetalhe.cartao)} + comissão ${pct(p.vDetalhe.comissao)} + indicação ${pct(p.vDetalhe.indicacao)}` : "LACUNA: sem taxa de cartão informada, está 0%"), field(compra.id, "Origem da compra", compra, "O imposto de importação zero até US$ 50 vale só para pessoa física"), field(canal.id, "Canal de venda", canal, "Com RT/indicação, sem ou turn key"), field(atualizarDolar.id, "Atualizar custo pelo dólar?", atualizarDolar, "Variação da PTAX desde a última compra de cada produto (atualiza todo dia)")),
       field(busca.id, "Filtrar", busca), resumo, tabela,
       method("Como o preço é calculado", "Preço mínimo P = Custo ÷ [(1 − imposto) × (1 − 2% − margem) − despesas variáveis]: com esse preço a margem de contribuição oficial fica exatamente na meta (35%), no mínimo normal (30%) ou no piso (25%, só com a direção).",
         "Custo no Brasil = preço pago no AliExpress × fator de importação × (1 + perdas). O fator vem, nesta ordem, do formulário, do pedido mais recente do próprio produto (após 12/05/2026), da regra do Remessa Conforme com o seu câmbio, ou da mediana dos seus pedidos (1,205, só até R$ 280; acima, sem câmbio, fica lacuna).",
@@ -333,6 +344,7 @@ function painelRecentes(orcamentos, p, params, simulado) {
   const escolha = h("select", { class: "select", id: "dg-orc" }, h("option", { value: "" }, "Os 4 últimos projetos"),
     orcamentos.slice().sort((a, b) => String(b.data).localeCompare(String(a.data))).slice(0, 60).map((o) => h("option", { value: o.numero }, `${o.numero} · ${dataBR(o.data)} · ${o.cliente}`)));
   const corpo = h("div", { class: "stack" });
+  const canal = h("select", { class: "select", id: "dg-canal" }, p.canais.map((c) => h("option", { value: c.nome, selected: c.nome === p.canalPadrao }, `${c.nome} (${String(c.v).replace(".", ",")}%)`)));
   const base = { ...params, produtividade: p.produtividade, comissionamento: p.comissionamento, entregaHoras: p.entregaHoras, metrosPorPonto: p.metrosPorPonto };
   const produtividadeAlta = p.produtividade !== null && p.produtividade >= 90;
   function cartao(o) {
@@ -357,12 +369,14 @@ function painelRecentes(orcamentos, p, params, simulado) {
         a.mo.faltam.length ? `Sem tempo no catálogo: ${a.mo.faltam.map((f) => `${f.dispositivo} × ${f.qtd}`).join(", ")}` : null));
   }
   function desenhar() {
+    base.v = (p.canais.find((c) => c.nome === canal.value) ?? { v: params.v }).v;
     const lista = escolha.value ? orcamentos.filter((o) => o.numero === escolha.value) : recentes;
     clear(corpo).append(...lista.map(cartao)); // append nativo: espalhar a lista
   }
   escolha.addEventListener("change", desenhar);
+  canal.addEventListener("change", desenhar);
   desenhar();
   return panel({ title: "Últimos orçamentos: o que está certo e o que corrigir", subtitle: "CFO e COO: produto contra o preço mínimo da Política (com imposto, comissão e indicação) e horas cobradas contra as horas calculadas pelos equipamentos e pelos seus tempos de serviço." },
     produtividadeAlta ? h("p", { class: "notice notice-warn" }, `Você informou produtividade de ${pct(p.produtividade)}. Em obra, a pesquisa indica 60–75% (deslocamento, montagem, espera, retrabalho): mostro também o cálculo com ${PROD_PESQUISA}%.`) : null,
-    field(escolha.id, "Ver", escolha), corpo);
+    h("div", { class: "form-grid" }, field(escolha.id, "Ver", escolha), field(canal.id, "Canal de venda deste orçamento", canal, "RT/indicação só quando houver; turn key e direto não pagam")), corpo);
 }

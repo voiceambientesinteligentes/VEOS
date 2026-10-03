@@ -80,6 +80,16 @@ const REGRAS_ITEM = [
 ];
 const sem_fio = (s) => !/cabead|knx|com fio/.test(s);
 
+/** Dispositivo de um item de orcamento pelo nome (null se nao reconhecido). Cabos viram "cabo_rede"/"coax". */
+export function classificarItem(nome) {
+  const s = sem(nome);
+  if (/cabo de rede|cat\.? ?[56]|utp/.test(s)) return { dispositivo: "cabo_rede", tecnologia: "na" };
+  if (/coaxial|rg ?6/.test(s)) return { dispositivo: "coax", tecnologia: "na" };
+  const d = (REGRAS_ITEM.find(([re]) => re.test(s)) ?? [null, null])[1];
+  if (!d) return null;
+  return { dispositivo: d, tecnologia: ["interruptor", "ir", "cortina", "sensor", "central"].includes(d) ? (sem_fio(s) ? "sem_fio" : "cabeado") : "na" };
+}
+
 /** Dispositivos de um orcamento (so produtos) com quantidade e tecnologia. Cabos viram pontos pela metragem media. */
 export function dispositivosDoOrcamento(linhas, { metrosPorPonto = 25 } = {}) {
   const r = new Map();
@@ -115,8 +125,13 @@ export function composicao(linhas, catalogo, opcoes = {}) {
   const porDisp = (d, tec) => catalogo.filter((c) => (c.dispositivo === d || (d === "ap_cabo" && c.dispositivo === "ap" && c.atividade === "cabeamento")) && (d !== "ap" || c.atividade !== "cabeamento") && (c.tecnologia === tec || c.tecnologia === "na" || tec === "na") && minutosItem(c) !== null);
   const linhasComp = [];
   const faltam = [];
-  let total = 0;
+  const fechados = [];
+  let total = 0, valorFechado = 0;
+  const valorDe = (c) => { const m = /\d[\d.,]*/.exec(String(c.valor_fechado ?? "")); if (!m) return null; const t = m[0]; const v = Number(t.includes(",") ? t.replace(/\./g, "").replace(",", ".") : t); return Number.isFinite(v) && v > 0 ? v : null; };
   for (const it of itens) {
+    // servico cobrado por valor fechado (sem tempo): entra como valor, nao como horas
+    const fixo = catalogo.find((c) => c.dispositivo === it.dispositivo && valorDe(c) !== null && minutosItem(c) === null && (c.tecnologia === it.tecnologia || c.tecnologia === "na" || it.tecnologia === "na"));
+    if (fixo) { const v = valorDe(fixo) * it.qtd; valorFechado += v; fechados.push({ ...it, valorUnit: valorDe(fixo), valor: v }); continue; }
     // uma entrada por atividade (a primeira do catalogo): alternativas da mesma atividade nao se somam
     const vistas = new Set();
     const atividades = porDisp(it.dispositivo, it.tecnologia).filter((c) => { const k = c.dispositivo === "ap" && it.dispositivo === "ap_cabo" ? "cab" : c.atividade; if (vistas.has(k)) return false; vistas.add(k); return true; });
@@ -126,5 +141,5 @@ export function composicao(linhas, catalogo, opcoes = {}) {
     linhasComp.push({ ...it, atividades: atividades.map((c) => `${c.atividade} ${minutosItem(c)} min`), minUnit, minTotal: minUnit * it.qtd });
   }
   const horasCobradas = linhas.filter((l) => l.tipo === "service" && /^h(r|ora)s?$/i.test(String(l.unidade ?? "").trim())).reduce((a, l) => a + (Number(l.qtd) || 0), 0);
-  return { linhas: linhasComp, faltam, minutos: total, horas: Math.round((total / 60) * 10) / 10, horasCobradas, metrosRede, metrosCoax, metrosPorPonto };
+  return { linhas: linhasComp, faltam, fechados, valorFechado: Math.round(valorFechado * 100) / 100, minutos: total, horas: Math.round((total / 60) * 10) / 10, horasCobradas, metrosRede, metrosCoax, metrosPorPonto };
 }

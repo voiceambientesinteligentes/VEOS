@@ -18,7 +18,7 @@ rodar(async (v) => {
   if (![...tempos.querySelectorAll("[data-sub=obs]")].some((x) => x.value.includes("sem unidade no original"))) throw new Error("tempo sem unidade não sinalizado");
   [...tempos.querySelectorAll("button")].find((b) => b.textContent.includes("Sugestões da pesquisa")).click();
   if (tempos.querySelectorAll(".lista-sugestao").length < 10) throw new Error("sugestões não entraram");
-  if (v.querySelector("#f-voce-retirada_media_real").value !== "18000") throw new Error("retirada não migrou para a seção 5");
+  if (v.querySelector("#f-voce-retirada_media_real").value !== "12000") throw new Error("retirada não migrou para a seção 5");
   if (v.querySelector("[data-sub=nome]")?.value !== "Técnico TESTE") throw new Error("lista da equipe não carregou");
   if (t.includes("EST-T003")) throw new Error("orçamento recusado não entra na seção 7");
   // numero invalido e recusado; valido e gravado

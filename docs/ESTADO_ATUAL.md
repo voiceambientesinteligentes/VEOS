@@ -2,6 +2,61 @@
 
 **Resumo:** o VEOS está online (site no GitHub Pages + Supabase) com setores vivos, Zoho espelhado e editável, fluxo de pedidos, Biblioteca, e — desde 01/10 — validação guiada, saúde do sistema, gestão de usuários com MFA, exportação, backup semanal criptografado e testes no CI. Falta o uso real guiado pelo Fernando e os segredos do GitHub para backup e testes online no CI. O pipeline V2 do cérebro segue bloqueado no item 30. **Não está 100%.**
 
+## Painel do dono, plano comercial, canais de venda e condição automática (02/10, madrugada)
+Pedido do Fernando, a partir das respostas dele: explicar e simular o ponto de equilíbrio, criar o plano de captação de clientes, tratar o showroom, canais de venda selecionáveis, unir orçamentos, valor fechado, dólar do AliExpress, e uma interface fácil com painéis e perguntas aos diretores.
+
+**Painel do dono** (`#/painel-dono`, direção e financeiro):
+- ponto de equilíbrio financeiro com o passo a passo (saídas do mês ÷ margem por real vendido, por canal);
+- vendido no mês contra a meta;
+- simulação de duas obras-modelo, com itens de referência dos orçamentos, preço da Política e horas pela composição;
+- metas aprovadas ou propostas;
+- gráficos de contatos (CRM) e orçamentos por mês;
+- resumo do Plano e checklist "o que falta", com link para a seção do formulário;
+- botões para perguntar ao CFO, CSO, CMO e COO.
+
+**Plano comercial** (`#/comercial`): funil "da meta à semana" com taxas editáveis, canais, roteiros de abordagem, calculadora de showroom (próprio e parceiro) e agenda de eventos.
+
+**Domínio:**
+- `domain/equilibrio.js`: saídas, margem por real, ponto de equilíbrio, mix praticado, itens de referência, simulação de obra, funil, showroom e checklist;
+- `domain/condicao.js`: condição de pagamento sugerida (sinal que cobre o material, etapas, validade e dólar de referência, sem cláusula cambial).
+
+**Formulário v3:**
+- produtividade calculada pelo "dia de obra" (jornada, deslocamento, preparação, espera, retrabalho);
+- canais de venda (com RT/indicação, direto, turn key);
+- valor fechado nos tempos;
+- folga do dólar do AliExpress;
+- seção 10 com as metas aprovadas pelo fundador (migração `20261002140000`).
+
+**Negociação ao Vivo:**
+- soma vários orçamentos (projeto pedido em partes);
+- o canal de venda lança comissão e RT;
+- botão "Condição sugerida pelo CFO".
+
+**Proposta:**
+- formato global por grupos (CDC art. 40) ou detalhado;
+- condição e validade sugeridas;
+- dólar PTAX de referência.
+
+**Preço dos produtos:**
+- seletor de canal;
+- custo atualizado pela variação da PTAX desde a data da compra, todo dia (`GET /cfo/cambio?desde=`).
+
+**API:** `GET /cfo/painel` devolve só contagens do CRM por mês, sem dados pessoais.
+
+**Plano da VOICE:** 10 itens revisados (com histórico) e 16 novos (comercial, financeiro e decisões). As respostas do CFO, do CSO com o CMO e do COO estão em "Perguntar aos diretores". Números da empresa só no banco.
+
+**Biblioteca:**
+- BIB-0088: gestão financeira, CDC e câmbio;
+- BIB-0089: geração de contatos e showroom;
+- BIB-0090: proposta dos canais e da condição automática.
+
+**Testes:**
+- domínio e regras: 83 (incluindo `tests/web/equilibrio.test.mjs`);
+- telas: 102/102, com os novos `painel_dono`, `comercial` e `negociacao`;
+- online: e2e_sistema 56/56.
+
+**Atenção para o fim do projeto:** no plano gratuito do GitHub, o GitHub Pages só publica a partir de repositório público. Deixar o repositório privado exige GitHub Pro (pago) ou outra hospedagem. É decisão do fundador (PL "Repositório privado × site no ar").
+
 ## Plano da VOICE, tempos de serviço e formulário v2 (02/10, noite)
 Pedido do Fernando: completar o formulário com subdivisões, pesquisar os tempos de serviço que faltavam, analisar os 4 últimos orçamentos e montar o plano no VEOS (metas, faturamento, captação, gestão financeira).
 

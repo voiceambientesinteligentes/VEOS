@@ -309,3 +309,7 @@ a.pill { text-decoration: none; }
 .plano-dados dd { margin: 0; overflow-wrap: anywhere; }
 .plano-cancelado { opacity: 0.6; }
 .plano-feito { border-left: 3px solid var(--ok, #2fa37a); }
+
+.barra-progresso { height: 10px; border-radius: 6px; background: var(--line); overflow: hidden; }
+.barra-progresso > span { display: block; height: 100%; background: var(--gold, #a8862f); border-radius: 6px; }
+.btn-mini { padding: 4px 10px; font-size: 0.85rem; }

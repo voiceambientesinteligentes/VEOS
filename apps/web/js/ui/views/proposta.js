@@ -1,6 +1,8 @@
 // PROPOSTA COMERCIAL em PDF com a identidade da VOICE, a partir do orcamento do Zoho Books
 // (espelho): secoes do proprio orcamento, descricoes, termos e notas escritos pela VOICE no Zoho.
 // Custo e margem nunca aparecem. Envio: rascunho de e-mail ou WhatsApp + botao (envio humano).
+import { condicaoSugerida } from "../../domain/condicao.js";
+import { parametros } from "../../domain/formulario_cfo.js";
 import { api } from "../../data/api.js";
 import { formatBRL, formatDate, formatDateTime } from "../../domain/format.js";
 import { agruparItens, rascunhosEnvio, telefoneWhatsApp, totaisProposta } from "../../domain/proposta.js";
@@ -38,16 +40,36 @@ export async function telaPropostas(root) {
   await desenhar();
 }
 
+/** Totais por grupo (CDC art. 40: discriminar mao de obra, materiais e equipamentos) sem preco unitario. */
+function gruposGlobais(linhas, tipos) {
+  const g = { "Equipamentos e materiais": 0, "Mão de obra (instalação, configuração e programação)": 0, "Outros": 0 };
+  for (const l of linhas) {
+    const t = tipos.get(String(l.item_id ?? "")) ?? (/instala|configura|m[aã]o de obra|programa/i.test(l.name ?? "") ? "service" : "goods");
+    g[t === "service" ? "Mão de obra (instalação, configuração e programação)" : t === "goods" ? "Equipamentos e materiais" : "Outros"] += Number(l.item_total) || 0;
+  }
+  return Object.entries(g).filter(([, v]) => v > 0);
+}
+
 export async function telaProposta(root, id) {
   const { dados: e } = await api.zohoEspelhoRegistro("books", "estimates", id);
   let cli = {};
   if (e.customer_id) { try { cli = (await api.zohoEspelhoRegistro("books", "contacts", String(e.customer_id))).dados ?? {}; } catch { cli = {}; } }
   const secoes = agruparItens(e.line_items);
+  // tipo de cada item (produto/servico) e custo dos produtos: so direcao/financas leem; sem acesso, segue sem
+  let tipos = new Map(), custoProdutos = 0, ptax = null, pForm = null;
+  try {
+    const [orcs, cb, f] = await Promise.all([api.cfoOrcamentos(), api.cfoCambio().catch(() => ({ serie: [] })), api.cfoFormulario().catch(() => null)]);
+    const este = orcs.orcamentos.find((x) => x.numero === e.estimate_number);
+    for (const [i, l] of (este?.linhas ?? []).entries()) { const li = e.line_items[i]; if (li) tipos.set(String(li.item_id ?? ""), l.tipo); if (l.tipo === "goods" && Number(l.custo) > 1) custoProdutos += Number(l.custo) * (Number(l.qtd) || 0); }
+    ptax = cb.serie?.length ? cb.serie[cb.serie.length - 1] : null;
+    pForm = f ? parametros(f.respostas) : null;
+  } catch { /* vendas: sem custos */ }
   const tot = totaisProposta(e);
   const contatoCli = (cli.contact_persons ?? []).find((c) => c.is_primary_contact) ?? (cli.contact_persons ?? [])[0] ?? {};
   const emailCli = cli.email || contatoCli.email || "";
   const foneCli = cli.mobile || contatoCli.mobile || cli.phone || contatoCli.phone || "";
 
+  const cond = condicaoSugerida({ custoProdutos, total: tot.total, entradaMinima: pForm?.entradaPct ?? 40, validadeDias: pForm?.validadeDias ?? 7, ptax });
   const campo = (idc, rot, valor = "", attrs = {}, dica) => field(idc, rot, h("input", { class: "input", id: idc, type: "text", autocomplete: "off", value: valor, ...attrs }), dica);
   const area = (idc, rot, valor = "", dica) => field(idc, rot, h("textarea", { class: "input", id: idc, rows: 4 }, valor), dica);
   const v = (x) => document.getElementById(x)?.value?.trim() ?? "";
@@ -63,6 +85,15 @@ export async function telaProposta(root, id) {
           h("td", { class: "r" }, `${qtd(i.quantidade)}${i.unidade ? ` ${i.unidade}` : ""}`), h("td", { class: "r" }, brl(i.unitario)), h("td", { class: "r" }, brl(i.total))))),
         secoes.length > 1 ? h("tfoot", null, h("tr", null, h("td", { colspan: 3 }, `Subtotal ${sec.secao}`), h("td", { class: "r" }, brl(sec.subtotal)))) : null),
     ];
+    const global = v("pp-formato") !== "detalhado";
+    const blocoEscopo = global
+      ? [...secoes.flatMap((sec) => [
+          secoes.length > 1 || sec.secao !== "Itens" ? h("h3", { class: "proposta-secao" }, sec.secao) : null,
+          h("table", { class: "contrato-tabela" },
+            h("thead", null, h("tr", null, h("th", null, "Item"), h("th", { class: "r" }, "Qtd"))),
+            h("tbody", null, sec.itens.map((i) => h("tr", null, h("td", null, h("strong", null, i.nome), i.descricao ? h("div", { class: "proposta-desc" }, i.descricao) : null), h("td", { class: "r" }, `${qtd(i.quantidade)}${i.unidade ? ` ${i.unidade}` : ""}`)))))]),
+        h("table", { class: "contrato-tabela" }, h("tbody", null, gruposGlobais(e.line_items, tipos).map(([g, val]) => h("tr", null, h("td", null, g), h("td", { class: "r" }, brl(val))))))]
+      : secoes.flatMap(linhasSecao);
     clear(doc).append(...[
       h("header", { class: "proposta-topo" }, marca(), h("div", null, h("p", { class: "proposta-empresa" }, v("pp-emp")), h("p", { class: "proposta-dados" }, [v("pp-cnpj") && `CNPJ ${v("pp-cnpj")}`, v("pp-end"), v("pp-contato")].filter(Boolean).join(" · "))),
         h("div", { class: "proposta-num" }, h("span", null, "Proposta"), h("strong", null, e.estimate_number ?? ""), h("span", null, v("pp-data") ? formatDate(v("pp-data")) : ""))),
@@ -73,7 +104,7 @@ export async function telaProposta(root, id) {
         e.reference_number ? h("p", null, h("strong", null, "Referência: "), e.reference_number) : null),
       v("pp-intro") ? h("div", { class: "zoho-texto" }, v("pp-intro")) : null,
       h("h2", null, "Escopo e investimento"),
-      ...secoes.flatMap(linhasSecao),
+      ...blocoEscopo,
       h("table", { class: "contrato-tabela proposta-totais" }, h("tbody", null,
         tot.desconto ? h("tr", null, h("td", null, "Subtotal"), h("td", { class: "r" }, brl(tot.subtotal))) : null,
         tot.desconto ? h("tr", null, h("td", null, "Desconto"), h("td", { class: "r" }, `− ${brl(tot.desconto)}`)) : null,
@@ -109,8 +140,9 @@ export async function telaProposta(root, id) {
     h("div", { class: "form-grid" },
       campo("pp-titulo", "Título", e.subject || `Automação para ${e.customer_name ?? "o seu ambiente"}`),
       campo("pp-data", "Data", e.date ?? new Date().toISOString().slice(0, 10), { type: "date" }),
-      campo("pp-validade", "Validade", e.expiry_date ?? "", { type: "date" }, "Do orçamento no Zoho, quando houver."),
-      campo("pp-pag", "Condições de pagamento", e.payment_terms_label ?? "", {}, "Preencha conforme a negociação."),
+      campo("pp-validade", "Validade", e.expiry_date ?? cond.validade ?? "", { type: "date" }, "Curta para itens importados (o CDC presume 10 dias se não estiver escrita)."),
+      field("pp-formato", "Formato", h("select", { class: "select", id: "pp-formato" }, h("option", { value: "global" }, "Global: itens com quantidade e totais por grupo"), h("option", { value: "detalhado" }, "Detalhado: preço de cada item")), "O CDC pede mão de obra e materiais separados; o global mostra só os totais de cada grupo."),
+      campo("pp-pag", "Condições de pagamento", cond.texto || (e.payment_terms_label ?? ""), {}, cond.texto ? "Sugerida pelo CFO: sinal cobre o material, etapas, validade e dólar do dia. Ajuste se precisar." : "Preencha conforme a negociação."),
       campo("pp-prazo", "Prazo de execução"),
       campo("pp-contato", "Responsável VOICE", e.salesperson_name ?? ""),
       campo("pp-emp", "Empresa", "VOICE Ambientes Inteligentes"), campo("pp-cnpj", "CNPJ", "12.323.599/0001-83"), campo("pp-end", "Endereço", "Balneário Camboriú/SC")),

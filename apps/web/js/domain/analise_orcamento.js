@@ -60,7 +60,7 @@ export function analisarOrcamento(o, p, catalogo = []) {
     custo: custoMO === null ? null : r2(custoMO),
     precoHoraMeta: temImposto && p.custoHora ? precoPolitica(p.custoHora, { t: p.tServico, v, alvo: 35 }) : null,
     precoMeta: temImposto && custoMO ? precoPolitica(custoMO, { t: p.tServico, v, alvo: 35 }) : null,
-    faltam: comp.faltam, linhas: comp.linhas, metrosRede: comp.metrosRede, premissas: { produtividade: prod * 100, comissionamento: comiss * 100, entrega, cenas: cena ? `${interruptores} cena(s) de ${minutosItem(cena)} min` : null },
+    faltam: comp.faltam, linhas: comp.linhas, fechados: comp.fechados, valorFechado: comp.valorFechado, metrosRede: comp.metrosRede, premissas: { produtividade: prod * 100, comissionamento: comiss * 100, entrega, cenas: cena ? `${interruptores} cena(s) de ${minutosItem(cena)} min` : null },
   };
 
   // ---------------- total

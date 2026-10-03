@@ -88,6 +88,20 @@ export function fatorProduto(produto, { manual = null, incluiImpostos = null, ca
   return { fator: FATOR_MEDIO.ate280, origem: "mediana dos seus pedidos após 12/05/2026" };
 }
 
+/**
+ * Variacao do dolar desde a compra: PTAX de hoje / PTAX do dia da compra (ou o ultimo dia util antes).
+ * O AliExpress precifica em dolar e converte para reais no dia; sem a taxa propria dele, a PTAX mede a
+ * variacao. serie = [{data, venda}] em ordem. null se faltar cotacao.
+ */
+export function variacaoDolar(dataCompra, serie) {
+  if (!dataCompra || !serie?.length) return null;
+  const hoje = serie[serie.length - 1];
+  let base = null;
+  for (const x of serie) { if (x.data <= String(dataCompra).slice(0, 10)) base = x; else break; }
+  if (!base) return null;
+  return { fator: Math.round((hoje.venda / base.venda) * 10000) / 10000, de: base, para: hoje };
+}
+
 /** Custo no Brasil: preco pago x fator de importacao (impostos + frete) x (1 + perdas %). */
 export function custoNoBrasil(preco, { fator, perdas = 0 }) {
   const [p, f, pe] = [num(preco), num(fator), num(perdas) ?? 0];
@@ -98,12 +112,19 @@ export function custoNoBrasil(preco, { fator, perdas = 0 }) {
 // ---------------------------------------------------------------- mao de obra
 // Custo-hora direto (metodo de custeio Sebrae): custo mensal de quem executa + custos mensais da
 // operacao de campo (veiculo, ferramentas, EPI) dividido pelas horas produtivas (horas vendaveis).
-const CUSTO_MENSAL = {
+export const CUSTO_MENSAL = {
   clt: (p) => (num(p.valor) === null ? null : num(p.valor) * (1 + (num(p.encargos_pct) ?? NaN) / 100) + (num(p.beneficios) ?? 0)),
   pj: (p) => (num(p.valor) === null ? null : num(p.valor) + (num(p.beneficios) ?? 0)),
   socio: (p) => (num(p.valor) === null ? null : num(p.valor) + (num(p.beneficios) ?? 0)),
   diarista: (p) => (num(p.valor) === null || num(p.dias_mes) === null ? null : num(p.valor) * num(p.dias_mes) + (num(p.beneficios) ?? 0)),
 };
+
+/** Custo mensal cheio de uma pessoa (sem o rateio de % em obra). null se faltar dado. */
+export function custoMensalPessoa(p) {
+  const fn = CUSTO_MENSAL[p.vinculo];
+  const c = fn ? fn(p) : null;
+  return c === null || Number.isNaN(c) ? null : centavos(c);
+}
 
 /**
  * equipe: [{ nome, vinculo: clt|pj|socio|diarista, valor, encargos_pct?, beneficios?, dias_mes?, horas_mes, campo_pct }]

@@ -125,6 +125,10 @@ try {
   assert.equal(cp.status, 200); assert.ok(cp.dados.produtos.every((x) => Array.isArray(x.compras))); ok(`CFO: produtos com compras (${cp.dados.produtos.length})`);
   const cc = await req("/functions/v1/api/cfo/cambio", { token });
   assert.equal(cc.status, 200); assert.ok(Array.isArray(cc.dados.serie)); ok(`CFO: dolar PTAX do Banco Central (${cc.dados.serie.length} dias${cc.dados.ok ? "" : ", indisponivel agora"})`);
+  const ch = await req("/functions/v1/api/cfo/cambio?desde=2025-06-01", { token });
+  assert.equal(ch.status, 200); assert.ok(!ch.dados.ok || ch.dados.serie.length > cc.dados.serie.length); ok(`CFO: dolar historico desde a compra (${ch.dados.serie.length} dias)`);
+  const pd = await req("/functions/v1/api/cfo/painel", { token });
+  assert.equal(pd.status, 200); assert.equal(typeof pd.dados.leadsPorMes, "object"); assert.ok(!JSON.stringify(pd.dados).includes("@")); ok("CFO: painel do dono com contagens do CRM (sem dados pessoais)");
   // plano: leitura e regras (sem alterar os itens reais do fundador)
   const pl = await req("/functions/v1/api/plano", { token });
   assert.equal(pl.status, 200); assert.ok(Array.isArray(pl.dados.itens) && pl.dados.pode.aprovar); ok(`plano: ${pl.dados.itens.length} itens lidos`);
@@ -167,6 +171,7 @@ try {
   assert.equal((await req(`/functions/v1/api/produtos/${comFoto.id}/preco`, { method: "POST", token, headers: chave(), body: { campo: "preco_venda", valor: "100.00", motivo: "TESTE" } })).status, 403); ok("vendas nao define preco de venda -> 403");
   assert.equal((await req(`/functions/v1/api/diretores/perguntas/${pq.dados.id}/responder`, { method: "POST", token, headers: chave(), body: { resposta: "resposta TESTE longa o bastante", motor: "TESTE" } })).status, 403); ok("vendas nao grava resposta de IA -> 403");
   assert.equal((await req("/functions/v1/api/cfo/orcamentos", { token })).status, 403); ok("vendas nao abre o diagnostico do CFO -> 403");
+  assert.equal((await req("/functions/v1/api/cfo/painel", { token })).status, 403); ok("vendas nao abre o painel do dono -> 403");
   const plv = await req("/functions/v1/api/plano", { token });
   assert.equal(plv.status, 200); assert.ok(!plv.dados.pode.aprovar && plv.dados.itens.every((i) => i.area !== "financas")); ok("vendas ve o plano sem o Financeiro e sem aprovar");
   const itemV = plv.dados.itens.find((i) => i.estado === "proposto");

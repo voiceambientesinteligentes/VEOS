@@ -23,6 +23,13 @@ rodar(async (v) => {
     return;
   }
   await telaProposta(v, "4823000000123");
+  // formato global (padrao): itens com quantidade, sem preco por item, total do projeto
+  const global = v.querySelector(".proposta-doc").textContent;
+  for (const t of ["Sala de estar", "Investimento total", "R$ 20.000,00"]) if (!global.includes(t)) throw new Error(`global sem: ${t}`);
+  if (global.includes("Subtotal Sala de estar")) throw new Error("global não deveria ter subtotal por item");
+  // formato detalhado
+  const formato = v.querySelector("#pp-formato");
+  formato.value = "detalhado"; formato.dispatchEvent(new Event("input", { bubbles: true }));
   const doc = v.querySelector(".proposta-doc").textContent;
   for (const t of ["EST-000123", "Sala de estar", "Subtotal Sala de estar", "R$ 18.000,00", "Investimento total", "R$ 20.000,00", "− R$ 1.000,00", "31/10/2026", "Garantia conforme fabricante"]) if (!doc.includes(t)) throw new Error(`faltou no documento: ${t}`);
   if (/custo|margem/i.test(doc)) throw new Error("custo/margem nao pode ir para o cliente");

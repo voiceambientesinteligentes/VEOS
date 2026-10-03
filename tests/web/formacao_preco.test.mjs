@@ -114,7 +114,7 @@ test("diagnóstico: resumo da carteira", () => {
 });
 
 test("formulário: progresso e parâmetros (lacunas explícitas)", () => {
-  assert.equal(SECOES.length, 9);
+  assert.equal(SECOES.length, 10);
   assert.equal(numeroBR("1.234,56"), 1234.56);
   assert.equal(numeroBR("6%"), 6);
   assert.equal(numeroBR("4.000"), 4000);

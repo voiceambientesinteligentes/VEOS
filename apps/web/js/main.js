@@ -27,6 +27,7 @@ import { telaIndependencia } from "./ui/views/independencia.js";
 import { telaDiretores } from "./ui/views/diretores.js";
 import { telaDiagnosticoCfo, telaFormularioCfo, telaPrecosCfo } from "./ui/views/cfo.js";
 import { telaEstoqueEstrategico, telaPlano } from "./ui/views/estrategia.js";
+import { telaComercial, telaPainelDono } from "./ui/views/painel_dono.js";
 import { telaProduto, telaProdutos, telaRevisaoProdutos } from "./ui/views/produtos.js";
 import { iniciarAvisos } from "./ui/notificar.js";
 import { abrirBusca, ligarAtalhos } from "./ui/busca_global.js";
@@ -114,6 +115,8 @@ const TELAS = {
   "#/ia": { fn: (root, signal) => renderIA(root, signal), titulo: ["IA VEOS", "Comando por voz"] },
   "#/orbita": { fn: telaOrbita, titulo: ["Órbita", "Os setores em órbita do VEOS"] },
   "#/visao": { fn: (root) => (["direcao", "financas"].includes(eu.papel) ? telaPainel(root) : telaVisao(root)), titulo: ["Visão geral", "Painel executivo: vendas, faturamento, caixa, funil e alertas"] },
+  "#/painel-dono": { fn: telaPainelDono, titulo: ["Painel do dono", "Quanto vender, como está indo, o que falta e a quem perguntar"] },
+  "#/comercial": { fn: telaComercial, titulo: ["Plano comercial", "Da meta de vendas à atividade da semana, canais e showroom"] },
   "#/plano": { fn: telaPlano, titulo: ["Plano da VOICE", "Metas, ações e rotinas propostas pelos diretores e decididas por você"] },
   "#/cfo/estoque": { fn: telaEstoqueEstrategico, titulo: ["Estoque estratégico", "Itens mais usados, lote sugerido e o momento do dólar"] },
   "#/cfo/diagnostico": { fn: telaDiagnosticoCfo, titulo: ["Diagnóstico dos orçamentos", "CFO: desconto, mão de obra, imposto e margem de cada orçamento aceito"] },
@@ -198,7 +201,9 @@ function montarMenu() {
     h("div", { class: "nav-group", role: "group", "aria-labelledby": "nav-cmd" },
       h("span", { class: "nav-label", id: "nav-cmd" }, "Comando"),
       ["direcao", "financas"].includes(eu.papel) ? link("#/visao", "▦", "Visão geral") : null,
+      ["direcao", "financas"].includes(eu.papel) ? link("#/painel-dono", "◎", "Painel do dono") : null,
       link("#/plano", "★", "Plano da VOICE"),
+      ["direcao", "financas", "vendas", "marketing"].includes(eu.papel) ? link("#/comercial", "↗", "Plano comercial") : null,
       link("#/orbita", "◉", "Órbita"),
       link("#/radar", "◈", "Radar"),
       link("#/mensagens", "✉", "Caixa de saída"),
