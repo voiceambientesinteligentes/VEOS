@@ -36,7 +36,8 @@ const sessao = JSON.stringify({ access_token: tok.access_token, refresh_token: t
 
 const navegador = await chromium.launch(process.env.CI ? {} : { channel: "msedge" });
 const falhas = [], oks = [];
-async function percorrer(nome, viewport, telas) {
+const falhasTela = []; // { nome, viewport, t, texto } para repetir uma vez (propagacao do GitHub Pages)
+async function percorrer(nome, viewport, telas, { extras = true } = {}) {
   const ctx = await navegador.newContext({ viewport, locale: "pt-BR" });
   await ctx.addInitScript((s) => localStorage.setItem("veos.sessao", s), sessao);
   const pg = await ctx.newPage();
@@ -60,9 +61,11 @@ async function percorrer(nome, viewport, telas) {
     if (t !== "#/orbita" && r.titulo === "Órbita") prob.push("rota caiu na Órbita (tela não publicada?)");
     if (r.lateral) prob.push("rolagem lateral");
     if (errosJs.length) prob.push(`erro JS: ${errosJs.join(" | ").slice(0, 300)}`);
-    (prob.length ? falhas : oks).push(`${nome} ${t}${prob.length ? ` -> ${prob.join("; ")}` : ""}`);
+    const linha = `${nome} ${t}${prob.length ? ` -> ${prob.join("; ")}` : ""}`;
+    (prob.length ? falhas : oks).push(linha);
+    if (prob.length) falhasTela.push({ nome, viewport, t, texto: linha });
   }
-  if (nome === "computador") {
+  if (nome === "computador" && extras) {
     // PWA e busca global no site publicado
     // o manifesto e lido pelo Playwright (a CSP do site so deixa a pagina chamar a API)
     const url = await pg.evaluate(() => document.querySelector('link[rel="manifest"]')?.href ?? null);
@@ -90,6 +93,23 @@ async function percorrer(nome, viewport, telas) {
 try {
   await percorrer("computador", { width: 1366, height: 900 }, TELAS);
   await percorrer("celular", { width: 390, height: 844 }, CELULAR);
+  // O teste roda logo apos a publicacao: o GitHub Pages pode servir arquivos antigos e novos
+  // misturados por alguns minutos. Tela que falhou e repetida UMA vez depois de 90 s; so a falha
+  // que persiste conta (a passageira vira aviso).
+  if (falhasTela.length) {
+    const repetir = falhasTela.splice(0);
+    for (const f of repetir) falhas.splice(falhas.indexOf(f.texto), 1);
+    console.log(`${repetir.length} tela(s) falharam; repetindo em 90 s (propagação do site)`);
+    await new Promise((r) => setTimeout(r, 90000));
+    for (const nome of [...new Set(repetir.map((f) => f.nome))]) {
+      const daVez = repetir.filter((f) => f.nome === nome);
+      await percorrer(nome, daVez[0].viewport, daVez.map((f) => f.t), { extras: false });
+    }
+    for (const f of repetir) if (!falhasTela.some((x) => x.nome === f.nome && x.t === f.t)) {
+      console.log(`aviso: passou na 2a tentativa: ${f.texto}`);
+      if (process.env.GITHUB_ACTIONS) console.log(`::warning title=Navegador (passageiro)::${f.texto.replace(/[\r\n]+/g, " ").slice(0, 900)}`);
+    }
+  }
 } finally {
   await navegador.close();
   await membro(user.id, false); // TESTE fica inativo

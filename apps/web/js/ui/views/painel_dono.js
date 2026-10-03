@@ -84,7 +84,7 @@ export async function telaPainelDono(root) {
         stat("Saídas do mês", brl(saidas.total), "custos fixos + sua retirada + equipe + veículo + dívidas"),
         stat("Margem por real vendido", mc ? pct(mc.media) : "—", mc ? `produto ${pct(mc.produto)} · serviço ${pct(mc.servico)} · canal ${c.nome}` : "faltam dados"),
         stat("Ponto de equilíbrio", eq ? brl(eq.meta) : "—", eq ? `≈ ${brl(eq.porDia)} por dia útil` : "faltam dados"),
-        stat("Vendido neste mês", brl(vendidoMes), meta ? `${progresso}% de ${brl(meta)}${p.metas.meta_vendas_mes ? " (meta aprovada)" : " (ponto de equilíbrio)"}` : "orçamentos aceitos no Zoho")),
+        stat("Vendido neste mês", brl(vendidoMes), `${meta ? `${progresso}% de ${brl(meta)}${p.metas.meta_vendas_mes ? " (meta aprovada)" : " (ponto de equilíbrio)"}` : "orçamentos aceitos no Zoho"}${vendidoMes ? "" : " · conta os orçamentos marcados como aceitos no Zoho"}`)),
       meta ? barraProgresso(progresso, "Vendido no mês em relação à meta") : null,
       imp.simulado ? h("p", { class: "notice notice-warn" }, "Impostos ainda SIMULADOS (Simples pelo faturamento do Zoho) até o contador informar. ", linkSecao("impostos", "Informar as alíquotas")) : null,
       method("Como chegamos nesse número (passo a passo)",
