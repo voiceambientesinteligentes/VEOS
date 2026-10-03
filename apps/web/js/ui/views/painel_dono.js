@@ -118,7 +118,11 @@ export async function telaPainelDono(root) {
       h("div", { class: "cfo-stats" },
         ...obras.map((o) => stat(o.modelo, brl(o.total), `produtos ${brl(o.produtos)} + mão de obra ${brl(o.maoDeObra)} (${n1(o.horas)} h × ${brl(base.precoHora)}) · sobra ${brl(o.sobra)}`)),
         stat("As duas obras no mês", brl(vendido), `sobra ${brl(sobra)} contra ${brl(saidas.total)} de saídas → ${sobra >= saidas.total ? `fica ${brl(sobra - saidas.total)} para reserva e lucro` : `faltam ${brl(saidas.total - sobra)}`}`),
-        stat("Horas de equipe usadas", `${Math.round(horas)} h`, p.hora?.horasVendaveis ? `de ~${p.hora.horasVendaveis} h vendáveis no mês (sua equipe)` : "capacidade: preencha a equipe")),
+        stat("Horas de equipe usadas", `${Math.round(horas)} h`, (() => {
+          // capacidade na MESMA produtividade da simulacao (a informada pode ser 100%)
+          const cap = p.hora?.horasVendaveis && p.produtividade ? Math.round((p.hora.horasVendaveis * base.produtividade) / p.produtividade) : null;
+          return cap ? `de ~${cap} h vendáveis no mês (sua equipe, com ${pct(base.produtividade)} de execução)` : "capacidade: preencha a equipe";
+        })())),
       ...obras.map((o) => method(`Itens da simulação: ${o.modelo}`, table({ head: ["Item (o mais usado nos seus orçamentos)", "Qtd", "Custo", "Preço (Política 35%)", "Total"], align: ["", "r", "r", "r", "r"], rows: o.linhas.map((l) => [l.nome, String(l.qtd), brl(l.custo), brl(l.preco), brl(l.total)]) }),
         `Mão de obra: ${n1(o.horas)} h pelos seus tempos (com testes, entrega e produtividade ${pct(base.produtividade)}) × ${brl(base.precoHora)}/h (o que você cobra hoje).`,
         o.faltam.length ? `Sem item de referência para: ${o.faltam.join(", ")}.` : null)),
