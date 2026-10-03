@@ -38,6 +38,8 @@ for (const [p, hs, w, hgt] of casos) {
   if (attr("ruins")) prob.push(`texto ruim: ${attr("ruins")}`);
   if (prob.length) falhas++;
   console.log(`${prob.length ? "FALHA" : "ok   "} ${p}${hs ? `#${hs}` : ""} @${w}px${prob.length ? ` -> ${prob.join("; ")}` : ""}`);
+  // no GitHub Actions a falha vira anotacao (legivel pela API publica de check-runs, sem login)
+  if (prob.length && process.env.GITHUB_ACTIONS) console.log(`::error title=Tela ${p} @${w}px::${prob.join("; ").replace(/[\r\n]+/g, " ").slice(0, 900)}`);
 }
 servidor.kill();
 console.log(`${casos.length - falhas}/${casos.length} telas aprovadas`);

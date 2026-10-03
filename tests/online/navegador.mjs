@@ -95,6 +95,10 @@ try {
   await membro(user.id, false); // TESTE fica inativo
 }
 for (const o of oks) console.log(`ok    ${o}`);
-for (const f of falhas) console.log(`FALHA ${f}`);
+for (const f of falhas) {
+  console.log(`FALHA ${f}`);
+  // no GitHub Actions a falha vira anotacao (legivel pela API publica de check-runs, sem login)
+  if (process.env.GITHUB_ACTIONS) console.log(`::error title=Navegador::${String(f).replace(/[\r\n]+/g, " ").slice(0, 900)}`);
+}
 console.log(`\n${oks.length}/${oks.length + falhas.length} telas OK no site publicado (${SITE})`);
 process.exit(falhas.length ? 1 : 0);
