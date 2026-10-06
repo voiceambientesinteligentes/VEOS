@@ -1,4 +1,4 @@
-# Próxima sessão — ponto de partida (atualizado em 01/10/2026, noite)
+# Próxima sessão — ponto de partida (atualizado em 05/10/2026)
 
 ## Prompt para colar no início da próxima conversa
 
@@ -28,6 +28,14 @@ Atue como especialista sênior em engenharia de software, produto e UX.
 ## O que já funciona (resumo)
 Setores vivos (9) e Radar · Negociação e Calculadora · Zoho espelho + edição · Pedidos → estoque → parcelas → NF → recebimento · Biblioteca e governança · Contrato e termo de aceite em PDF · **P0** (validação guiada, saúde do sistema, usuários e MFA, exportação, backup criptografado, CI) · **P1** (painel executivo, compras e contas a pagar, previsão de caixa, caixa do pedido V1.1, obra no pedido, margem realizada, proposta em PDF, caixa de saída, resumo do dia, avisos) · **P2** (MCP do VEOS, independência do Zoho, busca Ctrl+K, PWA, registro LGPD).
 
+## Para ligar o que foi feito em 05/10 (ações do Fernando)
+1. **Chave do Gemini (grátis)**: aistudio.google.com → "Get API key" → copiar. No Supabase: Project Settings → Edge Functions → Secrets → `GEMINI_API_KEY` = a chave. Depois: `node scripts/online.mjs tests/online/e2e_ia.mjs` (ciclo completo com IA). Decidir BIB-0091 (Gemini gratuito, dados usados pelo Google) e BIB-0092 (OpenAI paga × teto zero).
+2. **Caixa real**: Ferramentas do CFO → Caixa e extrato → cadastrar as contas da empresa → importar o OFX de cada uma (internet banking → exportar extrato → OFX/Money). Classificar os lançamentos (marcar "lembrar").
+3. **Contas fixas**: Contas fixas e dívidas → "Trazer do Formulário do CFO" → conferir valores e dias de vencimento.
+4. **Contador**: alíquotas reais (2026 e 2027, Formulário do CFO → Impostos).
+5. **Pedidos**: transformar os orçamentos aceitos em pedidos com parcelas (contas a receber reais).
+6. Decidir P-9 (quando paga RT/comissão) na fase do comercial.
+
 ## Decisões que dependem do Fernando (registradas na Biblioteca)
 Já decididas em 01/10: IA no servidor = teto zero (BIB-0044); Fernando exerce a CEO (BIB-0045); repositório continua público.
 1. **Revisar as propostas em consulta** (Biblioteca → Revisões), cada uma com a recomendação do Claude registrada como opinião: BIB-0037 papel do fundador (aprovar); BIB-0038 base da faixa do Simples (aprovar com ajuste: usar o faturado; validar com o contador); BIB-0039 ticket mínimo R$ 15 mil (não aprovar como bloqueio: contraria BIB-0022); BIB-0040 anexo do Simples (contador); BIB-0042 siglas (manter); BIB-0046 MFA da direção (aprovar após cadastrar o próprio MFA); BIB-0051 retenção de dados (LGPD, jurídico); BIB-0052 termo de uso interno (jurídico).
@@ -47,6 +55,11 @@ Já decididas em 01/10: IA no servidor = teto zero (BIB-0044); Fernando exerce a
 ## Para o FINAL do projeto (decidir junto com o Fernando, só quando ele pedir)
 - **Mesclar o catálogo do VEOS com os itens do Zoho** — plano completo na Biblioteca **BIB-0077**: revisar duplicados e itens "Conferir", definir preços de venda, enviar/aposentar itens no Zoho, ligar estoque/compras/pedidos ao catálogo do VEOS, importar os demais itens do Zoho e desligar o módulo de itens.
 
+## Motor de IA dos diretores (05/10) — substitui a seção abaixo quando houver chave
+- Pergunta no site → motor no servidor (Gemini → OpenAI → fila do Claude Code) com 21 ferramentas do VEOS; sem chave, segue a fila do Claude Code (abaixo).
+- Variáveis (segredos do Supabase): `GEMINI_API_KEY`, opcional `GEMINI_MODELOS` (padrão gemini-3.8-flash, 3.5-flash, 3.5-flash-lite, 2.5-flash), `GEMINI_PAGO=sim` se for o nível pago; `OPENAI_API_KEY`, `OPENAI_MODELOS`; `IA_ORDEM` (padrão gemini,openai).
+- Políticas no banco: `node scripts/online.mjs scripts/carregar-politicas.mjs` sempre que a Política V1/V1.1 mudar.
+
 ## IA dos diretores pela assinatura (01/10, noite)
 - Claude Pro/Max e ChatGPT Plus NÃO incluem API (a API é paga à parte). Caminho sem custo implantado: **Perguntar aos diretores** (site) → fila no banco → o Claude Code (plano Max) lê pelo MCP (`veos_perguntas_pendentes`, `veos_manual_diretor`), responde e grava (`veos_responder_pergunta`). Resposta sempre rotulada "IA · opinião, não decisão".
 - Para usar: Minha conta → Acesso do Claude Code (uma vez) e, no VS Code, pedir "responda as perguntas pendentes dos diretores".
@@ -60,6 +73,9 @@ Já decididas em 01/10: IA no servidor = teto zero (BIB-0044); Fernando exerce a
 ## Catálogo de produtos (01/10, noite)
 - Catálogo próprio no VEOS (Operação → Catálogo de produtos): 139 produtos importados do inventário AliExpress (`scripts/importar_aliexpress.py`, idempotente, preserva decisões manuais), 157 variantes, ficha técnica, 380 compras de origem, fotos no Storage privado. 5 compras pessoais excluídas (histórico preservado); 3 talvez pessoais em "Conferir" (PRD-0005, PRD-0101, PRD-0119).
 - Preço de compra = último preço pago (sem frete/impostos); preço de venda = lacuna. Simulador pelo markup do Sebrae (BIB-0074); alçada de preço proposta (BIB-0075).
+
+## Próximo grande bloco (pedido do Fernando em 05/10)
+Financeiro completo → **alinhar com o comercial**: canal/RT por pedido e contas a pagar de RT e comissão (P-9), orçamento criado e salvo no VEOS, régua de cobrança (PL-050, proposta), receitas recorrentes de contratos de suporte.
 
 ## Backlog sugerido (próximos blocos técnicos)
 1. **Catálogo de itens próprio** (maior dependência do Zoho: base de estoque, compras e pedidos) — ver Sistema → Independência do Zoho.

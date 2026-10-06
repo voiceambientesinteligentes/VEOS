@@ -43,6 +43,9 @@ Formato: data · decisão · quem · origem. Propostas ficam separadas até o Fe
 | P-4 | Item 30: REFERENCIA ou PADRAO | análise da fonte em andamento (etapa E) |
 | P-5 | Siglas existentes: CSO = Vendas/Comercial, CIO = Tecnologia e dados. Manter ou renomear? | manter até decisão |
 | P-6 | Perfis novos: Pós-venda e Administrativo/Pessoas | criar quando houver regras do setor |
+| P-7 | **Motor de raciocínio dos diretores com Gemini (chave gratuita)** — pedido do Fernando em 05/10. No nível gratuito o Google pode usar o conteúdo enviado para melhorar os produtos dele; o VEOS manda clientes só pelo código. Biblioteca **BIB-0091**. | aprovar; o Fernando cria a chave no AI Studio e cadastra `GEMINI_API_KEY` nos segredos do Supabase |
+| P-8 | **ChatGPT como motor**: a assinatura Pro não inclui a API (cobrança à parte); ligar a OpenAI = revisar o teto zero (BIB-0044). Biblioteca **BIB-0092**. | manter Gemini gratuito + fila do Claude Code; se quiser OpenAI, revisar BIB-0044 com teto mensal |
+| P-9 | **Quando a VOICE paga a RT/indicação e a comissão** (na assinatura, a cada parcela recebida ou no fim da obra). Sem isso, RT e comissão não viram contas a pagar automáticas. | perguntar ao Fernando na fase de alinhamento com o comercial |
 
 ## Registro técnico (decidido pelo Claude, reversível)
 
@@ -61,3 +64,8 @@ Formato: data · decisão · quem · origem. Propostas ficam separadas até o Fe
 | 01/10/2026 | Prazos de alerta de aceite (7 dias) e garantia (60 dias) reaproveitam as **propostas** do catálogo e são rotulados assim. | não inventar prazo; uma fonte só |
 | 01/10/2026 | MCP com sessão própria criada pelo servidor (magic link verificado), mesmas permissões do usuário; sem decisões nem envios. | Claude Code sob as mesmas regras, sem derrubar a sessão do navegador |
 | 01/10/2026 | Service worker só guarda arquivos do site (rede primeiro); nunca dados da API. | PWA sem risco de dado velho ou vazamento local |
+| 05/10/2026 | Motor de IA **no servidor** com vários provedores (Gemini → OpenAI → fila do Claude Code), modelo trocado sozinho quando a cota acaba; a IA **não calcula**: usa ferramentas que chamam os mesmos módulos de cálculo das telas (copiados pelo gerador); valores em reais sem origem são apontados. | contas confiáveis e auditáveis com modelos pequenos/gratuitos |
+| 05/10/2026 | Texto integral das políticas vigentes vai para o banco (`documentos_canonicos`, só leitura dos arquivos de `04 - PADROES`, nova versão = nova linha). | o repositório é público; o motor precisa da política inteira |
+| 05/10/2026 | Caixa real pelo **extrato importado** (OFX/CSV lido no navegador), conciliação com parcelas/contas e **plano de contas gerencial sugerido** (proposta PL-049, editável). Lançamento do banco é imutável. | só o extrato comprova pagamento/recebimento; grátis, sem integração bancária paga |
+| 05/10/2026 | Contas recorrentes geram contas a pagar ~100 dias à frente (pg_cron diário); alterar vale só para as futuras em aberto. | fluxo de 13 semanas já nasce com os fixos |
+| 05/10/2026 | Vigia do caixa com prefixo **CAIXA_** (CX_ já é do Pós-venda). | não misturar sentinelas |

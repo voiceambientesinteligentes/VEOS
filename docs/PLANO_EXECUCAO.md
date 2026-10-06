@@ -40,3 +40,20 @@ EM VALIDAÇÃO · CONCLUÍDA. Sem percentual global.
 | Menu Biblioteca (7 áreas, filtros, ficha, ações) | Implementado; validado em tela simulada |
 | Recomendações por IA dos líderes / 3 lentes automáticas | Dependente de integração (IA) |
 | Assuntos reservados, CEO humana, precedência, alçadas faltantes | Pendente de decisão do fundador |
+
+## Etapa: Financeiro completo e CFO apto (05/10/2026)
+Critério de "pronto" do financeiro: cada linha com entrega verificável. **Não está 100%** enquanto houver linha dependente do Fernando.
+
+| Item | Entrega verificável | Situação |
+|---|---|---|
+| Motor de raciocínio do CFO | pergunta no site respondida pela IA com ferramentas do VEOS, trilha em `ia_execucoes`, fontes e conferência de valores | Implementado e testado (unitário 12, banco 12/12, tela, online sem chave); **resposta real depende da chave do Gemini (Fernando)** |
+| Precificação pela Política | análise e correção de orçamento, preço por faixa, custo real com dólar do dia | Implementado e testado (ferramentas contra o banco real reproduzem o cálculo manual do EST-000966) |
+| Caixa real (extrato) | importar OFX/CSV sem duplicar, saldo por âncora, classificar com regras, conciliar com parcela/conta/transferência | Implementado e testado (banco 25/25, leitor 8, tela 12/12, online 9/9); **depende de o Fernando cadastrar as contas e importar o extrato** |
+| Contas fixas, dívidas e retirada | recorrentes viram contas a pagar automáticas; importação do Formulário do CFO | Implementado e testado (banco); **conferir valores e vencimentos reais (Fernando)** |
+| Fluxo de 13 semanas e reserva | projeção semanal com imposto estimado, atrasos, necessidade de caixa 30/60/90, reserva 3× fixos | Implementado e testado (domínio 7, tela, ferramenta) |
+| Fechamento do mês (DRE) | DRE pelo caixa com MC e margem operacional, pendências e conferência com o saldo | Implementado e testado; **completo só com extrato classificado** |
+| Indicadores da Política (sec.13) | 15 indicadores com fórmula, meta da Política e LACUNA | Implementado e testado; vários em LACUNA até haver extrato e pedidos |
+| Vigia do caixa | alertas CAIXA_* automáticos no Radar de Finanças | Implementado e testado contra o banco real (CAIXA_SEM_CONTAS ativo) |
+| Impostos reais | alíquotas do contador (2026 e 2027) no Formulário | **Depende do contador** (hoje SIMULAÇÃO rotulada) |
+| RT/comissão a pagar | contas a pagar automáticas de RT e comissão por pedido | **Depende de decisão (P-9)**; fase de alinhamento com o comercial |
+| Pedidos reais | orçamentos aceitos viram pedidos com parcelas (contas a receber) | Fluxo pronto; **0 pedidos reais**: uso pelo Fernando/equipe |

@@ -1,6 +1,24 @@
-# Estado atual — 02/10/2026
+# Estado atual — 05/10/2026
 
-**Resumo:** o VEOS está online (site no GitHub Pages + Supabase) com setores vivos, Zoho espelhado e editável, fluxo de pedidos, Biblioteca, e — desde 01/10 — validação guiada, saúde do sistema, gestão de usuários com MFA, exportação, backup semanal criptografado e testes no CI. Falta o uso real guiado pelo Fernando e os segredos do GitHub para backup e testes online no CI. O pipeline V2 do cérebro segue bloqueado no item 30. **Não está 100%.**
+**Resumo:** o VEOS está online (GitHub Pages + Supabase) com setores vivos, Zoho espelhado e editável, fluxo de pedidos, Biblioteca, e — desde 05/10 — **motor de raciocínio dos diretores** (Gemini/OpenAI no servidor, com ferramentas do VEOS) e o **financeiro completo pelo caixa real** (extrato, conciliação, recorrentes, 13 semanas, DRE, indicadores e vigia). Falta o uso real: a chave do Gemini, o extrato das contas e as alíquotas do contador. **Não está 100%** (ver PLANO_EXECUCAO, etapa do financeiro).
+
+## Motor de raciocínio dos diretores (05/10)
+Pedido do Fernando: colocar motores de raciocínio (ChatGPT e Gemini) nos diretores.
+- `_shared/ia/`: provedores (Gemini `generateContent` com functionDeclarations; OpenAI Chat Completions com tools), troca de modelo por cota/sobrecarga e de provedor por chave inválida; sem provedor ou com falha, a pergunta volta para a fila do Claude Code com o motivo.
+- 21 ferramentas (o modelo não calcula): manual e procedimento, precedentes (consulta registrada), registro da Biblioteca, texto integral da Política V1/V1.1 (`documentos_canonicos`, só no banco), Plano da VOICE; CFO: parâmetros, busca/análise/correção de orçamento, preço e margem pela Política, diagnóstico, previsão de caixa, painel, custo real do produto, pedidos e recebíveis, caixa e contas, fluxo de 13 semanas, fechamento do mês, indicadores.
+- As ferramentas usam os **mesmos módulos de cálculo das telas** (o gerador copia `apps/web/js/domain` e os manuais para `_shared`; `--verificar` garante que estão em dia).
+- Pergunta enviada → análise em segundo plano; trilha append-only `ia_execucoes`; reserva única por pergunta; conferência automática dos valores em reais; Markdown limpo; clientes só pelo código (minimização).
+- Situação: **sem chave configurada** (nada a pagar). Gemini gratuito: o Google pode usar o conteúdo para melhorar os produtos dele (aviso na tela). OpenAI exige API paga (BIB-0092). Propostas BIB-0091 e BIB-0092.
+- Testes: `tests/ia` (provedores 7, textos 5, coerência 3), banco `ia_motor.sql` 12/12, tela `diretores`, online `e2e_ia` (com chave: ciclo completo; no CI só a situação dos motores).
+
+## Financeiro completo pelo caixa real (05/10)
+- **Caixa e extrato** (`#/cfo/caixa`): contas da empresa, extrato OFX/CSV lido no navegador (codificação, colunas, "SALDO DO DIA", lançamentos iguais no mesmo dia), sem duplicar ao reimportar; saldo pela âncora (saldo do OFX ou informado); classificação pelo **plano de contas gerencial sugerido** (proposta PL-049, editável) com regras aprendidas; conciliação com parcela (recebe), conta a pagar (paga) e transferência; sugestões únicas em um clique.
+- **Contas fixas e dívidas** (`#/cfo/recorrentes`): recorrentes geram contas a pagar ~100 dias à frente (pg_cron diário); "Trazer do Formulário do CFO".
+- **Fluxo de 13 semanas** (`#/cfo/fluxo`), **Fechamento do mês** (`#/cfo/fechamento`, DRE pelo caixa) e **Indicadores da Política** (`#/cfo/indicadores`, sec.13 + reserva sec.12).
+- **Vigia do caixa** (CAIXA_*): caixa negativo em 4 semanas, abaixo da reserva, extrato desatualizado, sem categoria, nenhuma conta (ativo hoje: CAIXA_SEM_CONTAS).
+- Domínio: `extrato.js`, `caixa13.js`, `dre.js`, `indicadores.js`. API `/caixa` + `_shared/caixa_dados.ts` (compartilhado com o motor).
+- Testes: banco `caixa_real.sql` 25/25; domínio extrato 8 + caixa 7; telas `caixa` 12/12; online `e2e_caixa` 9/9; regressão online api 15, financeiro 12, sistema 56, setores 9.
+- Dados reais: 0 contas bancárias, 0 pedidos, 0 contas a pagar (o fluxo está pronto, falta o uso).
 
 ## Painel do dono, plano comercial, canais de venda e condição automática (02/10, madrugada)
 Pedido do Fernando, a partir das respostas dele: explicar e simular o ponto de equilíbrio, criar o plano de captação de clientes, tratar o showroom, canais de venda selecionáveis, unir orçamentos, valor fechado, dólar do AliExpress, e uma interface fácil com painéis e perguntas aos diretores.
