@@ -96,6 +96,8 @@ export const api = {
   perguntasDiretores: (f = {}) => request("GET", `diretores/perguntas?${new URLSearchParams(Object.entries(f).filter(([, v]) => v))}`),
   perguntarDiretor: (dados) => request("POST", "diretores/perguntas", dados, { "Idempotency-Key": crypto.randomUUID() }),
   cancelarPergunta: (id) => request("POST", `diretores/perguntas/${encodeURIComponent(id)}/cancelar`, {}, { "Idempotency-Key": crypto.randomUUID() }),
+  pensarPergunta: (id) => request("POST", `diretores/perguntas/${encodeURIComponent(id)}/pensar`, {}, { "Idempotency-Key": crypto.randomUUID() }),
+  motoresIA: () => request("GET", "diretores/motores"),
   cfoFormulario: () => request("GET", "cfo/formulario"),
   cfoSalvarSecao: (secao, dados) => request("POST", "cfo/formulario", { secao, dados }, { "Idempotency-Key": crypto.randomUUID() }),
   cfoOrcamentos: () => request("GET", "cfo/orcamentos"),

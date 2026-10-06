@@ -22,7 +22,7 @@ export function manualDiretor({ setor, pedido }) {
   const base = { diretor: { titulo: s.diretor.titulo, nome: s.diretor.nome, perfil: s.diretor.perfil, principios: s.diretor.principios, limites: s.diretor.limites }, resumo: m.resumo,
     regras_do_veos: "Persona ficticia. Precedente orienta, nao autoriza (consulte veos_consultar_precedentes). Nao invente meta, alcada, politica nem regime tributario: registre como ideia/proposta. Diferencie fato, opiniao, inferencia e hipotese." };
   if (!pedido) return { ...base, competencias: m.competencias, frameworks: m.frameworks.map((f) => ({ nome: f.nome, autor_ou_origem: f.autor_ou_origem, quando_usar: f.quando_usar })), procedimentos: m.procedimentos.map((p) => p.pedido), indicadores: m.indicadores, rotinas: m.rotinas, armadilhas: m.armadilhas, aplicacao_voice: m.aplicacao_voice };
-  const itens = m.procedimentos.map((p, i) => ({ titulo: p.pedido, extra: [...(p.passos ?? []), p.entregavel].join(" "), i }));
+  const itens = m.procedimentos.map((p, i) => ({ titulo: [p.pedido, ...(p.sinonimos ?? [])].join(" · "), extra: [...(p.passos ?? []), p.entregavel].join(" "), i }));
   const exatos = buscar(pedido, itens, 3);
   const achados = (exatos.length ? exatos : buscarSolto(pedido, itens, 3)).map((a) => m.procedimentos[a.i]);
   return { ...base, pedido, procedimentos: achados.length ? achados : m.procedimentos.slice(0, 3), aviso: achados.length ? undefined : "nenhum procedimento com essas palavras: veja os primeiros e adapte",

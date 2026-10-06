@@ -9,6 +9,7 @@
 //   GET  /cfo/painel                     contatos (leads) e negocios do CRM por mes, para o painel do dono
 import { HttpError, lerCorpo, type Membro, registrarAcesso, servico } from "../_shared/banco.ts";
 import { rbt12 } from "../_shared/zoho.ts";
+import { serieDolar } from "../_shared/cambio.ts";
 
 const PAPEIS = ["direcao", "financas"];
 const SECOES = ["impostos", "compras", "equipe", "fixos", "vendas", "dividas", "pedidos"];
@@ -84,7 +85,7 @@ export async function rotearCfo(req: Request, partes: string[], eu: Membro) {
     await registrarAcesso(eu.user_id, "cfo:diagnostico:orcamentos");
     return { orcamentos, rbt12: faturamento, fonte: "Espelho do Zoho Books no VEOS (orçamentos e cadastro de itens)" };
   }
-  if (a === "cambio" && !post) return await cambio(new URL(req.url).searchParams.get("desde"));
+  if (a === "cambio" && !post) return await serieDolar(new URL(req.url).searchParams.get("desde"));
   if (a === "painel" && !post) return await painelDono();
   if (a === "produtos" && !post) {
     const [produtos, compras, vinculos] = await Promise.all([
@@ -116,24 +117,6 @@ export async function rotearCfo(req: Request, partes: string[], eu: Membro) {
 }
 
 // Dolar PTAX do Banco Central (API publica Olinda). Datas no formato MM-DD-AAAA entre aspas simples.
-async function cambio(desde: string | null) {
-  const mdy = (d: Date) => `${String(d.getUTCMonth() + 1).padStart(2, "0")}-${String(d.getUTCDate()).padStart(2, "0")}-${d.getUTCFullYear()}`;
-  const fim = new Date();
-  const limite = Date.now() - 730 * 864e5;
-  const pedido = desde && /^\d{4}-\d{2}-\d{2}$/.test(desde) ? Math.max(Date.parse(desde), limite) : Date.now() - 45 * 864e5;
-  const ini = new Date(pedido);
-  const url = `https://olinda.bcb.gov.br/olinda/servico/PTAX/versao/v1/odata/CotacaoDolarPeriodo(dataInicial=@dataInicial,dataFinalCotacao=@dataFinalCotacao)?@dataInicial='${mdy(ini)}'&@dataFinalCotacao='${mdy(fim)}'&$top=800&$format=json`;
-  try {
-    const r = await fetch(url, { signal: AbortSignal.timeout(8000) });
-    if (!r.ok) throw new Error(String(r.status));
-    const d = await r.json();
-    const serie = (d.value ?? []).map((x: { cotacaoVenda: number; cotacaoCompra: number; dataHoraCotacao: string }) => ({ data: String(x.dataHoraCotacao).slice(0, 10), venda: x.cotacaoVenda, compra: x.cotacaoCompra }));
-    return { serie, fonte: "Banco Central do Brasil · PTAX (API Olinda)", ok: serie.length > 0 };
-  } catch (e) {
-    return { serie: [], fonte: "Banco Central do Brasil · PTAX (API Olinda)", ok: false, erro: `cotação indisponível agora (${(e as Error).message})` };
-  }
-}
-
 // Leads e negocios do CRM (espelho) agregados por mes: so contagens, sem dados pessoais.
 async function painelDono() {
   const [leads, deals] = await Promise.all([

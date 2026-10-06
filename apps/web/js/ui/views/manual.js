@@ -23,7 +23,7 @@ export function cartaoProcedimento(p, aberto = false) {
 }
 
 export function painelManual(setor, m) {
-  const itens = m.procedimentos.map((p, i) => ({ titulo: p.pedido, extra: [...(p.passos ?? []), p.entregavel].join(" "), i }));
+  const itens = m.procedimentos.map((p, i) => ({ titulo: [p.pedido, ...(p.sinonimos ?? [])].join(" · "), extra: [...(p.passos ?? []), p.entregavel].join(" "), i }));
   const busca = h("input", { class: "input", type: "search", placeholder: "Ex.: campanha para arquitetos, fluxo de caixa, contratar técnico…", "aria-label": "O que você precisa?" });
   const resultado = h("div", { class: "stack-s" });
   const lista = h("div", { class: "stack-s" }, m.procedimentos.map((p) => cartaoProcedimento(p)));
@@ -64,7 +64,7 @@ export function painelManual(setor, m) {
 
 /** Procedimento do manual mais proximo de um pedido em texto livre (regra, sem IA). */
 export function procedimentoPara(m, pedido) {
-  const itens = m.procedimentos.map((p, i) => ({ titulo: p.pedido, extra: [...(p.passos ?? []), p.entregavel].join(" "), i }));
+  const itens = m.procedimentos.map((p, i) => ({ titulo: [p.pedido, ...(p.sinonimos ?? [])].join(" · "), extra: [...(p.passos ?? []), p.entregavel].join(" "), i }));
   const [a] = [...buscar(pedido, itens, 1), ...buscarSolto(pedido, itens, 1)];
   return a ? m.procedimentos[a.i] : null;
 }

@@ -46,6 +46,13 @@ const saidas = {
   "apps/web/js/data/manuais/indice.js": `${cabecalho}export const MANUAIS = ${JSON.stringify(manuais.map(([id]) => id).sort())};\n`,
 };
 for (const [id, m] of manuais) saidas[`apps/web/js/data/manuais/${id}.js`] = `${cabecalho}export default ${JSON.stringify(m, null, 1)};\n`;
+// Motor de IA no servidor: os manuais e os MESMOS modulos de calculo do portal (sem DOM), para o diretor
+// usar as contas das telas em vez de calcular de cabeca.
+saidas["supabase/functions/_shared/ia/manuais.ts"] = `${cabecalho}// deno-lint-ignore no-explicit-any\nexport const MANUAIS: Record<string, any> = ${JSON.stringify(Object.fromEntries(manuais))};\n`;
+const DOMINIO = "apps/web/js/domain";
+for (const f of readdirSync(DOMINIO).filter((x) => x.endsWith(".js")).sort()) {
+  saidas[`supabase/functions/_shared/dominio/${f}`] = `// GERADO por scripts/gerar-catalogo.mjs a partir de ${DOMINIO}/${f} - nao editar a mao.\n${readFileSync(`${DOMINIO}/${f}`, "utf8")}`;
+}
 if (process.argv.includes("--verificar")) {
   const velhos = Object.entries(saidas).filter(([f, c]) => { try { return readFileSync(f, "utf8") !== c; } catch { return true; } });
   if (velhos.length) {
@@ -54,7 +61,7 @@ if (process.argv.includes("--verificar")) {
   }
   console.log("catálogo gerado está em dia");
 } else {
-  mkdirSync("apps/web/js/data/manuais", { recursive: true });
+  for (const d of ["apps/web/js/data/manuais", "supabase/functions/_shared/ia", "supabase/functions/_shared/dominio"]) mkdirSync(d, { recursive: true });
   for (const [f, c] of Object.entries(saidas)) writeFileSync(f, c);
   if (manuais.length) console.log(`${manuais.length} manuais de diretor: ${manuais.map(([id, m]) => `${id} (${m.procedimentos.length} procedimentos)`).join(", ")}`);
   const n = (k) => setores.reduce((acc, s) => acc + (s[k]?.length ?? 0), 0);

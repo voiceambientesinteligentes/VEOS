@@ -251,7 +251,13 @@ export default {
     "Mostra a conta e as premissas",
     "Separa corrente de pro forma"
    ],
-   "quando_escalar": "Se o saldo projetado ficar negativo ou abaixo da reserva em qualquer semana, ou se a solução exigir crédito bancário, antecipação ou atraso a fornecedor: decisão do fundador."
+   "quando_escalar": "Se o saldo projetado ficar negativo ou abaixo da reserva em qualquer semana, ou se a solução exigir crédito bancário, antecipação ou atraso a fornecedor: decisão do fundador.",
+   "sinonimos": [
+    "fluxo de caixa",
+    "previsão de caixa",
+    "contas a pagar",
+    "saldo"
+   ]
   },
   {
    "pedido": "Quanto devo cobrar por este projeto?",
@@ -276,7 +282,18 @@ export default {
     "Tributos com fonte (contador) ou marcados como lacuna",
     "Exposição de caixa calculada por fase"
    ],
-   "quando_escalar": "MC abaixo de 30%, desconto acima de 2% ou exposição acima de 10%: calcula e encaminha à direção para decisão (Política V1 sec.8 e 9; V1.1 sec.9)."
+   "quando_escalar": "MC abaixo de 30%, desconto acima de 2% ou exposição acima de 10%: calcula e encaminha à direção para decisão (Política V1 sec.8 e 9; V1.1 sec.9).",
+   "sinonimos": [
+    "orçamento do cliente",
+    "proposta comercial",
+    "precificar",
+    "preço do projeto",
+    "revisar orçamento",
+    "refazer orçamento",
+    "erros no orçamento",
+    "corrigir orçamento",
+    "EST"
+   ]
   },
   {
    "pedido": "O cliente pediu desconto. Posso dar?",
@@ -297,7 +314,13 @@ export default {
     "Indica a seção da Política aplicável",
     "Oferece pelo menos uma alternativa ao desconto puro"
    ],
-   "quando_escalar": "Desconto acima de 2% ou MC resultante abaixo de 30%: só a direção aprova, com exceção registrada."
+   "quando_escalar": "Desconto acima de 2% ou MC resultante abaixo de 30%: só a direção aprova, com exceção registrada.",
+   "sinonimos": [
+    "negociação",
+    "abatimento",
+    "alçada de desconto",
+    "baixar o preço"
+   ]
   },
   {
    "pedido": "Posso contratar mais um instalador/funcionário?",
@@ -340,7 +363,12 @@ export default {
     "Margem calculada sobre receita líquida",
     "Diferencia resultado (competência) de caixa"
    ],
-   "quando_escalar": "Se o desvio indicar falha recorrente de orçamento ou escopo não cobrado, levar à direção e a Vendas/Operações como proposta de ajuste."
+   "quando_escalar": "Se o desvio indicar falha recorrente de orçamento ou escopo não cobrado, levar à direção e a Vendas/Operações como proposta de ajuste.",
+   "sinonimos": [
+    "margem realizada",
+    "resultado da obra",
+    "orçado x realizado"
+   ]
   },
   {
    "pedido": "Monte o orçamento do ano que vem",
@@ -363,7 +391,13 @@ export default {
     "Premissas rastreáveis a dados reais ou marcadas como estimativa",
     "Caixa coerente com DRE"
    ],
-   "quando_escalar": "Metas e investimentos são decisões do fundador; registrar aprovação na Biblioteca do VEOS."
+   "quando_escalar": "Metas e investimentos são decisões do fundador; registrar aprovação na Biblioteca do VEOS.",
+   "sinonimos": [
+    "orçamento anual da empresa",
+    "planejamento financeiro do ano",
+    "budget",
+    "metas do ano"
+   ]
   },
   {
    "pedido": "Faz o fechamento do mês e me diz como estamos",
@@ -385,7 +419,13 @@ export default {
     "Diferenças de conciliação classificadas",
     "Lacunas declaradas, nunca preenchidas com zero"
    ],
-   "quando_escalar": "Indicadores fora da meta da Política ou diferença de conciliação não explicada: levar à direção com proposta."
+   "quando_escalar": "Indicadores fora da meta da Política ou diferença de conciliação não explicada: levar à direção com proposta.",
+   "sinonimos": [
+    "DRE",
+    "resultado do mês",
+    "fechamento mensal",
+    "como está a empresa"
+   ]
   },
   {
    "pedido": "Vale a pena importar este equipamento em vez de comprar aqui?",
