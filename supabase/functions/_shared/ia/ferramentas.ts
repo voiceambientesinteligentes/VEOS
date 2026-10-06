@@ -23,6 +23,7 @@ import { projetar, reserva } from "../dominio/caixa13.js";
 import { dre } from "../dominio/dre.js";
 import { indicadores } from "../dominio/indicadores.js";
 import { contasComSaldo, dadosFechamento, dadosIndicadores, dadosSemanas, hojeSP } from "../caixa_dados.ts";
+import { caixaPedido } from "../../api/compras.ts";
 
 export type Fonte = { titulo: string; natureza: string; url?: string | null };
 export type Contexto = {
@@ -529,6 +530,38 @@ const FERRAMENTAS: Ferramenta[] = [
     },
   },
   {
+    nome: "pedidos_e_recebiveis",
+    papeis: FIN,
+    descricao: "Pedidos do VEOS (orçamentos aceitos que viraram pedido): situação, valor, parcelas recebidas/abertas/atrasadas, exposição de caixa pela Política V1.1 e margem orçada x realizada. Opcional: número do pedido para o detalhe.",
+    parametros: obj({ numero: str("número do pedido PED-00001 (opcional)"), situacao: str("rascunho, confirmado, entregue, faturado, concluido (opcional)") }),
+    async executar(a, ctx) {
+      const num = String(a.numero ?? "").toUpperCase().replace(/[^A-Z0-9-]/g, "");
+      const est = /^[a-z]{5,10}$/.test(String(a.situacao ?? "")) ? `&estado=eq.${a.situacao}` : "&estado=neq.cancelado";
+      const filtro = num ? `&numero=eq.${num}` : est;
+      const peds = await servico(`/rest/v1/pedidos?select=id,numero,orcamento_numero,cliente_zoho_id,estado,valor_total,custo_total,criado_em,confirmado_em,entregue_em,faturado_em${filtro}&order=criado_em.desc&limit=${num ? 1 : 30}`);
+      fonte(ctx, "Pedidos, parcelas e contas do VEOS (fluxo vivo)", "dado");
+      if (!peds.length) return { aviso: num ? `pedido ${num} não existe` : "nenhum pedido no VEOS: os orçamentos aceitos ainda não viraram pedido (Operação → Pedidos)" };
+      const ids = peds.map((p: any) => p.id).join(",");
+      const parcelas = await servico(`/rest/v1/parcelas?pedido_id=in.(${ids})&select=pedido_id,numero,vencimento,valor,estado,recebido_em,valor_recebido&order=vencimento`);
+      const hoje = hojeSP();
+      const lista = [];
+      for (const p of peds) {
+        const ps = parcelas.filter((x: any) => x.pedido_id === p.id);
+        const item: Record<string, unknown> = {
+          numero: p.numero, orcamento: p.orcamento_numero, situacao: p.estado, valor_total: Number(p.valor_total), custo_orcado: p.custo_total === null ? null : Number(p.custo_total),
+          recebido: r2(ps.filter((x: any) => x.estado === "recebida").reduce((s: number, x: any) => s + Number(x.valor_recebido ?? x.valor), 0)),
+          a_receber: r2(ps.filter((x: any) => x.estado === "aberta").reduce((s: number, x: any) => s + Number(x.valor), 0)),
+          atrasado: r2(ps.filter((x: any) => x.estado === "aberta" && x.vencimento < hoje).reduce((s: number, x: any) => s + Number(x.valor), 0)),
+          parcelas: ps.map((x: any) => ({ numero: x.numero, vencimento: x.vencimento, valor: Number(x.valor), situacao: x.estado, recebido_em: x.recebido_em })),
+        };
+        if (num || peds.length <= 10) item.caixa_politica_v1_1 = await caixaPedido(p.id, p.valor_total);
+        if (num) item.margem = await rpc("pedido_margem", { p_pedido: p.id });
+        lista.push(item);
+      }
+      return { pedidos: lista };
+    },
+  },
+  {
     nome: "caixa_e_contas",
     papeis: FIN,
     descricao: "Contas bancárias da empresa com o saldo de hoje (pelo extrato importado ou saldo informado), data da âncora do saldo, último extrato importado e lançamentos sem categoria.",
@@ -616,5 +649,5 @@ export function diretorDoSetor(setor: string) {
 }
 
 export function procedimentosDoSetor(setor: string): string[] {
-  return (MANUAIS[setor]?.procedimentos ?? []).map((p: any) => p.pedido);
+  return (MANUAIS[setor]?.procedimentos ?? []).map((p: any) => `${p.pedido}${p.ferramentas_veos?.length ? ` → ferramentas: ${p.ferramentas_veos.join(", ")}` : ""}`);
 }

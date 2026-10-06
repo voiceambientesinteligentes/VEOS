@@ -4,6 +4,7 @@
 // entregar, como saber se ficou bom e quando levar a decisao para cima.
 import { buscar, buscarSolto } from "../../domain/busca.js";
 import { clear, h, method, panel, stamp, table } from "../dom.js";
+import { FERRAMENTA } from "../../data/ferramentas_ia.js";
 
 export async function carregarManual(setor) {
   const { MANUAIS } = await import("../../data/manuais/indice.js");
@@ -19,7 +20,8 @@ export function cartaoProcedimento(p, aberto = false) {
       h("div", null, h("p", { class: "manual-rotulo" }, "Como faz:"), h("ol", null, p.passos.map((x) => h("li", null, x)))),
       h("p", null, h("span", { class: "manual-rotulo" }, "Entrega: "), p.entregavel),
       p.criterios_de_qualidade?.length ? h("div", null, h("p", { class: "manual-rotulo" }, "Ficou bom quando:"), h("ul", null, p.criterios_de_qualidade.map((x) => h("li", null, x)))) : null,
-      p.quando_escalar ? h("p", { class: "notice notice-warn" }, h("strong", null, "Leva para decisão superior quando: "), p.quando_escalar) : null));
+      p.quando_escalar ? h("p", { class: "notice notice-warn" }, h("strong", null, "Leva para decisão superior quando: "), p.quando_escalar) : null,
+      p.ferramentas_veos?.length ? h("p", { class: "field-hint" }, h("span", { class: "manual-rotulo" }, "No VEOS, o diretor consulta: "), p.ferramentas_veos.map((f) => FERRAMENTA[f] ?? f).join(" · ")) : null));
 }
 
 export function painelManual(setor, m) {

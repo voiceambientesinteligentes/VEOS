@@ -4,19 +4,13 @@
 // pergunta segue para o Claude Code (plano Max do fundador). Resposta de IA = opiniao, nunca decisao.
 import { api } from "../../data/api.js";
 import { CATALOGO } from "../../data/catalogo.js";
+import { FERRAMENTA } from "../../data/ferramentas_ia.js";
 import { formatDateTime } from "../../domain/format.js";
 import { clear, errorNotice, field, h, method, panel, stamp } from "../dom.js";
 
 const SETOR = Object.fromEntries(CATALOGO.map((s) => [s.id, s]));
 const EST = { pendente: ["Aguardando", "warn"], respondida: ["Respondida", "ok"], cancelada: ["Cancelada", "neutral"] };
-const FERRAMENTA = {
-  manual_do_diretor: "manual do diretor", procedimento_do_manual: "procedimento do manual", consultar_precedentes: "precedentes da Biblioteca",
-  ler_registro_da_biblioteca: "registro da Biblioteca", politica_financeira: "Política de Saúde Financeira", plano_da_voice: "Plano da VOICE",
-  parametros_financeiros: "parâmetros do CFO", buscar_orcamentos: "busca de orçamentos", analisar_orcamento: "análise do orçamento",
-  simular_correcao_orcamento: "correção do orçamento", preco_pela_politica: "preço pela Política", margem_de_um_preco: "margem de um preço",
-  diagnostico_dos_orcamentos: "diagnóstico dos orçamentos", previsao_de_caixa: "previsão de caixa", painel_executivo: "painel executivo",
-  custo_real_do_produto: "custo real do produto",
-};
+
 const ESPERA_MS = 4000;
 
 export async function telaDiretores(root) {

@@ -257,6 +257,12 @@ export default {
     "previsão de caixa",
     "contas a pagar",
     "saldo"
+   ],
+   "ferramentas_veos": [
+    "caixa_e_contas",
+    "fluxo_13_semanas",
+    "pedidos_e_recebiveis",
+    "previsao_de_caixa"
    ]
   },
   {
@@ -293,6 +299,14 @@ export default {
     "erros no orçamento",
     "corrigir orçamento",
     "EST"
+   ],
+   "ferramentas_veos": [
+    "analisar_orcamento",
+    "simular_correcao_orcamento",
+    "preco_pela_politica",
+    "custo_real_do_produto",
+    "parametros_financeiros",
+    "politica_financeira"
    ]
   },
   {
@@ -320,6 +334,12 @@ export default {
     "abatimento",
     "alçada de desconto",
     "baixar o preço"
+   ],
+   "ferramentas_veos": [
+    "analisar_orcamento",
+    "simular_correcao_orcamento",
+    "margem_de_um_preco",
+    "politica_financeira"
    ]
   },
   {
@@ -342,7 +362,13 @@ export default {
     "Considera a sazonalidade da carteira",
     "Efeito no Fator R tratado como pergunta ao contador, não como afirmação"
    ],
-   "quando_escalar": "Sempre: contratação é decisão de negócio do fundador; o CFO entrega a conta."
+   "quando_escalar": "Sempre: contratação é decisão de negócio do fundador; o CFO entrega a conta.",
+   "ferramentas_veos": [
+    "parametros_financeiros",
+    "indicadores_da_politica",
+    "fluxo_13_semanas",
+    "fechamento_do_mes"
+   ]
   },
   {
    "pedido": "Este projeto deu lucro?",
@@ -368,6 +394,10 @@ export default {
     "margem realizada",
     "resultado da obra",
     "orçado x realizado"
+   ],
+   "ferramentas_veos": [
+    "pedidos_e_recebiveis",
+    "analisar_orcamento"
    ]
   },
   {
@@ -397,6 +427,13 @@ export default {
     "planejamento financeiro do ano",
     "budget",
     "metas do ano"
+   ],
+   "ferramentas_veos": [
+    "parametros_financeiros",
+    "indicadores_da_politica",
+    "fechamento_do_mes",
+    "plano_da_voice",
+    "diagnostico_dos_orcamentos"
    ]
   },
   {
@@ -425,6 +462,12 @@ export default {
     "resultado do mês",
     "fechamento mensal",
     "como está a empresa"
+   ],
+   "ferramentas_veos": [
+    "fechamento_do_mes",
+    "indicadores_da_politica",
+    "caixa_e_contas",
+    "fluxo_13_semanas"
    ]
   },
   {
@@ -447,7 +490,12 @@ export default {
     "Câmbio com margem de segurança",
     "Compra coberta pelo recebimento da fase (Política sec.10)"
    ],
-   "quando_escalar": "Importação de valor relevante ou com dúvida tributária: contador antes de comprar; compra não coberta pela fase: direção."
+   "quando_escalar": "Importação de valor relevante ou com dúvida tributária: contador antes de comprar; compra não coberta pela fase: direção.",
+   "ferramentas_veos": [
+    "custo_real_do_produto",
+    "preco_pela_politica",
+    "parametros_financeiros"
+   ]
   },
   {
    "pedido": "O cliente X está atrasando. O que faço?",
@@ -469,7 +517,12 @@ export default {
     "Tom adequado ao alto padrão",
     "Impacto refletido no fluxo de 13 semanas"
    ],
-   "quando_escalar": "Atraso acima de 15 dias, valor relevante ou cliente estratégico: CFO e fundador decidem juntos; medida jurídica só com decisão do fundador."
+   "quando_escalar": "Atraso acima de 15 dias, valor relevante ou cliente estratégico: CFO e fundador decidem juntos; medida jurídica só com decisão do fundador.",
+   "ferramentas_veos": [
+    "pedidos_e_recebiveis",
+    "fluxo_13_semanas",
+    "politica_financeira"
+   ]
   },
   {
    "pedido": "Preciso de dinheiro: pego empréstimo ou antecipo recebíveis?",
@@ -491,7 +544,13 @@ export default {
     "Não financia necessidade permanente com dívida de curto prazo",
     "Explicita garantias e riscos"
    ],
-   "quando_escalar": "Sempre: tomar crédito é decisão do fundador (gasto de dinheiro)."
+   "quando_escalar": "Sempre: tomar crédito é decisão do fundador (gasto de dinheiro).",
+   "ferramentas_veos": [
+    "fluxo_13_semanas",
+    "pedidos_e_recebiveis",
+    "parametros_financeiros",
+    "indicadores_da_politica"
+   ]
   },
   {
    "pedido": "Estou pagando imposto demais? Devo mudar de regime?",
@@ -512,7 +571,12 @@ export default {
     "Diferencia hipótese de conclusão do contador",
     "Considera a transição CBS/IBS"
    ],
-   "quando_escalar": "Sempre ao contador para parecer técnico; decisão de mudança é do fundador."
+   "quando_escalar": "Sempre ao contador para parecer técnico; decisão de mudança é do fundador.",
+   "ferramentas_veos": [
+    "parametros_financeiros",
+    "ler_registro_da_biblioteca",
+    "consultar_precedentes"
+   ]
   },
   {
    "pedido": "Quero investir em X (veículo, ferramenta, software, estoque)",
@@ -533,7 +597,12 @@ export default {
     "Ganho quantificado ou declarado como hipótese",
     "Reserva de 3 meses preservada ou impacto explicitado"
    ],
-   "quando_escalar": "Gasto de dinheiro: decisão do fundador."
+   "quando_escalar": "Gasto de dinheiro: decisão do fundador.",
+   "ferramentas_veos": [
+    "fluxo_13_semanas",
+    "indicadores_da_politica",
+    "parametros_financeiros"
+   ]
   },
   {
    "pedido": "Quais clientes/arquitetos dão mais dinheiro para a VOICE?",
@@ -552,7 +621,12 @@ export default {
     "Usa MC, não faturamento",
     "Destaca dependência excessiva"
    ],
-   "quando_escalar": "Mudanças de política comercial ou de comissão: proposta à direção."
+   "quando_escalar": "Mudanças de política comercial ou de comissão: proposta à direção.",
+   "ferramentas_veos": [
+    "diagnostico_dos_orcamentos",
+    "indicadores_da_politica",
+    "buscar_orcamentos"
+   ]
   }
  ],
  "indicadores": [

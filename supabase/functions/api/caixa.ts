@@ -18,6 +18,14 @@
 //   GET  /caixa/indicadores                    dados dos indicadores (12 meses)
 import { HttpError, type Membro, registrarAcesso, servico } from "../_shared/banco.ts";
 import { contasComSaldo, dadosFechamento, dadosIndicadores, dadosSemanas, hojeSP } from "../_shared/caixa_dados.ts";
+import { vigiarCaixa } from "../_shared/caixa_vigia.ts";
+
+// Supabase Edge Runtime: o vigia do caixa roda depois da resposta (nao atrasa a tela).
+declare const EdgeRuntime: { waitUntil(p: Promise<unknown>): void } | undefined;
+function vigiarDepois() {
+  const t = vigiarCaixa().catch((e) => console.error("vigia do caixa", e));
+  if (typeof EdgeRuntime !== "undefined" && EdgeRuntime?.waitUntil) EdgeRuntime.waitUntil(t);
+}
 
 const FINANCEIRO = ["direcao", "financas"];
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
@@ -58,6 +66,7 @@ export async function rotearCaixa(req: Request, partes: string[], eu: Membro, co
     if ((si === null) !== (sie === null)) throw new HttpError(400, "saldo inicial precisa de valor e data juntos");
     const [k] = await servico("/rest/v1/contas_bancarias", { method: "POST", headers: { Prefer: "return=representation" }, body: JSON.stringify({ nome, banco: txt(corpo.banco, 60), final_conta: fc, tipo, saldo_inicial: si, saldo_inicial_em: sie, criado_por: u }) });
     await historico(`conta:${k.id}`, "conta_criada", { nome, tipo, saldo_inicial: si, saldo_inicial_em: sie }, u);
+    vigiarDepois();
     return { id: k.id };
   }
   if (a === "contas" && post && b && UUID_RE.test(b) && !c) {
@@ -87,6 +96,7 @@ export async function rotearCaixa(req: Request, partes: string[], eu: Membro, co
       return { data: d, valor: v, descricao: txt(l.descricao, 300) ?? "(sem histórico)", documento: txt(l.documento, 60), id_externo: txt(l.id_externo, 120), seq: Number.isInteger(l.seq) ? l.seq : 1 };
     });
     const r = await rpc("extrato_importar", { p: { usuario: u, conta_id: b, arquivo: txt(corpo.arquivo, 200) ?? "extrato", formato: ["ofx", "csv", "manual"].includes(String(corpo.formato)) ? corpo.formato : "csv", saldo_final: num(corpo.saldo_final), saldo_final_em: data(corpo.saldo_final_em, "data do saldo final"), linhas: limpas } });
+    vigiarDepois();
     return r;
   }
 
@@ -112,7 +122,9 @@ export async function rotearCaixa(req: Request, partes: string[], eu: Membro, co
     const tipo = String(corpo.tipo ?? "");
     if (!["parcela", "conta_pagar", "transferencia", "desfazer"].includes(tipo)) throw new HttpError(400, "tipo de conciliação inválido");
     if (tipo !== "desfazer" && !UUID_RE.test(String(corpo.alvo_id ?? ""))) throw new HttpError(400, "informe o título a conciliar");
-    return await rpc("movimento_conciliar", { p: { usuario: u, movimento_id: b, tipo, alvo_id: corpo.alvo_id ?? null } });
+    const r = await rpc("movimento_conciliar", { p: { usuario: u, movimento_id: b, tipo, alvo_id: corpo.alvo_id ?? null } });
+    vigiarDepois();
+    return r;
   }
   if (a === "sugestoes" && !post) return { sugestoes: await rpc("conciliacao_sugestoes", {}) };
   if (a === "sugestoes" && post && b === "aplicar") {
@@ -125,6 +137,7 @@ export async function rotearCaixa(req: Request, partes: string[], eu: Membro, co
         feitas++;
       } catch (e) { erros.push((e as Error).message); }
     }
+    vigiarDepois();
     return { conciliadas: feitas, erros };
   }
 
@@ -171,7 +184,9 @@ export async function rotearCaixa(req: Request, partes: string[], eu: Membro, co
     if ("parcelas" in corpo) { const n = corpo.parcelas === null || corpo.parcelas === "" ? null : Number(corpo.parcelas); if (n !== null && !(Number.isInteger(n) && n >= 1 && n <= 360)) throw new HttpError(400, "parcelas de 1 a 360"); p.parcelas = n; }
     if ("inicio" in corpo) p.inicio = data(corpo.inicio, "início");
     if (typeof corpo.ativa === "boolean") p.ativa = corpo.ativa;
-    return await rpc("recorrente_salvar", { p });
+    const r = await rpc("recorrente_salvar", { p });
+    vigiarDepois();
+    return r;
   }
 
   // ---------------------------------------------------------------- dados dos calculos
