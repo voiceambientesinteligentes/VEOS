@@ -13,7 +13,7 @@
     "deploy:vigia": "npx -y supabase@2.118.0 functions deploy vigia --use-api --project-ref vkrwxvnfstvriibjwuvw",
     "test:telas": "node scripts/testar-telas.mjs",
     "backup": "node scripts/online.mjs scripts/backup.mjs",
-    "test:online": "node scripts/online.mjs tests/online/e2e_api.mjs && node scripts/online.mjs tests/online/e2e_financeiro.mjs && node scripts/online.mjs tests/online/e2e_setores.mjs && node scripts/online.mjs tests/online/e2e_sistema.mjs && node scripts/online.mjs tests/online/e2e_mcp.mjs && node scripts/online.mjs tests/online/e2e_ia.mjs && node scripts/online.mjs tests/online/navegador.mjs",
+    "test:online": "node scripts/online.mjs tests/online/e2e_api.mjs && node scripts/online.mjs tests/online/e2e_financeiro.mjs && node scripts/online.mjs tests/online/e2e_setores.mjs && node scripts/online.mjs tests/online/e2e_sistema.mjs && node scripts/online.mjs tests/online/e2e_mcp.mjs && node scripts/online.mjs tests/online/e2e_ia.mjs && node scripts/online.mjs tests/online/e2e_caixa.mjs && node scripts/online.mjs tests/online/navegador.mjs",
     "mcp": "node scripts/mcp/veos-mcp.mjs"
   }
 }

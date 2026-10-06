@@ -26,6 +26,7 @@ import { telaMensagens } from "./ui/views/mensagens.js";
 import { telaIndependencia } from "./ui/views/independencia.js";
 import { telaDiretores } from "./ui/views/diretores.js";
 import { telaDiagnosticoCfo, telaFormularioCfo, telaPrecosCfo } from "./ui/views/cfo.js";
+import { telaCaixa, telaFechamento, telaFluxo13, telaIndicadores, telaRecorrentes } from "./ui/views/caixa.js";
 import { telaEstoqueEstrategico, telaPlano } from "./ui/views/estrategia.js";
 import { telaComercial, telaPainelDono } from "./ui/views/painel_dono.js";
 import { telaProduto, telaProdutos, telaRevisaoProdutos } from "./ui/views/produtos.js";
@@ -118,6 +119,11 @@ const TELAS = {
   "#/painel-dono": { fn: telaPainelDono, titulo: ["Painel do dono", "Quanto vender, como está indo, o que falta e a quem perguntar"] },
   "#/comercial": { fn: telaComercial, titulo: ["Plano comercial", "Da meta de vendas à atividade da semana, canais e showroom"] },
   "#/plano": { fn: telaPlano, titulo: ["Plano da VOICE", "Metas, ações e rotinas propostas pelos diretores e decididas por você"] },
+  "#/cfo/caixa": { fn: telaCaixa, titulo: ["Caixa e extrato", "Contas da empresa, extrato bancário, conciliação e plano de contas"] },
+  "#/cfo/recorrentes": { fn: telaRecorrentes, titulo: ["Contas fixas e dívidas", "Recorrentes que viram contas a pagar todo mês"] },
+  "#/cfo/fluxo": { fn: telaFluxo13, titulo: ["Fluxo de 13 semanas", "Saldo real + a receber − a pagar − imposto, semana a semana"] },
+  "#/cfo/fechamento": { fn: telaFechamento, titulo: ["Fechamento do mês", "DRE gerencial pelo extrato classificado"] },
+  "#/cfo/indicadores": { fn: telaIndicadores, titulo: ["Indicadores da Política", "Os indicadores da Política V1 com fórmula, meta e fonte"] },
   "#/cfo/estoque": { fn: telaEstoqueEstrategico, titulo: ["Estoque estratégico", "Itens mais usados, lote sugerido e o momento do dólar"] },
   "#/cfo/diagnostico": { fn: telaDiagnosticoCfo, titulo: ["Diagnóstico dos orçamentos", "CFO: desconto, mão de obra, imposto e margem de cada orçamento aceito"] },
   "#/cfo/precos": { fn: telaPrecosCfo, titulo: ["Preço dos produtos e da hora", "CFO: preço mínimo pela Política V1 com custo real de importação"] },
@@ -236,6 +242,11 @@ function montarMenu() {
       CATALOGO.map((s) => link(`#/setor/${s.id}`, s.sigla, s.nome))),
     h("div", { class: "nav-group", role: "group", "aria-labelledby": "nav-cfo" },
       h("span", { class: "nav-label", id: "nav-cfo" }, "Ferramentas do CFO"),
+      ["direcao", "financas"].includes(eu.papel) ? link("#/cfo/caixa", "CAIXA", "Caixa e extrato") : null,
+      ["direcao", "financas"].includes(eu.papel) ? link("#/cfo/fluxo", "13SEM", "Fluxo de 13 semanas") : null,
+      ["direcao", "financas"].includes(eu.papel) ? link("#/cfo/fechamento", "DRE", "Fechamento do mês") : null,
+      ["direcao", "financas"].includes(eu.papel) ? link("#/cfo/indicadores", "IND", "Indicadores da Política") : null,
+      ["direcao", "financas"].includes(eu.papel) ? link("#/cfo/recorrentes", "FIXO", "Contas fixas e dívidas") : null,
       ["direcao", "financas"].includes(eu.papel) ? link("#/cfo/diagnostico", "DIAG", "Diagnóstico dos orçamentos") : null,
       ["direcao", "financas"].includes(eu.papel) ? link("#/cfo/precos", "PREÇO", "Preço dos produtos e da hora") : null,
       ["direcao", "financas"].includes(eu.papel) ? link("#/cfo/formulario", "FORM", "Formulário do CFO") : null,

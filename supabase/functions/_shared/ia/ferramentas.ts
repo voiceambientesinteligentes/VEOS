@@ -19,6 +19,10 @@ import { resumir } from "../dominio/diagnostico.js";
 import { margemPorReal, mixPraticado, oQueFalta, pontoEquilibrio, saidasMensais } from "../dominio/equilibrio.js";
 import { projetos } from "../dominio/estoque_sugerido.js";
 import { condicaoSugerida } from "../dominio/condicao.js";
+import { projetar, reserva } from "../dominio/caixa13.js";
+import { dre } from "../dominio/dre.js";
+import { indicadores } from "../dominio/indicadores.js";
+import { contasComSaldo, dadosFechamento, dadosIndicadores, dadosSemanas, hojeSP } from "../caixa_dados.ts";
 
 export type Fonte = { titulo: string; natureza: string; url?: string | null };
 export type Contexto = {
@@ -522,6 +526,71 @@ const FERRAMENTAS: Ferramenta[] = [
           };
         }),
       };
+    },
+  },
+  {
+    nome: "caixa_e_contas",
+    papeis: FIN,
+    descricao: "Contas bancárias da empresa com o saldo de hoje (pelo extrato importado ou saldo informado), data da âncora do saldo, último extrato importado e lançamentos sem categoria.",
+    parametros: obj({}),
+    async executar(_a, ctx) {
+      const contas = await contasComSaldo();
+      fonte(ctx, "Extrato bancário importado no VEOS (Caixa e extrato)", "dado");
+      const ativas = contas.filter((k: any) => k.ativa);
+      return {
+        hoje: hojeSP(), contas: ativas.map((k: any) => ({ nome: k.nome, tipo: k.tipo, saldo_hoje: k.saldo_hoje, ancora: k.ancora_em ? `${k.ancora_origem} em ${k.ancora_em}` : "LACUNA: sem saldo", ultimo_extrato_ate: k.ultimo_extrato?.periodo_ate ?? null, sem_categoria: k.sem_categoria })),
+        saldo_total_com_saldo: ativas.some((k: any) => k.saldo_hoje !== null) ? r2(ativas.filter((k: any) => k.saldo_hoje !== null).reduce((s: number, k: any) => s + Number(k.saldo_hoje), 0)) : null,
+        aviso: ativas.length ? null : "LACUNA: nenhuma conta bancária cadastrada no VEOS (Ferramentas do CFO → Caixa e extrato).",
+      };
+    },
+  },
+  {
+    nome: "fluxo_13_semanas",
+    papeis: FIN,
+    descricao: "Fluxo de caixa de 13 semanas: saldo real de hoje + parcelas a receber − contas a pagar (inclusive recorrentes) − imposto estimado; menor saldo, necessidade de caixa em 30/60/90 dias, reserva da Política (3 meses de fixos) e alertas.",
+    parametros: obj({ semanas: { type: "integer", description: "4 a 26 (padrão 13)" } }),
+    async executar(a, ctx) {
+      const d = await dadosSemanas(Number(a.semanas) || 13);
+      const res = reserva({ recorrentes: d.recorrentes, fixosFormulario: d.impostos?.fixos_formulario ?? null, retirada: d.impostos?.retirada_formulario ?? null });
+      const f = projetar({ hoje: d.hoje, semanas: d.semanas, saldos: d.saldos, parcelas: d.parcelas, contas: d.contas, impostos: d.impostos, entradasRealizadasMes: d.entradas_realizadas_mes, reservaMeta: res.meta });
+      fonte(ctx, "Fluxo de 13 semanas do VEOS (extrato, parcelas, contas a pagar e recorrentes)", "dado");
+      if (String(d.impostos?.origem ?? "").startsWith("SIMULA")) fonte(ctx, "Simulação de impostos do VEOS (Simples, faturamento de 12 meses pelo Zoho)", "simulação");
+      return { hoje: d.hoje, saldo_hoje: f.saldoHoje, contas_sem_saldo: f.semSaldo, reserva_politica: res, menor_saldo: f.menorSaldo, necessidade_de_caixa: f.necessidade, atrasadas: f.atrasadas, impostos: { aliquota: f.impostos.aliquota, origem: f.impostos.origem, provisoes: f.impostos.provisoes },
+        semanas: f.semanas.map((s: any) => ({ semana: s.n, de: s.inicio, ate: s.fim, entradas: s.entradas, saidas: s.saidas, impostos: s.impostos, saldo_final: s.saldo_final, principais: s.itens.slice(0, 5).map((i: any) => `${i.data} ${i.descricao} ${i.valor}`) })), alertas: f.alertas };
+    },
+  },
+  {
+    nome: "fechamento_do_mes",
+    papeis: FIN,
+    descricao: "DRE gerencial de um mês pelo extrato classificado no plano de contas: receita, deduções, receita líquida, margem de contribuição, despesas fixas, resultado operacional, retirada, financeiro, resultado de caixa; pendências de classificação e conferência com o saldo.",
+    parametros: obj({ mes: str("mês AAAA-MM (padrão: mês atual)") }),
+    async executar(a, ctx) {
+      const mes = /^\d{4}-\d{2}$/.test(String(a.mes ?? "")) ? String(a.mes) : hojeSP().slice(0, 7);
+      const d = await dadosFechamento(mes);
+      if (!d.movimentos.length) {
+        return { mes, lacuna: "Nenhum lançamento de extrato no mês: sem extrato importado não há DRE pelo caixa (Ferramentas do CFO → Caixa e extrato).", faturado_nf: r2((d.notas ?? []).reduce((s: number, n: any) => s + Number(n.valor), 0)), recorrentes_do_mes: r2((d.contas_competencia ?? []).reduce((s: number, k: any) => s + Number(k.valor), 0)) };
+      }
+      const soma = (l: any[]) => (l ?? []).filter((s) => s.saldo !== null).reduce((t: number, s: any) => t + Number(s.saldo), 0);
+      const tem = (l: any[]) => (l ?? []).some((s) => s.saldo !== null);
+      const r = dre({ movimentos: d.movimentos, plano: d.plano, impostos: d.impostos, saldoInicio: tem(d.saldo_inicio) ? soma(d.saldo_inicio) : null, saldoFim: tem(d.saldo_fim) ? soma(d.saldo_fim) : null });
+      fonte(ctx, `Fechamento do mês ${mes} (extrato classificado no plano de contas)`, "dado");
+      return { mes, linhas: r.linhas.map((l: any) => ({ linha: l.nome, valor: l.valor, pct_receita_liquida: l.pct ?? null })), indicadores: r.indicadores, por_categoria: r.categorias, pendentes: r.pendentes, imposto: r.imposto, conferencia: r.conferencia, completo: r.completo, avisos: r.avisos,
+        faturado_nf: r2((d.notas ?? []).reduce((s: number, n: any) => s + Number(n.valor), 0)), recorrentes_do_mes: r2((d.contas_competencia ?? []).reduce((s: number, k: any) => s + Number(k.valor), 0)) };
+    },
+  },
+  {
+    nome: "indicadores_da_politica",
+    papeis: FIN,
+    descricao: "Indicadores da Política de Saúde Financeira (sec.13) e reserva (sec.12): vendido, recebido, receita líquida, margem de contribuição consolidada, margem operacional, ticket médio, contas a receber e a pagar com aging, prazo médio de recebimento, inadimplência, exposição, necessidade de caixa, concentração por cliente, % abaixo da margem mínima e reserva em meses — cada um com fórmula, meta da Política e LACUNA quando falta dado.",
+    parametros: obj({}),
+    async executar(_a, ctx) {
+      const [d, s, par, orc] = await Promise.all([dadosIndicadores(), dadosSemanas(13), carregarParametros(ctx), carregarOrcamentos(ctx)]);
+      const fluxo = projetar({ hoje: s.hoje, saldos: s.saldos, parcelas: s.parcelas, contas: s.contas, impostos: s.impostos, entradasRealizadasMes: s.entradas_realizadas_mes });
+      const umAno = new Date(Date.now() - 365 * 864e5).toISOString().slice(0, 10);
+      const diagnostico = resumir(orc.filter((o: any) => o.data >= umAno), par.params);
+      const r = indicadores(d, { fluxo, diagnostico });
+      fonte(ctx, "Indicadores da Política no VEOS (extrato, pedidos, contas, Zoho)", "dado");
+      return { indicadores: r.indicadores.map((i: any) => ({ nome: i.nome, valor: i.valor, unidade: i.unidade, meta: i.meta, situacao: i.situacao, lacuna: i.lacuna ?? null, formula: i.formula, detalhe: i.detalhe ?? null, nota: i.nota ?? null })), meses: r.meses, reserva: r.reserva, tem_extrato: r.temExtrato };
     },
   },
 ];
