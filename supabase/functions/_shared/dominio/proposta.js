@@ -8,11 +8,11 @@ const n = (v) => Number(v ?? 0);
 export function agruparItens(linhas = []) {
   const ordem = [...linhas].sort((a, b) => n(a.item_order) - n(b.item_order));
   const secoes = [];
-  for (const l of ordem) {
+  for (const [i, l] of ordem.entries()) {
     const nome = (l.header_name ?? "").trim() || "Itens";
     let s = secoes.find((x) => x.secao === nome);
     if (!s) secoes.push((s = { secao: nome, itens: [], subtotal: 0 }));
-    s.itens.push({ nome: l.name || "Item", descricao: (l.description ?? "").trim(), quantidade: n(l.quantity), unidade: l.unit || "", unitario: n(l.rate), desconto: n(l.discount_amount), total: n(l.item_total) });
+    s.itens.push({ numero: i + 1, nome: l.name || "Item", descricao: (l.description ?? "").trim(), quantidade: n(l.quantity), unidade: l.unit || "", unitario: n(l.rate), desconto: n(l.discount_amount), total: n(l.item_total) });
     s.subtotal = Math.round((s.subtotal + n(l.item_total)) * 100) / 100;
   }
   return secoes;

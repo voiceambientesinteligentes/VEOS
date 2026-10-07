@@ -23,15 +23,17 @@ rodar(async (v) => {
     return;
   }
   await telaProposta(v, "4823000000123");
-  // formato global (padrao): itens com quantidade, sem preco por item, total do projeto
+  // formato detalhado (padrao, mesmas colunas do Zoho Books)
+  const doc = v.querySelector(".proposta-doc").textContent;
+  for (const t of ["EST-000123", "Nº", "Item e descrição", "Valor unit.", "Sala de estar", "Subtotal Sala de estar", "R$ 18.000,00", "R$ 1.500,00", "Investimento total", "R$ 20.000,00", "− R$ 1.000,00", "31/10/2026", "Garantia conforme fabricante"]) if (!doc.includes(t)) throw new Error(`faltou no documento: ${t}`);
+  const numeros = [...v.querySelectorAll(".proposta-doc tbody tr td:first-child")].map((td) => td.textContent).filter((x) => /^\d+$/.test(x));
+  if (numeros.join(",") !== "1,2,3") throw new Error(`numeração errada: ${numeros}`);
+  // formato global: itens com quantidade, sem preco por item, total do projeto
+  const formato = v.querySelector("#pp-formato");
+  formato.value = "global"; formato.dispatchEvent(new Event("input", { bubbles: true }));
   const global = v.querySelector(".proposta-doc").textContent;
   for (const t of ["Sala de estar", "Investimento total", "R$ 20.000,00"]) if (!global.includes(t)) throw new Error(`global sem: ${t}`);
-  if (global.includes("Subtotal Sala de estar")) throw new Error("global não deveria ter subtotal por item");
-  // formato detalhado
-  const formato = v.querySelector("#pp-formato");
-  formato.value = "detalhado"; formato.dispatchEvent(new Event("input", { bubbles: true }));
-  const doc = v.querySelector(".proposta-doc").textContent;
-  for (const t of ["EST-000123", "Sala de estar", "Subtotal Sala de estar", "R$ 18.000,00", "Investimento total", "R$ 20.000,00", "− R$ 1.000,00", "31/10/2026", "Garantia conforme fabricante"]) if (!doc.includes(t)) throw new Error(`faltou no documento: ${t}`);
+  if (global.includes("Subtotal Sala de estar") || global.includes("R$ 1.500,00")) throw new Error("global não deveria ter preço por item");
   if (/custo|margem/i.test(doc)) throw new Error("custo/margem nao pode ir para o cliente");
   const mail = v.querySelector('a[href^="mailto:"]').getAttribute("href");
   const wa = v.querySelector('a[href^="https://wa.me/"]').getAttribute("href");

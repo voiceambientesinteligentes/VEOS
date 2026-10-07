@@ -12,6 +12,8 @@ test("agrupa pelas secoes do orcamento, na ordem dos itens", () => {
   ]);
   assert.deepEqual(s.map((x) => [x.secao, x.itens.length, x.subtotal]), [["Cozinha", 2, 1099.99], ["Sala", 1, 200], ["Itens", 1, 500]]);
   assert.equal(s[0].itens[0].descricao, "Central TESTE");
+  // numeracao igual a do Zoho Books: na ordem dos itens, continua entre secoes
+  assert.deepEqual(s.flatMap((x) => x.itens.map((i) => i.numero)), [1, 2, 3, 4]);
 });
 
 test("totais e rascunhos de envio", () => {

@@ -77,23 +77,28 @@ export async function telaProposta(root, id) {
   const v = (x) => document.getElementById(x)?.value?.trim() ?? "";
   const doc = h("article", { class: "contrato-doc proposta-doc" });
 
+  // mesmas colunas do orcamento no Zoho Books: No, item e descricao, quantidade, valor unitario, (desconto) e total
+  const comDesconto = secoes.some((sec) => sec.itens.some((i) => i.desconto > 0));
+  const celItem = (i) => h("td", null, h("strong", null, i.nome), i.descricao ? h("div", { class: "proposta-desc" }, i.descricao) : null);
+  const celQtd = (i) => h("td", { class: "r" }, `${qtd(i.quantidade)}${i.unidade ? ` ${i.unidade}` : ""}`);
   function montar() {
+    const cab = ["Nº", "Item e descrição", "Qtd", "Valor unit.", ...(comDesconto ? ["Desconto"] : []), "Total"];
     const linhasSecao = (sec) => [
       secoes.length > 1 || sec.secao !== "Itens" ? h("h3", { class: "proposta-secao" }, sec.secao) : null,
       h("table", { class: "contrato-tabela" },
-        h("thead", null, h("tr", null, ["Item", "Qtd", "Valor unit.", "Total"].map((t, i) => h("th", { class: i ? "r" : null }, t)))),
+        h("thead", null, h("tr", null, cab.map((t, i) => h("th", { class: i > 1 ? "r" : null }, t)))),
         h("tbody", null, sec.itens.map((i) => h("tr", null,
-          h("td", null, h("strong", null, i.nome), i.descricao ? h("div", { class: "proposta-desc" }, i.descricao) : null),
-          h("td", { class: "r" }, `${qtd(i.quantidade)}${i.unidade ? ` ${i.unidade}` : ""}`), h("td", { class: "r" }, brl(i.unitario)), h("td", { class: "r" }, brl(i.total))))),
-        secoes.length > 1 ? h("tfoot", null, h("tr", null, h("td", { colspan: 3 }, `Subtotal ${sec.secao}`), h("td", { class: "r" }, brl(sec.subtotal)))) : null),
+          h("td", null, String(i.numero)), celItem(i), celQtd(i), h("td", { class: "r" }, brl(i.unitario)),
+          comDesconto ? h("td", { class: "r" }, i.desconto > 0 ? `− ${brl(i.desconto)}` : "—") : null, h("td", { class: "r" }, brl(i.total))))),
+        secoes.length > 1 ? h("tfoot", null, h("tr", null, h("td", { colspan: cab.length - 1 }, `Subtotal ${sec.secao}`), h("td", { class: "r" }, brl(sec.subtotal)))) : null),
     ];
-    const global = v("pp-formato") !== "detalhado";
+    const global = v("pp-formato") === "global";
     const blocoEscopo = global
       ? [...secoes.flatMap((sec) => [
           secoes.length > 1 || sec.secao !== "Itens" ? h("h3", { class: "proposta-secao" }, sec.secao) : null,
           h("table", { class: "contrato-tabela" },
-            h("thead", null, h("tr", null, h("th", null, "Item"), h("th", { class: "r" }, "Qtd"))),
-            h("tbody", null, sec.itens.map((i) => h("tr", null, h("td", null, h("strong", null, i.nome), i.descricao ? h("div", { class: "proposta-desc" }, i.descricao) : null), h("td", { class: "r" }, `${qtd(i.quantidade)}${i.unidade ? ` ${i.unidade}` : ""}`)))))]),
+            h("thead", null, h("tr", null, h("th", null, "Nº"), h("th", null, "Item e descrição"), h("th", { class: "r" }, "Qtd"))),
+            h("tbody", null, sec.itens.map((i) => h("tr", null, h("td", null, String(i.numero)), celItem(i), celQtd(i)))))]),
         h("table", { class: "contrato-tabela" }, h("tbody", null, gruposGlobais(e.line_items, tipos).map(([g, val]) => h("tr", null, h("td", null, g), h("td", { class: "r" }, brl(val))))))]
       : secoes.flatMap(linhasSecao);
     clear(doc).append(...[
@@ -143,7 +148,7 @@ export async function telaProposta(root, id) {
       campo("pp-titulo", "Título", e.subject || `Automação para ${e.customer_name ?? "o seu ambiente"}`),
       campo("pp-data", "Data", e.date ?? new Date().toISOString().slice(0, 10), { type: "date" }),
       campo("pp-validade", "Validade", e.expiry_date ?? cond.validade ?? "", { type: "date" }, "Curta para itens importados (o CDC presume 10 dias se não estiver escrita)."),
-      field("pp-formato", "Formato", h("select", { class: "select", id: "pp-formato" }, h("option", { value: "global" }, "Global: itens com quantidade e totais por grupo"), h("option", { value: "detalhado" }, "Detalhado: preço de cada item")), "O CDC pede mão de obra e materiais separados; o global mostra só os totais de cada grupo."),
+      field("pp-formato", "Formato", h("select", { class: "select", id: "pp-formato" }, h("option", { value: "detalhado" }, "Detalhado (como no Zoho Books): Nº, item, quantidade, valor unitário e total"), h("option", { value: "global" }, "Global: itens com quantidade e totais por grupo")), "O detalhado repete as colunas do orçamento no Books. O global esconde o preço de cada item e mostra os totais de mão de obra e de materiais (o CDC pede os dois separados)."),
       campo("pp-pag", "Condições de pagamento", cond.texto || (e.payment_terms_label ?? ""), {}, cond.texto ? "Sugerida pelo CFO: sinal cobre o material, etapas, validade e dólar do dia. Ajuste se precisar." : "Preencha conforme a negociação."),
       campo("pp-prazo", "Prazo de execução"),
       campo("pp-contato", "Responsável VOICE", e.salesperson_name ?? ""),
