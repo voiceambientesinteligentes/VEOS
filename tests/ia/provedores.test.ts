@@ -160,3 +160,17 @@ test("provedor compatível (Mistral): usa o endereço próprio, a chave dele e l
   assert.match(r.tentativas[0].erro ?? "", /Mistral \(gratuito\) 429: Requests rate limit exceeded/);
   assert.equal(r.ok && r.resultado.modelo, "mistral-small-latest");
 });
+
+test("pedido grande demais para o plano (413/TPM) pula os outros modelos do mesmo provedor", async () => {
+  const groq: Provedor = { id: "groq", tipo: "compat", base: "https://api.groq.com/openai/v1", rotulo: "Groq (gratuito)", modelos: ["a", "b"], chave: "k", gratuito: true };
+  const modelos: string[] = [];
+  const f = (async (url: string, init: RequestInit) => {
+    const b = JSON.parse(String(init.body));
+    if (url.includes("groq")) { modelos.push(b.model); return resp(413, { error: { message: "Request too large for model `a` on tokens per minute (TPM): Limit 8000" } }); }
+    return resp(200, { choices: [{ message: { role: "assistant", content: "pelo próximo" } }] });
+  }) as typeof fetch;
+  const r = await responderComFallback([groq, openai], pedido(), f, 0);
+  assert.ok(r.ok);
+  assert.deepEqual(modelos, ["a"], "não tenta o modelo b do mesmo provedor");
+  assert.equal(r.ok && r.provedor.id, "openai");
+});

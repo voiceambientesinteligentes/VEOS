@@ -52,7 +52,9 @@ function erroHttp(nome: string, status: number, corpo: string, passos: Passo[], 
     msg = d.error?.message ?? d.error?.status ?? d.message ?? (typeof d.detail === "string" ? d.detail : d.detail?.[0]?.msg) ?? msg;
   } catch { /* corpo nao e JSON */ }
   const chaveRuim = status === 401 || status === 403 || /api[_ ]?key/i.test(msg);
-  return new ProvedorErro(status, `${nome} ${status}: ${String(msg).slice(0, 200)}`, chaveRuim ? "provedor" : "modelo", passos, uso);
+  // pedido grande demais para o limite do plano (tokens por minuto da conta): vale para todos os modelos do provedor
+  const grandeDemais = status === 413 || /request too large|tokens per minute|\(ITPM\)|\(TPM\)/i.test(msg);
+  return new ProvedorErro(status, `${nome} ${status}: ${String(msg).slice(0, 200)}`, chaveRuim || grandeDemais ? "provedor" : "modelo", passos, uso);
 }
 
 async function executar(p: Pedido, c: Chamada, passos: Passo[]) {
@@ -191,7 +193,7 @@ ${dados}` } : p;
           break;
         }
       }
-      if (tentativas.at(-1)?.erro && /api[_ ]?key|401|403/i.test(tentativas.at(-1)!.erro!)) break;
+      if (tentativas.at(-1)?.erro && /api[_ ]?key|401|403|413|request too large|tokens per minute/i.test(tentativas.at(-1)!.erro!)) break;
     }
   }
   return { ok: false as const, tentativas };
