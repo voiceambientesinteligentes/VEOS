@@ -6,6 +6,7 @@ import { diagnosticoParams, impostosSimulados } from "../../domain/cfo_cenarios.
 import { resumir, SINAIS } from "../../domain/diagnostico.js";
 import { analisarOrcamento } from "../../domain/analise_orcamento.js";
 import { qualidadeDaBase } from "../../domain/base_orcamentos.js";
+import { corrigirOrcamento } from "../../domain/correcao_orcamento.js";
 import { projetos } from "../../domain/estoque_sugerido.js";
 import { custoNoBrasil, FAIXAS, faixa, faturamentoMinimo, fatorProduto, margem, precoPolitica, variacaoDolar } from "../../domain/formacao_preco.js";
 import { comCompatibilidade, numeroBR, parametros, progresso, SECOES, SUGESTOES_TEMPOS, temTextoExtra } from "../../domain/formulario_cfo.js";
@@ -337,6 +338,22 @@ export async function telaDiagnosticoCfo(root) {
   );
 }
 
+// ================================================================ cobrado x o que deveria (por orcamento)
+const SIT_COR = { abaixo: ["sobe", "risk"], ok: ["ok", "ok"], sem_custo: ["sem custo real", "neutral"], servico: ["serviço: ver horas", "neutral"], sem_cadastro: ["sem cadastro", "neutral"] };
+function tabelaCorrecao(o, base) {
+  const c = corrigirOrcamento(o, { t: base.tProduto, v: base.v, alvo: 35 });
+  if (c.erro) return h("p", { class: "notice notice-warn" }, c.erro);
+  return h("div", { class: "stack-s" },
+    h("p", { class: c.abaixo ? "notice notice-warn" : "notice notice-ok" }, c.abaixo
+      ? `Pela Política (meta de 35%), este orçamento deveria ser ${brl(c.total_novo)} em vez de ${brl(c.total_atual)}: ${brl(c.diferenca)} a mais (${pct(c.diferenca_pct)}), em ${c.abaixo} produto(s) abaixo do preço.`
+      : `Os produtos com custo cadastrado já estão no preço da Política (meta de 35%) ou acima.${c.sem_custo ? ` ${c.sem_custo} item(ns) sem custo real não dá para conferir.` : ""}`),
+    method(`Cobrado × o que deveria, item a item (${c.linhas.length} linhas)`,
+      table({ caption: `Preço pela Política com imposto ${pct(c.imposto_pct)} e ${pct(c.despesas_canal_pct)} de RT/comissão/cartão do canal`, head: ["Item", "Qtd", "Custo", "Cobrado", "Margem atual", "Mínimo (30%)", "Deveria (35%)", "", "Diferença no total"], align: ["", "r", "r", "r", "r", "r", "r", "", "r"],
+        rows: c.linhas.map((l) => [l.nome, String(l.qtd).replace(".", ","), l.custo ? brl(l.custo) : "—", brl(l.preco), l.margem_atual === null || l.margem_atual === undefined ? "—" : pct(l.margem_atual),
+          l.preco_minimo_30 ? brl(l.preco_minimo_30) : "—", l.preco_meta_35 ? h("strong", null, brl(l.preco_meta_35)) : "—", stamp(...SIT_COR[l.situacao]), l.diferenca ? brl(l.diferenca) : ""]) }),
+      `Total cobrado ${brl(c.total_atual)} · total pela Política ${brl(c.total_novo)}. Mão de obra: compare as horas cobradas com as calculadas acima. Custo = cadastro do item no Zoho (o CFO usa também a última compra confirmada no catálogo do VEOS).`));
+}
+
 // ================================================================ base de precos (todos os orcamentos)
 // Decisao do fundador (06/10/2026): os orcamentos antigos nao viram pedido; servem de base para saber se o
 // preco estava certo. Mesma analise do cartao abaixo, aplicada a todos (versoes contam uma vez).
@@ -344,9 +361,9 @@ function painelBase(orcamentos, p, params) {
   const base = { ...params, produtividade: p.produtividade, comissionamento: p.comissionamento, entregaHoras: p.entregaHoras, metrosPorPonto: p.metrosPorPonto };
   const r = qualidadeDaBase(orcamentos, base, p.tempos);
   const x = r.resumo;
-  const linha = (l) => [l.numero, dataBR(l.data), l.situacao, brl(l.total), l.multiplicador ? `${String(l.multiplicador).replace(".", ",")}×` : "—", l.margem_produtos === null ? "—" : stamp(pct(l.margem_produtos), l.margem_produtos >= 30 ? "ok" : l.margem_produtos >= 25 ? "warn" : "risk"),
+  const linha = (l) => [h("a", { href: `#/cfo/diagnostico?orc=${encodeURIComponent(l.numero)}` }, l.numero), dataBR(l.data), l.situacao, brl(l.total), l.multiplicador ? `${String(l.multiplicador).replace(".", ",")}×` : "—", l.margem_produtos === null ? "—" : stamp(pct(l.margem_produtos), l.margem_produtos >= 30 ? "ok" : l.margem_produtos >= 25 ? "warn" : "risk"),
     l.itens_abaixo_25 ? stamp(`${l.itens_abaixo_25} item(ns) < 25%`, "risk") : "", l.margem_total === null ? "—" : pct(l.margem_total), l.horas_cobradas ? `${l.horas_cobradas} h / ${String(l.horas_calculadas).replace(".", ",")} h` : "sem horas"];
-  return panel({ title: "Base de preços: todos os orçamentos", subtitle: `Decisão de 06/10/2026: os orçamentos antigos não viram pedido; servem de base para saber se o preço estava certo. ${x.projetos} projetos (rascunhos, enviados e aceitos; versões do mesmo cliente contam uma vez).` },
+  return panel({ title: "Base de preços: todos os orçamentos", subtitle: `Decisão de 06/10/2026: os orçamentos antigos não viram pedido; servem de base para saber se o preço estava certo. ${x.projetos} projetos (rascunhos, enviados e aceitos; versões do mesmo cliente contam uma vez). Clique no número para ver o orçamento item a item contra o preço que deveria.` },
     h("div", { class: "cfo-stats" },
       stat("Produtos abaixo de 30%", pct(x.pct_produtos_abaixo_de_30), "dos projetos (margem dos produtos com imposto, comissão e RT)"),
       stat("Com item NÃO APROVADO", pct(x.pct_com_item_nao_aprovado_25), "projetos com algum produto abaixo de 25%"),
@@ -364,8 +381,9 @@ const PROD_PESQUISA = 65;
 /** Analise detalhada dos ultimos projetos (versoes do mesmo cliente contam uma vez) ou de um numero escolhido. */
 function painelRecentes(orcamentos, p, params, simulado) {
   const recentes = projetos(orcamentos).slice(0, 4);
+  const pedido = new URLSearchParams(location.hash.split("?")[1] ?? "").get("orc");
   const escolha = h("select", { class: "select", id: "dg-orc" }, h("option", { value: "" }, "Os 4 últimos projetos"),
-    orcamentos.slice().sort((a, b) => String(b.data).localeCompare(String(a.data))).slice(0, 60).map((o) => h("option", { value: o.numero }, `${o.numero} · ${dataBR(o.data)} · ${o.cliente}`)));
+    orcamentos.slice().sort((a, b) => String(b.numero).localeCompare(String(a.numero))).map((o) => h("option", { value: o.numero, selected: o.numero === pedido }, `${o.numero} · ${dataBR(o.data)} · ${o.cliente} · ${brl(o.total)}`)));
   const corpo = h("div", { class: "stack" });
   const canal = h("select", { class: "select", id: "dg-canal" }, p.canais.map((c) => h("option", { value: c.nome, selected: c.nome === p.canalPadrao }, `${c.nome} (${String(c.v).replace(".", ",")}%)`)));
   const base = { ...params, produtividade: p.produtividade, comissionamento: p.comissionamento, entregaHoras: p.entregaHoras, metrosPorPonto: p.metrosPorPonto };
@@ -384,6 +402,8 @@ function painelRecentes(orcamentos, p, params, simulado) {
         stat("Preço da hora (35%)", brl(a.mo.precoHoraMeta), a.mo.precoHoraMeta ? "pelo custo da hora do formulário" : "falta custo da hora"),
         stat("Margem do orçamento", a.mcTotal ? pct(a.mcTotal.pct) : "—", a.mcTotal ? `${FAIXA_TXT[faixa(a.mcTotal.pct)]}${simulado ? " · impostos simulados" : ""}` : "faltam dados")),
       a.pontos.length ? h("ul", { class: "stack-s cfo-pontos" }, a.pontos.map((x) => h("li", null, x))) : h("p", { class: "notice notice-ok" }, "Nenhum ponto de atenção."),
+      tabelaCorrecao(o, base),
+      h("div", { class: "row" }, h("a", { class: "btn btn-ghost", href: `#/diretores?setor=financas&pergunta=${encodeURIComponent(`Analise o orçamento ${o.numero}: veja os erros e refaça com os valores corretos.`)}` }, `Perguntar ao CFO sobre o ${o.numero}`)),
       a.produtos.abaixo.length ? method(`Produtos abaixo de 30% (${a.produtos.abaixo.length})`, ...a.produtos.abaixo.map((i) => `${i.nome}: cobrado ${brl(i.preco)}, custo ${brl(i.custo)}, margem ${i.mc === null ? "—" : pct(i.mc)} → preço mínimo ${brl(i.meta)}`)) : null,
       method("Como as horas foram calculadas", ...a.mo.linhas.map((l) => `${l.dispositivo}${l.tecnologia !== "na" ? ` (${l.tecnologia === "sem_fio" ? "sem fio" : "cabeado"})` : ""} × ${l.qtd}: ${l.minUnit} min cada (${l.atividades.join(" + ")})`),
         a.mo.premissas.cenas ? `Cenas: ${a.mo.premissas.cenas} (hipótese: uma por interruptor)` : null,

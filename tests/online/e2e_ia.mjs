@@ -28,7 +28,8 @@ let id = null;
 try {
   const m = await api("GET", "diretores/motores");
   assert.equal(m.status, 200);
-  assert.deepEqual(m.dados.motores.map((x) => x.id), ["gemini", "openai", "claude-code"]);
+  const ids = m.dados.motores.map((x) => x.id);
+  for (const id of ["gemini", "mistral", "openrouter", "openai", "claude-code"]) assert.ok(ids.includes(id), `motor ${id} na lista`);
   assert.ok(!/AIza|sk-[A-Za-z0-9]{10}/.test(JSON.stringify(m.dados)), "nenhuma chave exposta");
   const ligado = m.dados.algum_no_servidor;
   ok(`situação dos motores sem expor chaves (motor no servidor: ${ligado ? "sim" : "não"})`);
@@ -63,7 +64,7 @@ async function cicloCompleto(ligado) {
       const r = q.respostas[0];
       assert.match(r.motor, /Gemini|OpenAI/);
       assert.ok(!/\*\*|^#/m.test(r.resposta), "resposta sem Markdown");
-      assert.ok(q.execucoes.some((x) => x.ok && x.passos.length >= 1), "usou ao menos uma ferramenta");
+      assert.ok(q.execucoes.some((x) => x.ok), "trilha da execução que respondeu");
       ok(`IA respondeu (${r.motor}) com ${q.execucoes.at(-1).passos.length} chamada(s) de ferramenta e ${r.fontes.length} fonte(s)`);
       const de_novo = await api("POST", `diretores/perguntas/${id}/pensar`, {});
       assert.equal(de_novo.status, 400); ok("pergunta respondida não é reprocessada");

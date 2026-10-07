@@ -1,4 +1,4 @@
-# Próxima sessão — ponto de partida (atualizado em 06/10/2026)
+# Próxima sessão — ponto de partida (atualizado em 07/10/2026)
 
 ## Prompt para colar no início da próxima conversa
 
@@ -27,6 +27,11 @@ Atue como especialista sênior em engenharia de software, produto e UX.
 
 ## O que já funciona (resumo)
 Setores vivos (9) e Radar · Negociação e Calculadora · Zoho espelho + edição · Pedidos → estoque → parcelas → NF → recebimento · Biblioteca e governança · Contrato e termo de aceite em PDF · **P0** (validação guiada, saúde do sistema, usuários e MFA, exportação, backup criptografado, CI) · **P1** (painel executivo, compras e contas a pagar, previsão de caixa, caixa do pedido V1.1, obra no pedido, margem realizada, proposta em PDF, caixa de saída, resumo do dia, avisos) · **P2** (MCP do VEOS, independência do Zoho, busca Ctrl+K, PWA, registro LGPD).
+
+## Mais motores de IA gratuitos (07/10)
+1. **Mistral (recomendado primeiro)**: console.mistral.ai → plano gratuito → API Keys → criar. Em Admin → Privacy, desligar o uso dos dados para treino. No Supabase: Edge Functions → Secrets → `MISTRAL_API_KEY`.
+2. **OpenRouter**: openrouter.ai → Keys → criar. Segredos: `OPENROUTER_API_KEY` e `OPENROUTER_MODELOS` (modelos terminados em `:free` que aceitam ferramentas, separados por vírgula). Limite: ~50 chamadas/dia sem créditos.
+3. Ordem opcional: `IA_ORDEM` (padrão gemini,mistral,openrouter,groq,nvidia,openai).
 
 ## Para ligar o que foi feito em 05/10 (ações do Fernando)
 1. ~~Chave do Gemini~~ **Feito em 06/10** (a chave apareceu numa imagem da conversa: trocar por uma nova é recomendável). Decidir formalmente BIB-0091 e BIB-0092. Se a cota gratuita não bastar no dia a dia: nível pago do Gemini (GEMINI_PAGO=sim) ou OpenAI — decisão de custo (BIB-0044). Instruções originais: aistudio.google.com → "Get API key" → copiar. No Supabase: Project Settings → Edge Functions → Secrets → `GEMINI_API_KEY` = a chave. Depois: `node scripts/online.mjs tests/online/e2e_ia.mjs` (ciclo completo com IA). Decidir BIB-0091 (Gemini gratuito, dados usados pelo Google) e BIB-0092 (OpenAI paga × teto zero).

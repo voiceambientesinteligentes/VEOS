@@ -91,7 +91,8 @@ export async function telaDiretores(root) {
       method("Como funciona",
         noServidor ? "1. Você envia a pergunta. 2. O motor de IA (em ordem: " + ativos.join(", ") + ") lê o manual do diretor, consulta a Biblioteca e usa as ferramentas de cálculo do VEOS — ele não faz conta de cabeça. 3. A resposta aparece aqui com as fontes e as ferramentas usadas; valores em reais que não vieram de uma ferramenta são apontados. 4. Se a cota gratuita acabar, ele tenta outro modelo; se nada funcionar, a pergunta fica para o Claude Code." : "1. Você envia a pergunta ao diretor. 2. No VS Code, peça ao Claude Code: \"responda as perguntas pendentes dos diretores\" (ou deixe uma rotina fazendo isso). 3. A resposta aparece aqui.",
         "As respostas são da IA na voz do diretor: servem de orientação. Decisões, aprovações e envios continuam com você.",
-        "ChatGPT Plus/Pro e Claude Pro/Max são assinaturas de uso no app: não incluem a API. A API da OpenAI é cobrada à parte (decisão de custo: BIB-0044).")),
+        "ChatGPT Plus/Pro e Claude Pro/Max são assinaturas de uso no app: não incluem a API. A API da OpenAI é cobrada à parte (decisão de custo: BIB-0044)."),
+      motores ? method(`Motores de IA (${(motores.motores ?? []).filter((m) => m.ativo).length} ligados)`, ...(motores.motores ?? []).map((m) => `${m.ativo ? "LIGADO" : "desligado"} · ${m.nome}${m.ativo && m.modelos?.length ? ` (${m.modelos.join(", ")})` : ""} — ${m.nota ?? ""}${!m.ativo && m.falta ? `. Para ligar: cadastre ${m.falta} nos segredos do Supabase.` : ""}`)) : null),
     panel({ title: "Perguntas e respostas" }, lista),
   );
   await desenhar();

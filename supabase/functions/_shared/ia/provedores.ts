@@ -1,7 +1,8 @@
 // Provedores de IA do motor de raciocinio dos diretores. Cada provedor roda o laco
 // "pensar -> pedir ferramenta -> receber o resultado -> responder" no formato da propria API:
 //   Gemini (Google AI Studio, generateContent com functionDeclarations)
-//   OpenAI (Chat Completions com tools)
+//   compativeis com a API da OpenAI (Chat Completions com tools): OpenAI, Mistral, OpenRouter, Groq,
+//   NVIDIA NIM e outros -- muda so o endereco (base) e a chave
 // Sem banco e sem Deno: testavel no Node com fetch simulado (tests/ia/provedores.test.ts).
 // Falhas viram ProvedorErro com a orientacao de trocar de modelo (cota, modelo inexistente,
 // sobrecarga) ou de provedor (chave invalida/sem permissao).
@@ -23,7 +24,7 @@ export type Pedido = {
 };
 export type Uso = { entrada: number; saida: number };
 export type Resultado = { texto: string; modelo: string; passos: Passo[]; uso: Uso };
-export type Provedor = { id: "gemini" | "openai"; rotulo: string; modelos: string[]; chave: string; gratuito: boolean };
+export type Provedor = { id: string; tipo?: "gemini" | "compat"; base?: string; rotulo: string; modelos: string[]; chave: string; gratuito: boolean };
 export type Tentativa = { provedor: string; modelo: string; ok: boolean; erro?: string; passos: Passo[]; uso: Uso; ms: number };
 
 export class ProvedorErro extends Error {
@@ -48,7 +49,7 @@ function erroHttp(nome: string, status: number, corpo: string, passos: Passo[], 
   let msg = corpo.slice(0, 300);
   try {
     const d = JSON.parse(corpo);
-    msg = d.error?.message ?? d.error?.status ?? msg;
+    msg = d.error?.message ?? d.error?.status ?? d.message ?? (typeof d.detail === "string" ? d.detail : d.detail?.[0]?.msg) ?? msg;
   } catch { /* corpo nao e JSON */ }
   const chaveRuim = status === 401 || status === 403 || /api[_ ]?key/i.test(msg);
   return new ProvedorErro(status, `${nome} ${status}: ${String(msg).slice(0, 200)}`, chaveRuim ? "provedor" : "modelo", passos, uso);
@@ -131,20 +132,20 @@ export async function rodarOpenAI(prov: Provedor, modelo: string, p: Pedido, f: 
     const corpo = { model: modelo, messages: msgs, ...(tools.length ? { tools, tool_choice: fechar ? "none" : "auto" } : {}) };
     let r: Response;
     try {
-      r = await f("https://api.openai.com/v1/chat/completions", { method: "POST", headers: { "Content-Type": "application/json", Authorization: `Bearer ${prov.chave}` }, body: JSON.stringify(corpo), signal: AbortSignal.timeout(restante(p)) });
+      r = await f(`${prov.base ?? "https://api.openai.com/v1"}/chat/completions`, { method: "POST", headers: { "Content-Type": "application/json", Authorization: `Bearer ${prov.chave}`, ...(prov.id === "openrouter" ? { "X-Title": "VEOS" } : {}) }, body: JSON.stringify(corpo), signal: AbortSignal.timeout(restante(p)) });
     } catch (e) {
-      throw new ProvedorErro(504, `OpenAI sem resposta: ${(e as Error).message}`, "modelo", passos, uso);
+      throw new ProvedorErro(504, `${prov.rotulo} sem resposta: ${(e as Error).message}`, "modelo", passos, uso);
     }
-    if (!r.ok) throw erroHttp("OpenAI", r.status, await r.text(), passos, uso);
+    if (!r.ok) throw erroHttp(prov.rotulo, r.status, await r.text(), passos, uso);
     const d = await r.json();
     uso.entrada += Number(d.usage?.prompt_tokens ?? 0);
     uso.saida += Number(d.usage?.completion_tokens ?? 0);
     const m = d.choices?.[0]?.message;
-    if (!m) throw new ProvedorErro(502, "OpenAI sem mensagem", "modelo", passos, uso);
+    if (!m) throw new ProvedorErro(502, `${prov.rotulo} sem mensagem`, "modelo", passos, uso);
     const chamadas = m.tool_calls ?? [];
     if (!chamadas.length || fechar) {
       const texto = String(m.content ?? "").trim();
-      if (!texto) throw new ProvedorErro(502, `OpenAI respondeu sem texto (${d.choices?.[0]?.finish_reason ?? "?"})`, "modelo", passos, uso);
+      if (!texto) throw new ProvedorErro(502, `${prov.rotulo} respondeu sem texto (${d.choices?.[0]?.finish_reason ?? "?"})`, "modelo", passos, uso);
       return { texto, modelo, passos, uso };
     }
     msgs.push(m);
@@ -179,7 +180,7 @@ DADOS JÁ LEVANTADOS PELAS FERRAMENTAS (use-os; só chame de novo se faltar algo
 ${dados}` } : p;
         const t0 = Date.now();
         try {
-          const r = prov.id === "gemini" ? await rodarGemini(prov, modelo, pedido, f) : await rodarOpenAI(prov, modelo, pedido, f);
+          const r = (prov.tipo ?? (prov.id === "gemini" ? "gemini" : "compat")) === "gemini" ? await rodarGemini(prov, modelo, pedido, f) : await rodarOpenAI(prov, modelo, pedido, f);
           tentativas.push({ provedor: prov.id, modelo, ok: true, passos: r.passos, uso: r.uso, ms: Date.now() - t0 });
           return { ok: true as const, provedor: prov, resultado: r, tentativas };
         } catch (e) {

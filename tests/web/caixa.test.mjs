@@ -150,3 +150,26 @@ test("condição sugerida: sinal cobre material + RT/comissão pagas na assinatu
   assert.equal(alto.sinal, 60, "44.000 + 15.000 = 59% → 60%");
   assert.ok(!/RT|comiss|custos de venda/i.test(alto.texto));
 });
+
+test("cobrado × o que deveria: produto abaixo sobe ao preço da Política; acima fica; sem custo e serviço ficam", async () => {
+  const { corrigirOrcamento } = await import("../../apps/web/js/domain/correcao_orcamento.js");
+  const { precoPolitica } = await import("../../apps/web/js/domain/formacao_preco.js");
+  const o = { linhas: [
+    { nome: "Switch", tipo: "goods", qtd: 1, preco: 150, total: 150, custo: 100, item_id: "1" },
+    { nome: "Cabo", tipo: "goods", qtd: 10, preco: 10, total: 100, custo: 3, item_id: "2" },
+    { nome: "Kit", tipo: "goods", qtd: 1, preco: 450, total: 450, custo: 1, item_id: "3" },
+    { nome: "Instalação", tipo: "service", qtd: 10, preco: 300, total: 3000, custo: 150, unidade: "Hr" },
+  ] };
+  const r = corrigirOrcamento(o, { t: 5, v: 10, alvo: 35 });
+  const meta = precoPolitica(100, { t: 5, v: 10, alvo: 35 });
+  assert.equal(r.linhas[0].situacao, "abaixo");
+  assert.equal(r.linhas[0].novo_preco, meta);
+  assert.equal(r.linhas[1].situacao, "ok");
+  assert.equal(r.linhas[2].situacao, "sem_custo", "custo R$ 1,00 é marcador, não custo");
+  assert.equal(r.linhas[3].situacao, "servico");
+  assert.equal(r.total_atual, 3700);
+  assert.equal(r.diferenca, Math.round((meta - 150) * 100) / 100);
+  const comCusto = corrigirOrcamento(o, { t: 5, v: 10, custos: new Map([["1", 60]]) });
+  assert.equal(comCusto.linhas[0].situacao, "ok", "com o custo real menor, o preço atual já basta");
+  assert.ok(corrigirOrcamento(o, { t: null }).erro.startsWith("LACUNA"));
+});

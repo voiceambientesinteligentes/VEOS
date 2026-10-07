@@ -1,6 +1,12 @@
-# Estado atual — 06/10/2026
+# Estado atual — 07/10/2026
 
 **Resumo:** o VEOS está online (GitHub Pages + Supabase) com setores vivos, Zoho espelhado e editável, fluxo de pedidos, Biblioteca, e — desde 05/10 — **motor de raciocínio dos diretores** (Gemini/OpenAI no servidor, com ferramentas do VEOS) e o **financeiro completo pelo caixa real** (extrato, conciliação, recorrentes, 13 semanas, DRE, indicadores e vigia). Falta o uso real: a chave do Gemini, o extrato das contas e as alíquotas do contador. **Não está 100%** (ver PLANO_EXECUCAO, etapa do financeiro).
+
+## Vários motores de IA e "cobrado × o que deveria" (07/10)
+- Pedido do Fernando: instalar um OpenDots para complementar o Gemini. Avaliação (BIB-0097): OpenDots não é um modelo de IA, é um espaço de agentes que precisa de modelo e servidor sempre ligado — não resolve a cota do Gemini e duplicaria o VEOS.
+- O motor do VEOS agora aceita qualquer provedor compatível com a API da OpenAI: Gemini → Mistral → OpenRouter → Groq → NVIDIA → OpenAI → fila do Claude Code. Cada um entra com a chave nos segredos (MISTRAL_API_KEY, OPENROUTER_API_KEY + OPENROUTER_MODELOS, GROQ_API_KEY, NVIDIA_API_KEY + NVIDIA_MODELOS, OPENAI_API_KEY). A tela de perguntas mostra quais estão ligados e o que falta.
+- Diagnóstico dos orçamentos: cada cartão tem **Cobrado × o que deveria, item a item** (preço pela Política, meta 35% e mínimo 30%, total corrigido), botão para perguntar ao CFO sobre o orçamento, seletor com todos os orçamentos e link da Base de preços para o cartão (`#/cfo/diagnostico?orc=EST-...`). O CFO usa a mesma conta (`domain/correcao_orcamento.js`).
+- Testes: domínio 119, ia 18, telas do Diagnóstico e de perguntas, online IA 4.
 
 ## Motor ligado e respostas do fundador aplicadas (06/10)
 - **Motor de IA ligado** (chave gratuita do Gemini nos segredos). Testado com a pergunta real do 969: o CFO identifica que não existe, analisa o EST-000966 como hipótese, aponta os erros, recalcula pela Política e lê as horas corretamente (com produtividade realista). Nível gratuito: sobrecarga (503) e cota diária (429) frequentes → o motor troca de modelo levando os dados já levantados e a função ia-fila tenta de novo a cada 5 min (até 5 vezes); sem sucesso, a pergunta fica para o Claude Code.

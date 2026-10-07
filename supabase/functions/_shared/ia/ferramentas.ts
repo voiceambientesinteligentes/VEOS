@@ -20,6 +20,7 @@ import { margemPorReal, mixPraticado, oQueFalta, pontoEquilibrio, saidasMensais 
 import { projetos } from "../dominio/estoque_sugerido.js";
 import { condicaoSugerida } from "../dominio/condicao.js";
 import { qualidadeDaBase } from "../dominio/base_orcamentos.js";
+import { corrigirOrcamento } from "../dominio/correcao_orcamento.js";
 import { projetar, reserva } from "../dominio/caixa13.js";
 import { dre } from "../dominio/dre.js";
 import { indicadores } from "../dominio/indicadores.js";
@@ -394,17 +395,16 @@ const FERRAMENTAS: Ferramenta[] = [
       const ids = [...new Set(o.linhas.filter((l: any) => l.tipo === "goods").map((l: any) => l.item_id).filter((x: string) => /^\d{1,40}$/.test(x)))] as string[];
       const cat = await custosDoCatalogo(ctx, ids, par);
       const custos: any[] = [];
+      for (const [i, l] of o.linhas.entries()) {
+        const c0 = l.tipo === "goods" ? cat.get(l.item_id) : null;
+        if (c0) custos.push({ linha: l.ordem ?? i + 1, nome: l.nome, custo_zoho: Number(l.custo) > 1 ? Number(l.custo) : null, custo_usado: c0.usar ?? (Number(l.custo) > 1 ? Number(l.custo) : null), motivo: c0.motivo, vinculos: c0.vinculos });
+      }
+      // mesma conta da tela Diagnostico (domain/correcao_orcamento.js), com o custo mais confiavel
+      const cor = corrigirOrcamento(o, { t: tP, v: canal.v, alvo, custos: new Map([...cat].filter(([, x]) => x.usar !== null).map(([id, x]) => [id, x.usar])) });
       const novas = o.linhas.map((l: any, i: number) => {
-        const n = l.ordem ?? i + 1;
-        if (l.tipo !== "goods") return { ...l };
-        const zoho = Number(l.custo) > 1 ? Number(l.custo) : null;
-        const c0 = cat.get(l.item_id);
-        const custo = c0?.usar ?? zoho;
-        if (c0) custos.push({ linha: n, nome: l.nome, custo_zoho: zoho, custo_usado: custo, motivo: c0.motivo, vinculos: c0.vinculos });
-        if (custo === null) return { ...l, obs: "sem custo: mantido (LACUNA)" };
-        const alvoP = precoPolitica(custo, { t: tP, v: canal.v, alvo });
-        if (l.preco >= alvoP) return { ...l, custo, obs: "já no alvo ou acima: mantido" };
-        return { ...l, custo, de: l.preco, preco: alvoP, total: r2(alvoP * l.qtd), mudou: true };
+        const c = cor.linhas[i];
+        const obs = c.situacao === "sem_custo" ? "sem custo: mantido (LACUNA)" : c.situacao === "ok" ? "já no alvo ou acima: mantido" : c.situacao === "servico" ? "mão de obra mantida" : undefined;
+        return c.situacao === "abaixo" ? { ...l, custo: c.custo, de: l.preco, preco: c.novo_preco, total: c.novo_total, mudou: true } : { ...l, custo: c.custo ?? l.custo, obs };
       });
       const total = r2(novas.reduce((s: number, l: any) => s + l.total, 0));
       const o2 = { ...o, total, imposto: 0, condicao_pagamento: true, linhas: novas };

@@ -1,7 +1,8 @@
 // MOTOR DE RACIOCINIO DOS DIRETORES. Fluxo de uma pergunta da fila:
 //   1. reserva a pergunta (um processamento por vez; expira em 4 min se a funcao cair);
 //   2. consulta precedentes na Biblioteca ANTES de pensar (registrado, como exige a governanca);
-//   3. roda o provedor (Gemini gratuito -> OpenAI se houver chave), com as ferramentas do VEOS;
+//   3. roda os provedores na ordem (Gemini, Mistral, OpenRouter, Groq, NVIDIA, OpenAI: os que tiverem
+//      chave), com as ferramentas do VEOS;
 //   4. limpa o Markdown, confere os valores em reais contra os resultados das ferramentas e
 //      acrescenta o aviso do que nao foi conferido;
 //   5. grava a resposta (rotulada "IA · opiniao, nao decisao") com fontes e procedimento, e a trilha
@@ -14,26 +15,44 @@ import { type Contexto, diretorDoSetor, executarFerramenta, ferramentasDoSetor, 
 
 const lista = (v: string | undefined, padrao: string) => (v || padrao).split(",").map((x) => x.trim()).filter(Boolean);
 
+// Provedores conhecidos. Todos menos o Gemini falam o formato da OpenAI (muda o endereco). Cada um so
+// entra se a chave estiver nos segredos do Supabase; os modelos podem ser trocados por <ID>_MODELOS.
+const CATALOGO_IA: { id: string; nome: string; tipo: "gemini" | "compat"; base?: string; chave: string; modelos: string; gratuito: boolean; nota: string }[] = [
+  { id: "gemini", nome: "Gemini (Google AI Studio)", tipo: "gemini", chave: "GEMINI_API_KEY", modelos: "gemini-3.8-flash,gemini-3.7-flash,gemini-3.6-flash,gemini-3.5-flash,gemini-3.5-flash-lite", gratuito: true, nota: "nível gratuito: o Google pode usar o conteúdo para melhorar os produtos dele" },
+  { id: "mistral", nome: "Mistral (La Plateforme)", tipo: "compat", base: "https://api.mistral.ai/v1", chave: "MISTRAL_API_KEY", modelos: "mistral-medium-latest,mistral-small-latest", gratuito: true, nota: "plano gratuito: dá para desligar o uso para treino em Admin → Privacy" },
+  { id: "openrouter", nome: "OpenRouter (modelos :free)", tipo: "compat", base: "https://openrouter.ai/api/v1", chave: "OPENROUTER_API_KEY", modelos: "", gratuito: true, nota: "modelos gratuitos: provedores podem registrar o conteúdo; cerca de 50 chamadas por dia" },
+  { id: "groq", nome: "Groq", tipo: "compat", base: "https://api.groq.com/openai/v1", chave: "GROQ_API_KEY", modelos: "openai/gpt-oss-120b", gratuito: true, nota: "rápido, mas o limite de tokens por minuto do gratuito é pequeno para perguntas grandes" },
+  { id: "nvidia", nome: "NVIDIA NIM", tipo: "compat", base: "https://integrate.api.nvidia.com/v1", chave: "NVIDIA_API_KEY", modelos: "", gratuito: true, nota: "programa de desenvolvedor: confira os termos de uso" },
+  { id: "openai", nome: "OpenAI (API paga à parte do ChatGPT)", tipo: "compat", base: "https://api.openai.com/v1", chave: "OPENAI_API_KEY", modelos: "gpt-5-mini", gratuito: false, nota: "cobrança por uso (BIB-0092)" },
+];
+
 /** Provedores configurados nos segredos do Supabase (sem expor chaves). Ordem: IA_ORDEM. */
 export function provedores(): Provedor[] {
   const env = (k: string) => Deno.env.get(k) ?? "";
-  const todos: Record<string, Provedor | null> = {
-    gemini: env("GEMINI_API_KEY") ? { id: "gemini", rotulo: env("GEMINI_PAGO") === "sim" ? "Gemini" : "Gemini (chave gratuita)", modelos: lista(env("GEMINI_MODELOS"), "gemini-3.8-flash,gemini-3.7-flash,gemini-3.6-flash,gemini-3.5-flash,gemini-3.5-flash-lite"), chave: env("GEMINI_API_KEY"), gratuito: env("GEMINI_PAGO") !== "sim" } : null,
-    openai: env("OPENAI_API_KEY") ? { id: "openai", rotulo: "OpenAI", modelos: lista(env("OPENAI_MODELOS"), "gpt-5-mini"), chave: env("OPENAI_API_KEY"), gratuito: false } : null,
-  };
-  return lista(env("IA_ORDEM"), "gemini,openai").map((id) => todos[id]).filter((x): x is Provedor => Boolean(x));
+  const todos: Record<string, Provedor | null> = {};
+  for (const c of CATALOGO_IA) {
+    const chave = env(c.chave);
+    const modelos = lista(env(`${c.id.toUpperCase()}_MODELOS`), c.modelos);
+    const pago = env(`${c.id.toUpperCase()}_PAGO`) === "sim";
+    todos[c.id] = chave && modelos.length ? { id: c.id, tipo: c.tipo, base: c.base, rotulo: `${c.nome.replace(/ \(.*\)$/, "")}${c.gratuito && !pago ? " (gratuito)" : ""}`, modelos, chave, gratuito: c.gratuito && !pago } : null;
+  }
+  return lista(env("IA_ORDEM"), CATALOGO_IA.map((c) => c.id).join(",")).map((id) => todos[id]).filter((x): x is Provedor => Boolean(x));
 }
 
 export function situacaoMotores() {
   const ativos = provedores();
+  const env = (k: string) => Deno.env.get(k) ?? "";
   return {
     motores: [
-      { id: "gemini", nome: "Gemini (Google AI Studio)", ativo: ativos.some((p) => p.id === "gemini"), gratuito: ativos.find((p) => p.id === "gemini")?.gratuito ?? true, modelos: ativos.find((p) => p.id === "gemini")?.modelos ?? [] },
-      { id: "openai", nome: "OpenAI (API paga à parte do ChatGPT)", ativo: ativos.some((p) => p.id === "openai"), gratuito: false, modelos: ativos.find((p) => p.id === "openai")?.modelos ?? [] },
-      { id: "claude-code", nome: "Claude Code (assinatura do fundador, pela fila)", ativo: true, gratuito: true, modelos: [] },
+      ...CATALOGO_IA.map((c) => {
+        const a = ativos.find((p) => p.id === c.id);
+        return { id: c.id, nome: c.nome, ativo: Boolean(a), gratuito: a?.gratuito ?? c.gratuito, modelos: a?.modelos ?? [], nota: c.nota, falta: a ? null : env(c.chave) ? `${c.id.toUpperCase()}_MODELOS` : c.chave };
+      }),
+      { id: "claude-code", nome: "Claude Code (assinatura do fundador, pela fila)", ativo: true, gratuito: true, modelos: [], nota: "responde quando o Fernando pede no VS Code", falta: null },
     ],
+    ordem: ativos.map((p) => p.id),
     algum_no_servidor: ativos.length > 0,
-    dados_ao_provedor_gratuito: ativos.some((p) => p.gratuito) ? "No plano gratuito do Gemini o Google pode usar o conteúdo enviado para melhorar os produtos dele. O VEOS manda clientes só pelo código (sem nome, e-mail, telefone ou endereço), mas números, itens e políticas da VOICE vão no contexto." : null,
+    dados_ao_provedor_gratuito: ativos.some((p) => p.gratuito) ? "Nos níveis gratuitos o provedor pode usar o conteúdo enviado (Gemini; na Mistral dá para desligar em Admin → Privacy). O VEOS manda clientes só pelo código (sem nome, e-mail, telefone ou endereço), mas números, itens e políticas da VOICE vão no contexto." : null,
   };
 }
 
