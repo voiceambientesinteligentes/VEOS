@@ -9,7 +9,7 @@
 //      completa em ia_execucoes. Sem provedor ou com falha, a pergunta volta para a fila do Claude Code.
 // deno-lint-ignore-file no-explicit-any
 import { servico } from "../banco.ts";
-import { type Provedor, responderComFallback } from "./provedores.ts";
+import { apenasGratuitos, type Provedor, responderComFallback } from "./provedores.ts";
 import { conferirValores, limparMarkdown, montarSistema, numerosDe, rodapeConferencia, termosDaPergunta } from "./texto.ts";
 import { type Contexto, diretorDoSetor, executarFerramenta, ferramentasDoSetor, procedimentosDoSetor } from "./ferramentas.ts";
 
@@ -19,8 +19,8 @@ const lista = (v: string | undefined, padrao: string) => (v || padrao).split(","
 // entra se a chave estiver nos segredos do Supabase; os modelos podem ser trocados por <ID>_MODELOS.
 const CATALOGO_IA: { id: string; nome: string; tipo: "gemini" | "compat"; base?: string; chave: string; modelos: string; gratuito: boolean; nota: string }[] = [
   { id: "gemini", nome: "Gemini (Google AI Studio)", tipo: "gemini", chave: "GEMINI_API_KEY", modelos: "gemini-3.8-flash,gemini-3.7-flash,gemini-3.6-flash,gemini-3.5-flash,gemini-3.5-flash-lite", gratuito: true, nota: "nível gratuito: o Google pode usar o conteúdo para melhorar os produtos dele" },
-  { id: "mistral", nome: "Mistral (La Plateforme)", tipo: "compat", base: "https://api.mistral.ai/v1", chave: "MISTRAL_API_KEY", modelos: "ministral-14b-2512,ministral-8b-2512", gratuito: true, nota: "plano gratuito sem cartão (só os modelos Ministral; Medium/Small/Large pedem plano pago); dá para desligar o uso para treino em Admin → Privacy" },
-  { id: "openrouter", nome: "OpenRouter (modelos :free)", tipo: "compat", base: "https://openrouter.ai/api/v1", chave: "OPENROUTER_API_KEY", modelos: "", gratuito: true, nota: "modelos gratuitos: provedores podem registrar o conteúdo; cerca de 50 chamadas por dia" },
+  { id: "mistral", nome: "Mistral (La Plateforme)", tipo: "compat", base: "https://api.mistral.ai/v1", chave: "MISTRAL_API_KEY", modelos: "ministral-14b-2512,ministral-8b-2512", gratuito: true, nota: "plano gratuito sem cartão (só os modelos Ministral; Medium/Small/Large pedem plano pago); uso para treino desligado em Admin → Privacidade (07/10/2026)" },
+  { id: "openrouter", nome: "OpenRouter (modelos :free)", tipo: "compat", base: "https://openrouter.ai/api/v1", chave: "OPENROUTER_API_KEY", modelos: "", gratuito: true, nota: "só modelos :free (o VEOS ignora os pagos sem OPENROUTER_PAGO=sim); sem créditos comprados, modelo pago é recusado (402); provedores podem registrar o conteúdo; 50 chamadas por dia" },
   { id: "groq", nome: "Groq", tipo: "compat", base: "https://api.groq.com/openai/v1", chave: "GROQ_API_KEY", modelos: "openai/gpt-oss-120b", gratuito: true, nota: "rápido, mas o limite de tokens por minuto do gratuito é pequeno para perguntas grandes" },
   { id: "nvidia", nome: "NVIDIA NIM", tipo: "compat", base: "https://integrate.api.nvidia.com/v1", chave: "NVIDIA_API_KEY", modelos: "", gratuito: true, nota: "programa de desenvolvedor: confira os termos de uso" },
   { id: "openai", nome: "OpenAI (API paga à parte do ChatGPT)", tipo: "compat", base: "https://api.openai.com/v1", chave: "OPENAI_API_KEY", modelos: "gpt-5-mini", gratuito: false, nota: "cobrança por uso (BIB-0092)" },
@@ -32,8 +32,10 @@ export function provedores(): Provedor[] {
   const todos: Record<string, Provedor | null> = {};
   for (const c of CATALOGO_IA) {
     const chave = env(c.chave);
-    const modelos = lista(env(`${c.id.toUpperCase()}_MODELOS`), c.modelos);
     const pago = env(`${c.id.toUpperCase()}_PAGO`) === "sim";
+    const configurados = lista(env(`${c.id.toUpperCase()}_MODELOS`), c.modelos);
+    // Sem decisao de pagar (OPENROUTER_PAGO=sim), modelo pago configurado por engano nao entra.
+    const modelos = c.id === "openrouter" && !pago ? apenasGratuitos(configurados) : configurados;
     todos[c.id] = chave && modelos.length ? { id: c.id, tipo: c.tipo, base: c.base, rotulo: `${c.nome.replace(/ \(.*\)$/, "")}${c.gratuito && !pago ? " (gratuito)" : ""}`, modelos, chave, gratuito: c.gratuito && !pago } : null;
   }
   return lista(env("IA_ORDEM"), CATALOGO_IA.map((c) => c.id).join(",")).map((id) => todos[id]).filter((x): x is Provedor => Boolean(x));
@@ -52,7 +54,7 @@ export function situacaoMotores() {
     ],
     ordem: ativos.map((p) => p.id),
     algum_no_servidor: ativos.length > 0,
-    dados_ao_provedor_gratuito: ativos.some((p) => p.gratuito) ? "Nos níveis gratuitos o provedor pode usar o conteúdo enviado (Gemini; na Mistral dá para desligar em Admin → Privacy). O VEOS manda clientes só pelo código (sem nome, e-mail, telefone ou endereço), mas números, itens e políticas da VOICE vão no contexto." : null,
+    dados_ao_provedor_gratuito: ativos.some((p) => p.gratuito) ? "Nos níveis gratuitos o provedor pode usar o conteúdo enviado (Gemini e modelos :free do OpenRouter; na Mistral o uso para treino foi desligado em 07/10/2026). O VEOS manda clientes só pelo código (sem nome, e-mail, telefone ou endereço), mas números, itens e políticas da VOICE vão no contexto." : null,
   };
 }
 

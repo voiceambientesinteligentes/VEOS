@@ -27,6 +27,9 @@ export type Resultado = { texto: string; modelo: string; passos: Passo[]; uso: U
 export type Provedor = { id: string; tipo?: "gemini" | "compat"; base?: string; rotulo: string; modelos: string[]; chave: string; gratuito: boolean };
 export type Tentativa = { provedor: string; modelo: string; ok: boolean; erro?: string; passos: Passo[]; uso: Uso; ms: number };
 
+/** Trava de custo do OpenRouter: so modelos terminados em ":free" (os outros cobram por uso). */
+export const apenasGratuitos = (modelos: string[]) => modelos.filter((m) => m.endsWith(":free"));
+
 export class ProvedorErro extends Error {
   status: number;
   trocar: "modelo" | "provedor";
@@ -44,6 +47,8 @@ export class ProvedorErro extends Error {
 const FECHAR = "\n\nAGORA RESPONDA: não chame mais ferramentas; escreva a resposta final com o que já foi levantado e aponte como LACUNA o que faltou.";
 const TIMEOUT_CHAMADA = 45_000;
 const ESPERA_SOBRECARGA = 2_000;
+const TETO_PROVEDOR = 40_000;
+const MAX_FALHAS_PROVEDOR = 3;
 
 function erroHttp(nome: string, status: number, corpo: string, passos: Passo[], uso: Uso): ProvedorErro {
   let msg = corpo.slice(0, 300);
@@ -140,6 +145,8 @@ export async function rodarOpenAI(prov: Provedor, modelo: string, p: Pedido, f: 
     }
     if (!r.ok) throw erroHttp(prov.rotulo, r.status, await r.text(), passos, uso);
     const d = await r.json();
+    // OpenRouter pode devolver erro do provedor de origem com HTTP 200 (ex.: 503 sobrecarga)
+    if (d.error && !d.choices?.length) throw erroHttp(prov.rotulo, Number(d.error.code) || 502, JSON.stringify(d), passos, uso);
     uso.entrada += Number(d.usage?.prompt_tokens ?? 0);
     uso.saida += Number(d.usage?.completion_tokens ?? 0);
     const m = d.choices?.[0]?.message;
@@ -165,14 +172,19 @@ export async function rodarOpenAI(prov: Provedor, modelo: string, p: Pedido, f: 
 /**
  * Tenta os provedores na ordem; em cada um, os modelos na ordem. Sobrecarga (503) -> uma nova tentativa
  * curta no mesmo modelo; cota esgotada, modelo inexistente ou demora -> proximo modelo; chave invalida
- * -> proximo provedor. O proximo modelo recebe os dados que as ferramentas ja levantaram (nao recomeca
- * do zero). Devolve o primeiro resultado e TODAS as tentativas (para a trilha de auditoria).
+ * -> proximo provedor. Provedor instavel nao segura a pergunta: se houver outro na fila, depois de
+ * TETO_PROVEDOR em falhas ou MAX_FALHAS_PROVEDOR falhas passa ao proximo. O proximo modelo recebe os dados
+ * que as ferramentas ja levantaram (nao recomeca do zero). Devolve o primeiro resultado e TODAS as
+ * tentativas (para a trilha de auditoria).
  */
 export async function responderComFallback(provedores: Provedor[], p: Pedido, f: typeof fetch = fetch, espera = ESPERA_SOBRECARGA) {
   const tentativas: Tentativa[] = [];
   const tempo = () => (p.limite ?? Infinity) - Date.now();
-  for (const prov of provedores) {
-    for (const modelo of prov.modelos) {
+  for (const [i, prov] of provedores.entries()) {
+    const inicio = Date.now();
+    const haOutro = i < provedores.length - 1;
+    let falhas = 0;
+    modelos: for (const modelo of prov.modelos) {
       for (let repeticao = 0; repeticao < 2; repeticao++) {
         if (tempo() < 8_000) return { ok: false as const, tentativas };
         const dados = tentativas.length && p.dadosLevantados ? p.dadosLevantados() : "";
@@ -188,12 +200,13 @@ ${dados}` } : p;
         } catch (e) {
           const pe = e instanceof ProvedorErro ? e : new ProvedorErro(500, (e as Error).message ?? "falha", "modelo");
           tentativas.push({ provedor: prov.id, modelo, ok: false, erro: pe.message, passos: pe.passos, uso: pe.uso, ms: Date.now() - t0 });
-          if (pe.trocar === "provedor") break;
+          falhas++;
+          if (pe.trocar === "provedor") break modelos;
+          if (haOutro && (Date.now() - inicio >= TETO_PROVEDOR || falhas >= MAX_FALHAS_PROVEDOR)) break modelos;
           if (pe.status === 503 && repeticao === 0 && tempo() > 40_000) { await new Promise((r) => setTimeout(r, espera)); continue; }
           break;
         }
       }
-      if (tentativas.at(-1)?.erro && /api[_ ]?key|401|403|413|request too large|tokens per minute/i.test(tentativas.at(-1)!.erro!)) break;
     }
   }
   return { ok: false as const, tentativas };

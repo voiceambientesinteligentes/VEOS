@@ -62,7 +62,7 @@ async function cicloCompleto(ligado) {
     assert.ok(q.execucoes.length >= 1, "trilha da execução registrada");
     if (q.estado === "respondida") {
       const r = q.respostas[0];
-      assert.match(r.motor, /Gemini|OpenAI/);
+      assert.match(r.motor, /Gemini|Mistral|OpenRouter|Groq|NVIDIA|OpenAI/);
       assert.ok(!/\*\*|^#/m.test(r.resposta), "resposta sem Markdown");
       assert.ok(q.execucoes.some((x) => x.ok), "trilha da execução que respondeu");
       ok(`IA respondeu (${r.motor}) com ${q.execucoes.at(-1).passos.length} chamada(s) de ferramenta e ${r.fontes.length} fonte(s)`);

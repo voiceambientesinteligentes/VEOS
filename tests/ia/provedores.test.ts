@@ -1,7 +1,7 @@
 // Motor de IA: provedores com fetch simulado (sem rede, sem chave real).
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { type Pedido, type Provedor, responderComFallback, rodarGemini, rodarOpenAI } from "../../supabase/functions/_shared/ia/provedores.ts";
+import { apenasGratuitos, type Pedido, type Provedor, responderComFallback, rodarGemini, rodarOpenAI } from "../../supabase/functions/_shared/ia/provedores.ts";
 
 const gemini: Provedor = { id: "gemini", rotulo: "Gemini (chave gratuita)", modelos: ["gemini-a", "gemini-b"], chave: "k-gemini", gratuito: true };
 const openai: Provedor = { id: "openai", rotulo: "OpenAI", modelos: ["gpt-x"], chave: "k-openai", gratuito: false };
@@ -173,4 +173,36 @@ test("pedido grande demais para o plano (413/TPM) pula os outros modelos do mesm
   assert.ok(r.ok);
   assert.deepEqual(modelos, ["a"], "não tenta o modelo b do mesmo provedor");
   assert.equal(r.ok && r.provedor.id, "openai");
+});
+
+test("OpenRouter: só modelos :free passam pela trava de custo", () => {
+  assert.deepEqual(apenasGratuitos(["nvidia/modelo-a:free", "openai/gpt-x", "google/modelo-b:free", "anthropic/modelo-c"]), ["nvidia/modelo-a:free", "google/modelo-b:free"]);
+  assert.deepEqual(apenasGratuitos(["openai/gpt-x"]), []);
+});
+
+test("OpenRouter: erro do provedor de origem com HTTP 200 vira sobrecarga e passa ao próximo modelo", async () => {
+  const openrouter: Provedor = { id: "openrouter", tipo: "compat", base: "https://openrouter.ai/api/v1", rotulo: "OpenRouter (gratuito)", modelos: ["a:free", "b:free"], chave: "k", gratuito: true };
+  const f = (async (_url: string, init: RequestInit) => {
+    const b = JSON.parse(String(init.body));
+    if (b.model === "a:free") return resp(200, { id: "gen-1", error: { message: "Upstream error from Nvidia: Service temporarily overloaded", code: 503 } });
+    return resp(200, { choices: [{ message: { role: "assistant", content: "ok pelo b" } }] });
+  }) as typeof fetch;
+  const r = await responderComFallback([openrouter], pedido(), f, 0);
+  assert.ok(r.ok);
+  assert.equal(r.ok && r.resultado.modelo, "b:free");
+  assert.match(r.tentativas[0].erro ?? "", /503: Upstream error from Nvidia: Service temporarily overloaded/);
+});
+
+test("provedor instável não segura a pergunta: depois de 3 falhas passa ao próximo da fila", async () => {
+  const instavel: Provedor = { id: "gemini", rotulo: "Gemini (gratuito)", modelos: ["g1", "g2", "g3", "g4"], chave: "k", gratuito: true };
+  const reserva: Provedor = { id: "mistral", tipo: "compat", base: "https://api.mistral.ai/v1", rotulo: "Mistral (gratuito)", modelos: ["m1"], chave: "k", gratuito: true };
+  const chamados: string[] = [];
+  const f = (async (url: string, init: RequestInit) => {
+    if (url.includes("generativelanguage")) { chamados.push(url.split("/models/")[1].split(":")[0]); return resp(503, { error: { message: "high demand", status: "UNAVAILABLE" } }); }
+    chamados.push(JSON.parse(String(init.body)).model);
+    return resp(200, { choices: [{ message: { role: "assistant", content: "ok pela reserva" } }] });
+  }) as typeof fetch;
+  const r = await responderComFallback([instavel, reserva], { ...pedido(), limite: Date.now() + 120_000 }, f, 0);
+  assert.ok(r.ok);
+  assert.deepEqual(chamados, ["g1", "g1", "g2", "m1"]);
 });
