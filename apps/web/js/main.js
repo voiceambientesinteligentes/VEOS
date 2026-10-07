@@ -136,7 +136,7 @@ const TELAS = {
   "#/produtos": { fn: telaProdutos, titulo: ["Catálogo de produtos", "Catálogo próprio do VEOS: fotos, ficha técnica, compras e preços"] },
   "#/produtos/revisao": { fn: telaRevisaoProdutos, titulo: ["Revisar produtos", "Possíveis duplicados com o Zoho e agrupamentos a conferir"] },
   "#/sistema/independencia": { fn: telaIndependencia, titulo: ["Independência do Zoho", "Uso real por módulo, cobertura do VEOS e roteiro de desligamento"] },
-  "#/diretores": { fn: telaDiretores, titulo: ["Perguntar aos diretores", "Respostas da IA (Claude) na voz de cada diretor, pelo manual de atuação"] },
+  "#/diretores": { fn: telaDiretores, titulo: ["Perguntar aos diretores", "Respostas da IA na voz de cada diretor, pelo manual de atuação e com as contas feitas pelo VEOS"] },
   "#/mensagens": { fn: telaMensagens, titulo: ["Caixa de saída", "Mensagens preparadas: você revisa, envia e marca como enviada"] },
   "#/propostas": { fn: telaPropostas, titulo: ["Propostas", "Proposta comercial em PDF a partir do orçamento do Zoho"] },
   "#/compras": { fn: telaCompras, titulo: ["Compras", "Faltas de estoque, compras registradas e recebimento de mercadoria"] },
