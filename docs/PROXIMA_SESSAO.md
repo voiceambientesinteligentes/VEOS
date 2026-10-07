@@ -63,6 +63,7 @@ Já decididas em 01/10: IA no servidor = teto zero (BIB-0044); Fernando exerce a
 
 ## Para o FINAL do projeto (decidir junto com o Fernando, só quando ele pedir)
 - **Mesclar o catálogo do VEOS com os itens do Zoho** — plano completo na Biblioteca **BIB-0077**: revisar duplicados e itens "Conferir", definir preços de venda, enviar/aposentar itens no Zoho, ligar estoque/compras/pedidos ao catálogo do VEOS, importar os demais itens do Zoho e desligar o módulo de itens.
+- **MCP do VEOS ampliado** (pedido do Fernando em 07/10: "tudo que pedir no Claude ele cria ou gera no VEOS"). Já existe o MCP `veos` (`scripts/mcp/veos-mcp.mjs`, 17 ferramentas: leitura, perguntas dos diretores, Biblioteca, ideia/proposta, tarefa, rascunho de mensagem), ainda não configurado neste computador (Minha conta → Acesso do Claude Code → `--configurar <código>`). Falta: ferramentas de criação (orçamento/simulação, pedido em rascunho, contas a pagar, recorrentes, cadastro de item, classificação de extrato, documentos em PDF), sempre pela API com as permissões do usuário, rascunho + confirmação humana para o que for irreversível, sem enviar a clientes e sem transações automáticas.
 
 ## Motor de IA dos diretores (05/10) — substitui a seção abaixo quando houver chave
 - Pergunta no site → motor no servidor (Gemini → OpenAI → fila do Claude Code) com 21 ferramentas do VEOS; sem chave, segue a fila do Claude Code (abaixo).
