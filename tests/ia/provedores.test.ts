@@ -145,20 +145,20 @@ test("prazo final: sem tempo, não começa nova tentativa", async () => {
 });
 
 test("provedor compatível (Mistral): usa o endereço próprio, a chave dele e lê o formato de erro", async () => {
-  const mistral: Provedor = { id: "mistral", tipo: "compat", base: "https://api.mistral.ai/v1", rotulo: "Mistral (gratuito)", modelos: ["mistral-medium-latest", "mistral-small-latest"], chave: "k-mistral", gratuito: true };
+  const mistral: Provedor = { id: "mistral", tipo: "compat", base: "https://api.mistral.ai/v1", rotulo: "Mistral (gratuito)", modelos: ["ministral-14b-2512", "ministral-8b-2512"], chave: "k-mistral", gratuito: true };
   const urls: string[] = [];
   const f = (async (url: string, init: RequestInit) => {
     urls.push(url);
     assert.equal((init.headers as Record<string, string>).Authorization, "Bearer k-mistral");
     const b = JSON.parse(String(init.body));
-    if (b.model === "mistral-medium-latest") return resp(429, { message: "Requests rate limit exceeded", type: "rate_limited" });
+    if (b.model === "ministral-14b-2512") return resp(429, { message: "Requests rate limit exceeded", type: "rate_limited" });
     return resp(200, { choices: [{ message: { role: "assistant", content: "ok pela Mistral" } }] });
   }) as typeof fetch;
   const r = await responderComFallback([mistral], pedido(), f, 0);
   assert.ok(r.ok);
   assert.deepEqual(urls, ["https://api.mistral.ai/v1/chat/completions", "https://api.mistral.ai/v1/chat/completions"]);
   assert.match(r.tentativas[0].erro ?? "", /Mistral \(gratuito\) 429: Requests rate limit exceeded/);
-  assert.equal(r.ok && r.resultado.modelo, "mistral-small-latest");
+  assert.equal(r.ok && r.resultado.modelo, "ministral-8b-2512");
 });
 
 test("pedido grande demais para o plano (413/TPM) pula os outros modelos do mesmo provedor", async () => {
