@@ -5,6 +5,7 @@ import { api } from "../../data/api.js";
 import { diagnosticoParams, impostosSimulados } from "../../domain/cfo_cenarios.js";
 import { resumir, SINAIS } from "../../domain/diagnostico.js";
 import { analisarOrcamento } from "../../domain/analise_orcamento.js";
+import { qualidadeDaBase } from "../../domain/base_orcamentos.js";
 import { projetos } from "../../domain/estoque_sugerido.js";
 import { custoNoBrasil, FAIXAS, faixa, faturamentoMinimo, fatorProduto, margem, precoPolitica, variacaoDolar } from "../../domain/formacao_preco.js";
 import { comCompatibilidade, numeroBR, parametros, progresso, SECOES, SUGESTOES_TEMPOS, temTextoExtra } from "../../domain/formulario_cfo.js";
@@ -198,10 +199,10 @@ export async function telaPrecosCfo(root) {
     const tp = ano === "2026" ? p.tProduto : p.tProduto2027;
     const ts = ano === "2026" ? p.tServico : p.tServico2027;
     if (tp !== null) { tIn.value = String(tp).replace(".", ","); origemT.textContent = "informado por você (contador)"; }
-    else if (ano === "2026" && sim) { tIn.value = String(sim.produto).replace(".", ","); origemT.textContent = `SIMULAÇÃO: Simples Anexo I, faixa ${sim.faixaI}, faturamento estimado pelo Zoho ${brl(sim.rbt12)} · confirmar com o contador`; }
+    else if (ano === "2026" && sim) { tIn.value = String(sim.produto).replace(".", ","); origemT.textContent = `${p.simulacaoAdotada ? "ADOTADA por você" : "SIMULAÇÃO"}: Simples Anexo I, faixa ${sim.faixaI}, faturamento estimado pelo Zoho ${brl(sim.rbt12)} · confirmar com o contador`; }
     else { tIn.value = ""; origemT.textContent = ano === "2027" ? "LACUNA: o contador precisa informar a alíquota de 2027 (com ICMS)" : "LACUNA: informe a alíquota"; }
     if (ts !== null) { tsIn.value = String(ts).replace(".", ","); origemTs.textContent = "informado por você (contador)"; }
-    else if (ano === "2026" && sim) { tsIn.value = String(sim.servico).replace(".", ","); origemTs.textContent = `SIMULAÇÃO: Simples Anexo III (art. 18 §5º-B IX: instalação e manutenção), faixa ${sim.faixaIII} · BIB-0040 em consulta: pode ser Anexo IV`; }
+    else if (ano === "2026" && sim) { tsIn.value = String(sim.servico).replace(".", ","); origemTs.textContent = `${p.simulacaoAdotada ? "ADOTADA por você" : "SIMULAÇÃO"}: Simples Anexo III (art. 18 §5º-B IX: instalação e manutenção), faixa ${sim.faixaIII} · BIB-0040 em consulta: pode ser Anexo IV`; }
     else { tsIn.value = ""; origemTs.textContent = "LACUNA: alíquota sobre serviço"; }
   }
 
@@ -307,6 +308,7 @@ export async function telaDiagnosticoCfo(root) {
   const pedidos = respostas.pedidos?.dados?.por_orcamento ?? {};
   root.append(
     painelRecentes(orc.orcamentos, p, params, simulado),
+    painelBase(orc.orcamentos, p, params),
     panel({ title: "Diagnóstico dos orçamentos", subtitle: `Ricardo (CFO): ${r.quantidade} orçamentos aceitos no Zoho Books, conferidos contra a Política V1. ${orc.fonte}.` },
       h("div", { class: "cfo-stats" },
         stat("Vendido (aceitos)", brl(r.total), `${r.quantidade} orçamentos · conversão ${pct(r.conversaoPct)} dos decididos`),
@@ -333,6 +335,27 @@ export async function telaDiagnosticoCfo(root) {
       "Margem bruta dos produtos = (venda dos produtos − custo de compra do item no Zoho) ÷ venda, antes de desconto e imposto. MC estimada = fórmula oficial (receita líquida − custos − provisão de 2%), com mão de obra a custo-hora do formulário quando houver.",
       "Custo de compra dos serviços no Zoho é R$ 1,00 (sem base): por isso a mão de obra só entra com o custo-hora do formulário."),
   );
+}
+
+// ================================================================ base de precos (todos os orcamentos)
+// Decisao do fundador (06/10/2026): os orcamentos antigos nao viram pedido; servem de base para saber se o
+// preco estava certo. Mesma analise do cartao abaixo, aplicada a todos (versoes contam uma vez).
+function painelBase(orcamentos, p, params) {
+  const base = { ...params, produtividade: p.produtividade, comissionamento: p.comissionamento, entregaHoras: p.entregaHoras, metrosPorPonto: p.metrosPorPonto };
+  const r = qualidadeDaBase(orcamentos, base, p.tempos);
+  const x = r.resumo;
+  const linha = (l) => [l.numero, dataBR(l.data), l.situacao, brl(l.total), l.multiplicador ? `${String(l.multiplicador).replace(".", ",")}×` : "—", l.margem_produtos === null ? "—" : stamp(pct(l.margem_produtos), l.margem_produtos >= 30 ? "ok" : l.margem_produtos >= 25 ? "warn" : "risk"),
+    l.itens_abaixo_25 ? stamp(`${l.itens_abaixo_25} item(ns) < 25%`, "risk") : "", l.margem_total === null ? "—" : pct(l.margem_total), l.horas_cobradas ? `${l.horas_cobradas} h / ${String(l.horas_calculadas).replace(".", ",")} h` : "sem horas"];
+  return panel({ title: "Base de preços: todos os orçamentos", subtitle: `Decisão de 06/10/2026: os orçamentos antigos não viram pedido; servem de base para saber se o preço estava certo. ${x.projetos} projetos (rascunhos, enviados e aceitos; versões do mesmo cliente contam uma vez).` },
+    h("div", { class: "cfo-stats" },
+      stat("Produtos abaixo de 30%", pct(x.pct_produtos_abaixo_de_30), "dos projetos (margem dos produtos com imposto, comissão e RT)"),
+      stat("Com item NÃO APROVADO", pct(x.pct_com_item_nao_aprovado_25), "projetos com algum produto abaixo de 25%"),
+      stat("Multiplicador médio", x.multiplicador_medio_produtos ? `${String(x.multiplicador_medio_produtos).replace(".", ",")}×` : "—", "venda ÷ custo dos produtos"),
+      stat("Horas cobradas × calculadas", x.horas_cobradas_sobre_calculadas_pct === null ? "—" : pct(x.horas_cobradas_sobre_calculadas_pct), `${x.horas_cobradas} h cobradas · ${x.horas_calculadas_realistas} h pelos tempos com produtividade ${pct(x.produtividade_usada)}`),
+      stat("Sem condição de pagamento", pct(x.pct_sem_condicao_de_pagamento), "dos projetos"),
+      stat("Sem imposto no preço", pct(x.pct_sem_imposto_no_preco), "dos projetos")),
+    table({ caption: "Os 10 com a menor margem nos produtos", head: ["Nº", "Data", "Situação", "Total", "Multiplicador", "Margem produtos", "", "Margem total", "Horas (cobradas / calculadas)"], align: ["", "", "", "r", "r", "r", "", "r", "r"], rows: r.piores.map(linha) }),
+    method(`Todos os ${r.linhas.length} projetos`, table({ head: ["Nº", "Data", "Situação", "Total", "Multiplicador", "Margem produtos", "", "Margem total", "Horas (cobradas / calculadas)"], align: ["", "", "", "r", "r", "r", "", "r", "r"], rows: r.linhas.map(linha) })));
 }
 
 // ================================================================ ultimos orcamentos (analise detalhada)

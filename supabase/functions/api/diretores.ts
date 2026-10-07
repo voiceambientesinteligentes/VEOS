@@ -50,7 +50,8 @@ export async function rotearDiretores(req: Request, partes: string[], eu: Membro
     const pergunta = txt(corpo.pergunta, 4000);
     if (!pergunta || pergunta.length < 5) throw new HttpError(400, "escreva a pergunta");
     const [p] = await servico("/rest/v1/perguntas_diretores", { method: "POST", headers: { Prefer: "return=representation" }, body: JSON.stringify({ setor_id: setor, pergunta, contexto: txt(corpo.contexto, 200), autor: eu.user_id }) });
-    const ia = provedores().length > 0;
+    // ia:false = so registrar (testes automaticos nao gastam a cota do motor)
+    const ia = provedores().length > 0 && corpo.ia !== false;
     if (ia) dispararAnalise(p.id);
     return { id: p.id, estado: p.estado, ia: ia ? "analisando" : "fila" };
   }

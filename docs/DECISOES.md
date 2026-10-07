@@ -33,6 +33,11 @@ Formato: data · decisão · quem · origem. Propostas ficam separadas até o Fe
 | 01/10/2026 | Repositório continua **público** (GitHub Pages gratuito exige). Reafirma BIB-0018. | pergunta respondida em 01/10 |
 | 01/10/2026 | Propostas BIB-0037, 0038, 0039, 0040 e 0042: o Fernando pediu que o Claude organizasse e ele corrige no fim. Ficaram **em consulta** com a recomendação do Claude registrada como opinião (não decisão). BIB-0046 (exigir MFA da direção) criada nos mesmos termos. | mensagem de 01/10 |
 
+| 06/10/2026 | **Alíquotas**: enquanto o contador não informa, usar o Simples calculado pelo VEOS (Anexo I produto, Anexo III serviço, faixa pelo faturamento de 12 meses), rotulado ADOTADA. Biblioteca **BIB-0094**. | resposta no Claude Code em 06/10 |
+| 06/10/2026 | **Controle de pedidos começa em 06/10/2026**; orçamentos antigos do Zoho não viram pedido e servem de **base de preços** (Diagnóstico → Base de preços). Biblioteca **BIB-0095**. | resposta no Claude Code em 06/10 |
+| 06/10/2026 | **RT de 10% em todos os pedidos; comissão/indicação de 5% quando houver; pagas na assinatura** (contas a pagar automáticas quando a entrada é recebida). Resolve P-9. Biblioteca **BIB-0096**. | resposta no Claude Code em 06/10 |
+| 06/10/2026 | Chave do Gemini (nível gratuito) cadastrada pelo Fernando nos segredos do Supabase: motor de IA ligado. O registro formal da BIB-0091 continua em consulta. | ação do Fernando em 06/10 |
+
 ## Propostas (aguardando confirmação)
 
 | # | Proposta | Recomendação |
@@ -45,7 +50,7 @@ Formato: data · decisão · quem · origem. Propostas ficam separadas até o Fe
 | P-6 | Perfis novos: Pós-venda e Administrativo/Pessoas | criar quando houver regras do setor |
 | P-7 | **Motor de raciocínio dos diretores com Gemini (chave gratuita)** — pedido do Fernando em 05/10. No nível gratuito o Google pode usar o conteúdo enviado para melhorar os produtos dele; o VEOS manda clientes só pelo código. Biblioteca **BIB-0091**. | aprovar; o Fernando cria a chave no AI Studio e cadastra `GEMINI_API_KEY` nos segredos do Supabase |
 | P-8 | **ChatGPT como motor**: a assinatura Pro não inclui a API (cobrança à parte); ligar a OpenAI = revisar o teto zero (BIB-0044). Biblioteca **BIB-0092**. | manter Gemini gratuito + fila do Claude Code; se quiser OpenAI, revisar BIB-0044 com teto mensal |
-| P-9 | **Quando a VOICE paga a RT/indicação e a comissão** (na assinatura, a cada parcela recebida ou no fim da obra). Sem isso, RT e comissão não viram contas a pagar automáticas. | perguntar ao Fernando na fase de alinhamento com o comercial |
+| P-9 | ~~Quando a VOICE paga a RT/comissão~~ **Decidido em 06/10: na assinatura** (BIB-0096). | — |
 
 ## Registro técnico (decidido pelo Claude, reversível)
 
@@ -69,3 +74,4 @@ Formato: data · decisão · quem · origem. Propostas ficam separadas até o Fe
 | 05/10/2026 | Caixa real pelo **extrato importado** (OFX/CSV lido no navegador), conciliação com parcelas/contas e **plano de contas gerencial sugerido** (proposta PL-049, editável). Lançamento do banco é imutável. | só o extrato comprova pagamento/recebimento; grátis, sem integração bancária paga |
 | 05/10/2026 | Contas recorrentes geram contas a pagar ~100 dias à frente (pg_cron diário); alterar vale só para as futuras em aberto. | fluxo de 13 semanas já nasce com os fixos |
 | 05/10/2026 | Vigia do caixa com prefixo **CAIXA_** (CX_ já é do Pós-venda). | não misturar sentinelas |
+| 06/10/2026 | Motor: modelos Gemini 3.8 → 3.7 → 3.6 → 3.5 → 3.5-Lite (2.5 não aceita chave nova); sobrecarga (503) repete uma vez; o próximo modelo recebe os dados já levantados; prazo total de 125 s. Nova tentativa automática a cada 5 min (função ia-fila, até 5 tentativas, pergunta mais antiga primeiro). | o nível gratuito fica sobrecarregado e tem cota diária |

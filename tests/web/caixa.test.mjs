@@ -121,3 +121,32 @@ test("indicadores: valores com fórmula e meta da Política; sem extrato = LACUN
   assert.equal(j.abaixo_minima.valor, 15);
   assert.equal(j.abaixo_minima.situacao, "risco");
 });
+
+test("base de preços: todos os orçamentos (versões contam uma vez), margem dos produtos, itens não aprovados, horas e condição", async () => {
+  const { qualidadeDaBase } = await import("../../apps/web/js/domain/base_orcamentos.js");
+  const lin = (preco, custo, qtd = 1, tipo = "goods") => ({ nome: tipo === "goods" ? "Interruptor touch" : "Instalação da automação", qtd, preco, total: preco * qtd, tipo, custo, unidade: tipo === "goods" ? "un" : "Hr" });
+  const orc = [
+    { numero: "EST-2", data: "2026-09-10", status: "draft", cliente: "CLI-1", total: 3000, imposto: 0, condicao_pagamento: false, linhas: [lin(200, 100, 10), lin(100, 50, 10, "service")] },
+    { numero: "EST-1", data: "2026-09-05", status: "draft", cliente: "CLI-1", total: 2500, imposto: 0, condicao_pagamento: false, linhas: [lin(150, 100, 10), lin(100, 50, 10, "service")] },
+    { numero: "EST-3", data: "2026-08-01", status: "accepted", cliente: "CLI-2", total: 1300, imposto: 0, condicao_pagamento: true, linhas: [lin(130, 100, 10)] },
+  ];
+  const r = qualidadeDaBase(orc, { tProduto: 5, tServico: 8, v: 10, custoHora: 30, produtividade: 100 }, []);
+  assert.equal(r.resumo.projetos, 2, "EST-1 é versão do EST-2 (mesmo cliente em 10 dias)");
+  assert.deepEqual(r.resumo.por_situacao, { draft: 1, accepted: 1 });
+  assert.equal(r.resumo.pct_sem_condicao_de_pagamento, 50);
+  assert.equal(r.resumo.pct_sem_imposto_no_preco, 100);
+  assert.equal(r.piores[0].numero, "EST-3", "1,3× o custo é o pior");
+  assert.ok(r.piores[0].itens_abaixo_25 === 1);
+  assert.equal(r.resumo.produtividade_usada, 65, "produtividade irreal (100%) é comparada com 65%");
+});
+
+test("condição sugerida: sinal cobre material + RT/comissão pagas na assinatura; texto ao cliente não cita custos internos", async () => {
+  const { condicaoSugerida } = await import("../../apps/web/js/domain/condicao.js");
+  const sem = condicaoSugerida({ custoProdutos: 20000, total: 100000, entradaMinima: 40, hoje: new Date("2026-10-06T12:00:00Z") });
+  const com = condicaoSugerida({ custoProdutos: 20000, total: 100000, entradaMinima: 40, pagoNaAssinatura: 15000, hoje: new Date("2026-10-06T12:00:00Z") });
+  assert.equal(sem.sinal, 40);
+  assert.equal(com.sinal, 40, "22.000 + 15.000 = 37% → 40% (mínimo)");
+  const alto = condicaoSugerida({ custoProdutos: 40000, total: 100000, entradaMinima: 40, pagoNaAssinatura: 15000 });
+  assert.equal(alto.sinal, 60, "44.000 + 15.000 = 59% → 60%");
+  assert.ok(!/RT|comiss|custos de venda/i.test(alto.texto));
+});

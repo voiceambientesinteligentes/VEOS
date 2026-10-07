@@ -51,7 +51,7 @@ export function projetar({ hoje, semanas = 13, saldos = [], parcelas = [], conta
       const venc = proximoMes20(mes);
       if (total <= 0 || venc > fimHorizonte || venc < hoje || lancados.has(venc.slice(0, 7))) continue;
       const v = r2((total * aliq) / 100);
-      provisoes.push({ data: venc, valor: -v, tipo: "imposto", descricao: `Imposto sobre as entradas de ${mes} (${impostos.origem?.startsWith("SIMULA") ? "SIMULAÇÃO" : "alíquota informada"} ${String(aliq).replace(".", ",")}%)` });
+      provisoes.push({ data: venc, valor: -v, tipo: "imposto", descricao: `Imposto sobre as entradas de ${mes} (${impostos.origem?.startsWith("SIMULA") ? "SIMULAÇÃO" : impostos.origem?.startsWith("ADOTADA") ? "alíquota adotada" : "alíquota informada"} ${String(aliq).replace(".", ",")}%)` });
     }
     eventos.push(...provisoes);
   }

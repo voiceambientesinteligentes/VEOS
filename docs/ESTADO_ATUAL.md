@@ -1,6 +1,15 @@
-# Estado atual — 05/10/2026
+# Estado atual — 06/10/2026
 
 **Resumo:** o VEOS está online (GitHub Pages + Supabase) com setores vivos, Zoho espelhado e editável, fluxo de pedidos, Biblioteca, e — desde 05/10 — **motor de raciocínio dos diretores** (Gemini/OpenAI no servidor, com ferramentas do VEOS) e o **financeiro completo pelo caixa real** (extrato, conciliação, recorrentes, 13 semanas, DRE, indicadores e vigia). Falta o uso real: a chave do Gemini, o extrato das contas e as alíquotas do contador. **Não está 100%** (ver PLANO_EXECUCAO, etapa do financeiro).
+
+## Motor ligado e respostas do fundador aplicadas (06/10)
+- **Motor de IA ligado** (chave gratuita do Gemini nos segredos). Testado com a pergunta real do 969: o CFO identifica que não existe, analisa o EST-000966 como hipótese, aponta os erros, recalcula pela Política e lê as horas corretamente (com produtividade realista). Nível gratuito: sobrecarga (503) e cota diária (429) frequentes → o motor troca de modelo levando os dados já levantados e a função ia-fila tenta de novo a cada 5 min (até 5 vezes); sem sucesso, a pergunta fica para o Claude Code.
+- A nova tentativa automática respondeu uma pergunta do Fernando de 03/10 que estava esquecida na fila.
+- **Alíquotas adotadas** (BIB-0094): Simples calculado pelo VEOS, rotulado ADOTADA nas telas e no CFO.
+- **Início do controle em 06/10/2026** (BIB-0095): o vigia de orçamento aceito sem pedido só olha a partir daí; **Base de preços** no Diagnóstico e ferramenta qualidade_dos_orcamentos analisam todos os orçamentos (rascunhos, enviados e aceitos; versões contam uma vez).
+- **RT 10% / comissão 5% na assinatura** (BIB-0096): campos no pedido (padrão do Formulário), quadro RT e comissão na tela do pedido, contas a pagar automáticas quando a entrada é recebida (assinatura, a cada parcela ou no fim), sinal sugerido cobre material + RT/comissão (texto ao cliente sem custos internos). Banco pedido_rt.sql 9/9.
+- Formulário do CFO: novas versões de Impostos (adota a simulação) e Vendas (canais Com RT (padrão) e Com RT + comissão/indicação; quando pagar).
+- Testes: domínio 117; banco caixa 25, RT 9, motor 12, formulário 6, fluxo 17, compras 16, obra 11, margem 5, avisos 8, painel 8; online api 15, financeiro 12, sistema 56, caixa 10, IA 4 (com chave real).
 
 ## Motor de raciocínio dos diretores (05/10)
 Pedido do Fernando: colocar motores de raciocínio (ChatGPT e Gemini) nos diretores.

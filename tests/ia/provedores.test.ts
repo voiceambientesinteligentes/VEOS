@@ -107,10 +107,39 @@ test("fallback: chave inválida no Gemini pula os outros modelos dele e vai para
   assert.equal(urls.filter((u) => u.includes("googleapis")).length, 1, "não tenta o 2º modelo com chave inválida");
 });
 
-test("fallback: nada responde -> ok=false com o motivo de cada tentativa (pergunta volta para a fila)", async () => {
-  const f = (async () => resp(503, { error: { message: "overloaded" } })) as typeof fetch;
-  const r = await responderComFallback([gemini], pedido(), f);
+test("fallback: sobrecarga (503) repete uma vez o mesmo modelo; nada responde -> ok=false com o motivo de cada tentativa", async () => {
+  const modelos: string[] = [];
+  const f = (async (url: string) => { modelos.push(/models\/([^:]+):/.exec(url)?.[1] ?? ""); return resp(503, { error: { message: "overloaded" } }); }) as typeof fetch;
+  const r = await responderComFallback([gemini], pedido(), f, 0);
   assert.equal(r.ok, false);
-  assert.equal(r.tentativas.length, 2);
+  assert.deepEqual(modelos, ["gemini-a", "gemini-a", "gemini-b", "gemini-b"]);
   assert.ok(r.tentativas.every((t) => /503/.test(t.erro ?? "")));
+});
+
+test("fallback: o próximo modelo recebe os dados que as ferramentas já levantaram", async () => {
+  const perguntas: string[] = [];
+  let n = 0;
+  const f = (async (url: string, init: RequestInit) => {
+    n++;
+    const b = JSON.parse(String(init.body));
+    perguntas.push(b.contents[0].parts[0].text);
+    if (url.includes("gemini-a") && n === 1) return resp(200, { candidates: [{ content: { role: "model", parts: [{ functionCall: { name: "preco_pela_politica", args: { custo: 100 } } }] } }] });
+    if (url.includes("gemini-a")) return resp(429, { error: { message: "quota" } });
+    return resp(200, { candidates: [{ content: { role: "model", parts: [{ text: "ok com os dados" }] } }] });
+  }) as typeof fetch;
+  const coletados: string[] = [];
+  const p = pedido();
+  p.executar = async (c) => { coletados.push(`${c.nome} → meta 224,20`); return { meta_35: 224.2 }; };
+  p.dadosLevantados = () => coletados.join(" | ");
+  const r = await responderComFallback([gemini], p, f, 0);
+  assert.ok(r.ok);
+  assert.ok(!perguntas[0].includes("DADOS JÁ LEVANTADOS"));
+  assert.match(perguntas.at(-1)!, /DADOS JÁ LEVANTADOS[\s\S]*preco_pela_politica → meta 224,20/);
+});
+
+test("prazo final: sem tempo, não começa nova tentativa", async () => {
+  const f = (async () => resp(200, { candidates: [{ content: { role: "model", parts: [{ text: "x" }] } }] })) as typeof fetch;
+  const r = await responderComFallback([gemini], { ...pedido(), limite: Date.now() + 1000 }, f, 0);
+  assert.equal(r.ok, false);
+  assert.equal(r.tentativas.length, 0);
 });

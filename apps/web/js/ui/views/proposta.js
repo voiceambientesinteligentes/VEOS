@@ -69,7 +69,9 @@ export async function telaProposta(root, id) {
   const emailCli = cli.email || contatoCli.email || "";
   const foneCli = cli.mobile || contatoCli.mobile || cli.phone || contatoCli.phone || "";
 
-  const cond = condicaoSugerida({ custoProdutos, total: tot.total, entradaMinima: pForm?.entradaPct ?? 40, validadeDias: pForm?.validadeDias ?? 7, ptax });
+  const canalPadrao = pForm?.canais?.find((x) => x.padrao) ?? null;
+  const naAssinatura = canalPadrao && (pForm?.quandoPagaRt ?? "assinatura") === "assinatura" ? (tot.total * (canalPadrao.rt + canalPadrao.comissao)) / 100 : 0;
+  const cond = condicaoSugerida({ custoProdutos, total: tot.total, entradaMinima: pForm?.entradaPct ?? 40, validadeDias: pForm?.validadeDias ?? 7, ptax, pagoNaAssinatura: naAssinatura });
   const campo = (idc, rot, valor = "", attrs = {}, dica) => field(idc, rot, h("input", { class: "input", id: idc, type: "text", autocomplete: "off", value: valor, ...attrs }), dica);
   const area = (idc, rot, valor = "", dica) => field(idc, rot, h("textarea", { class: "input", id: idc, rows: 4 }, valor), dica);
   const v = (x) => document.getElementById(x)?.value?.trim() ?? "";

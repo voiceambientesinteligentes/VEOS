@@ -14,6 +14,8 @@
 //   POST /fluxo/estoque                   {item_id, tipo: entrada|ajuste, quantidade, custo_unit?, observacao?}
 //   GET  /fluxo/projetos                  projetos do Zoho Projects (para ligar ao pedido)
 //   POST /fluxo/pedidos/:id/(projeto|horas|aceite)  obra: projeto, horas lancadas, aceite e garantia
+//   POST /fluxo/pedidos/:id/rt            {rt_pct, comissao_pct, rt_favorecido?, comissao_favorecido?, rt_quando?}
+//   GET  /fluxo/rt-padrao                 RT/comissao padrao do Formulario do CFO (canais)
 //   /fluxo/compras, /fluxo/contas-pagar, /fluxo/caixa -> compras, contas a pagar e previsao (ver compras.ts)
 import { HttpError, lerCorpo, type Membro, registrarAcesso, SERVICE, servico, URL_BASE } from "../_shared/banco.ts";
 
@@ -25,6 +27,7 @@ async function storage(caminho: string, corpo: unknown) {
   return d as Record<string, string>;
 }
 import { vigiarFluxo } from "../_shared/fluxo_vigia.ts";
+import { rtPadrao } from "../_shared/caixa_dados.ts";
 import { caixaPedido, rotearCompras } from "./compras.ts";
 
 const VER = ["direcao", "vendas", "operacoes", "financas"];
@@ -114,6 +117,15 @@ async function pedidoCompleto(id: string) {
   };
 }
 
+/** RT/comissao do pedido: o que veio no corpo ou o padrao do Formulario do CFO (RT em todos os pedidos). */
+async function aplicarRt(id: string, corpo: Record<string, any>, usuario: string) {
+  const pad = await rtPadrao();
+  const pct = (v: unknown, d: number) => (v === undefined || v === null || v === "" ? d : Number(v));
+  const rt = pct(corpo.rt_pct, pad.rt_pct), com = pct(corpo.comissao_pct, pad.comissao_pct);
+  if (![rt, com].every((x) => Number.isFinite(x) && x >= 0 && x <= 50)) throw new HttpError(400, "RT/comissão entre 0% e 50%");
+  await servico("/rest/v1/rpc/pedido_definir_rt", { method: "POST", body: JSON.stringify({ p: { usuario, pedido_id: id, rt_pct: rt, comissao_pct: com, rt_favorecido: texto(corpo.rt_favorecido, 200), comissao_favorecido: texto(corpo.comissao_favorecido, 200), rt_quando: ["assinatura", "parcelas", "fim"].includes(String(corpo.rt_quando)) ? corpo.rt_quando : pad.rt_quando } }) });
+}
+
 export async function rotearFluxo(req: Request, partes: string[], eu: Membro) {
   const [, a, b, c] = partes; // fluxo/:a/:b/:c
   const q = new URL(req.url).searchParams;
@@ -166,6 +178,7 @@ export async function rotearFluxo(req: Request, partes: string[], eu: Membro) {
     const filtro = est && /^[a-z]{3,12}$/.test(est) ? `&estado=eq.${est}` : "";
     return { pedidos: await servico(`/rest/v1/pedidos?select=id,numero,cliente_nome,orcamento_numero,estado,valor_total,custo_total,criado_em,atualizado_em${filtro}&order=criado_em.desc&limit=300`) };
   }
+  if (!post && a === "rt-padrao") return await rtPadrao();
   if (!post && a === "pedidos" && b) {
     exigir(eu, VER);
     if (!UUID_RE.test(b)) throw new HttpError(400, "pedido inválido");
@@ -231,6 +244,7 @@ export async function rotearFluxo(req: Request, partes: string[], eu: Membro) {
       cliente_nome: cliente, valor_total: num(n.valor_total).toFixed(2), condicao: texto(n.condicao, 300),
       observacao: [texto(n.observacao, 1500), resumo ? `Negociação ao Vivo: ${resumo}` : null].filter(Boolean).join(" | "), itens,
     } }) });
+    if (!r.repetido) await aplicarRt(r.id, n, eu.user_id);
     await vigiar();
     return r;
   }
@@ -258,6 +272,7 @@ export async function rotearFluxo(req: Request, partes: string[], eu: Membro) {
       chave: `${eu.user_id}:${chave}`, usuario: eu.user_id, orcamento_zoho_id: oid, orcamento_numero: e.estimate_number, cliente_zoho_id: e.customer_id,
       cliente_nome: e.customer_name || "Cliente", valor_total: num(e.total).toFixed(2), condicao: texto(corpo.condicao, 300), observacao: texto(corpo.observacao, 2000), itens,
     } }) });
+    if (!r.repetido) await aplicarRt(r.id, corpo, eu.user_id);
     await vigiar();
     return r;
   }
@@ -296,7 +311,11 @@ export async function rotearFluxo(req: Request, partes: string[], eu: Membro) {
   if (post && a === "pedidos" && b) {
     if (!UUID_RE.test(b)) throw new HttpError(400, "pedido inválido");
     let r: unknown;
-    if (c === "parcelas") {
+    if (c === "rt") {
+      exigir(eu, [...COMERCIAL, "financas"]);
+      await aplicarRt(b, corpo, eu.user_id);
+      r = { ok: true };
+    } else if (c === "parcelas") {
       exigir(eu, COMERCIAL);
       const lista = Array.isArray(corpo.parcelas) ? corpo.parcelas : [];
       if (!lista.length || lista.length > 60) throw new HttpError(400, "informe de 1 a 60 parcelas");

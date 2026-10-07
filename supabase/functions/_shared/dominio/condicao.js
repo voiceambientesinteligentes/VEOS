@@ -8,14 +8,17 @@
 const teto5 = (v) => Math.ceil(v / 5) * 5;
 const dataBR = (iso) => String(iso ?? "").slice(0, 10).split("-").reverse().join("/");
 
-export function condicaoSugerida({ custoProdutos = 0, total, entradaMinima = 40, validadeDias = 7, ptax = null, hoje = new Date() }) {
+// pagoNaAssinatura: RT e comissao pagas logo depois da entrada (decisao do fundador, 06/10/2026) tambem
+// precisam caber no sinal (Politica V1 sec.10: o recebido cobre os desembolsos da fase).
+export function condicaoSugerida({ custoProdutos = 0, total, entradaMinima = 40, validadeDias = 7, ptax = null, hoje = new Date(), pagoNaAssinatura = 0 }) {
   if (!(total > 0)) return { sinal: null, texto: "" };
-  const cobre = teto5(((custoProdutos * 1.1) / total) * 100);
+  const cobre = teto5(((custoProdutos * 1.1 + (Number(pagoNaAssinatura) || 0)) / total) * 100);
   const sinal = Math.min(90, Math.max(entradaMinima, cobre));
   const resto = 100 - sinal;
   const instalacao = resto > 10 ? teto5(resto * 0.6) : 0;
   const entrega = resto - instalacao;
   const validade = new Date(hoje.getTime() + validadeDias * 864e5).toISOString().slice(0, 10);
+  // o texto vai para a proposta do cliente: nao cita RT/comissao (custos internos)
   const partes = [`${sinal}% de sinal na assinatura (cobre os equipamentos, comprados em até 48 h após o sinal)`];
   if (instalacao) partes.push(`${instalacao}% no início da instalação`);
   if (entrega) partes.push(`${entrega}% na entrega técnica`);

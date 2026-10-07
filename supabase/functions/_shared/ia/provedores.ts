@@ -17,7 +17,9 @@ export type Pedido = {
   ferramentas: DefFerramenta[];
   executar: Executor;
   maxPassos?: number; // rodadas com ferramentas antes de exigir a resposta final
-  prazo?: number; // epoch ms: depois disso, responde com o que ja tem
+  prazo?: number; // epoch ms: depois disso, responde com o que ja tem (sem novas ferramentas)
+  limite?: number; // epoch ms: prazo final de tudo (a funcao do servidor tem tempo limitado)
+  dadosLevantados?: () => string; // resultados das ferramentas ja chamadas (passados ao proximo modelo)
 };
 export type Uso = { entrada: number; saida: number };
 export type Resultado = { texto: string; modelo: string; passos: Passo[]; uso: Uso };
@@ -39,7 +41,8 @@ export class ProvedorErro extends Error {
 }
 
 const FECHAR = "\n\nAGORA RESPONDA: não chame mais ferramentas; escreva a resposta final com o que já foi levantado e aponte como LACUNA o que faltou.";
-const TIMEOUT_CHAMADA = 60_000;
+const TIMEOUT_CHAMADA = 45_000;
+const ESPERA_SOBRECARGA = 2_000;
 
 function erroHttp(nome: string, status: number, corpo: string, passos: Passo[], uso: Uso): ProvedorErro {
   let msg = corpo.slice(0, 300);
@@ -64,7 +67,7 @@ async function executar(p: Pedido, c: Chamada, passos: Passo[]) {
   }
 }
 
-const restante = (p: Pedido) => Math.max(5_000, Math.min(TIMEOUT_CHAMADA, (p.prazo ?? Date.now() + TIMEOUT_CHAMADA) - Date.now() + 25_000));
+const restante = (p: Pedido) => Math.max(3_000, Math.min(TIMEOUT_CHAMADA, (p.limite ?? Date.now() + TIMEOUT_CHAMADA) - Date.now()));
 const deveFechar = (p: Pedido, rodada: number) => rodada >= (p.maxPassos ?? 8) || (p.prazo !== undefined && Date.now() > p.prazo);
 
 // ---------------------------------------------------------------- Gemini
@@ -157,25 +160,37 @@ export async function rodarOpenAI(prov: Provedor, modelo: string, p: Pedido, f: 
 }
 
 /**
- * Tenta os provedores na ordem; em cada um, os modelos na ordem. Cota esgotada, modelo inexistente
- * ou sobrecarga -> proximo modelo; chave invalida -> proximo provedor. Devolve o primeiro resultado
- * e TODAS as tentativas (para a trilha de auditoria).
+ * Tenta os provedores na ordem; em cada um, os modelos na ordem. Sobrecarga (503) -> uma nova tentativa
+ * curta no mesmo modelo; cota esgotada, modelo inexistente ou demora -> proximo modelo; chave invalida
+ * -> proximo provedor. O proximo modelo recebe os dados que as ferramentas ja levantaram (nao recomeca
+ * do zero). Devolve o primeiro resultado e TODAS as tentativas (para a trilha de auditoria).
  */
-export async function responderComFallback(provedores: Provedor[], p: Pedido, f: typeof fetch = fetch) {
+export async function responderComFallback(provedores: Provedor[], p: Pedido, f: typeof fetch = fetch, espera = ESPERA_SOBRECARGA) {
   const tentativas: Tentativa[] = [];
+  const tempo = () => (p.limite ?? Infinity) - Date.now();
   for (const prov of provedores) {
     for (const modelo of prov.modelos) {
-      if (p.prazo !== undefined && Date.now() > p.prazo + 20_000) break;
-      const t0 = Date.now();
-      try {
-        const r = prov.id === "gemini" ? await rodarGemini(prov, modelo, p, f) : await rodarOpenAI(prov, modelo, p, f);
-        tentativas.push({ provedor: prov.id, modelo, ok: true, passos: r.passos, uso: r.uso, ms: Date.now() - t0 });
-        return { ok: true as const, provedor: prov, resultado: r, tentativas };
-      } catch (e) {
-        const pe = e instanceof ProvedorErro ? e : new ProvedorErro(500, (e as Error).message ?? "falha", "modelo");
-        tentativas.push({ provedor: prov.id, modelo, ok: false, erro: pe.message, passos: pe.passos, uso: pe.uso, ms: Date.now() - t0 });
-        if (pe.trocar === "provedor") break;
+      for (let repeticao = 0; repeticao < 2; repeticao++) {
+        if (tempo() < 8_000) return { ok: false as const, tentativas };
+        const dados = tentativas.length && p.dadosLevantados ? p.dadosLevantados() : "";
+        const pedido = dados ? { ...p, pergunta: `${p.pergunta}
+
+DADOS JÁ LEVANTADOS PELAS FERRAMENTAS (use-os; só chame de novo se faltar algo):
+${dados}` } : p;
+        const t0 = Date.now();
+        try {
+          const r = prov.id === "gemini" ? await rodarGemini(prov, modelo, pedido, f) : await rodarOpenAI(prov, modelo, pedido, f);
+          tentativas.push({ provedor: prov.id, modelo, ok: true, passos: r.passos, uso: r.uso, ms: Date.now() - t0 });
+          return { ok: true as const, provedor: prov, resultado: r, tentativas };
+        } catch (e) {
+          const pe = e instanceof ProvedorErro ? e : new ProvedorErro(500, (e as Error).message ?? "falha", "modelo");
+          tentativas.push({ provedor: prov.id, modelo, ok: false, erro: pe.message, passos: pe.passos, uso: pe.uso, ms: Date.now() - t0 });
+          if (pe.trocar === "provedor") break;
+          if (pe.status === 503 && repeticao === 0 && tempo() > 40_000) { await new Promise((r) => setTimeout(r, espera)); continue; }
+          break;
+        }
       }
+      if (tentativas.at(-1)?.erro && /api[_ ]?key|401|403/i.test(tentativas.at(-1)!.erro!)) break;
     }
   }
   return { ok: false as const, tentativas };

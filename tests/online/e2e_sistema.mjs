@@ -107,7 +107,7 @@ try {
   assert.equal(rev.status, 200); ok(`revisao: ${rev.dados.vinculos.length} possivel(is) duplicado(s), ${rev.dados.agrupamentos.length} agrupamento(s) a conferir`);
 
   // perguntas aos diretores (pergunta TESTE criada e cancelada)
-  const pq = await req("/functions/v1/api/diretores/perguntas", { method: "POST", token, headers: chave(), body: { setor_id: "marketing", pergunta: "[TESTE automatizado] pergunta de teste" } });
+  const pq = await req("/functions/v1/api/diretores/perguntas", { method: "POST", token, headers: chave(), body: { setor_id: "marketing", pergunta: "[TESTE automatizado] pergunta de teste", ia: false } });
   assert.equal(pq.status, 200, JSON.stringify(pq.dados));
   assert.equal((await req(`/functions/v1/api/diretores/perguntas/${pq.dados.id}/responder`, { method: "POST", token, headers: chave(), body: { resposta: "curta", motor: "TESTE" } })).status, 400); ok("resposta vazia/curta recusada");
   assert.equal((await req(`/functions/v1/api/diretores/perguntas/${pq.dados.id}/cancelar`, { method: "POST", token, headers: chave(), body: {} })).status, 200);

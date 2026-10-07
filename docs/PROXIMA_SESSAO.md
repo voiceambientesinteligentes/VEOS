@@ -1,4 +1,4 @@
-# Próxima sessão — ponto de partida (atualizado em 05/10/2026)
+# Próxima sessão — ponto de partida (atualizado em 06/10/2026)
 
 ## Prompt para colar no início da próxima conversa
 
@@ -29,12 +29,12 @@ Atue como especialista sênior em engenharia de software, produto e UX.
 Setores vivos (9) e Radar · Negociação e Calculadora · Zoho espelho + edição · Pedidos → estoque → parcelas → NF → recebimento · Biblioteca e governança · Contrato e termo de aceite em PDF · **P0** (validação guiada, saúde do sistema, usuários e MFA, exportação, backup criptografado, CI) · **P1** (painel executivo, compras e contas a pagar, previsão de caixa, caixa do pedido V1.1, obra no pedido, margem realizada, proposta em PDF, caixa de saída, resumo do dia, avisos) · **P2** (MCP do VEOS, independência do Zoho, busca Ctrl+K, PWA, registro LGPD).
 
 ## Para ligar o que foi feito em 05/10 (ações do Fernando)
-1. **Chave do Gemini (grátis)**: aistudio.google.com → "Get API key" → copiar. No Supabase: Project Settings → Edge Functions → Secrets → `GEMINI_API_KEY` = a chave. Depois: `node scripts/online.mjs tests/online/e2e_ia.mjs` (ciclo completo com IA). Decidir BIB-0091 (Gemini gratuito, dados usados pelo Google) e BIB-0092 (OpenAI paga × teto zero).
+1. ~~Chave do Gemini~~ **Feito em 06/10** (a chave apareceu numa imagem da conversa: trocar por uma nova é recomendável). Decidir formalmente BIB-0091 e BIB-0092. Se a cota gratuita não bastar no dia a dia: nível pago do Gemini (GEMINI_PAGO=sim) ou OpenAI — decisão de custo (BIB-0044). Instruções originais: aistudio.google.com → "Get API key" → copiar. No Supabase: Project Settings → Edge Functions → Secrets → `GEMINI_API_KEY` = a chave. Depois: `node scripts/online.mjs tests/online/e2e_ia.mjs` (ciclo completo com IA). Decidir BIB-0091 (Gemini gratuito, dados usados pelo Google) e BIB-0092 (OpenAI paga × teto zero).
 2. **Caixa real**: Ferramentas do CFO → Caixa e extrato → cadastrar as contas da empresa → importar o OFX de cada uma (internet banking → exportar extrato → OFX/Money). Classificar os lançamentos (marcar "lembrar").
 3. **Contas fixas**: Contas fixas e dívidas → "Trazer do Formulário do CFO" → conferir valores e dias de vencimento.
-4. **Contador**: alíquotas reais (2026 e 2027, Formulário do CFO → Impostos).
-5. **Pedidos**: transformar os orçamentos aceitos em pedidos com parcelas (contas a receber reais).
-6. Decidir P-9 (quando paga RT/comissão) na fase do comercial.
+4. **Contador**: alíquotas reais (2026 e 2027). Até lá vale a ADOTADA (BIB-0094).
+5. **Pedidos daqui para frente** (BIB-0095): cada orçamento aceito a partir de 06/10 vira pedido com parcelas; preencher o favorecido da RT no pedido.
+6. ~~P-9~~ decidido (BIB-0096).
 
 ## Decisões que dependem do Fernando (registradas na Biblioteca)
 Já decididas em 01/10: IA no servidor = teto zero (BIB-0044); Fernando exerce a CEO (BIB-0045); repositório continua público.
@@ -75,7 +75,7 @@ Já decididas em 01/10: IA no servidor = teto zero (BIB-0044); Fernando exerce a
 - Preço de compra = último preço pago (sem frete/impostos); preço de venda = lacuna. Simulador pelo markup do Sebrae (BIB-0074); alçada de preço proposta (BIB-0075).
 
 ## Próximo grande bloco (pedido do Fernando em 05/10)
-Financeiro completo → **alinhar com o comercial**: canal/RT por pedido e contas a pagar de RT e comissão (P-9), orçamento criado e salvo no VEOS, régua de cobrança (PL-050, proposta), receitas recorrentes de contratos de suporte.
+Financeiro completo → **alinhar com o comercial**: orçamento criado e salvo no VEOS (com o canal RT ou RT + comissão; RT/comissão como contas a pagar já feito em 06/10), régua de cobrança (PL-050, proposta), receitas recorrentes de contratos de suporte.
 
 ## Backlog sugerido (próximos blocos técnicos)
 1. **Catálogo de itens próprio** (maior dependência do Zoho: base de estoque, compras e pedidos) — ver Sistema → Independência do Zoho.

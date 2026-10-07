@@ -208,7 +208,9 @@ export function telaNegociacao(root, fontes = null) {
     if (!(totalNeg > 0)) { condicao.placeholder = "Informe o preço ou escolha um orçamento primeiro."; return; }
     let ptax = null;
     try { const cb = await api.cfoCambio(); ptax = cb.serie?.length ? cb.serie[cb.serie.length - 1] : null; } catch { /* sem cotacao */ }
-    const c = condicaoSugerida({ custoProdutos: custoProd, total: totalNeg, entradaMinima: pFormulario?.entradaPct ?? 40, validadeDias: pFormulario?.validadeDias ?? 7, ptax });
+    const canalSel = canais.find((x) => x.nome === canal.value) ?? canais.find((x) => x.padrao) ?? null;
+    const naAssinatura = canalSel && (pFormulario?.quandoPagaRt ?? "assinatura") === "assinatura" ? (totalNeg * (canalSel.rt + canalSel.comissao)) / 100 : 0;
+    const c = condicaoSugerida({ custoProdutos: custoProd, total: totalNeg, entradaMinima: pFormulario?.entradaPct ?? 40, validadeDias: pFormulario?.validadeDias ?? 7, ptax, pagoNaAssinatura: naAssinatura });
     condicao.value = c.texto;
     calcular();
   });
@@ -336,6 +338,7 @@ export function telaNegociacao(root, fontes = null) {
         const res = await fontes.criarPedido({ negociacao: {
           cliente: cliente.value.trim(), cliente_zoho_id: orcamento?.cliente_zoho_id ?? null, orcamento_zoho_id: orcamento?.zoho_id ?? null, orcamento_numero: referencia.value.trim() || orcamento?.numero || null,
           valor_total: fixo2(r.liquido), condicao: condicao.value.trim() || null, itens: ultimo.itensPedido,
+          ...(() => { const c = canais.find((x) => x.nome === canal.value); return c ? { rt_pct: c.rt, comissao_pct: c.comissao } : {}; })(),
           resumo: { precedentes: aplicaveis, consulta: antes?.consulta_id ?? null, tabela: fixo2(r.tabela), desconto: fixo2(r.descontoRs), impostos: r.comNota.impostos === null ? null : fixo2(r.comNota.impostos), custo_total: fixo2(r.custoTotal), margem_com_nota: pctH(r.comNota.margemH), mc_politica: pctH(r.pctH), alcada: r.alcada.nivel },
         } });
         await consultarPrecedentes(r, `pedido:${res.id}`).catch(() => null);

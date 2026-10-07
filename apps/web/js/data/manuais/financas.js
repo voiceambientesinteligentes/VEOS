@@ -306,7 +306,8 @@ export default {
     "preco_pela_politica",
     "custo_real_do_produto",
     "parametros_financeiros",
-    "politica_financeira"
+    "politica_financeira",
+    "qualidade_dos_orcamentos"
    ]
   },
   {
@@ -433,7 +434,8 @@ export default {
     "indicadores_da_politica",
     "fechamento_do_mes",
     "plano_da_voice",
-    "diagnostico_dos_orcamentos"
+    "diagnostico_dos_orcamentos",
+    "qualidade_dos_orcamentos"
    ]
   },
   {
@@ -467,7 +469,8 @@ export default {
     "fechamento_do_mes",
     "indicadores_da_politica",
     "caixa_e_contas",
-    "fluxo_13_semanas"
+    "fluxo_13_semanas",
+    "qualidade_dos_orcamentos"
    ]
   },
   {
@@ -625,7 +628,8 @@ export default {
    "ferramentas_veos": [
     "diagnostico_dos_orcamentos",
     "indicadores_da_politica",
-    "buscar_orcamentos"
+    "buscar_orcamentos",
+    "qualidade_dos_orcamentos"
    ]
   }
  ],

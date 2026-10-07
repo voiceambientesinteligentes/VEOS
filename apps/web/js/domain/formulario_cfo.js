@@ -18,6 +18,7 @@ export const SECOES = [
       grupo("g_hoje", "Impostos hoje (Simples)"),
       { id: "anexo_servicos", rotulo: "Anexo do Simples usado nos serviços (veja a guia do DAS)", tipo: "opcao", opcoes: [["III", "Anexo III"], ["IV", "Anexo IV"], ["V", "Anexo V"], ["nao_sei", "Não sei"]] },
       { id: "faturamento_12m", rotulo: "Faturamento dos últimos 12 meses (RBT12 da guia do DAS)", tipo: "moeda" },
+      { id: "adota_simulacao", rotulo: "Enquanto o contador não informa, usar as alíquotas do Simples calculadas pelo VEOS?", tipo: "opcao", opcoes: SN, ajuda: "Anexo I para produto e Anexo III para serviço, na faixa do faturamento de 12 meses (Zoho). Fica rotulado como ADOTADA até o contador confirmar." },
       { id: "aliquota_produto_pct", rotulo: "Alíquota efetiva sobre venda de produto hoje", tipo: "pct", ajuda: "Peça ao contador: imposto pago ÷ faturamento de produto." },
       { id: "aliquota_servico_pct", rotulo: "Alíquota efetiva sobre serviço hoje", tipo: "pct" },
       { id: "inss_fora_das", rotulo: "Paga INSS patronal (20% da folha e pró-labore) fora do DAS?", tipo: "opcao", opcoes: SN },
@@ -159,6 +160,7 @@ export const SECOES = [
         { id: "padrao", rotulo: "Canal padrão?", tipo: "opcao", opcoes: [["sim", "Sim"], ["nao", "Não"]] },
       ] },
       { id: "comissao_vendedor_pct", rotulo: "Comissão de vendedor (se não usar canais)", tipo: "pct" },
+      { id: "quando_paga_rt", rotulo: "Quando paga a RT e a comissão/indicação de cada pedido", tipo: "opcao", opcoes: [["assinatura", "Na assinatura (logo depois da entrada do cliente)"], ["parcelas", "A cada parcela recebida"], ["fim", "No fim da obra"]], ajuda: "Vira conta a pagar automática do pedido." },
       { id: "paga_indicacao", rotulo: "Paga comissão a indicadores?", tipo: "opcao", opcoes: SN },
       { id: "indicacao_pct", rotulo: "Quanto paga por indicação", tipo: "pct" },
       { id: "indicacao_quem", rotulo: "Quem recebe a indicação", tipo: "opcao", opcoes: [["arquitetos", "Arquitetos/designers"], ["outros", "Outros parceiros (eletricista, marceneiro, cliente)"], ["ambos", "Os dois"]], ajuda: "Atenção: o Código de Ética do CAU proíbe o arquiteto de receber RT (BIB-0078); o risco é do arquiteto, a decisão é sua." },
@@ -294,8 +296,12 @@ export function parametros(respostasBrutas = {}) {
   const lacunas = [];
   const tProduto = n("impostos", "aliquota_produto_pct");
   const tServico = n("impostos", "aliquota_servico_pct");
-  if (tProduto === null) lacunas.push("Alíquota sobre produto (contador)");
-  if (tServico === null) lacunas.push("Alíquota sobre serviço (contador)");
+  const simulacaoAdotada = g("impostos", "adota_simulacao") === "sim" && (tProduto === null || tServico === null);
+  if (simulacaoAdotada) lacunas.push("Confirmar com o contador as alíquotas do Simples adotadas (hoje: cálculo do VEOS)");
+  else {
+    if (tProduto === null) lacunas.push("Alíquota sobre produto (contador)");
+    if (tServico === null) lacunas.push("Alíquota sobre serviço (contador)");
+  }
   const cartao = n("vendas", "taxa_cartao_pct"), parteCartao = n("vendas", "vendas_cartao_pct");
   if (cartao === null || parteCartao === null) lacunas.push("Taxa e participação do cartão nas vendas");
   const canais = canaisDe(respostas.vendas?.dados ?? {});
@@ -322,7 +328,7 @@ export function parametros(respostasBrutas = {}) {
   const dividas = g("dividas", "lista") ?? [];
   const tempos = g("tempos", "itens") ?? [];
   return {
-    tProduto, tServico, v, cartaoInformado: cartao !== null,
+    tProduto, tServico, simulacaoAdotada, quandoPagaRt: g("vendas", "quando_paga_rt") ?? null, v, cartaoInformado: cartao !== null,
     vDetalhe: { cartao: cartaoEfetivo, comissao, indicacao: indic }, canais, canalPadrao: canalPadrao.nome,
     spreadAliexpress: n("compras", "spread_aliexpress_pct") ?? 0,
     entradaPct: n("vendas", "entrada_pct"), validadeDias: n("compras", "validade_proposta_dias"),

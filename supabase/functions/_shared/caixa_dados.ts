@@ -32,7 +32,7 @@ export async function aliquotaMedia() {
   const media = tP !== null && tS !== null && mix !== null ? Math.round((mix * tP + (1 - mix) * tS) * 100) / 100 : null;
   return {
     aliquota_media_pct: media, produto_pct: tP, servico_pct: tS, mix_produto: mix === null ? null : Math.round(mix * 1000) / 1000,
-    origem: p.tProduto !== null && p.tServico !== null ? "informada (contador)" : media !== null ? "SIMULAÇÃO: Simples pelo faturamento estimado no Zoho (confirmar com o contador)" : "LACUNA",
+    origem: p.tProduto !== null && p.tServico !== null ? "informada (contador)" : media !== null ? (p.simulacaoAdotada ? "ADOTADA pelo fundador: Simples pelo faturamento do Zoho (confirmar com o contador)" : "SIMULAÇÃO: Simples pelo faturamento estimado no Zoho (confirmar com o contador)") : "LACUNA",
     fixos_formulario: p.fixos, retirada_formulario: p.metas?.retirada_planejada ?? p.retirada ?? p.proLabore ?? null,
   };
 }
@@ -99,4 +99,14 @@ export async function dadosIndicadores() {
     aliquotaMedia(),
   ]);
   return { hoje, resumo_mensal: resumo, parcelas: parcelas.map((x: Record<string, any>) => ({ ...x, pedido: undefined })), contas_abertas: contas, vendas: ests.map((e: Record<string, any>) => ({ total: Number(e.total), data: e.data, cliente: e.codigo || `cliente-${String(e.cliente).slice(-5)}` })), saldos, recorrentes, alertas_exposicao: alertas.length, impostos: imp };
+}
+
+/** RT e comissao padrao para um pedido novo, pelo Formulario do CFO (canal padrao e quando pagar). */
+export async function rtPadrao() {
+  const linhas = await rpc("formulario_vigente", { p_formulario: "cfo" });
+  const respostas: Record<string, unknown> = {};
+  for (const l of linhas ?? []) respostas[l.secao] = { dados: l.dados };
+  const p = parametros(respostas);
+  const c = p.canais.find((x: { padrao: boolean }) => x.padrao) ?? p.canais[0];
+  return { rt_pct: c?.rt ?? 0, comissao_pct: c?.comissao ?? 0, rt_quando: p.quandoPagaRt ?? "assinatura", canais: p.canais };
 }

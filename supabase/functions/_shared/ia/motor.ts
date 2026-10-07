@@ -18,7 +18,7 @@ const lista = (v: string | undefined, padrao: string) => (v || padrao).split(","
 export function provedores(): Provedor[] {
   const env = (k: string) => Deno.env.get(k) ?? "";
   const todos: Record<string, Provedor | null> = {
-    gemini: env("GEMINI_API_KEY") ? { id: "gemini", rotulo: env("GEMINI_PAGO") === "sim" ? "Gemini" : "Gemini (chave gratuita)", modelos: lista(env("GEMINI_MODELOS"), "gemini-3.8-flash,gemini-3.5-flash,gemini-3.5-flash-lite,gemini-2.5-flash"), chave: env("GEMINI_API_KEY"), gratuito: env("GEMINI_PAGO") !== "sim" } : null,
+    gemini: env("GEMINI_API_KEY") ? { id: "gemini", rotulo: env("GEMINI_PAGO") === "sim" ? "Gemini" : "Gemini (chave gratuita)", modelos: lista(env("GEMINI_MODELOS"), "gemini-3.8-flash,gemini-3.7-flash,gemini-3.6-flash,gemini-3.5-flash,gemini-3.5-flash-lite"), chave: env("GEMINI_API_KEY"), gratuito: env("GEMINI_PAGO") !== "sim" } : null,
     openai: env("OPENAI_API_KEY") ? { id: "openai", rotulo: "OpenAI", modelos: lista(env("OPENAI_MODELOS"), "gpt-5-mini"), chave: env("OPENAI_API_KEY"), gratuito: false } : null,
   };
   return lista(env("IA_ORDEM"), "gemini,openai").map((id) => todos[id]).filter((x): x is Provedor => Boolean(x));
@@ -72,14 +72,22 @@ export async function responderPergunta(perguntaId: string) {
     const pergunta = `PERGUNTA (feita no VEOS em ${new Date(reservada.criada_em).toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo" })}${reservada.contexto ? `; referência: ${reservada.contexto}` : ""}):\n${reservada.pergunta}\n\nPRECEDENTES JÁ CONSULTADOS (termos: ${termos}):\n${resumoPrec}`;
 
     const resultados: unknown[] = [precedentes];
+    const coletados: { nome: string; args: unknown; texto: string }[] = [];
     const ferramentas = ferramentasDoSetor(ctx.setor);
+    // tempo da funcao no plano gratuito: 150 s no total (ferramentas ate ~80 s; resposta final ate ~125 s)
     const r = await responderComFallback(provs, {
       sistema, pergunta, ferramentas,
-      maxPassos: 8, prazo: Date.now() + 85_000,
+      maxPassos: 8, prazo: t0 + 80_000, limite: t0 + 125_000,
       executar: async (c) => {
         const out = await executarFerramenta(c.nome, c.args, ctx);
         resultados.push(out);
+        coletados.push({ nome: c.nome, args: c.args, texto: JSON.stringify(out).slice(0, 6000) });
         return out;
+      },
+      dadosLevantados: () => {
+        const vistos = new Set<string>();
+        const unicos = coletados.filter((x) => { const k = `${x.nome}:${JSON.stringify(x.args)}`; if (vistos.has(k)) return false; vistos.add(k); return true; });
+        return unicos.map((x) => `- ${x.nome}(${JSON.stringify(x.args)}) → ${x.texto}`).join("\n").slice(0, 24_000);
       },
     });
 

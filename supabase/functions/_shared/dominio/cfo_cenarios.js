@@ -20,16 +20,17 @@ export function impostosSimulados(rbt12) {
   }
 }
 
-/** Parametros do diagnostico: aliquotas do formulario; sem elas, a simulacao (sempre avisada). */
+/** Parametros do diagnostico: aliquotas do formulario; sem elas, a simulacao (adotada pelo fundador ou so simulada, sempre avisada). */
 export function diagnosticoParams(p, sim) {
   const base = { v: p.v ?? 0, custoHora: p.hora?.custoHora ?? null };
-  if (p.tProduto !== null && p.tServico !== null) return { params: { ...base, tProduto: p.tProduto, tServico: p.tServico }, simulado: false, texto: null };
+  if (p.tProduto !== null && p.tServico !== null) return { params: { ...base, tProduto: p.tProduto, tServico: p.tServico }, simulado: false, adotada: false, rotulo: "INFORMADA", texto: null };
   if (sim) {
+    const aliq = `Simples Anexo I ${String(sim.produto).replace(".", ",")}% (produto) e Anexo III ${String(sim.servico).replace(".", ",")}% (serviço), faixa pelo faturamento de 12 meses no Zoho`;
     return {
       params: { ...base, tProduto: p.tProduto ?? sim.produto, tServico: p.tServico ?? sim.servico },
-      simulado: true,
-      texto: `MC estimada com SIMULAÇÃO de impostos: Simples Anexo I ${String(sim.produto).replace(".", ",")}% (produto) e Anexo III ${String(sim.servico).replace(".", ",")}% (serviço), pelo faturamento estimado no Zoho. Confirme com o contador.`,
+      simulado: true, adotada: Boolean(p.simulacaoAdotada), rotulo: p.simulacaoAdotada ? "ADOTADA" : "SIMULAÇÃO",
+      texto: p.simulacaoAdotada ? `Impostos ADOTADOS pelo fundador até o contador confirmar: ${aliq}.` : `MC estimada com SIMULAÇÃO de impostos: ${aliq}. Confirme com o contador.`,
     };
   }
-  return { params: { ...base, tProduto: null, tServico: null }, simulado: false, texto: null };
+  return { params: { ...base, tProduto: null, tServico: null }, simulado: false, adotada: false, rotulo: "LACUNA", texto: null };
 }

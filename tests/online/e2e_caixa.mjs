@@ -47,6 +47,9 @@ try {
   const i = await fin.api("caixa/indicadores");
   assert.equal(i.status, 200); assert.ok(Array.isArray(i.dados.resumo_mensal)); assert.ok(Array.isArray(i.dados.vendas)); assert.ok(i.dados.vendas.every((v) => !/[a-z]{3,} [a-z]{3,}/i.test(v.cliente)), "cliente só pelo código");
   ok("dados dos indicadores (clientes só pelo código)");
+  const rt = await fin.api("fluxo/rt-padrao");
+  assert.equal(rt.status, 200); assert.ok(typeof rt.dados.rt_pct === "number" && typeof rt.dados.comissao_pct === "number"); assert.ok(["assinatura", "parcelas", "fim"].includes(rt.dados.rt_quando)); assert.ok(rt.dados.canais.length >= 1);
+  ok("RT/comissão padrão do Formulário do CFO para pedidos novos");
   for (const rota of ["caixa/contas", "caixa/semanas", "caixa/indicadores"]) assert.equal((await ven.api(rota)).status, 403);
   ok("vendas não vê o caixa (403)");
 } finally {

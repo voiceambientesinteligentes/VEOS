@@ -19,6 +19,7 @@ import { resumir } from "../dominio/diagnostico.js";
 import { margemPorReal, mixPraticado, oQueFalta, pontoEquilibrio, saidasMensais } from "../dominio/equilibrio.js";
 import { projetos } from "../dominio/estoque_sugerido.js";
 import { condicaoSugerida } from "../dominio/condicao.js";
+import { qualidadeDaBase } from "../dominio/base_orcamentos.js";
 import { projetar, reserva } from "../dominio/caixa13.js";
 import { dre } from "../dominio/dre.js";
 import { indicadores } from "../dominio/indicadores.js";
@@ -62,8 +63,8 @@ function carregarParametros(ctx: Contexto) {
     const sim = impostosSimulados(rb);
     const dp = diagnosticoParams(p, sim);
     fonte(ctx, "Formulário do CFO (respostas do fundador)", "informado pelo fundador");
-    if (dp.simulado) fonte(ctx, "Simulação de impostos do VEOS (Simples, faturamento de 12 meses pelo Zoho)", "simulação");
-    return { respostas, p, rb, sim, params: dp.params, simulado: dp.simulado, textoSimulacao: dp.texto };
+    if (dp.simulado) fonte(ctx, dp.adotada ? "Alíquotas do Simples adotadas pelo fundador (cálculo do VEOS pelo faturamento de 12 meses)" : "Simulação de impostos do VEOS (Simples, faturamento de 12 meses pelo Zoho)", dp.adotada ? "decisão do fundador" : "simulação");
+    return { respostas, p, rb, sim, params: dp.params, simulado: dp.simulado, adotada: dp.adotada, textoSimulacao: dp.texto };
   });
 }
 
@@ -127,7 +128,7 @@ function canalDe(p: any, nome: unknown) {
 function premissas(par: any, canal: any) {
   return {
     imposto_produto_pct: par.params.tProduto, imposto_servico_pct: par.params.tServico,
-    origem_imposto: par.simulado ? `SIMULAÇÃO (confirmar com o contador): ${par.textoSimulacao}` : (par.params.tProduto === null ? "LACUNA: alíquotas não informadas" : "informado pelo fundador (contador)"),
+    origem_imposto: par.simulado ? par.textoSimulacao : (par.params.tProduto === null ? "LACUNA: alíquotas não informadas" : "informado pelo fundador (contador)"),
     canal: canal?.nome, despesas_sobre_preco_pct: canal?.v, detalhe_canal: canal ? { comissao_pct: canal.comissao, rt_indicacao_pct: canal.rt, outros_pct: canal.outros } : null,
     custo_hora: par.p.hora?.custoHora ?? null, produtividade_informada_pct: par.p.produtividade,
     provisao_risco_pct: 2, faixas_politica: "meta 35% · mínimo 30% · piso 25% (Política V1 seção 3)",
@@ -145,6 +146,17 @@ function horasPorGrupo(a: any, o: any) {
   const cobradas = { rede: 0, automacao: 0 };
   for (const l of o.linhas) if (l.tipo === "service" && /^h(r|ora)s?$/i.test(String(l.unidade ?? "").trim())) (/rede|wi-?fi/i.test(l.nome) ? (cobradas.rede += l.qtd) : (cobradas.automacao += l.qtd));
   return { calculadas: { rede: r1((rede / 60) * k), automacao: r1((auto / 60) * k), entrega: r1((a.mo.premissas.entrega ?? 0) / ((a.mo.premissas.produtividade ?? 65) / 100)) }, cobradas };
+}
+
+/** Interpretacao deterministica das horas: com a produtividade informada e com a realista (65%). */
+function leituraHoras(an: any, a65: any, prod: number | null) {
+  const cob = an.mo.horasCobradas;
+  if (!cob) return "Orçamento sem horas de serviço cobradas.";
+  const fmt = (v: number) => String(v).replace(".", ",");
+  if (!a65) return `Cobradas ${fmt(cob)} h; calculadas ${fmt(an.mo.horasReais)} h pelos tempos-padrão com produtividade de ${fmt(prod ?? 65)}%.`;
+  const dif = Math.round((cob - a65.mo.horasReais) * 10) / 10;
+  const bate = Math.abs(dif) <= Math.max(3, a65.mo.horasReais * 0.1);
+  return `O formulário informa produtividade de ${fmt(prod ?? 0)}%, irreal em obra (pesquisa: 60–75%). Com ${fmt(prod ?? 0)}% seriam ${fmt(an.mo.horasReais)} h; com 65% seriam ${fmt(a65.mo.horasReais)} h. As ${fmt(cob)} h cobradas ${bate ? "BATEM com o cálculo realista (não chame de horas a mais)" : dif > 0 ? `ficam ${fmt(dif)} h ACIMA do cálculo realista` : `ficam ${fmt(-dif)} h ABAIXO do cálculo realista (risco de trabalhar de graça)`}. Confira também a divisão por grupo (rede x automação).`;
 }
 
 // ---------------------------------------------------------------- custo real (catalogo do VEOS)
@@ -296,7 +308,7 @@ const FERRAMENTAS: Ferramenta[] = [
         return { canal: c.nome, despesas_sobre_preco_pct: c.v, margem_por_real_pct: mc, ponto_de_equilibrio_mes: mc ? pontoEquilibrio(saidas, mc) : null };
       });
       return {
-        impostos: { produto_pct: tP, servico_pct: tS, origem: par.simulado ? `SIMULAÇÃO: ${par.textoSimulacao}` : tP === null ? "LACUNA" : "informado (contador)", faturamento_12_meses: par.rb, aliquotas_2027: { produto_pct: p.tProduto2027, servico_pct: p.tServico2027 } },
+        impostos: { produto_pct: tP, servico_pct: tS, origem: par.simulado ? par.textoSimulacao : tP === null ? "LACUNA" : "informado (contador)", faturamento_12_meses: par.rb, aliquotas_2027: { produto_pct: p.tProduto2027, servico_pct: p.tServico2027 } },
         canais: p.canais.map((c: any) => ({ nome: c.nome, padrao: c.nome === p.canalPadrao, comissao_pct: c.comissao, rt_indicacao_pct: c.rt, outros_pct: c.outros, total_sobre_preco_pct: c.v })),
         mao_de_obra: { custo_hora: p.hora?.custoHora ?? null, custo_mensal_equipe: p.hora?.custoMensal ?? null, horas_vendaveis_mes: p.hora?.horasVendaveis ?? null, produtividade_pct: p.produtividade, lacunas: p.hora?.lacunas },
         compras: { perdas_pct: p.perdas, folga_cambial_pct: p.margemCambial, spread_aliexpress_pct: p.spreadAliexpress, prazo_entrega_dias: p.prazoEntrega },
@@ -358,7 +370,7 @@ const FERRAMENTAS: Ferramenta[] = [
         orcamento: { numero: o.numero, data: o.data, validade: o.validade, situacao: o.status, cliente: o.cliente, assunto: o.assunto, total: o.total, desconto: o.desconto, ajuste: o.ajuste, imposto_destacado: o.imposto, tem_condicao_de_pagamento: o.condicao_pagamento },
         premissas: premissas(par, canal),
         produtos: { venda: an.produtos.venda, custo: an.produtos.custo, venda_sem_custo: an.produtos.semCusto, multiplicador_medio: an.produtos.multiplicador, margem: an.produtos.mc, preco_meta_do_bloco_35: an.produtos.precoMeta, margem_sem_itens_acima_de_10x_custo_pct: semL11 },
-        mao_de_obra: { valor: an.mo.valor, horas_cobradas: an.mo.horasCobradas, valor_por_hora: an.mo.porHora, horas_padrao_execucao: an.mo.horasPadrao, horas_calculadas: an.mo.horasReais, horas_calculadas_com_65pct: a65?.mo.horasReais ?? null, diferenca_horas: an.mo.diferencaHoras, custo: an.mo.custo, custo_com_65pct: a65?.mo.custo ?? null, preco_hora_meta_35: an.mo.precoHoraMeta, por_grupo: horasPorGrupo(a65 ?? an, o), premissas: an.mo.premissas, sem_tempo_no_catalogo: an.mo.faltam },
+        mao_de_obra: { leitura_das_horas: leituraHoras(an, a65, par.p.produtividade), valor: an.mo.valor, horas_cobradas: an.mo.horasCobradas, valor_por_hora: an.mo.porHora, horas_padrao_execucao: an.mo.horasPadrao, horas_calculadas: an.mo.horasReais, horas_calculadas_com_65pct: a65?.mo.horasReais ?? null, diferenca_horas: an.mo.diferencaHoras, custo: an.mo.custo, custo_com_65pct: a65?.mo.custo ?? null, preco_hora_meta_35: an.mo.precoHoraMeta, por_grupo: horasPorGrupo(a65 ?? an, o), premissas: an.mo.premissas, sem_tempo_no_catalogo: an.mo.faltam },
         margem_total: an.mcTotal ? { ...an.mcTotal, faixa: faixa(an.mcTotal.pct) } : null,
         margem_total_com_produtividade_65: a65?.mcTotal ? { ...a65.mcTotal, faixa: faixa(a65.mcTotal.pct) } : null,
         pontos_de_atencao: an.pontos, itens, outras_versoes_do_cliente: versoes,
@@ -421,10 +433,23 @@ const FERRAMENTAS: Ferramenta[] = [
         produtos: { venda: an.produtos.venda, margem: an.produtos.mc }, mao_de_obra: an.mo.valor,
         margem_total: an.mcTotal ? { ...an.mcTotal, faixa: faixa(an.mcTotal.pct) } : null, margem_total_produtividade_65: a65.mcTotal,
         descontos, custo_do_material: custoMaterial,
-        pagamento_referencia_politica_secao_10: { assinatura_50: p50, antes_da_instalacao_40: p40, entrega_tecnica_10: r2(total - p50 - p40), cobre_material: p50 >= custoMaterial },
-        condicao_sugerida_proposta_bib_0090: condicaoSugerida({ custoProdutos: custoMaterial, total, entradaMinima: par.p.entradaPct ?? 40, validadeDias: par.p.validadeDias ?? 7, ptax }),
+        pagamento_referencia_politica_secao_10: { assinatura_50: p50, antes_da_instalacao_40: p40, entrega_tecnica_10: r2(total - p50 - p40), rt_e_comissao_na_assinatura: r2((total * (canal.rt + canal.comissao)) / 100), cobre_material_rt_e_comissao: p50 >= custoMaterial + (total * (canal.rt + canal.comissao)) / 100 },
+        condicao_sugerida_proposta_bib_0090: condicaoSugerida({ custoProdutos: custoMaterial, total, entradaMinima: par.p.entradaPct ?? 40, validadeDias: par.p.validadeDias ?? 7, ptax, pagoNaAssinatura: (par.p.quandoPagaRt ?? "assinatura") === "assinatura" ? r2((total * (canal.rt + canal.comissao)) / 100) : 0 }),
         nota: "Rascunho para o fundador revisar: nada foi criado nem alterado no Zoho.",
       };
+    },
+  },
+  {
+    nome: "qualidade_dos_orcamentos",
+    papeis: FIN,
+    descricao: "Base de preços: qualidade de TODOS os orçamentos do Zoho (rascunhos, enviados e aceitos; versões do mesmo cliente contam uma vez). Os orçamentos antigos não viram pedido (decisão de 06/10/2026): servem para saber se o preço estava certo. Devolve % abaixo da margem, itens não aprovados, multiplicador médio, horas cobradas x calculadas, sem condição e sem imposto, e os 10 piores.",
+    parametros: obj({ desde: str("data inicial AAAA-MM-DD (opcional)"), ate: str("data final AAAA-MM-DD (opcional)"), situacao: str("draft, sent, accepted ou invoiced (opcional)") }),
+    async executar(a, ctx) {
+      const [par, orc] = await Promise.all([carregarParametros(ctx), carregarOrcamentos(ctx)]);
+      const base = { ...par.params, produtividade: par.p.produtividade, comissionamento: par.p.comissionamento, entregaHoras: par.p.entregaHoras, metrosPorPonto: par.p.metrosPorPonto };
+      const d = (v: unknown) => (/^\d{4}-\d{2}-\d{2}$/.test(String(v ?? "")) ? String(v) : null);
+      const r = qualidadeDaBase(orc, base, par.p.tempos, { desde: d(a.desde), ate: d(a.ate), situacoes: /^[a-z]{4,9}$/.test(String(a.situacao ?? "")) ? [String(a.situacao)] : null });
+      return { ...r, linhas: undefined, quantidade_de_linhas: r.linhas.length, impostos: par.simulado ? par.textoSimulacao : "informados" };
     },
   },
   {
@@ -466,7 +491,7 @@ const FERRAMENTAS: Ferramenta[] = [
       const r = resumir(orc, par.params);
       return {
         quantidade: r.quantidade, total: r.total, bruto: r.bruto, desconto: r.desconto, desconto_pct: r.descPct, acima_da_alcada_5pct: r.acimaAlcada, mao_de_obra_dada: r.maoDeObraDada, conversao_pct: r.conversaoPct, situacoes: r.status, margens_completas: r.margensCompletas,
-        sinais: r.sinais, impostos: par.simulado ? "SIMULAÇÃO" : "informados",
+        sinais: r.sinais, impostos: par.simulado ? (par.adotada ? "ADOTADA pelo fundador (confirmar com o contador)" : "SIMULAÇÃO") : "informados",
         aceitos: r.aceitos.slice(0, 50).map((x: any) => ({ numero: x.numero, data: x.data, cliente: x.cliente, total: x.total, desconto_pct: x.descPct, margem_bruta_produtos_pct: x.margemBensPct, margem_estimada_pct: x.margem?.pct ?? null, faixa: x.faixa, completa: x.margemCompleta, sinais: x.sinais })),
       };
     },
@@ -587,7 +612,7 @@ const FERRAMENTAS: Ferramenta[] = [
       const res = reserva({ recorrentes: d.recorrentes, fixosFormulario: d.impostos?.fixos_formulario ?? null, retirada: d.impostos?.retirada_formulario ?? null });
       const f = projetar({ hoje: d.hoje, semanas: d.semanas, saldos: d.saldos, parcelas: d.parcelas, contas: d.contas, impostos: d.impostos, entradasRealizadasMes: d.entradas_realizadas_mes, reservaMeta: res.meta });
       fonte(ctx, "Fluxo de 13 semanas do VEOS (extrato, parcelas, contas a pagar e recorrentes)", "dado");
-      if (String(d.impostos?.origem ?? "").startsWith("SIMULA")) fonte(ctx, "Simulação de impostos do VEOS (Simples, faturamento de 12 meses pelo Zoho)", "simulação");
+      if (/^(SIMULA|ADOTADA)/.test(String(d.impostos?.origem ?? ""))) fonte(ctx, String(d.impostos.origem).slice(0, 190), "imposto");
       return { hoje: d.hoje, saldo_hoje: f.saldoHoje, contas_sem_saldo: f.semSaldo, reserva_politica: res, menor_saldo: f.menorSaldo, necessidade_de_caixa: f.necessidade, atrasadas: f.atrasadas, impostos: { aliquota: f.impostos.aliquota, origem: f.impostos.origem, provisoes: f.impostos.provisoes },
         semanas: f.semanas.map((s: any) => ({ semana: s.n, de: s.inicio, ate: s.fim, entradas: s.entradas, saidas: s.saidas, impostos: s.impostos, saldo_final: s.saldo_final, principais: s.itens.slice(0, 5).map((i: any) => `${i.data} ${i.descricao} ${i.valor}`) })), alertas: f.alertas };
     },

@@ -93,6 +93,7 @@ export async function telaPedido(root, id, eu) {
             i.tipo === "produto" && i.item_id ? (Number(i.reservado_pedido) < Number(i.quantidade) && p.estado === "confirmado" ? stamp(`${qtd(i.reservado_pedido)} (faltam ${qtd(i.quantidade - i.reservado_pedido)})`, "risk") : qtd(i.reservado_pedido)) : "—",
             i.estoque ? `${qtd(i.estoque.fisico)} / ${qtd(i.estoque.reservado)}` : "—"]) })),
       d.caixa ? painelCaixa(d) : null,
+      p.estado !== "cancelado" ? painelRt(d, id, eu, (m) => api.fluxoPedido(id).then((x) => { d = x; desenhar(m); })) : null,
       d.margem && p.estado !== "rascunho" ? painelMargem(d, id, eu, (m) => api.fluxoPedido(id).then((x) => { d = x; desenhar(m); })) : null,
       ["confirmado", "entregue", "faturado", "concluido"].includes(p.estado) ? painelObra(d, id, (m) => api.fluxoPedido(id).then((x) => { d = x; desenhar(m); })) : null,
       ["confirmado", "entregue", "faturado", "concluido"].includes(p.estado) ? painelHoras(d, id, (m) => api.fluxoPedido(id).then((x) => { d = x; desenhar(m); })) : null,
@@ -105,6 +106,40 @@ export async function telaPedido(root, id, eu) {
     ].filter(Boolean));
   };
   desenhar();
+}
+
+// RT (arquiteto) e comissao/indicacao do pedido: viram contas a pagar sozinhas no momento definido
+// (padrao: na assinatura, logo depois da entrada do cliente; decisao do fundador em 06/10/2026).
+const QUANDO_RT = { assinatura: "na assinatura (depois da entrada)", parcelas: "a cada parcela recebida", fim: "no fim da obra (última parcela)" };
+function painelRt(d, id, eu, recarregar) {
+  const p = d.pedido;
+  const total = Number(p.valor_total);
+  const rt = Number(p.rt_pct ?? 0), com = Number(p.comissao_pct ?? 0);
+  const saida = h("div", { role: "status" });
+  const definido = p.rt_quando !== null && p.rt_quando !== undefined;
+  const resumo = definido
+    ? h("div", { class: "form-grid" },
+      stat("RT", `${String(rt).replace(".", ",")}%`, `${brl((total * rt) / 100)} · ${p.rt_favorecido ?? "arquiteto (favorecido não informado)"}`),
+      stat("Comissão / indicação", `${String(com).replace(".", ",")}%`, com ? `${brl((total * com) / 100)} · ${p.comissao_favorecido ?? "favorecido não informado"}` : "sem comissão neste pedido"),
+      stat("Quando paga", QUANDO_RT[p.rt_quando] ?? p.rt_quando, "vira conta a pagar do pedido sozinha"))
+    : h("p", { class: "notice notice-warn" }, "Pedido sem RT/comissão definida (anterior a 06/10/2026). Defina abaixo para gerar as contas a pagar.");
+  if (!["direcao", "vendas", "financas"].includes(eu?.papel) || ["concluido"].includes(p.estado)) return panel({ title: "RT e comissão", subtitle: "Custo variável do pedido (Política V1 sec.5)." }, resumo);
+  const iRt = h("input", { class: "input num", id: "rt-pct", inputmode: "decimal", value: String(definido ? rt : 10).replace(".", ",") });
+  const iFav = h("input", { class: "input", id: "rt-fav", value: p.rt_favorecido ?? "", placeholder: "arquiteto ou escritório" });
+  const iCom = h("input", { class: "input num", id: "rt-com", inputmode: "decimal", value: String(definido ? com : 0).replace(".", ",") });
+  const iFavC = h("input", { class: "input", id: "rt-favc", value: p.comissao_favorecido ?? "", placeholder: "quem recebe a comissão" });
+  const iQ = h("select", { class: "select", id: "rt-quando" }, Object.entries(QUANDO_RT).map(([v, t]) => h("option", { value: v, selected: v === (p.rt_quando ?? "assinatura") }, t)));
+  const form = h("form", { class: "stack-s", novalidate: true }, h("div", { class: "form-grid" }, field(iRt.id, "RT (%)", iRt), field(iFav.id, "Favorecido da RT", iFav), field(iCom.id, "Comissão/indicação (%)", iCom, "Quando houver (normalmente 5%)"), field(iFavC.id, "Favorecido da comissão", iFavC), field(iQ.id, "Quando paga", iQ)),
+    h("div", { class: "row" }, h("button", { class: "btn btn-ghost", type: "submit" }, "Salvar RT e comissão")), saida);
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    clear(saida);
+    try {
+      await api.fluxoAcao(id, "rt", { rt_pct: Number(iRt.value.replace(",", ".")), comissao_pct: Number(iCom.value.replace(",", ".")), rt_favorecido: iFav.value, comissao_favorecido: iFavC.value, rt_quando: iQ.value });
+      await recarregar("RT e comissão salvas.");
+    } catch (err) { saida.append(errorNotice(err.message)); }
+  });
+  return panel({ title: "RT e comissão", subtitle: "Custo variável do pedido (Política V1 sec.5): viram contas a pagar do pedido no momento escolhido e entram no caixa do pedido (V1.1)." }, resumo, method("Ajustar", form));
 }
 
 // Caixa do pedido pela Politica V1.1: recebido efetivo - compromissos (compras e contas do pedido).

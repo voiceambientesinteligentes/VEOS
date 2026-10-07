@@ -16,6 +16,9 @@ const dia = (t: number) => new Date(t).toISOString().slice(0, 10);
 export const brl = (v: number | string) => `R$ ${Number(v).toFixed(2).replace(".", ",").replace(/\B(?=(\d{3})+(?!\d))/g, ".")}`;
 const dataBR = (iso: string) => String(iso).slice(0, 10).split("-").reverse().join("/");
 const FONTE = "Fluxo vivo do VEOS (pedido → estoque → parcelas → NF)";
+// Decisao do fundador (06/10/2026): o controle de pedidos comeca agora; orcamentos aceitos antes desta
+// data sao da epoca sem controle e nao viram pedido (servem de base de precos).
+export const INICIO_CONTROLE = "2026-10-06";
 
 function modelo(setor: string, id: string, vars: Record<string, string>) {
   const s = (CATALOGO as unknown as { id: string; modelos: { id: string; tipo: string; assunto: string; corpo: string }[] }[]).find((x) => x.id === setor);
@@ -32,7 +35,7 @@ export async function vigiarFluxo(agora = Date.now()) {
     servico(`/rest/v1/parcelas?estado=eq.aberta&vencimento=lte.${dia(agora + 3 * DIA)}&select=id,numero,vencimento,valor,pedido:pedidos(id,numero,cliente_nome,estado)&limit=1000`),
     servico(`/rest/v1/pedidos?estado=eq.entregue&entregue_em=lt.${new Date(agora - 2 * DIA).toISOString()}&select=id,numero,cliente_nome,valor_total,entregue_em&limit=500`),
     servico(`/rest/v1/pedidos?estado=eq.confirmado&confirmado_em=lt.${new Date(agora - 15 * DIA).toISOString()}&select=id,numero,cliente_nome,confirmado_em&limit=500`),
-    servico(`/rest/v1/zoho_registros?produto=eq.books&modulo=eq.estimates&excluido=is.false&dados->>status=eq.accepted&dados->>date=gte.${dia(agora - 30 * DIA)}&select=zoho_id,nome,data:dados->>date,total:dados->>total&limit=500`),
+    servico(`/rest/v1/zoho_registros?produto=eq.books&modulo=eq.estimates&excluido=is.false&dados->>status=eq.accepted&dados->>date=gte.${dia(agora - 30 * DIA) > INICIO_CONTROLE ? dia(agora - 30 * DIA) : INICIO_CONTROLE}&select=zoho_id,nome,data:dados->>date,total:dados->>total&limit=500`),
     servico("/rest/v1/pedidos?orcamento_zoho_id=not.is.null&estado=neq.cancelado&select=orcamento_zoho_id&limit=5000"),
     servico(`/rest/v1/contas_pagar?estado=eq.aberta&vencimento=lte.${dia(agora + 3 * DIA)}&select=id,descricao,fornecedor,vencimento,valor&limit=1000`),
     servico(`/rest/v1/compras?estado=in.(aberta,parcial)&previsao_entrega=lt.${hoje}&select=id,numero,fornecedor_nome,previsao_entrega&limit=500`),

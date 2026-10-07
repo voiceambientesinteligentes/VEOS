@@ -6,5 +6,5 @@ export const FERRAMENTA = {
   simular_correcao_orcamento: "correção do orçamento", preco_pela_politica: "preço pela Política", margem_de_um_preco: "margem de um preço",
   diagnostico_dos_orcamentos: "diagnóstico dos orçamentos", previsao_de_caixa: "previsão de caixa", painel_executivo: "painel executivo",
   custo_real_do_produto: "custo real do produto", pedidos_e_recebiveis: "pedidos e recebíveis", caixa_e_contas: "caixa e contas",
-  fluxo_13_semanas: "fluxo de 13 semanas", fechamento_do_mes: "fechamento do mês (DRE)", indicadores_da_politica: "indicadores da Política",
+  fluxo_13_semanas: "fluxo de 13 semanas", fechamento_do_mes: "fechamento do mês (DRE)", indicadores_da_politica: "indicadores da Política", qualidade_dos_orcamentos: "base de preços dos orçamentos",
 };
