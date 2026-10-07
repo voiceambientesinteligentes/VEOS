@@ -1,5 +1,5 @@
 import { api } from "../js/data/api.js";
-import { telaProduto, telaProdutos, telaRevisaoProdutos } from "../js/ui/views/produtos.js";
+import { telaPendentesProdutos, telaProduto, telaProdutos, telaRevisaoProdutos } from "../js/ui/views/produtos.js";
 import { rodar } from "./_kit.js";
 
 const caso = location.hash.slice(1);
@@ -22,6 +22,11 @@ Object.assign(api, {
   produtoPreco: async (id, d) => { enviados.push(["preco", d]); return { ok: true }; },
   produtoVinculo: async (id, d) => { enviados.push(["vinculo", id, d]); return { ok: true }; },
   produtoEditar: async (id, d) => { enviados.push(["editar", d]); return { ok: true }; },
+  produtosPendentes: async (situacao = "pendente") => ({ situacao, desde: "2026-10-06", pode_resolver: true, totais: { pendente: 2, cadastrado: 0, dispensado: 0 }, leitura: {},
+    itens: situacao !== "pendente" ? [] : [
+      { id: 31, chave: "zoho:TESTE1", zoho_item_id: "TESTE1", nome: "Sensor de presença TESTE", unidade: "un", motivo: "sem_produto_veos", primeiro_orcamento: "EST-T001", primeiro_em: "2026-10-06", orcamentos: ["EST-T001", "EST-T002"], ocorrencias: 2, ultimo_preco_venda: 120, situacao: "pendente", produto: null },
+      { id: 32, chave: "texto:kit teste", zoho_item_id: null, nome: "Kit de componentes TESTE", unidade: null, motivo: "sem_item_zoho", primeiro_orcamento: "EST-T002", primeiro_em: "2026-10-07", orcamentos: ["EST-T002"], ocorrencias: 1, ultimo_preco_venda: 450, situacao: "pendente", produto: null }] }),
+  produtoPendenteResolver: async (id, d) => { enviados.push(["pendente", id, d]); return { ok: true }; },
 });
 window.prompt = (m, padrao) => padrao ?? "TESTE";
 const espera = (ms = 120) => new Promise((r) => setTimeout(r, ms));
@@ -31,6 +36,24 @@ rodar(async (v) => {
   if (caso === "lista") {
     await telaProdutos(v);
     if (!v.textContent.includes("1 duplicado(s) a revisar") || !v.textContent.includes("Venda: não definido") || !v.querySelector(".produto-sem-foto")) throw new Error("lista incompleta");
+    await espera();
+    if (!v.textContent.includes("2 produto(s) entraram em orçamentos sem cadastro") || !v.querySelector('a[href="#/produtos/pendentes"]')) throw new Error("aviso de cadastro pendente ausente");
+  }
+  if (caso === "pendentes") {
+    await telaPendentesProdutos(v);
+    const t = v.textContent;
+    for (const x of ["Sensor de presença TESTE", "Item do Zoho sem produto no VEOS", "2 vez(es) em 2 orçamento(s): EST-T001, EST-T002", "R$ 120,00/un", "Digitado no orçamento, sem item no Zoho", "Pendentes (2)"]) if (!t.includes(x)) throw new Error(`faltou: ${x}`);
+    set(v, "pend-31-marca", "Marca TESTE");
+    [...v.querySelectorAll("button")].find((b) => b.textContent === "Cadastrar produto").click();
+    await espera();
+    const c = enviados.find((e) => e[0] === "pendente" && e[1] === 31)?.[2];
+    if (!c || c.acao !== "cadastrar" || c.nome !== "Sensor de presença TESTE" || c.marca !== "Marca TESTE" || c.unidade !== "un") throw new Error("cadastrar errado: " + JSON.stringify(enviados));
+    const motivo = v.querySelector('input[aria-label="Motivo para dispensar Kit de componentes TESTE"]');
+    motivo.value = "Item genérico TESTE";
+    [...v.querySelectorAll("button")].filter((b) => b.textContent === "Dispensar").at(-1).click();
+    await espera();
+    const d = enviados.find((e) => e[0] === "pendente" && e[1] === 32)?.[2];
+    if (!d || d.acao !== "dispensar" || d.motivo !== "Item genérico TESTE") throw new Error("dispensar errado: " + JSON.stringify(enviados));
   }
   if (caso === "ficha" || caso === "preco") {
     await telaProduto(v, ID);

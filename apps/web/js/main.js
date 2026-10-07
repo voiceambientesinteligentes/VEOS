@@ -29,7 +29,7 @@ import { telaDiagnosticoCfo, telaFormularioCfo, telaPrecosCfo } from "./ui/views
 import { telaCaixa, telaFechamento, telaFluxo13, telaIndicadores, telaRecorrentes } from "./ui/views/caixa.js";
 import { telaEstoqueEstrategico, telaPlano } from "./ui/views/estrategia.js";
 import { telaComercial, telaPainelDono } from "./ui/views/painel_dono.js";
-import { telaProduto, telaProdutos, telaRevisaoProdutos } from "./ui/views/produtos.js";
+import { telaPendentesProdutos, telaProduto, telaProdutos, telaRevisaoProdutos } from "./ui/views/produtos.js";
 import { iniciarAvisos } from "./ui/notificar.js";
 import { abrirBusca, ligarAtalhos } from "./ui/busca_global.js";
 import { telaCompra, telaCompras, telaContasPagar, telaNovaCompra } from "./ui/views/compras.js";
@@ -135,6 +135,7 @@ const TELAS = {
   "#/sistema/acessos": { fn: telaAcessos, titulo: ["Acessos a dados pessoais", "LGPD: quem abriu fichas de clientes, pedidos e exportações"] },
   "#/produtos": { fn: telaProdutos, titulo: ["Catálogo de produtos", "Catálogo próprio do VEOS: fotos, ficha técnica, compras e preços"] },
   "#/produtos/revisao": { fn: telaRevisaoProdutos, titulo: ["Revisar produtos", "Possíveis duplicados com o Zoho e agrupamentos a conferir"] },
+  "#/produtos/pendentes": { fn: telaPendentesProdutos, titulo: ["Cadastro pendente", "Produtos que entraram em orçamentos sem cadastro no catálogo"] },
   "#/sistema/independencia": { fn: telaIndependencia, titulo: ["Independência do Zoho", "Uso real por módulo, cobertura do VEOS e roteiro de desligamento"] },
   "#/diretores": { fn: telaDiretores, titulo: ["Perguntar aos diretores", "Respostas da IA na voz de cada diretor, pelo manual de atuação e com as contas feitas pelo VEOS"] },
   "#/mensagens": { fn: telaMensagens, titulo: ["Caixa de saída", "Mensagens preparadas: você revisa, envia e marca como enviada"] },

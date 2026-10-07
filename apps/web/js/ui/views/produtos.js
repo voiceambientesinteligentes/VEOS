@@ -38,8 +38,12 @@ export async function telaProdutos(root) {
   busca.addEventListener("input", () => { clearTimeout(t); t = setTimeout(() => { pagina = 1; desenhar(); }, 300); });
   sit.addEventListener("change", () => { pagina = 1; desenhar(); });
   root.append(panel({ title: "Catálogo de produtos", subtitle: "Catálogo próprio do VEOS. Preço de compra = último preço pago (sem frete e impostos de importação).",
-    actions: h("div", { class: "row" }, h("a", { class: "btn btn-ghost", href: "#/produtos/revisao" }, "Revisar duplicados"), busca, sit) }, conteudo));
+    actions: h("div", { class: "row" }, h("a", { class: "btn btn-ghost", href: "#/produtos/pendentes" }, "Cadastro pendente"), h("a", { class: "btn btn-ghost", href: "#/produtos/revisao" }, "Revisar duplicados"), busca, sit) }, conteudo));
   await desenhar();
+  // aviso dos produtos que entraram em orcamentos sem cadastro (nao trava a tela se falhar)
+  api.produtosPendentes().then((d) => {
+    if (d.totais.pendente) root.prepend(h("p", { class: "notice notice-warn", role: "status" }, `${d.totais.pendente} produto(s) entraram em orçamentos sem cadastro. `, h("a", { href: "#/produtos/pendentes" }, "Resolver")));
+  }).catch(() => {});
 }
 
 function painelPreco(d, recarregar) {
@@ -182,5 +186,80 @@ export async function telaRevisaoProdutos(root) {
           : h("p", { class: "notice notice-ok" }, "Nada a conferir.")),
     ].filter(Boolean));
   }
+  await desenhar();
+}
+
+// ================================================================ cadastro pendente
+const MOTIVO = { sem_item_zoho: ["Digitado no orçamento, sem item no Zoho", "warn"], sem_produto_veos: ["Item do Zoho sem produto no VEOS", "neutral"] };
+const SIT_PEND = { pendente: "Pendentes", cadastrado: "Cadastrados", dispensado: "Dispensados" };
+
+/** Produtos que entraram em orcamentos sem cadastro (desde 06/10/2026): cadastrar, ligar ou dispensar. */
+export async function telaPendentesProdutos(root) {
+  const conteudo = h("div", { class: "stack" });
+  const filtro = h("select", { class: "select", "aria-label": "Situação" });
+  let situacao = "pendente";
+  filtro.addEventListener("change", () => { situacao = filtro.value; desenhar(); });
+
+  function cartao(it, pode) {
+    const saida = h("div", { role: "status" });
+    const feito = async (dados, msg) => {
+      try { await api.produtoPendenteResolver(it.id, dados); await desenhar(msg); } catch (e) { clear(saida).append(errorNotice(e.message)); }
+    };
+    const acoes = [];
+    if (pode && it.situacao === "pendente") {
+      const id = (x) => `pend-${it.id}-${x}`;
+      const inp = (x, rot, valor = "") => field(id(x), rot, h("input", { class: "input", id: id(x), type: "text", autocomplete: "off", value: valor }));
+      const cadastrar = h("button", { class: "btn btn-primary btn-mini", type: "button" }, "Cadastrar produto");
+      cadastrar.addEventListener("click", () => {
+        const v = (x) => document.getElementById(id(x))?.value ?? "";
+        feito({ acao: "cadastrar", nome: v("nome"), marca: v("marca"), modelo: v("modelo"), unidade: v("unidade"), categoria: v("categoria") }, `${it.nome}: produto cadastrado. Custo e preço de venda ficam para quem tem a alçada.`);
+      });
+      const busca = h("input", { class: "input", type: "search", placeholder: "Buscar no catálogo", "aria-label": `Buscar produto para ${it.nome}` });
+      const opcoes = h("div", { class: "stack-s" });
+      let t;
+      busca.addEventListener("input", () => {
+        clearTimeout(t);
+        t = setTimeout(async () => {
+          if (busca.value.trim().length < 2) { clear(opcoes); return; }
+          const d = await api.produtos({ busca: busca.value });
+          clear(opcoes).append(d.produtos.length ? h("ul", { class: "list-plain stack-s" }, d.produtos.slice(0, 8).map((p) => {
+            const b = h("button", { class: "btn btn-ghost btn-mini", type: "button" }, `Ligar a ${p.codigo} · ${p.nome}`);
+            b.addEventListener("click", () => feito({ acao: "ligar", produto_id: p.id }, `${it.nome}: ligado a ${p.codigo}.`));
+            return h("li", null, b);
+          })) : h("p", { class: "field-hint" }, "Nenhum produto com esse nome."));
+        }, 300);
+      });
+      const motivo = h("input", { class: "input", type: "text", placeholder: "Ex.: item genérico de orçamento (kit de componentes)", "aria-label": `Motivo para dispensar ${it.nome}` });
+      const dispensar = h("button", { class: "btn btn-ghost btn-mini", type: "button" }, "Dispensar");
+      dispensar.addEventListener("click", () => feito({ acao: "dispensar", motivo: motivo.value }, `${it.nome}: dispensado.`));
+      acoes.push(
+        h("details", null, h("summary", null, "Cadastrar como produto novo"),
+          h("div", { class: "form-grid" }, inp("nome", "Nome", it.nome), inp("marca", "Marca"), inp("modelo", "Modelo"), inp("unidade", "Unidade", it.unidade ?? "un"), inp("categoria", "Categoria")),
+          h("p", { class: "field-hint" }, "Custo e preço de venda não são definidos aqui: ficam como lacuna até quem tem a alçada preencher na ficha do produto."), cadastrar),
+        h("details", null, h("summary", null, "É um produto que já existe no catálogo"), busca, opcoes),
+        h("details", null, h("summary", null, "Dispensar (não precisa de cadastro)"), h("div", { class: "row" }, motivo, dispensar)));
+    }
+    return h("li", { class: "panel panel-tight stack-s" },
+      h("div", { class: "row" }, h("strong", null, it.nome), stamp(...(MOTIVO[it.motivo] ?? [it.motivo, "neutral"]))),
+      h("p", { class: "field-hint" },
+        `${it.ocorrencias} vez(es) em ${it.orcamentos.length} orçamento(s): ${it.orcamentos.join(", ")}`,
+        it.ultimo_preco_venda !== null ? ` · último preço cobrado ${brl(it.ultimo_preco_venda)}${it.unidade ? `/${it.unidade}` : ""}` : "",
+        it.primeiro_em ? ` · desde ${formatDate(it.primeiro_em)}` : ""),
+      it.situacao === "cadastrado" && it.produto ? h("p", null, "Produto: ", h("a", { href: `#/produtos/${it.produto.id}` }, `${it.produto.codigo} · ${it.produto.nome}`)) : null,
+      it.situacao === "dispensado" ? h("p", { class: "field-hint" }, `Dispensado: ${it.motivo_dispensa ?? "—"}`) : null,
+      ...acoes, saida);
+  }
+
+  async function desenhar(msg) {
+    const d = await api.produtosPendentes(situacao);
+    clear(filtro).append(...Object.entries(SIT_PEND).map(([k, r]) => h("option", { value: k, selected: k === situacao ? "" : null }, `${r} (${d.totais[k] ?? 0})`)));
+    clear(conteudo).append(...[
+      msg ? h("p", { class: "notice notice-ok", role: "status" }, msg) : null,
+      d.itens.length ? h("ul", { class: "list-plain stack" }, d.itens.map((it) => cartao(it, d.pode_resolver)))
+        : h("p", { class: "result-empty" }, situacao === "pendente" ? "Nenhum produto sem cadastro nos orçamentos desde 06/10/2026." : "Nada aqui."),
+      !d.pode_resolver && situacao === "pendente" && d.itens.length ? h("p", { class: "field-hint" }, "Quem resolve: direção ou operações.") : null].filter(Boolean));
+  }
+  root.append(panel({ title: "Cadastro pendente", subtitle: "Produtos que entraram em orçamentos sem cadastro no catálogo do VEOS, contando a partir de 06/10/2026 (os itens antigos do Zoho ficam para a mesclagem do fim do projeto, BIB-0077). Serviços ficam fora: conferem-se pelas horas.",
+    actions: h("div", { class: "row" }, h("a", { class: "btn btn-ghost", href: "#/produtos" }, "‹ Catálogo"), filtro) }, conteudo));
   await desenhar();
 }

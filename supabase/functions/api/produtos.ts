@@ -5,6 +5,8 @@
 //   POST /produtos/:id                                   {nome?, descricao?, categoria?, unidade?, situacao?, observacao?}
 //   POST /produtos/:id/preco                             {campo: custo_ultimo|preco_venda, valor|null, motivo}
 //   POST /produtos/vinculos/:vid                         {situacao: confirmado|descartado, preferencia?: novo|antigo|ambos}
+//   GET  /produtos/pendentes?situacao=                   produtos que entraram em orcamentos sem cadastro (desde 06/10/2026)
+//   POST /produtos/pendentes/:id                         {acao: cadastrar (nome, marca, modelo, unidade, categoria, descricao) | ligar (produto_id) | dispensar (motivo)}
 // Alcada (proposta BIB, ate decisao do fundador): custo -> direcao, financas e operacoes;
 // preco de venda e decisao de duplicados -> so direcao. Toda mudanca de preco fica no historico.
 import { HttpError, lerCorpo, type Membro, SERVICE, servico, URL_BASE } from "../_shared/banco.ts";
@@ -71,6 +73,33 @@ export async function rotearProdutos(req: Request, partes: string[], eu: Membro)
       vinculos: vinc.map((v: Record<string, any>) => ({ ...v, zoho: zm.get(v.zoho_item_id) ?? null, foto: fotos.get(v.produto?.imagem) ?? null })),
       agrupamentos: agrup.map((p: Record<string, any>) => ({ ...p, foto: fotos.get(p.imagem) ?? null })),
     };
+  }
+  if (!post && a === "pendentes") {
+    // le os orcamentos do espelho antes de mostrar (a fila tambem e atualizada pela vigia)
+    const leitura = await servico("/rest/v1/rpc/cadastro_pendente_atualizar", { method: "POST", body: "{}" });
+    const situacao = ["pendente", "cadastrado", "dispensado"].includes(q.get("situacao") ?? "") ? q.get("situacao") : "pendente";
+    const [itens, contagem] = await Promise.all([
+      servico(`/rest/v1/cadastro_pendente?situacao=eq.${situacao}&select=id,chave,zoho_item_id,nome,unidade,motivo,primeiro_orcamento,primeiro_em,orcamentos,ocorrencias,ultimo_preco_venda,situacao,motivo_dispensa,resolvido_em,produto:produtos(id,codigo,nome)&order=ocorrencias.desc,primeiro_em.desc&limit=500`),
+      servico("/rest/v1/cadastro_pendente?select=situacao&limit=10000"),
+    ]);
+    const total = (s: string) => contagem.filter((x: { situacao: string }) => x.situacao === s).length;
+    return { situacao, itens, totais: { pendente: total("pendente"), cadastrado: total("cadastrado"), dispensado: total("dispensado") }, leitura,
+      desde: "2026-10-06", pode_resolver: ["direcao", "operacoes"].includes(eu.papel) };
+  }
+  if (post && a === "pendentes" && b && /^\d{1,12}$/.test(b)) {
+    exigir(eu, ["direcao", "operacoes"]);
+    const acao = String(corpo.acao ?? "");
+    if (acao === "cadastrar") {
+      const dados: Record<string, string | null> = {};
+      for (const [k, max] of [["nome", 200], ["marca", 120], ["modelo", 120], ["unidade", 20], ["categoria", 80], ["descricao", 5000]] as const) dados[k] = txt(corpo[k], max);
+      return await servico("/rest/v1/rpc/cadastro_pendente_cadastrar", { method: "POST", body: JSON.stringify({ p_id: Number(b), p_dados: dados, p_usuario: eu.user_id }) });
+    }
+    if (acao === "ligar") {
+      if (!UUID_RE.test(String(corpo.produto_id ?? ""))) throw new HttpError(400, "escolha o produto do catálogo");
+      return await servico("/rest/v1/rpc/cadastro_pendente_ligar", { method: "POST", body: JSON.stringify({ p_id: Number(b), p_produto: corpo.produto_id, p_usuario: eu.user_id }) });
+    }
+    if (acao === "dispensar") return await servico("/rest/v1/rpc/cadastro_pendente_dispensar", { method: "POST", body: JSON.stringify({ p_id: Number(b), p_motivo: txt(corpo.motivo, 500), p_usuario: eu.user_id }) });
+    throw new HttpError(400, "ação: cadastrar, ligar ou dispensar");
   }
   if (!post && a && UUID_RE.test(a)) {
     const [[p], fontes, compras, vinculos, historico] = await Promise.all([

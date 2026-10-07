@@ -79,6 +79,8 @@ export const api = {
   produtoEditar: (id, dados) => request("POST", `produtos/${encodeURIComponent(id)}`, dados, { "Idempotency-Key": crypto.randomUUID() }),
   produtoPreco: (id, dados) => request("POST", `produtos/${encodeURIComponent(id)}/preco`, dados, { "Idempotency-Key": crypto.randomUUID() }),
   produtoVinculo: (vid, dados) => request("POST", `produtos/vinculos/${encodeURIComponent(vid)}`, dados, { "Idempotency-Key": crypto.randomUUID() }),
+  produtosPendentes: (situacao = "") => request("GET", `produtos/pendentes${situacao ? `?situacao=${encodeURIComponent(situacao)}` : ""}`),
+  produtoPendenteResolver: (id, dados) => request("POST", `produtos/pendentes/${encodeURIComponent(id)}`, dados, { "Idempotency-Key": crypto.randomUUID() }),
   fluxoProjetos: () => request("GET", "fluxo/projetos"),
   comprasLista: (estado = "") => request("GET", `fluxo/compras${estado ? `?estado=${encodeURIComponent(estado)}` : ""}`),
   comprasFaltas: () => request("GET", "fluxo/compras/faltas"),

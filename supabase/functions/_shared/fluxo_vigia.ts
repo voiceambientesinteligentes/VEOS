@@ -155,6 +155,17 @@ export async function vigiarFluxo(agora = Date.now()) {
       mensagem: `O orçamento ${o.nome} (${o.total ? brl(o.total) : "valor não informado"}), de ${o.data ? dataBR(o.data) : "—"}, está aceito no Zoho e ainda não virou pedido no VEOS. Crie o pedido para reservar estoque e gerar as parcelas.`,
       tarefas: [{ titulo: `Criar o pedido do orçamento ${o.nome}`.slice(0, 240), papel: "assistente_comercial", prazo: hoje }] });
   }
+  // 6. produto que entrou em orcamento sem cadastro no catalogo (desde o inicio do controle): um alerta so
+  const pendentes: Obj[] = await servico("/rest/v1/rpc/cadastro_pendente_atualizar", { method: "POST", body: JSON.stringify({ p_desde: INICIO_CONTROLE }) })
+    .then(() => servico("/rest/v1/cadastro_pendente?situacao=eq.pendente&select=nome,orcamentos&order=ocorrencias.desc&limit=200"))
+    .catch((e) => { console.error("cadastro pendente", e); return []; });
+  if (pendentes.length) {
+    const exemplos = pendentes.slice(0, 5).map((p) => `${p.nome} (${(p.orcamentos ?? []).join(", ")})`).join("; ");
+    add({ chave: "FLX_CADASTRO_PENDENTE", setor: "operacoes", sentinela: "FLX_CADASTRO_PENDENTE", severidade: "INFO",
+      titulo: `${pendentes.length} produto(s) em orçamentos sem cadastro no catálogo`,
+      mensagem: `Entraram em orçamentos sem cadastro no catálogo do VEOS: ${exemplos}${pendentes.length > 5 ? ` e mais ${pendentes.length - 5}` : ""}. Em Catálogo de produtos → Cadastro pendente: cadastrar, ligar a um produto existente ou dispensar.`,
+      tarefas: [{ titulo: "Resolver o cadastro pendente dos produtos dos orçamentos", papel: "comprador", prazo: dia(agora + 2 * DIA) }] });
+  }
 
   return await sincronizarAlertas("FLX_", alvos, agora);
 }
