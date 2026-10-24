@@ -24,9 +24,10 @@ export async function rotearComercial(req: Request, partes: string[], eu: Membro
 
   if (!post && a === "base") {
     exigir(eu, VER);
-    const est = await servico("/rest/v1/zoho_registros?produto=eq.books&modulo=eq.estimates&excluido=is.false&select=numero:dados->>estimate_number,data:dados->>date,status:dados->>status,cliente:dados->>customer_name,total:dados->>total&limit=5000");
+    const est = await servico("/rest/v1/zoho_registros?produto=eq.books&modulo=eq.estimates&excluido=is.false&select=numero:dados->>estimate_number,data:dados->>date,status:dados->>status,cliente:dados->>customer_name,contato:dados->>contact_number,cid:dados->>customer_id,total:dados->>total&limit=5000");
     await registrarAcesso(eu.user_id, "comercial:base");
-    const base = baseComercial(est.map((e: any) => ({ ...e, total: Number(e.total) || 0 })));
+    // codigo = o mesmo que os diretores (IA) usam para citar o cliente sem o nome
+    const base = baseComercial(est.map((e: any) => ({ ...e, total: Number(e.total) || 0, codigo: e.contato || (e.cid ? `cliente-${String(e.cid).slice(-5)}` : "cliente") })));
     return { ...base, clientes_lista: base.clientes_lista.slice(0, 80), fonte: "Espelho do Zoho Books no VEOS (orçamentos)", segmento: "automático pelo nome do cliente: conferir" };
   }
   if (!post && a === "implantacao") {

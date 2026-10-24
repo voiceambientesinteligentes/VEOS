@@ -1,4 +1,10 @@
-# Próxima sessão — ponto de partida (atualizado em 07/10/2026)
+# Próxima sessão — ponto de partida (atualizado em 24/10/2026)
+
+## Urgente e decisões do Fernando (24/10)
+1. **Revogar a chave da Anthropic que está no site** (console.anthropic.com → Settings → API Keys), trocar a senha da área "Equipe Interna" e republicar o site (BIB-0104; aba Pendências CIO-13).
+2. Decidir: RT × CAU (BIB-0105), quem define cada meta + faturamento e mix por segmento (BIB-0106), regras de prospecção e mensagens (BIB-0107), CRM dos setores em produção (BIB-0109).
+3. Começar a usar o comercial: registrar todo contato novo como lead no setor Comercial (implantação COM-B1) e dar situação aos 83 orçamentos sem decisão no Zoho (COM-B2). A aba Implantação (`#/comercial?aba=implantacao`) lista o resto.
+4. No final: trocar todas as chaves de IA e fazer o MCP ampliado (ver abaixo).
 
 ## Prompt para colar no início da próxima conversa
 

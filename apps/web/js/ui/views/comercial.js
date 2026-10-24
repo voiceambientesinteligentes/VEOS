@@ -154,11 +154,11 @@ export async function telaSetorComercial(root, signal) {
         table({ head: ["Segmento", "Clientes", "Orçamentos", "Ganhos", "Perdidos", "Sem decisão", "Orçado", "Ganho", "Ticket ganho", "Ganho/decididos"], align: ["", "r", "r", "r", "r", "r", "r", "r", "r", "r"],
           rows: b.por_segmento.map((s) => [s.nome, String(s.clientes), String(s.orcamentos), String(s.ganhos), String(s.perdidos), String(s.abertos), brl(s.orcado), brl(s.ganho), brl(s.ticket_ganho), pct(s.taxa_ganho_decididos)]) })),
       panel({ title: `Especificadores (${b.especificadores.length})`, subtitle: "Escritórios de arquitetura e design que aparecem como cliente nos orçamentos." },
-        b.especificadores.length ? table({ head: ["Escritório", "Orçamentos", "Ganhos", "Perdidos", "Sem decisão", "Orçado", "Último"], align: ["", "r", "r", "r", "r", "r", ""],
-          rows: b.especificadores.map((c) => [c.nomes.join(" / "), String(c.orcamentos), String(c.ganhos), String(c.perdidos), String(c.abertos), brl(c.orcado), c.ultimo ? formatDate(c.ultimo) : "—"]) }) : h("p", { class: "result-empty" }, "Nenhum.")),
-      panel({ title: "Clientes com mais orçamentos", subtitle: b.duplicados.length ? `${b.duplicados.length} nome(s) parecem o mesmo cliente com cadastros diferentes no Zoho.` : null },
-        table({ head: ["Cliente", "Segmento", "Orçamentos", "Ganhos", "Orçado", "Último"], align: ["", "", "r", "r", "r", ""],
-          rows: b.clientes_lista.slice(0, 30).map((c) => [c.nomes.join(" / "), SEGMENTOS[c.segmento], String(c.orcamentos), String(c.ganhos), brl(c.orcado), c.ultimo ? formatDate(c.ultimo) : "—"]) })));
+        b.especificadores.length ? table({ head: ["Escritório", "Código", "Orçamentos", "Ganhos", "Perdidos", "Sem decisão", "Orçado", "Último"], align: ["", "", "r", "r", "r", "r", "r", ""],
+          rows: b.especificadores.map((c) => [c.nomes.join(" / "), c.codigo ?? "—", String(c.orcamentos), String(c.ganhos), String(c.perdidos), String(c.abertos), brl(c.orcado), c.ultimo ? formatDate(c.ultimo) : "—"]) }) : h("p", { class: "result-empty" }, "Nenhum.")),
+      panel({ title: "Clientes com mais orçamentos", subtitle: `${b.duplicados.length ? `${b.duplicados.length} nome(s) parecem o mesmo cliente com cadastros diferentes no Zoho. ` : ""}O código é o que os diretores (IA) usam para citar o cliente sem o nome.` },
+        table({ head: ["Cliente", "Código", "Segmento", "Orçamentos", "Ganhos", "Orçado", "Último"], align: ["", "", "", "r", "r", "r", ""],
+          rows: b.clientes_lista.slice(0, 30).map((c) => [c.nomes.join(" / "), c.codigo ?? "—", SEGMENTOS[c.segmento], String(c.orcamentos), String(c.ganhos), brl(c.orcado), c.ultimo ? formatDate(c.ultimo) : "—"]) })));
   }
 
   // ------------------------------------------------ Plano comercial (meta a semana, roteiros, showroom, eventos)

@@ -255,7 +255,12 @@ export default {
     "Separa fato (registrado no VEOS) de estimativa.",
     "Mostra a acurácia das previsões anteriores."
    ],
-   "quando_escalar": "Se o compromisso ficar abaixo do necessário para cobrir os compromissos de caixa informados por Finanças, avisar direção e Finanças no mesmo dia."
+   "quando_escalar": "Se o compromisso ficar abaixo do necessário para cobrir os compromissos de caixa informados por Finanças, avisar direção e Finanças no mesmo dia.",
+   "ferramentas_veos": [
+    "base_comercial",
+    "funil_comercial",
+    "funil_reverso"
+   ]
   },
   {
    "pedido": "Estamos sem venda. O que fazemos agora?",
@@ -278,7 +283,13 @@ export default {
     "Plano com ações mensuráveis e responsáveis.",
     "Não propõe desconto generalizado como solução."
    ],
-   "quando_escalar": "Se a falta de venda ameaçar o caixa ou exigir campanha paga, promoção ou mudança de preço: decisão da direção (e Finanças)."
+   "quando_escalar": "Se a falta de venda ameaçar o caixa ou exigir campanha paga, promoção ou mudança de preço: decisão da direção (e Finanças).",
+   "ferramentas_veos": [
+    "funil_comercial",
+    "base_comercial",
+    "canais_e_cadencias",
+    "implantacao_comercial"
+   ]
   },
   {
    "pedido": "O cliente pediu desconto. Posso dar?",
@@ -346,7 +357,12 @@ export default {
     "Riscos legais apontados com fonte.",
     "Indicadores de concentração por parceiro incluídos."
    ],
-   "quando_escalar": "Qualquer remuneração a parceiro, acordo formal ou texto contratual: direção e jurídico."
+   "quando_escalar": "Qualquer remuneração a parceiro, acordo formal ou texto contratual: direção e jurídico.",
+   "ferramentas_veos": [
+    "base_comercial",
+    "canais_e_cadencias",
+    "implantacao_comercial"
+   ]
   },
   {
    "pedido": "Por que estamos perdendo vendas?",
@@ -367,7 +383,11 @@ export default {
     "Diferencia fato registrado, relato do cliente e hipótese.",
     "Não conclui 'preço' sem checar se o valor foi trabalhado."
    ],
-   "quando_escalar": "Se a conclusão sugerir mudança de preço, posicionamento ou política: proposta à direção."
+   "quando_escalar": "Se a conclusão sugerir mudança de preço, posicionamento ou política: proposta à direção.",
+   "ferramentas_veos": [
+    "base_comercial",
+    "funil_comercial"
+   ]
   },
   {
    "pedido": "Precisamos contratar um vendedor. Como faço?",
@@ -389,7 +409,10 @@ export default {
     "Variável não incentiva desconto.",
     "Critérios de avaliação objetivos."
    ],
-   "quando_escalar": "Abertura de vaga, salário e comissão: direção (gasto de dinheiro)."
+   "quando_escalar": "Abertura de vaga, salário e comissão: direção (gasto de dinheiro).",
+   "ferramentas_veos": [
+    "implantacao_comercial"
+   ]
   },
   {
    "pedido": "Defina as metas do comercial para o ano.",
@@ -411,7 +434,12 @@ export default {
     "Metas de atividade além de metas de resultado.",
     "Compatível com capacidade de entrega."
    ],
-   "quando_escalar": "Metas oficiais e remuneração atrelada são decisão da direção; o CSO propõe."
+   "quando_escalar": "Metas oficiais e remuneração atrelada são decisão da direção; o CSO propõe.",
+   "ferramentas_veos": [
+    "metas_comerciais",
+    "funil_reverso",
+    "base_comercial"
+   ]
   },
   {
    "pedido": "Como vender mais para quem já é cliente?",
@@ -433,7 +461,11 @@ export default {
     "Mensagens sem pressão e personalizadas.",
     "Nenhum envio automático ao cliente."
    ],
-   "quando_escalar": "Criar oferta com preço especial, contrato de manutenção novo ou visita gratuita com custo: direção e Finanças."
+   "quando_escalar": "Criar oferta com preço especial, contrato de manutenção novo ou visita gratuita com custo: direção e Finanças.",
+   "ferramentas_veos": [
+    "base_comercial",
+    "canais_e_cadencias"
+   ]
   },
   {
    "pedido": "Avalie esta oportunidade grande: vale a pena?",
@@ -477,7 +509,12 @@ export default {
     "Nenhuma exclusão de registro do Zoho (só edição aprovada).",
     "Dado ausente marcado como lacuna."
    ],
-   "quando_escalar": "Mudança estrutural no Zoho ou na integração: alinhar com a direção e com quem mantém a integração."
+   "quando_escalar": "Mudança estrutural no Zoho ou na integração: alinhar com a direção e com quem mantém a integração.",
+   "ferramentas_veos": [
+    "funil_comercial",
+    "implantacao_comercial",
+    "canais_e_cadencias"
+   ]
   },
   {
    "pedido": "O arquiteto quer que a gente pague comissão/RT. O que faço?",
@@ -499,7 +536,10 @@ export default {
     "Fonte legal citada.",
     "Margem recalculada se houver qualquer custo de parceria."
    ],
-   "quando_escalar": "Sempre: comissão/RT é decisão da direção, com parecer jurídico."
+   "quando_escalar": "Sempre: comissão/RT é decisão da direção, com parecer jurídico.",
+   "ferramentas_veos": [
+    "consultar_precedentes"
+   ]
   },
   {
    "pedido": "Faça um treinamento para a equipe vender melhor.",

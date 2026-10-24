@@ -26,6 +26,8 @@ import { dre } from "../dominio/dre.js";
 import { indicadores } from "../dominio/indicadores.js";
 import { contasComSaldo, dadosFechamento, dadosIndicadores, dadosSemanas, hojeSP } from "../caixa_dados.ts";
 import { caixaPedido } from "../../api/compras.ts";
+import { baseComercial, CADENCIAS, cadenciaDoRegistro, CANAIS, DONOS_METAS, IMPLANTACAO } from "../dominio/comercial.js";
+import { funilNecessario } from "../dominio/equilibrio.js";
 
 export type Fonte = { titulo: string; natureza: string; url?: string | null };
 export type Contexto = {
@@ -38,9 +40,12 @@ export type Contexto = {
   procedimentos: Set<string>;
   cache: Map<string, Promise<any>>;
 };
-type Ferramenta = DefFerramenta & { papeis?: string[]; executar(a: Record<string, any>, ctx: Contexto): Promise<unknown> };
+type Ferramenta = DefFerramenta & { papeis?: string[]; setores?: string[]; executar(a: Record<string, any>, ctx: Contexto): Promise<unknown> };
 
 const FIN = ["direcao", "financas"];
+// comercial: CSO e CMO (e a direcao); financas tambem le, para conversar com o CFO
+const COM = ["direcao", "vendas", "marketing", "financas"];
+const SETORES_COM = ["vendas", "marketing", "direcao"];
 const r2 = (v: number) => Math.round(v * 100) / 100;
 const r1 = (v: number) => Math.round(v * 10) / 10;
 const obj = (properties: Record<string, Esquema>, required: string[] = []): Esquema => ({ type: "object", properties, required });
@@ -651,13 +656,134 @@ const FERRAMENTAS: Ferramenta[] = [
       return { indicadores: r.indicadores.map((i: any) => ({ nome: i.nome, valor: i.valor, unidade: i.unidade, meta: i.meta, situacao: i.situacao, lacuna: i.lacuna ?? null, formula: i.formula, detalhe: i.detalhe ?? null, nota: i.nota ?? null })), meses: r.meses, reserva: r.reserva, tem_extrato: r.temExtrato };
     },
   },
+  // ---------------------------------------------------------------- comercial (CSO e CMO)
+  {
+    nome: "base_comercial",
+    papeis: COM, setores: SETORES_COM,
+    descricao: "Base real de orçamentos do Zoho lida pelo comercial: ganhos, perdidos e sem decisão, ticket médio dos ganhos, mediana, taxa de ganho sobre decididos, resultado por segmento (especificadores, construtoras, corporativo, cliente final), especificadores e principais clientes pelo CÓDIGO, concentração e cadastros duplicados. Segmento automático pelo nome do cliente (conferir).",
+    parametros: obj({ desde: str("Data inicial AAAA-MM-DD (opcional; sem data = toda a base)") }),
+    async executar(a, ctx) {
+      const b = await memo(ctx, "base_comercial", async () => {
+        const est = await servico("/rest/v1/zoho_registros?produto=eq.books&modulo=eq.estimates&excluido=is.false&select=numero:dados->>estimate_number,data:dados->>date,status:dados->>status,cliente:dados->>customer_name,contato:dados->>contact_number,cid:dados->>customer_id,total:dados->>total&limit=5000");
+        return est.map((e: any) => ({ ...e, total: Number(e.total) || 0, codigo: e.contato || (e.cid ? `cliente-${String(e.cid).slice(-5)}` : "cliente") }));
+      });
+      const r = baseComercial(b, { desde: /^\d{4}-\d{2}-\d{2}$/.test(String(a.desde ?? "")) ? a.desde : null });
+      fonte(ctx, "Espelho do Zoho Books no VEOS (orçamentos)", "dado");
+      const cli = (c: any) => ({ codigo: c.codigo, segmento: c.segmento, orcamentos: c.orcamentos, ganhos: c.ganhos, perdidos: c.perdidos, sem_decisao: c.abertos, orcado: c.orcado, ganho: c.ganho, ultimo: c.ultimo });
+      return {
+        orcamentos: r.orcamentos, clientes: r.clientes, ganhos: r.ganhos, perdidos: r.perdidos, sem_decisao: r.abertos, pct_sem_decisao: r.pct_abertos,
+        ticket_medio_ganhos: r.ticket_ganho, mediana_orcamentos: r.mediana_orcamento, taxa_ganho_sobre_decididos: r.taxa_ganho_decididos,
+        aviso_taxa: "Taxa sobre decididos não é taxa de fechamento real enquanto houver orçamentos sem decisão no Zoho.",
+        por_segmento: r.por_segmento.map((s: any) => ({ segmento: s.segmento, nome: s.nome, clientes: s.clientes, orcamentos: s.orcamentos, ganhos: s.ganhos, perdidos: s.perdidos, sem_decisao: s.abertos, orcado: s.orcado, ganho: s.ganho, ticket_ganho: s.ticket_ganho, taxa_ganho_decididos: s.taxa_ganho_decididos })),
+        especificadores: r.especificadores.slice(0, 15).map(cli), principais_clientes: r.clientes_lista.slice(0, 15).map(cli),
+        concentracao: r.concentracao ? { codigo: r.clientes_lista[0]?.codigo, orcamentos: r.concentracao.orcamentos, pct: r.concentracao.pct } : null,
+        cadastros_duplicados: r.duplicados.length,
+        segmento: "automático pelo nome do cliente (conferir na aba Base de clientes do setor comercial)",
+      };
+    },
+  },
+  {
+    nome: "funil_comercial",
+    papeis: COM, setores: SETORES_COM,
+    descricao: "Funil do setor Comercial no VEOS (só registros de pessoas reais): leads, oportunidades, propostas e parceiros por etapa, origem dos leads, dias parado na etapa, registros em cadência de follow-up e toques abertos/atrasados. Sem nomes nem contatos.",
+    parametros: obj({}),
+    async executar(_a, ctx) {
+      const hoje = new Date().toISOString().slice(0, 10);
+      const [regs, toques] = await Promise.all([
+        rpc("cadencia_candidatos", { p_setor: "vendas", p_desde: "2000-01-01" }),
+        servico("/rest/v1/tarefas?origem=like.cadencia:*&estado=eq.aberta&select=registro_id,prazo&limit=5000"),
+      ]);
+      fonte(ctx, "Registros do setor Comercial no VEOS", "dado");
+      if (!regs.length) return { lacuna: "Nenhum registro real no CRM do VEOS: o funil ainda não é medido. Implantação COM-B1: registrar todo contato novo como lead, com a origem.", registros: 0 };
+      const porTipo: Record<string, Record<string, number>> = {}, origens: Record<string, number> = {};
+      const lista = regs.map((r: any) => {
+        (porTipo[r.tipo] ??= {})[r.estado] = (porTipo[r.tipo][r.estado] ?? 0) + 1;
+        if (r.tipo === "lead") origens[r.dados?.origem ?? "sem_origem"] = (origens[r.dados?.origem ?? "sem_origem"] ?? 0) + 1;
+        const dias = Math.floor((Date.now() - Date.parse(r.desde)) / 86_400_000);
+        return { ref: String(r.id).slice(0, 8), tipo: r.tipo, estado: r.estado, dias_na_etapa: dias, origem: r.dados?.origem ?? null, cadencia: cadenciaDoRegistro(r)?.id ?? null };
+      });
+      const finais = ["convertido", "desqualificado", "ganha", "perdida", "aceita", "recusada", "encerrado"];
+      return {
+        registros: regs.length, por_tipo_e_etapa: porTipo, origem_dos_leads: origens,
+        parados_mais_de_14_dias: lista.filter((x: any) => x.dias_na_etapa > 14 && !finais.includes(x.estado)).length,
+        em_cadencia: lista.filter((x: any) => x.cadencia).length, toques_abertos: toques.length, toques_atrasados: toques.filter((t: any) => t.prazo && t.prazo < hoje).length,
+        registros_lista: lista.slice(0, 60),
+      };
+    },
+  },
+  {
+    nome: "canais_e_cadencias",
+    papeis: COM, setores: SETORES_COM,
+    descricao: "Canais de aquisição da VOICE (dono, oferta de entrada, como medir, o que a IA faz, ferramenta gratuita, cuidado legal) e as cadências de follow-up (gatilho, papel e toques por dia e canal). Envio de mensagem é sempre humano.",
+    parametros: obj({ canal: str("Filtrar por um canal (opcional), ex.: especificadores, construtoras, inbound, reativacao") }),
+    async executar(a, ctx) {
+      fonte(ctx, "Setor comercial do VEOS: canais e cadências (pesquisa de 07/10/2026, BIB-0101 e BIB-0102)", "documento");
+      const f = sem(a.canal);
+      const canais = CANAIS.filter((c: any) => !f || sem(c.id).includes(f) || sem(c.canal).includes(f));
+      const ids = new Set(canais.map((c: any) => c.cadencia).filter(Boolean));
+      return {
+        canais: canais.map((c: any) => ({ id: c.id, canal: c.canal, dono: c.dono, apoio: c.apoio, oferta: c.oferta, como_medir: c.metrica, ia: c.ia, ferramenta: c.ferramenta, cuidado: c.cuidado, cadencia: c.cadencia })),
+        cadencias: CADENCIAS.filter((c: any) => !f || ids.has(c.id)).map((c: any) => ({ id: c.id, nome: c.nome, gatilho: c.gatilho, papel: c.papel, porque: c.porque, toques: c.passos.map((p: any) => ({ dia: p.dia, canal: p.canal, acao: p.acao })) })),
+        regras: "Sem raspagem de Google/Instagram/LinkedIn e sem lista comprada; WhatsApp só com opt-in; e-mail 1:1 com opção de sair; rascunho + envio humano (proposta BIB-0107).",
+      };
+    },
+  },
+  {
+    nome: "implantacao_comercial",
+    papeis: COM, setores: SETORES_COM,
+    descricao: "Implantação do setor comercial: cada item (decisões do fundador, base e processo, canais de atendimento, material de venda, prospecção, rotina e pessoas) com dono, situação, evidência e o que está travando.",
+    parametros: obj({}),
+    async executar(_a, ctx) {
+      const est = await servico("/rest/v1/comercial_implantacao?select=codigo,estado,evidencia,atualizado_em&limit=500");
+      fonte(ctx, "Implantação do setor comercial no VEOS", "dado");
+      const m = new Map(est.map((e: any) => [e.codigo, e]));
+      const grupos = IMPLANTACAO.map((g: any) => ({ grupo: g.grupo, itens: g.itens.map((i: any) => ({ codigo: i.codigo, titulo: i.titulo, dono: i.dono, decisao_do_fundador: Boolean(i.decisao), ref: i.ref ?? null, situacao: (m.get(i.codigo) as any)?.estado ?? "a_fazer", evidencia: (m.get(i.codigo) as any)?.evidencia ?? null })) }));
+      const itens = grupos.flatMap((g: any) => g.itens);
+      return { concluidos: itens.filter((i: any) => ["feito", "nao_se_aplica"].includes(i.situacao)).length, total: itens.length,
+        decisoes_pendentes: itens.filter((i: any) => i.decisao_do_fundador && !["feito", "nao_se_aplica"].includes(i.situacao)).map((i: any) => `${i.codigo} ${i.titulo}${i.ref ? ` (${i.ref})` : ""}`), grupos };
+    },
+  },
+  {
+    nome: "metas_comerciais",
+    papeis: COM, setores: SETORES_COM,
+    descricao: "Quem define cada meta comercial (CEO: faturamento e mix por segmento; CFO: margem e verba; CSO: conversões e atividades; CMO: leads e especificadores; COO: capacidade; CXO: NPS e indicações) e as metas do Plano da VOICE das áreas comercial, marketing e direção, com a situação (proposta ou aprovada).",
+    parametros: obj({}),
+    async executar(_a, ctx) {
+      const itens = await servico("/rest/v1/plano_itens?area=in.(vendas,marketing,direcao)&tipo=eq.meta&estado=neq.cancelado&select=codigo,area,titulo,indicador,alvo,estado,prazo&order=codigo&limit=200");
+      fonte(ctx, "Plano da VOICE (metas) e mapa de donos das metas (proposta BIB-0106)", "dado");
+      return { donos: DONOS_METAS, metas_no_plano: itens, regra: "Meta só vale aprovada pelo fundador; sem número aprovado = LACUNA, nunca zero." };
+    },
+  },
+  {
+    nome: "funil_reverso",
+    papeis: COM, setores: SETORES_COM,
+    descricao: "Desdobra uma meta de vendas por mês (R$) em atividade: vendas, orçamentos, visitas, leads e toques de prospecção por mês e por semana. Ticket padrão = ticket médio real dos ganhos no Zoho; taxas não informadas usam hipóteses de mercado (35% fechamento, 65% visita→orçamento, 50% lead→visita, 25% toque→lead) e são rotuladas assim.",
+    parametros: obj({ meta: num("Meta de vendas por mês em R$"), ticket: num("Ticket médio em R$ (opcional)"), conversao: num("Fechamento dos orçamentos em % (opcional)"),
+      visita_para_orcamento: num("Visitas que viram orçamento em % (opcional)"), lead_para_visita: num("Leads que viram visita em % (opcional)"), toque_para_lead: num("Toques que viram lead em % (opcional)") }, ["meta"]),
+    async executar(a, ctx) {
+      const meta = Number(a.meta);
+      if (!(meta > 0)) return { erro: "informe a meta de vendas por mês em R$" };
+      let ticket = Number(a.ticket), origemTicket = "informado";
+      if (!(ticket > 0)) {
+        const base = await executarFerramenta("base_comercial", {}, ctx) as any;
+        ticket = Number(base.ticket_medio_ganhos);
+        origemTicket = "ticket médio real dos ganhos no Zoho";
+        if (!(ticket > 0)) return { lacuna: "sem ticket informado e sem ganhos na base para calcular" };
+      }
+      const taxa = (v: unknown, padrao: number) => (Number(v) > 0 && Number(v) <= 100 ? { valor: Number(v), origem: "informada" } : { valor: padrao, origem: "HIPÓTESE de mercado: medir 90 dias e ajustar" });
+      const t = { conversao: taxa(a.conversao, 35), visita_para_orcamento: taxa(a.visita_para_orcamento, 65), lead_para_visita: taxa(a.lead_para_visita, 50), toque_para_lead: taxa(a.toque_para_lead, 25) };
+      const f = funilNecessario({ meta, ticket, conversao: t.conversao.valor, visitaParaOrcamento: t.visita_para_orcamento.valor, leadParaVisita: t.lead_para_visita.valor, toqueParaLead: t.toque_para_lead.valor });
+      fonte(ctx, "Funil reverso do VEOS (domain/equilibrio.js)", "calculo");
+      return { meta_mes: meta, ticket: r2(ticket), origem_ticket: origemTicket, taxas: t, por_mes: f?.mes, por_semana: f?.semana, aviso: "Atividade é PROPOSTA até o fundador aprovar a meta (BIB-0106)." };
+    },
+  },
 ];
 
 const SETORES_FIN = new Set(["financas", "direcao"]);
 
-/** Ferramentas oferecidas ao diretor do setor (as financeiras vao para CFO e CEO). */
+/** Ferramentas oferecidas ao diretor do setor (as financeiras vao para CFO e CEO; as comerciais para CSO, CMO e CEO). */
 export function ferramentasDoSetor(setor: string): Ferramenta[] {
-  return FERRAMENTAS.filter((f) => !f.papeis || SETORES_FIN.has(setor));
+  return FERRAMENTAS.filter((f) => (f.setores ? f.setores.includes(setor) : !f.papeis || SETORES_FIN.has(setor)));
 }
 
 /** Executa uma ferramenta pelo nome com o papel de quem perguntou. */

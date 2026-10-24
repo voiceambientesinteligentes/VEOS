@@ -7,4 +7,6 @@ export const FERRAMENTA = {
   diagnostico_dos_orcamentos: "diagnóstico dos orçamentos", previsao_de_caixa: "previsão de caixa", painel_executivo: "painel executivo",
   custo_real_do_produto: "custo real do produto", pedidos_e_recebiveis: "pedidos e recebíveis", caixa_e_contas: "caixa e contas",
   fluxo_13_semanas: "fluxo de 13 semanas", fechamento_do_mes: "fechamento do mês (DRE)", indicadores_da_politica: "indicadores da Política", qualidade_dos_orcamentos: "base de preços dos orçamentos",
+  base_comercial: "base comercial (orçamentos por segmento)", funil_comercial: "funil comercial", canais_e_cadencias: "canais e cadências de follow-up",
+  implantacao_comercial: "implantação do setor comercial", metas_comerciais: "metas e donos", funil_reverso: "funil reverso (meta → atividade)",
 };

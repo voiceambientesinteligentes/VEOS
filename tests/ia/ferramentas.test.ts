@@ -37,6 +37,24 @@ test("diretores fora de finanças não recebem ferramentas financeiras", () => {
   assert.ok(!nomes.includes("analisar_orcamento") && !nomes.includes("fluxo_13_semanas"));
 });
 
+test("comercial: CSO, CMO e CEO recebem as ferramentas do setor, com esquema válido e nome amigável; o CFO e operações não", () => {
+  const COM = ["base_comercial", "funil_comercial", "canais_e_cadencias", "implantacao_comercial", "metas_comerciais", "funil_reverso"];
+  for (const setor of ["vendas", "marketing", "direcao"]) {
+    const fs = ferramentasDoSetor(setor);
+    for (const n of COM) {
+      const f = fs.find((x) => x.nome === n);
+      assert.ok(f, `${setor} sem ${n}`);
+      validarEsquema(f!.parametros as unknown as Record<string, unknown>, n);
+      assert.ok(FERRAMENTA[n], `sem nome amigável: ${n}`);
+    }
+  }
+  for (const setor of ["financas", "operacoes"]) assert.ok(!ferramentasDoSetor(setor).some((f) => COM.includes(f.nome)), setor);
+  // a direcao continua com as financeiras
+  assert.ok(ferramentasDoSetor("direcao").some((f) => f.nome === "analisar_orcamento"));
+  const cso = procedimentosDoSetor("vendas");
+  assert.ok(cso.some((p) => p.startsWith("Defina as metas do comercial") && p.includes("funil_reverso")));
+});
+
 test("as ferramentas citadas nos manuais existem no motor do setor", () => {
   for (const arq of readdirSync("setores/manuais").filter((x) => x.endsWith(".json"))) {
     const setor = arq.replace(".json", "");

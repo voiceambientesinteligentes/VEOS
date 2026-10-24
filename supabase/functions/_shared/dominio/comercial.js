@@ -43,7 +43,7 @@ export function baseComercial(orcamentos = [], { desde = null, segmentoDe = segm
   const clientes = new Map();
   for (const o of lista) {
     const k = chaveCliente(o.cliente);
-    const c = clientes.get(k) ?? { chave: k, nomes: new Set(), segmento: segmentoDe(o.cliente), orcamentos: 0, ganhos: 0, perdidos: 0, abertos: 0, orcado: 0, ganho: 0, ultimo: "" };
+    const c = clientes.get(k) ?? { chave: k, codigo: o.codigo ?? null, nomes: new Set(), segmento: segmentoDe(o.cliente), orcamentos: 0, ganhos: 0, perdidos: 0, abertos: 0, orcado: 0, ganho: 0, ultimo: "" };
     c.nomes.add(String(o.cliente ?? "").trim());
     c.orcamentos++;
     c[situacao(o) === "ganho" ? "ganhos" : situacao(o) === "perdido" ? "perdidos" : "abertos"]++;

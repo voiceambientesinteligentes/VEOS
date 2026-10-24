@@ -251,7 +251,11 @@ export default {
     "Origem rastreável (código do evento no CRM).",
     "Follow-up feito no prazo."
    ],
-   "quando_escalar": "Verba acima do aprovado, proposta de comissão/RT, cobranding com escritório ou presença em mostra paga: decisão do Fernando."
+   "quando_escalar": "Verba acima do aprovado, proposta de comissão/RT, cobranding com escritório ou presença em mostra paga: decisão do Fernando.",
+   "ferramentas_veos": [
+    "base_comercial",
+    "canais_e_cadencias"
+   ]
   },
   {
    "pedido": "Precisamos de mais clientes / mais leads.",
@@ -274,7 +278,12 @@ export default {
     "Meta expressa em oportunidades e receita, não em seguidores.",
     "Custo por oportunidade estimado."
    ],
-   "quando_escalar": "Contratar agência, ferramenta paga ou aumentar verba: aprovação do Fernando."
+   "quando_escalar": "Contratar agência, ferramenta paga ou aumentar verba: aprovação do Fernando.",
+   "ferramentas_veos": [
+    "canais_e_cadencias",
+    "funil_comercial",
+    "base_comercial"
+   ]
   },
   {
    "pedido": "Coloque a VOICE no Google Ads.",
@@ -431,7 +440,11 @@ export default {
     "Nenhuma tática que viole diretrizes do Google (compra de avaliações, texto oculto).",
     "Cada página com chamada para ação rastreada."
    ],
-   "quando_escalar": "Troca de plataforma do site, domínio ou contratação de desenvolvedor: Fernando."
+   "quando_escalar": "Troca de plataforma do site, domínio ou contratação de desenvolvedor: Fernando.",
+   "ferramentas_veos": [
+    "canais_e_cadencias",
+    "consultar_precedentes"
+   ]
   },
   {
    "pedido": "Mande uma mensagem para toda a nossa base.",
@@ -453,7 +466,11 @@ export default {
     "Descadastro simples e respeitado.",
     "Tom de relacionamento, não de promoção."
    ],
-   "quando_escalar": "Dúvida jurídica sobre base legal (encarregado/advogado) e qualquer envio: ação humana do Fernando ou responsável."
+   "quando_escalar": "Dúvida jurídica sobre base legal (encarregado/advogado) e qualquer envio: ação humana do Fernando ou responsável.",
+   "ferramentas_veos": [
+    "canais_e_cadencias",
+    "consultar_precedentes"
+   ]
   },
   {
    "pedido": "Como está o marketing? Me dê um relatório.",
@@ -473,7 +490,11 @@ export default {
     "Diferencia fato, inferência e hipótese.",
     "Sem métricas de vaidade como principal."
    ],
-   "quando_escalar": "Resultados muito abaixo do esperado por 2 meses seguidos: discutir com Fernando realocação ou pausa."
+   "quando_escalar": "Resultados muito abaixo do esperado por 2 meses seguidos: discutir com Fernando realocação ou pausa.",
+   "ferramentas_veos": [
+    "funil_comercial",
+    "base_comercial"
+   ]
   },
   {
    "pedido": "Quero fazer parceria com uma construtora/incorporadora.",
@@ -494,7 +515,11 @@ export default {
     "Nenhum preço/condição definido pelo Marketing.",
     "Uso de marca da construtora só com autorização."
    ],
-   "quando_escalar": "Contrato, cobranding, exclusividade ou condição comercial: Fernando."
+   "quando_escalar": "Contrato, cobranding, exclusividade ou condição comercial: Fernando.",
+   "ferramentas_veos": [
+    "base_comercial",
+    "canais_e_cadencias"
+   ]
   },
   {
    "pedido": "Faça um plano de marketing para o ano.",
@@ -515,7 +540,12 @@ export default {
     "Executável com a capacidade real.",
     "Metas marcadas como PROPOSTA até aprovação."
    ],
-   "quando_escalar": "Aprovação do plano e do orçamento: Fernando."
+   "quando_escalar": "Aprovação do plano e do orçamento: Fernando.",
+   "ferramentas_veos": [
+    "metas_comerciais",
+    "canais_e_cadencias",
+    "implantacao_comercial"
+   ]
   }
  ],
  "indicadores": [

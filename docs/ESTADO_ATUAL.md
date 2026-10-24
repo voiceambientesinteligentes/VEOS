@@ -1,4 +1,16 @@
-# Estado atual — 07/10/2026
+# Estado atual — 24/10/2026
+
+## Setor comercial, orçamento e segurança do site (07/10 a 24/10)
+- **Proposta em PDF** (`#/propostas/<id>`): formato padrão igual ao Zoho Books (Nº, item e descrição, quantidade com unidade, valor unitário, desconto quando houver, total); o "global" (sem preço por item, totais de mão de obra e materiais) virou opção.
+- **Cadastro pendente** (Catálogo → Cadastro pendente, `#/produtos/pendentes`): produto que entra em orçamento sem cadastro no catálogo do VEOS vira pendência (linha digitada sem item no Zoho ou item do Zoho sem produto do VEOS), contando desde 06/10/2026; cadastrar (PRD-xxxx sem custo/preço), ligar a produto existente ou dispensar com motivo; alerta FLX_CADASTRO_PENDENTE para Operações. Itens antigos ficam para a mesclagem do fim (BIB-0077).
+- **Setor comercial** (`#/comercial`, item "Setor comercial" no menu): abas Visão (base real do Zoho), Implantação (29 itens com evidência e histórico; decisões só a direção marca), Canais (14 canais com dono, oferta, medição, o que a IA faz, ferramenta gratuita e cuidado legal), Follow-up, Metas e donos, Base de clientes (segmento automático, código do cliente) e Plano e roteiros.
+- **Cadências de follow-up** (lead novo, proposta enviada, parceiro em prospecção, reativação, pós-venda): cada toque vira tarefa e rascunho na Caixa de saída; envio sempre humano; só registros de pessoas reais desde 07/10; contato bloqueado não recebe rascunho; mudou de etapa, toques pendentes cancelados. Motor: `_shared/comercial_vigia.ts` (ao salvar o registro, na varredura do Radar e na função saude).
+- **CSO e CMO com ferramentas de dados**: base_comercial, funil_comercial, canais_e_cadencias, implantacao_comercial, metas_comerciais e funil_reverso (clientes só pelo código). Teste real em 24/10: o CSO respondeu pela Mistral em 10 s com ticket real e atividade semanal calculada pelo VEOS.
+- **Motores**: Mistral primeiro desde 24/10 (5 de 5 respostas; Gemini 3.8 gratuito respondeu 2 de 23), BIB-0110.
+- **Base real (Zoho, 24/10)**: 173 orçamentos, 71 clientes, 52 ganhos, 38 perdidos, 83 sem decisão; ainda nenhum lead real no CRM do VEOS.
+- **Incidente (BIB-0104)**: o site público expunha uma chave da API da Anthropic, a senha da área "Equipe Interna" e dados internos. Removidos do código (repositório privado do site), mas a Netlify não republicou: em 24/10 o site no ar ainda mostra a chave. Falta o Fernando revogar a chave, trocar a senha e republicar.
+- Biblioteca: BIB-0101 a BIB-0110 (pesquisas, base real, incidente, propostas RT × CAU, donos das metas, regras de prospecção, ideia do site, CRM em produção, ordem dos motores).
+- Testes: regras 132, portal 155 + 20, telas 130 + pendências, banco cadastro_pendente 12/12 e comercial 9/9, motor das cadências 4.
 
 ## Aba provisória "Pendências do projeto" (24/10)
 - Primeiro item do menu Comando (`#/pendencias`, só direção): visão geral com linha de fluxo (CFO → CSO → CMO → COO → CIO → CXO → CHRO → SEC → CEO), uma aba por diretor e "Quem precisa agir" (Fernando, contador, jurídico, Claude). Cada tópico traz estado, quem faz, quando, o que fazer em ordem e o critério de pronto, com a fonte.
