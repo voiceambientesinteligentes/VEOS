@@ -32,6 +32,7 @@ import { rotearDiretores } from "./diretores.ts";
 import { rotearCfo } from "./cfo.ts";
 import { rotearPlano } from "./plano.ts";
 import { rotearCaixa } from "./caixa.ts";
+import { rotearComercial } from "./comercial.ts";
 
 const ORIGENS = [
   /^https:\/\/voiceambientesinteligentes\.github\.io$/,
@@ -95,6 +96,7 @@ async function rotear(req: Request, rota: string) {
   if (partes[0] === "diretores") return await rotearDiretores(req, partes, eu);
   if (partes[0] === "cfo") return await rotearCfo(req, partes, eu);
   if (partes[0] === "plano") return await rotearPlano(req, partes, eu);
+  if (partes[0] === "comercial") return await rotearComercial(req, partes, eu);
   if (partes[0] === "caixa") {
     const corpo = req.method === "POST" ? ((await lerCorpo(req)) ?? {}) : {};
     if (req.method === "POST" && !CHAVE_RE.test(req.headers.get("Idempotency-Key") ?? "")) throw new HttpError(400, "Idempotency-Key obrigatorio");

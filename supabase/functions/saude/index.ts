@@ -9,6 +9,7 @@ import { varrer } from "../_shared/setores/varredura.ts";
 import { diagnostico } from "../_shared/zoho.ts";
 import { vigiarBiblioteca, vigiarFluxo } from "../_shared/fluxo_vigia.ts";
 import { vigiarCaixa } from "../_shared/caixa_vigia.ts";
+import { vigiarCadencias } from "../_shared/comercial_vigia.ts";
 
 const INTERVALO_MS = 10 * 60 * 1000;
 
@@ -26,7 +27,8 @@ Deno.serve(async (req) => {
       const f = await vigiarFluxo().catch((e) => { console.error("vigia do fluxo", e); return null; });
       const bib = await vigiarBiblioteca().catch((e) => { console.error("vigia da biblioteca", e); return null; });
       const cx = await vigiarCaixa().catch((e) => { console.error("vigia do caixa", e); return null; });
-      varredura = { novos: r.novos, resolvidos: r.resolvidos, ativos: r.ativos, fluxo: f, biblioteca: bib, caixa: cx };
+      const cad = await vigiarCadencias().catch((e) => { console.error("cadencias do comercial", e); return null; });
+      varredura = { novos: r.novos, resolvidos: r.resolvidos, ativos: r.ativos, fluxo: f, biblioteca: bib, caixa: cx, cadencias: cad };
     } else {
       varredura = "recente (pulada)";
     }

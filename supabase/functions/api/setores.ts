@@ -13,6 +13,7 @@ import type { Setor } from "../_shared/setores/motor.ts";
 import { RegistroInvalido, tipoDoSetor, validarRegistro } from "../_shared/setores/registros.ts";
 import { varrer } from "../_shared/setores/varredura.ts";
 import { vigiarBiblioteca, vigiarFluxo } from "../_shared/fluxo_vigia.ts";
+import { vigiarCadencias } from "../_shared/comercial_vigia.ts";
 import { vigiarCaixa } from "../_shared/caixa_vigia.ts";
 import { HttpError, lerCorpo, type Membro, servico } from "../_shared/banco.ts";
 
@@ -55,8 +56,9 @@ export async function rotearSetores(req: Request, partes: string[], eu: Membro) 
       const r = await varrer(SETORES, acessiveis(eu), `manual:${eu.email}`);
       if (eu.papel !== "direcao") return r;
       // direcao: tambem as vigias proprias (fluxo/compras/caixa e Biblioteca)
-      const [fluxo, biblioteca, caixa] = await Promise.all([vigiarFluxo(), vigiarBiblioteca(), vigiarCaixa().catch((e) => { console.error("vigia do caixa", e); return null; })]);
-      return { ...r, fluxo, biblioteca, caixa };
+      const [fluxo, biblioteca, caixa, cadencias] = await Promise.all([vigiarFluxo(), vigiarBiblioteca(), vigiarCaixa().catch((e) => { console.error("vigia do caixa", e); return null; }),
+        vigiarCadencias().catch((e) => { console.error("cadencias do comercial", e); return null; })]);
+      return { ...r, fluxo, biblioteca, caixa, cadencias };
     }
 
     if (raiz === "setor" && req.method === "GET" && id) {
@@ -91,8 +93,10 @@ export async function rotearSetores(req: Request, partes: string[], eu: Membro) 
         body: JSON.stringify({ p: { chave: k, usuario_id: eu.user_id, modo: id ? "alterar" : "criar", registro_id: registroId, setor: s.id, tipo: tipo.tipo, campos } }),
       });
       const varredura = await varrer(SETORES, [s.id], `registro:${eu.email}`);
+      // comercial: o primeiro toque da cadencia (ex.: responder o lead em ate 1 hora) nasce na hora
+      const cadencia = s.id === "vendas" ? await vigiarCadencias(Date.now(), reg.id).catch((e) => { console.error("cadencia", e); return null; }) : null;
       const alertas = await servico(`/rest/v1/alertas?setor_id=eq.${s.id}&estado=eq.ativo&registro_id=eq.${reg.id}&select=severidade,titulo,mensagem`);
-      return { ...reg, varredura, alertas_do_registro: alertas };
+      return { ...reg, varredura, cadencia, alertas_do_registro: alertas };
     }
 
     if (raiz === "tarefas" && req.method === "POST" && !id) {

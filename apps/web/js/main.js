@@ -28,7 +28,8 @@ import { telaDiretores } from "./ui/views/diretores.js";
 import { telaDiagnosticoCfo, telaFormularioCfo, telaPrecosCfo } from "./ui/views/cfo.js";
 import { telaCaixa, telaFechamento, telaFluxo13, telaIndicadores, telaRecorrentes } from "./ui/views/caixa.js";
 import { telaEstoqueEstrategico, telaPlano } from "./ui/views/estrategia.js";
-import { telaComercial, telaPainelDono } from "./ui/views/painel_dono.js";
+import { telaPainelDono } from "./ui/views/painel_dono.js";
+import { telaSetorComercial } from "./ui/views/comercial.js";
 import { telaPendencias } from "./ui/views/pendencias.js";
 import { telaPendentesProdutos, telaProduto, telaProdutos, telaRevisaoProdutos } from "./ui/views/produtos.js";
 import { iniciarAvisos } from "./ui/notificar.js";
@@ -119,7 +120,7 @@ const TELAS = {
   "#/visao": { fn: (root) => (["direcao", "financas"].includes(eu.papel) ? telaPainel(root) : telaVisao(root)), titulo: ["Visão geral", "Painel executivo: vendas, faturamento, caixa, funil e alertas"] },
   "#/pendencias": { fn: (root, signal) => telaPendencias(root, signal), titulo: ["Pendências do projeto", "O que já foi feito, o que falta e os próximos passos, diretor por diretor"] },
   "#/painel-dono": { fn: telaPainelDono, titulo: ["Painel do dono", "Quanto vender, como está indo, o que falta e a quem perguntar"] },
-  "#/comercial": { fn: telaComercial, titulo: ["Plano comercial", "Da meta de vendas à atividade da semana, canais e showroom"] },
+  "#/comercial": { fn: telaSetorComercial, titulo: ["Setor comercial", "Captação, atendimento, follow-up e pós-venda: canais, cadências, metas e base real"] },
   "#/plano": { fn: telaPlano, titulo: ["Plano da VOICE", "Metas, ações e rotinas propostas pelos diretores e decididas por você"] },
   "#/cfo/caixa": { fn: telaCaixa, titulo: ["Caixa e extrato", "Contas da empresa, extrato bancário, conciliação e plano de contas"] },
   "#/cfo/recorrentes": { fn: telaRecorrentes, titulo: ["Contas fixas e dívidas", "Recorrentes que viram contas a pagar todo mês"] },
@@ -213,7 +214,7 @@ function montarMenu() {
       ["direcao", "financas"].includes(eu.papel) ? link("#/visao", "▦", "Visão geral") : null,
       ["direcao", "financas"].includes(eu.papel) ? link("#/painel-dono", "◎", "Painel do dono") : null,
       link("#/plano", "★", "Plano da VOICE"),
-      ["direcao", "financas", "vendas", "marketing"].includes(eu.papel) ? link("#/comercial", "↗", "Plano comercial") : null,
+      ["direcao", "financas", "vendas", "marketing"].includes(eu.papel) ? link("#/comercial", "↗", "Setor comercial") : null,
       link("#/orbita", "◉", "Órbita"),
       link("#/radar", "◈", "Radar"),
       link("#/mensagens", "✉", "Caixa de saída"),
