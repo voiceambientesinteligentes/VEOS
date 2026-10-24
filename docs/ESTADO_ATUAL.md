@@ -1,5 +1,9 @@
 # Estado atual — 07/10/2026
 
+## Aba provisória "Pendências do projeto" (24/10)
+- Primeiro item do menu Comando (`#/pendencias`, só direção): visão geral com linha de fluxo (CFO → CSO → CMO → COO → CIO → CXO → CHRO → SEC → CEO), uma aba por diretor e "Quem precisa agir" (Fernando, contador, jurídico, Claude). Cada tópico traz estado, quem faz, quando, o que fazer em ordem e o critério de pronto, com a fonte.
+- Só pendência do projeto (construir/validar o VEOS), nunca rotina da empresa. Dados em `apps/web/js/data/pendencias_projeto.js` (atualizar o estado do tópico e publicar). **Remover a aba quando o projeto fechar** (CEO-06).
+
 **Resumo:** o VEOS está online (GitHub Pages + Supabase) com setores vivos, Zoho espelhado e editável, fluxo de pedidos, Biblioteca, e — desde 05/10 — **motor de raciocínio dos diretores** (Gemini/OpenAI no servidor, com ferramentas do VEOS) e o **financeiro completo pelo caixa real** (extrato, conciliação, recorrentes, 13 semanas, DRE, indicadores e vigia). Falta o uso real: a chave do Gemini, o extrato das contas e as alíquotas do contador. **Não está 100%** (ver PLANO_EXECUCAO, etapa do financeiro).
 
 ## Vários motores de IA e "cobrado × o que deveria" (07/10)

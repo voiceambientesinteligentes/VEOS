@@ -29,6 +29,7 @@ import { telaDiagnosticoCfo, telaFormularioCfo, telaPrecosCfo } from "./ui/views
 import { telaCaixa, telaFechamento, telaFluxo13, telaIndicadores, telaRecorrentes } from "./ui/views/caixa.js";
 import { telaEstoqueEstrategico, telaPlano } from "./ui/views/estrategia.js";
 import { telaComercial, telaPainelDono } from "./ui/views/painel_dono.js";
+import { telaPendencias } from "./ui/views/pendencias.js";
 import { telaPendentesProdutos, telaProduto, telaProdutos, telaRevisaoProdutos } from "./ui/views/produtos.js";
 import { iniciarAvisos } from "./ui/notificar.js";
 import { abrirBusca, ligarAtalhos } from "./ui/busca_global.js";
@@ -116,6 +117,7 @@ const TELAS = {
   "#/ia": { fn: (root, signal) => renderIA(root, signal), titulo: ["IA VEOS", "Comando por voz"] },
   "#/orbita": { fn: telaOrbita, titulo: ["Órbita", "Os setores em órbita do VEOS"] },
   "#/visao": { fn: (root) => (["direcao", "financas"].includes(eu.papel) ? telaPainel(root) : telaVisao(root)), titulo: ["Visão geral", "Painel executivo: vendas, faturamento, caixa, funil e alertas"] },
+  "#/pendencias": { fn: (root, signal) => telaPendencias(root, signal), titulo: ["Pendências do projeto", "O que já foi feito, o que falta e os próximos passos, diretor por diretor"] },
   "#/painel-dono": { fn: telaPainelDono, titulo: ["Painel do dono", "Quanto vender, como está indo, o que falta e a quem perguntar"] },
   "#/comercial": { fn: telaComercial, titulo: ["Plano comercial", "Da meta de vendas à atividade da semana, canais e showroom"] },
   "#/plano": { fn: telaPlano, titulo: ["Plano da VOICE", "Metas, ações e rotinas propostas pelos diretores e decididas por você"] },
@@ -207,6 +209,7 @@ function montarMenu() {
   clear(el.nav).append(
     h("div", { class: "nav-group", role: "group", "aria-labelledby": "nav-cmd" },
       h("span", { class: "nav-label", id: "nav-cmd" }, "Comando"),
+      eu.papel === "direcao" ? link("#/pendencias", "☑", "Pendências do projeto") : null,
       ["direcao", "financas"].includes(eu.papel) ? link("#/visao", "▦", "Visão geral") : null,
       ["direcao", "financas"].includes(eu.papel) ? link("#/painel-dono", "◎", "Painel do dono") : null,
       link("#/plano", "★", "Plano da VOICE"),
@@ -287,7 +290,11 @@ async function navegar() {
   const propostaRota = /^#\/propostas\/([0-9]{5,25})$/.exec(rotaBase());
   const aceiteRota = /^#\/pedidos\/([0-9a-f-]{36})\/aceite$/.exec(rotaBase());
   const compraRota = /^#\/compras\/([0-9a-f-]{36})$/.exec(rotaBase());
-  if (produtoRota) {
+  const pendRota = /^#\/pendencias\/([a-z]+)$/.exec(rotaBase());
+  if (pendRota) {
+    rota = "#/pendencias";
+    def = { ...TELAS[rota], fn: (root, signal) => telaPendencias(root, signal, pendRota[1]) };
+  } else if (produtoRota) {
     rota = "#/produtos";
     def = { fn: (root) => telaProduto(root, produtoRota[1]), titulo: ["Produto", "Nomes, variantes de origem, ficha técnica, compras e preços"] };
   } else if (propostaRota) {
@@ -358,7 +365,7 @@ async function iniciar(mensagem) {
   }
   montarMenu();
   iniciarAvisos();
-  if (!TELAS[rotaBase()] && !/^#\/(projetos|setor|zoho|pedidos|estoque|biblioteca|compras|propostas|produtos)\//.test(location.hash)) history.replaceState(null, "", "#/orbita");
+  if (!TELAS[rotaBase()] && !/^#\/(projetos|setor|zoho|pedidos|estoque|biblioteca|compras|propostas|produtos|pendencias)\//.test(location.hash)) history.replaceState(null, "", "#/orbita");
   navegar();
 }
 
