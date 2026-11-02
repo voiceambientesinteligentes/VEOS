@@ -367,7 +367,10 @@
     font-weight: 700;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    white-space: nowrap;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    max-width: 100%;
+    line-height: 1.35;
     color: var(--text-1);
   }
   .stamp.tone-ok { color: var(--ok); border-color: currentColor; }
