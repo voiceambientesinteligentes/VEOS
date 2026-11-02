@@ -332,7 +332,7 @@ async function navegar() {
     rota = `#/setor/${setor.id}`;
     def = { fn: (root, signal) => telaSetor(root, setor.id, signal, setorRota[2]), titulo: [`${setor.sigla} · ${setor.nome}`, setor.diretor.titulo] };
   } else {
-    rota = TELAS[rotaBase()] ? rotaBase() : "#/orbita";
+    rota = TELAS[rotaBase()] ? rotaBase() : "#/visao";
     def = TELAS[rota];
   }
   atual?.abort();
@@ -366,7 +366,7 @@ async function iniciar(mensagem) {
   }
   montarMenu();
   iniciarAvisos();
-  if (!TELAS[rotaBase()] && !/^#\/(projetos|setor|zoho|pedidos|estoque|biblioteca|compras|propostas|produtos|pendencias)\//.test(location.hash)) history.replaceState(null, "", "#/orbita");
+  if (!TELAS[rotaBase()] && !/^#\/(projetos|setor|zoho|pedidos|estoque|biblioteca|compras|propostas|produtos|pendencias)\//.test(location.hash)) history.replaceState(null, "", "#/visao");
   navegar();
 }
 
