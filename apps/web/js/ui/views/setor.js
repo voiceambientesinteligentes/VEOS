@@ -5,6 +5,7 @@ import { api } from "../../data/api.js";
 import { formatBRL, formatDate } from "../../domain/format.js";
 import { cartaoAlerta, descreverSentinela, formularioRegistro, linhaTarefa, nomePapel, setorPorId, SEV_ROTULO, SEV_TOM } from "../componentes.js";
 import { clear, errorNotice, h, panel, stamp, table, testTag } from "../dom.js";
+import { painelEquipeSetor } from "./estrutura.js";
 import { carregarManual, painelManual } from "./manual.js";
 
 const ABAS = [["painel", "Painel"], ["registros", "Registros"], ["processos", "Processos"], ["equipe", "Equipe"], ["rotinas", "Rotinas"], ["regras", "Regras vivas"], ["diretor", "Diretor"], ["manual", "Manual"], ["modelos", "Modelos"]];
@@ -132,10 +133,8 @@ export async function telaSetor(root, id, signal, aba = "painel") {
         e.criterio_saida ? h("p", { class: "field-hint" }, `Sai da etapa quando: ${e.criterio_saida}`) : null))))));
   }
   function equipe() {
-    corpo.append(panel({ title: "Equipe do setor", subtitle: `Coordenada por ${d.titulo} · ${d.nome}` },
-      h("div", { class: "grade-cartoes" }, setor.equipe.map((p) => h("article", { class: "panel panel-tight cartao-papel" },
-        h("p", { class: "cartao-papel-nome" }, p.nome), h("p", { class: "field-hint" }, `Reporta a: ${p.reporta_a || setor.sigla}`),
-        h("ul", null, (p.responsabilidades || []).map((x) => h("li", null, x))))))));
+    corpo.append(...painelEquipeSetor(setor),
+      h("p", { class: "field-hint" }, h("a", { href: "#/estrutura" }, "Ver a estrutura da empresa inteira →")));
   }
   function rotinas() {
     corpo.append(panel({ title: "Rotinas", subtitle: "O ritmo do setor: o que acontece todo dia, semana e mês." },

@@ -65,55 +65,27 @@
       "Não altera regras da política; propõe recalibração com dados reais (Política V1 sec.13 e sec.15).",
       "Não define enquadramento tributário, retenções nem obrigações acessórias: valida com o contador.",
       "Não paga título sem aprovação separada do lançamento e não paga automaticamente título recorrente."
-    ]
+    ],
+    "reporta_a": "CEO",
+    "atividades": {
+      "diaria": [
+        "Conferir saldo, recebimentos e pagamentos do dia.",
+        "Aprovar ou recusar exceções de margem dentro da alçada."
+      ],
+      "semanal": [
+        "Aprovar a proposta de pagamentos.",
+        "Revisar o fluxo de 13 semanas e a exposição de caixa das obras."
+      ],
+      "mensal": [
+        "Apresentar o painel financeiro à direção (Política V1 sec.13).",
+        "Revisar preço mínimo, impostos e reserva de caixa."
+      ]
+    }
   },
   "equipe": [
     {
-      "papel": "analista_pagar",
-      "nome": "Analista de contas a pagar",
-      "reporta_a": "CFO",
-      "responsabilidades": [
-        "Registrar títulos a pagar de fornecedores, prestadores, impostos, folha e custos fixos",
-        "Conferir nota contra pedido e recebimento (três vias) e checar duplicidade antes de lançar",
-        "Montar a proposta semanal de pagamentos para aprovação do CFO",
-        "Liquidar títulos somente com comprovante bancário anexado"
-      ],
-      "indicadores": [
-        "recebiveis_pagaveis"
-      ]
-    },
-    {
-      "papel": "analista_receber",
-      "nome": "Analista de contas a receber e cobrança",
-      "reporta_a": "CFO",
-      "responsabilidades": [
-        "Registrar títulos a receber fora das parcelas de projeto (contratos de suporte e monitoramento, assistências avulsas, revendas)",
-        "Enviar lembretes antes do vencimento e conduzir a régua de cobrança com tom adequado ao cliente de alto padrão",
-        "Baixar recebimentos somente pelo extrato bancário",
-        "Informar o Comercial e a direção sobre clientes com atraso recorrente"
-      ],
-      "indicadores": [
-        "inadimplencia",
-        "recebiveis_pagaveis",
-        "concentracao"
-      ]
-    },
-    {
-      "papel": "analista_fiscal",
-      "nome": "Analista fiscal e de documentos",
-      "reporta_a": "CFO",
-      "responsabilidades": [
-        "Receber, conferir e arquivar XML e PDF de notas emitidas e recebidas (NF-e, NFS-e, CT-e)",
-        "Vincular cada nota ao título financeiro e, quando houver, ao projeto",
-        "Tratar divergências com fornecedores e enviar ao contador a documentação do mês"
-      ],
-      "indicadores": [
-        "faturamento_receita"
-      ]
-    },
-    {
       "papel": "controller",
-      "nome": "Controller",
+      "nome": "Controller (gerente financeiro)",
       "reporta_a": "CFO",
       "responsabilidades": [
         "Conciliar bancos e contas a pagar/receber",
@@ -128,7 +100,168 @@
         "exposicao_projetos",
         "necessidade_caixa_reserva",
         "faturamento_abaixo_margem"
-      ]
+      ],
+      "nivel": "gestao",
+      "missao": "Coordenar a rotina financeira e garantir números conciliados, no prazo, para o CFO decidir.",
+      "fase": "essencial",
+      "cobre_enquanto_vago": "CFO",
+      "atividades": {
+        "diaria": [
+          "Conciliar o extrato do dia com parcelas e contas a pagar.",
+          "Distribuir e acompanhar as tarefas dos analistas."
+        ],
+        "semanal": [
+          "Atualizar o fluxo de caixa de 13 semanas e a necessidade de caixa 30/60/90 dias.",
+          "Revisar a proposta de pagamentos antes de ir ao CFO."
+        ],
+        "mensal": [
+          "Conduzir o fechamento mensal e montar o pacote de indicadores.",
+          "Calcular a reserva de caixa frente a 3 meses de custos fixos."
+        ]
+      },
+      "entregas": [
+        "Fluxo de 13 semanas atualizado",
+        "Fechamento mensal e DRE",
+        "Conciliação bancária em dia"
+      ],
+      "decide": [
+        "Classificação de lançamentos",
+        "Prioridade das tarefas dos analistas"
+      ],
+      "escala": [
+        "Caixa projetado abaixo da reserva",
+        "Divergência de conciliação sem explicação"
+      ],
+      "status": "PROPOSTA"
+    },
+    {
+      "papel": "analista_pagar",
+      "nome": "Analista de contas a pagar",
+      "reporta_a": "controller",
+      "responsabilidades": [
+        "Registrar títulos a pagar de fornecedores, prestadores, impostos, folha e custos fixos",
+        "Conferir nota contra pedido e recebimento (três vias) e checar duplicidade antes de lançar",
+        "Montar a proposta semanal de pagamentos para aprovação do CFO",
+        "Liquidar títulos somente com comprovante bancário anexado"
+      ],
+      "indicadores": [
+        "recebiveis_pagaveis"
+      ],
+      "nivel": "execucao",
+      "missao": "Pagar certo, no prazo e só o que foi comprado e recebido.",
+      "fase": "crescimento",
+      "cobre_enquanto_vago": "controller",
+      "atividades": {
+        "diaria": [
+          "Lançar títulos a pagar e conferir nota × pedido × recebimento.",
+          "Checar duplicidade antes de lançar."
+        ],
+        "semanal": [
+          "Montar a proposta semanal de pagamentos.",
+          "Liquidar os títulos aprovados e anexar comprovantes."
+        ],
+        "mensal": [
+          "Conferir recorrentes (aluguel, folha, impostos) do mês seguinte."
+        ]
+      },
+      "entregas": [
+        "Proposta semanal de pagamentos",
+        "Contas a pagar sem duplicidade"
+      ],
+      "decide": [
+        "Data de agendamento dentro do vencimento"
+      ],
+      "escala": [
+        "Nota sem pedido ou recebimento",
+        "Pagamento fora da proposta aprovada"
+      ],
+      "status": "PROPOSTA"
+    },
+    {
+      "papel": "analista_receber",
+      "nome": "Analista de contas a receber e cobrança",
+      "reporta_a": "controller",
+      "responsabilidades": [
+        "Registrar títulos a receber fora das parcelas de projeto (contratos de suporte e monitoramento, assistências avulsas, revendas)",
+        "Enviar lembretes antes do vencimento e conduzir a régua de cobrança com tom adequado ao cliente de alto padrão",
+        "Baixar recebimentos somente pelo extrato bancário",
+        "Informar o Comercial e a direção sobre clientes com atraso recorrente"
+      ],
+      "indicadores": [
+        "inadimplencia",
+        "recebiveis_pagaveis",
+        "concentracao"
+      ],
+      "nivel": "execucao",
+      "missao": "Fazer o dinheiro entrar no prazo, com cobrança firme e cordial.",
+      "fase": "crescimento",
+      "cobre_enquanto_vago": "controller",
+      "atividades": {
+        "diaria": [
+          "Baixar recebimentos do dia.",
+          "Executar a régua de cobrança (lembrete antes, contato no vencimento, cobrança depois)."
+        ],
+        "semanal": [
+          "Listar parcelas a vencer nos próximos 7 dias e avisar o CFO dos riscos."
+        ],
+        "mensal": [
+          "Relatório de inadimplência por cliente e por idade."
+        ]
+      },
+      "entregas": [
+        "Recebimentos baixados no dia",
+        "Relatório de inadimplência"
+      ],
+      "decide": [
+        "Tom e momento do lembrete dentro da régua"
+      ],
+      "escala": [
+        "Atraso acima de 15 dias",
+        "Pedido de renegociação ou desconto"
+      ],
+      "status": "PROPOSTA"
+    },
+    {
+      "papel": "analista_fiscal",
+      "nome": "Analista fiscal e de documentos",
+      "reporta_a": "controller",
+      "responsabilidades": [
+        "Receber, conferir e arquivar XML e PDF de notas emitidas e recebidas (NF-e, NFS-e, CT-e)",
+        "Vincular cada nota ao título financeiro e, quando houver, ao projeto",
+        "Tratar divergências com fornecedores e enviar ao contador a documentação do mês"
+      ],
+      "indicadores": [
+        "faturamento_receita"
+      ],
+      "nivel": "execucao",
+      "missao": "Manter notas e documentos fiscais completos e entregues ao contador no prazo.",
+      "fase": "crescimento",
+      "cobre_enquanto_vago": "controller",
+      "atividades": {
+        "diaria": [
+          "Receber e conferir XML/PDF das notas emitidas e recebidas."
+        ],
+        "semanal": [
+          "Vincular cada nota ao título e ao projeto.",
+          "Tratar divergências com fornecedores."
+        ],
+        "mensal": [
+          "Enviar ao contador a documentação do mês.",
+          "Conferir se toda NF de venda bate com o pedido."
+        ]
+      },
+      "entregas": [
+        "Pasta fiscal do mês completa",
+        "Notas vinculadas a títulos e projetos"
+      ],
+      "decide": [
+        "Organização do arquivo fiscal"
+      ],
+      "escala": [
+        "Nota com imposto divergente",
+        "Prazo do contador em risco"
+      ],
+      "status": "PROPOSTA"
     }
   ],
   "processos": [

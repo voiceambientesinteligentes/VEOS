@@ -67,41 +67,147 @@
       "Não decide sozinha a comunicação de incidente à ANPD ou aos titulares: prepara a avaliação técnica e a direção decide, com apoio jurídico.",
       "Não acessa remotamente sistemas de cliente sem autorização registrada do cliente.",
       "Não altera escopo técnico vendido sem aditivo tratado pelo Comercial e Operações."
-    ]
+    ],
+    "reporta_a": "CEO",
+    "atividades": {
+      "diaria": [
+        "Olhar incidentes abertos (clientes e sistemas internos)."
+      ],
+      "semanal": [
+        "Comitê de mudanças.",
+        "Revisão dos projetos técnicos da semana."
+      ],
+      "mensal": [
+        "Conferir backup e restauração, acessos e padrões técnicos.",
+        "Comitê de homologação de produtos (quinzenal)."
+      ]
+    }
   },
   "equipe": [
     {
       "papel": "engenheiro_projetos",
-      "nome": "Engenheiro de projetos e sistemas",
+      "nome": "Engenheiro de projetos (líder técnico)",
       "reporta_a": "CIO",
       "responsabilidades": [
         "Elaborar projetos executivos (cabeamento, rede, AV, segurança, controle de acesso, automação) conforme padrões técnicos",
         "Revisar por pares os projetos de outros engenheiros antes da liberação para a obra",
         "Consolidar o as-built e os relatórios de certificação ao final da obra"
       ],
-      "indicadores": ["projetos_revisados", "asbuilt_no_prazo"]
+      "indicadores": [
+        "projetos_revisados",
+        "asbuilt_no_prazo"
+      ],
+      "nivel": "gestao",
+      "missao": "Garantir projetos executivos corretos e coordenar a equipe técnica de programação e redes.",
+      "fase": "essencial",
+      "cobre_enquanto_vago": "CIO",
+      "atividades": {
+        "diaria": [
+          "Distribuir e apoiar as tarefas de programação e redes.",
+          "Tirar dúvidas técnicas do campo."
+        ],
+        "semanal": [
+          "Revisar por pares os projetos antes de ir para a obra.",
+          "Liberar projetos executivos da semana."
+        ],
+        "mensal": [
+          "Consolidar as-built e certificações das obras entregues."
+        ]
+      },
+      "entregas": [
+        "Projeto executivo revisado",
+        "As-built no prazo"
+      ],
+      "decide": [
+        "Solução técnica dentro dos padrões",
+        "Prioridade técnica da equipe"
+      ],
+      "escala": [
+        "Produto não homologado",
+        "Mudança de padrão técnico"
+      ],
+      "status": "PROPOSTA"
     },
     {
       "papel": "programador_automacao",
       "nome": "Programador de automação e AV",
-      "reporta_a": "CIO",
+      "reporta_a": "engenheiro_projetos",
       "responsabilidades": [
         "Programar e comissionar plataformas de automação, áudio e vídeo e iluminação",
         "Manter backup das programações e das configurações de cada obra",
         "Testar compatibilidade de produtos em bancada para homologação"
       ],
-      "indicadores": ["asbuilt_no_prazo", "lead_time_homologacao"]
+      "indicadores": [
+        "asbuilt_no_prazo",
+        "lead_time_homologacao"
+      ],
+      "nivel": "execucao",
+      "missao": "Programar e entregar a automação, o áudio e o vídeo funcionando como o cliente sonhou.",
+      "fase": "essencial",
+      "cobre_enquanto_vago": "engenheiro_projetos",
+      "atividades": {
+        "diaria": [
+          "Programar e comissionar as plataformas das obras do dia."
+        ],
+        "semanal": [
+          "Fazer backup das programações concluídas.",
+          "Testar produtos em bancada para homologação."
+        ],
+        "mensal": []
+      },
+      "entregas": [
+        "Sistema programado e testado",
+        "Backup da programação de cada obra"
+      ],
+      "decide": [
+        "Lógica de cenas e interface dentro do padrão"
+      ],
+      "escala": [
+        "Incompatibilidade de produto",
+        "Pedido do cliente fora do escopo"
+      ],
+      "status": "PROPOSTA"
     },
     {
       "papel": "analista_redes",
       "nome": "Analista de redes e segurança eletrônica",
-      "reporta_a": "CIO",
+      "reporta_a": "engenheiro_projetos",
       "responsabilidades": [
         "Projetar e configurar redes, Wi-Fi, VLANs, VPN e acesso remoto seguro",
         "Configurar CFTV, alarme e controle de acesso com mínimo de dados pessoais e retenção definida",
         "Registrar credenciais exclusivamente no cofre e documentar a referência no as-built"
       ],
-      "indicadores": ["credenciais_em_cofre", "mttr_incidentes"]
+      "indicadores": [
+        "credenciais_em_cofre",
+        "mttr_incidentes"
+      ],
+      "nivel": "execucao",
+      "missao": "Entregar redes, Wi-Fi e segurança eletrônica estáveis e seguras.",
+      "fase": "crescimento",
+      "cobre_enquanto_vago": "programador_automacao",
+      "atividades": {
+        "diaria": [
+          "Triar incidentes de rede e acesso remoto."
+        ],
+        "semanal": [
+          "Configurar redes, VLANs, VPN, CFTV e controle de acesso das obras."
+        ],
+        "mensal": [
+          "Conferir que todas as credenciais estão no cofre."
+        ]
+      },
+      "entregas": [
+        "Rede configurada e documentada",
+        "Credenciais no cofre"
+      ],
+      "decide": [
+        "Configuração dentro do padrão de rede"
+      ],
+      "escala": [
+        "Incidente de segurança",
+        "Acesso remoto fora do padrão"
+      ],
+      "status": "PROPOSTA"
     },
     {
       "papel": "analista_sistemas",
@@ -112,7 +218,37 @@
         "Conduzir mudanças nos sistemas internos com avaliação de impacto e plano de reversão",
         "Executar backups e testes de restauração"
       ],
-      "indicadores": ["mudancas_sucesso", "disponibilidade_sistemas"]
+      "indicadores": [
+        "mudancas_sucesso",
+        "disponibilidade_sistemas"
+      ],
+      "nivel": "execucao",
+      "missao": "Manter o VEOS, o Zoho e as integrações funcionando e com backup testado.",
+      "fase": "crescimento",
+      "cobre_enquanto_vago": "CIO",
+      "atividades": {
+        "diaria": [
+          "Conferir a saúde do sistema e as sincronizações."
+        ],
+        "semanal": [
+          "Aplicar mudanças aprovadas com plano de reversão."
+        ],
+        "mensal": [
+          "Testar a restauração do backup."
+        ]
+      },
+      "entregas": [
+        "Sistemas disponíveis",
+        "Teste de restauração mensal"
+      ],
+      "decide": [
+        "Correção de falha sem mudança de regra"
+      ],
+      "escala": [
+        "Mudança que altera regra de negócio",
+        "Perda ou exposição de dados"
+      ],
+      "status": "PROPOSTA"
     },
     {
       "papel": "responsavel_seguranca",
@@ -123,7 +259,35 @@
         "Coordenar a resposta a incidentes de segurança e a avaliação de comunicação à ANPD",
         "Manter o inventário de dados pessoais tratados em sistemas internos e em sistemas de clientes"
       ],
-      "indicadores": ["incidentes_lgpd_no_prazo", "credenciais_em_cofre"]
+      "indicadores": [
+        "incidentes_lgpd_no_prazo",
+        "credenciais_em_cofre"
+      ],
+      "nivel": "execucao",
+      "missao": "Proteger senhas, acessos e dados pessoais da VOICE e dos clientes.",
+      "fase": "crescimento",
+      "cobre_enquanto_vago": "CIO",
+      "atividades": {
+        "diaria": [],
+        "semanal": [
+          "Revisar alertas de acesso."
+        ],
+        "mensal": [
+          "Revisar acessos (quem entra onde).",
+          "Atualizar o inventário de dados pessoais."
+        ]
+      },
+      "entregas": [
+        "Revisão de acessos",
+        "Inventário de dados pessoais"
+      ],
+      "decide": [
+        "Bloquear acesso suspeito"
+      ],
+      "escala": [
+        "Incidente com dados pessoais (avaliação ANPD)"
+      ],
+      "status": "PROPOSTA"
     }
   ],
   "processos": [
@@ -132,12 +296,42 @@
       "nome": "Ciclo do projeto técnico",
       "descricao": "Do levantamento técnico ao as-built arquivado, com revisão por pares e controle de configurações.",
       "etapas": [
-        { "id": "levantamento", "nome": "Levantamento técnico", "responsavel": "engenheiro_projetos", "criterio_saida": "Plantas, ambientes, pontos, requisitos do cliente e do arquiteto e infraestrutura existente registrados." },
-        { "id": "projeto_executivo", "nome": "Projeto executivo", "responsavel": "engenheiro_projetos", "criterio_saida": "Projeto por disciplina conforme padrões vigentes, somente com produtos homologados, com lista de materiais para compras." },
-        { "id": "revisao_pares", "nome": "Revisão por pares", "responsavel": "engenheiro_projetos", "criterio_saida": "Projeto revisado por outro engenheiro, comentários resolvidos e revisão numerada." },
-        { "id": "liberado_obra", "nome": "Liberação para a obra", "responsavel": "engenheiro_projetos", "criterio_saida": "Projeto executivo entregue a Operações e registrado no kickoff." },
-        { "id": "asbuilt", "nome": "As-built e configurações", "responsavel": "programador_automacao", "criterio_saida": "As-built com mapa de portas, VLANs, endereçamento, firmware, backups de programação e referência do cofre de credenciais." },
-        { "id": "arquivo", "nome": "Arquivamento e passagem", "responsavel": "engenheiro_projetos", "criterio_saida": "Dossiê técnico arquivado e disponível para Pós-venda." }
+        {
+          "id": "levantamento",
+          "nome": "Levantamento técnico",
+          "responsavel": "engenheiro_projetos",
+          "criterio_saida": "Plantas, ambientes, pontos, requisitos do cliente e do arquiteto e infraestrutura existente registrados."
+        },
+        {
+          "id": "projeto_executivo",
+          "nome": "Projeto executivo",
+          "responsavel": "engenheiro_projetos",
+          "criterio_saida": "Projeto por disciplina conforme padrões vigentes, somente com produtos homologados, com lista de materiais para compras."
+        },
+        {
+          "id": "revisao_pares",
+          "nome": "Revisão por pares",
+          "responsavel": "engenheiro_projetos",
+          "criterio_saida": "Projeto revisado por outro engenheiro, comentários resolvidos e revisão numerada."
+        },
+        {
+          "id": "liberado_obra",
+          "nome": "Liberação para a obra",
+          "responsavel": "engenheiro_projetos",
+          "criterio_saida": "Projeto executivo entregue a Operações e registrado no kickoff."
+        },
+        {
+          "id": "asbuilt",
+          "nome": "As-built e configurações",
+          "responsavel": "programador_automacao",
+          "criterio_saida": "As-built com mapa de portas, VLANs, endereçamento, firmware, backups de programação e referência do cofre de credenciais."
+        },
+        {
+          "id": "arquivo",
+          "nome": "Arquivamento e passagem",
+          "responsavel": "engenheiro_projetos",
+          "criterio_saida": "Dossiê técnico arquivado e disponível para Pós-venda."
+        }
       ]
     },
     {
@@ -145,11 +339,36 @@
       "nome": "Homologação de produtos",
       "descricao": "Avaliação técnica e comercial de produtos antes de entrarem no catálogo técnico da VOICE.",
       "etapas": [
-        { "id": "solicitacao", "nome": "Solicitação", "responsavel": "engenheiro_projetos", "criterio_saida": "Produto, fabricante, motivo e aplicação pretendida registrados." },
-        { "id": "avaliacao", "nome": "Avaliação documental", "responsavel": "engenheiro_projetos", "criterio_saida": "Compatibilidade com plataformas, homologação Anatel quando aplicável, garantia e suporte no Brasil verificados." },
-        { "id": "bancada", "nome": "Teste de bancada", "responsavel": "programador_automacao", "criterio_saida": "Integração testada com a plataforma de automação e a rede padrão; firmware testado registrado." },
-        { "id": "piloto", "nome": "Piloto em obra controlada", "responsavel": "analista_redes", "criterio_saida": "Uso real sem falhas por período acordado." },
-        { "id": "decisao", "nome": "Decisão", "responsavel": "engenheiro_projetos", "criterio_saida": "Homologado com restrições documentadas ou reprovado com motivo." }
+        {
+          "id": "solicitacao",
+          "nome": "Solicitação",
+          "responsavel": "engenheiro_projetos",
+          "criterio_saida": "Produto, fabricante, motivo e aplicação pretendida registrados."
+        },
+        {
+          "id": "avaliacao",
+          "nome": "Avaliação documental",
+          "responsavel": "engenheiro_projetos",
+          "criterio_saida": "Compatibilidade com plataformas, homologação Anatel quando aplicável, garantia e suporte no Brasil verificados."
+        },
+        {
+          "id": "bancada",
+          "nome": "Teste de bancada",
+          "responsavel": "programador_automacao",
+          "criterio_saida": "Integração testada com a plataforma de automação e a rede padrão; firmware testado registrado."
+        },
+        {
+          "id": "piloto",
+          "nome": "Piloto em obra controlada",
+          "responsavel": "analista_redes",
+          "criterio_saida": "Uso real sem falhas por período acordado."
+        },
+        {
+          "id": "decisao",
+          "nome": "Decisão",
+          "responsavel": "engenheiro_projetos",
+          "criterio_saida": "Homologado com restrições documentadas ou reprovado com motivo."
+        }
       ]
     },
     {
@@ -157,10 +376,30 @@
       "nome": "Gestão de incidentes e mudanças",
       "descricao": "Resposta a incidentes técnicos e de segurança (incluindo LGPD) e controle de mudanças em sistemas internos e redes de clientes.",
       "etapas": [
-        { "id": "registro", "nome": "Registro e classificação", "responsavel": "analista_redes", "criterio_saida": "Incidente registrado com origem, severidade e indicação de envolvimento de dados pessoais." },
-        { "id": "contencao", "nome": "Contenção e comunicação", "responsavel": "responsavel_seguranca", "criterio_saida": "Impacto contido, partes afetadas informadas e, se houver dado pessoal com risco relevante, prazo de comunicação à ANPD registrado." },
-        { "id": "resolucao", "nome": "Resolução", "responsavel": "analista_redes", "criterio_saida": "Serviço restabelecido e verificado com o usuário ou cliente." },
-        { "id": "pos_incidente", "nome": "Pós-incidente", "responsavel": "responsavel_seguranca", "criterio_saida": "Causa raiz e ações preventivas registradas; padrão técnico ou homologação atualizados quando aplicável." }
+        {
+          "id": "registro",
+          "nome": "Registro e classificação",
+          "responsavel": "analista_redes",
+          "criterio_saida": "Incidente registrado com origem, severidade e indicação de envolvimento de dados pessoais."
+        },
+        {
+          "id": "contencao",
+          "nome": "Contenção e comunicação",
+          "responsavel": "responsavel_seguranca",
+          "criterio_saida": "Impacto contido, partes afetadas informadas e, se houver dado pessoal com risco relevante, prazo de comunicação à ANPD registrado."
+        },
+        {
+          "id": "resolucao",
+          "nome": "Resolução",
+          "responsavel": "analista_redes",
+          "criterio_saida": "Serviço restabelecido e verificado com o usuário ou cliente."
+        },
+        {
+          "id": "pos_incidente",
+          "nome": "Pós-incidente",
+          "responsavel": "responsavel_seguranca",
+          "criterio_saida": "Causa raiz e ações preventivas registradas; padrão técnico ou homologação atualizados quando aplicável."
+        }
       ]
     }
   ],
@@ -170,16 +409,63 @@
       "nome": "Padrão técnico",
       "descricao": "Regra de engenharia da VOICE por disciplina (ex.: identificação de cabos, VLANs padrão, montagem de rack, retenção de CFTV).",
       "responsavel": "engenheiro_projetos",
-      "estados": ["rascunho", "revisao", "vigente", "obsoleto"],
+      "estados": [
+        "rascunho",
+        "revisao",
+        "vigente",
+        "obsoleto"
+      ],
       "estado_inicial": "rascunho",
-      "estados_finais": ["obsoleto"],
+      "estados_finais": [
+        "obsoleto"
+      ],
       "campos": [
-        { "id": "disciplina", "rotulo": "Disciplina", "tipo": "opcao", "opcoes": ["Cabeamento estruturado", "Redes e Wi-Fi", "Áudio e vídeo", "Segurança eletrônica (CFTV e alarme)", "Controle de acesso", "Automação e iluminação", "Interface elétrica de baixa tensão", "Sistemas internos VOICE"], "obrigatorio": true },
-        { "id": "norma_referencia", "rotulo": "Norma de referência", "tipo": "texto", "obrigatorio": false },
-        { "id": "versao", "rotulo": "Versão", "tipo": "texto", "obrigatorio": true },
-        { "id": "conteudo", "rotulo": "Conteúdo do padrão", "tipo": "texto_longo", "obrigatorio": true },
-        { "id": "data_revisao", "rotulo": "Próxima revisão", "tipo": "data", "obrigatorio": true },
-        { "id": "aprovado_por", "rotulo": "Aprovado por", "tipo": "texto", "obrigatorio": false }
+        {
+          "id": "disciplina",
+          "rotulo": "Disciplina",
+          "tipo": "opcao",
+          "opcoes": [
+            "Cabeamento estruturado",
+            "Redes e Wi-Fi",
+            "Áudio e vídeo",
+            "Segurança eletrônica (CFTV e alarme)",
+            "Controle de acesso",
+            "Automação e iluminação",
+            "Interface elétrica de baixa tensão",
+            "Sistemas internos VOICE"
+          ],
+          "obrigatorio": true
+        },
+        {
+          "id": "norma_referencia",
+          "rotulo": "Norma de referência",
+          "tipo": "texto",
+          "obrigatorio": false
+        },
+        {
+          "id": "versao",
+          "rotulo": "Versão",
+          "tipo": "texto",
+          "obrigatorio": true
+        },
+        {
+          "id": "conteudo",
+          "rotulo": "Conteúdo do padrão",
+          "tipo": "texto_longo",
+          "obrigatorio": true
+        },
+        {
+          "id": "data_revisao",
+          "rotulo": "Próxima revisão",
+          "tipo": "data",
+          "obrigatorio": true
+        },
+        {
+          "id": "aprovado_por",
+          "rotulo": "Aprovado por",
+          "tipo": "texto",
+          "obrigatorio": false
+        }
       ]
     },
     {
@@ -187,18 +473,82 @@
       "nome": "Homologação de produto",
       "descricao": "Avaliação de um produto ou firmware para entrar no catálogo técnico da VOICE, com matriz de compatibilidade.",
       "responsavel": "engenheiro_projetos",
-      "estados": ["solicitada", "avaliacao", "teste_bancada", "piloto", "homologado", "reprovado"],
+      "estados": [
+        "solicitada",
+        "avaliacao",
+        "teste_bancada",
+        "piloto",
+        "homologado",
+        "reprovado"
+      ],
       "estado_inicial": "solicitada",
-      "estados_finais": ["homologado", "reprovado"],
+      "estados_finais": [
+        "homologado",
+        "reprovado"
+      ],
       "campos": [
-        { "id": "fabricante", "rotulo": "Fabricante", "tipo": "texto", "obrigatorio": true },
-        { "id": "modelo", "rotulo": "Modelo", "tipo": "texto", "obrigatorio": true },
-        { "id": "categoria", "rotulo": "Categoria", "tipo": "opcao", "opcoes": ["Rede e Wi-Fi", "Áudio e vídeo", "Automação e iluminação", "Segurança eletrônica", "Controle de acesso", "Cabeamento e infraestrutura", "Energia (nobreak e proteção)"], "obrigatorio": true },
-        { "id": "firmware_testado", "rotulo": "Firmware testado", "tipo": "texto", "obrigatorio": false },
-        { "id": "compatibilidade", "rotulo": "Compatibilidade (plataformas, protocolos, limitações)", "tipo": "texto_longo", "obrigatorio": false },
-        { "id": "anatel", "rotulo": "Homologação Anatel", "tipo": "opcao", "opcoes": ["Homologado Anatel", "Não se aplica", "Sem homologação — bloqueado"], "obrigatorio": false },
-        { "id": "suporte_brasil", "rotulo": "Garantia e suporte no Brasil", "tipo": "sim_nao", "obrigatorio": false },
-        { "id": "resultado_teste", "rotulo": "Resultado dos testes", "tipo": "texto_longo", "obrigatorio": false }
+        {
+          "id": "fabricante",
+          "rotulo": "Fabricante",
+          "tipo": "texto",
+          "obrigatorio": true
+        },
+        {
+          "id": "modelo",
+          "rotulo": "Modelo",
+          "tipo": "texto",
+          "obrigatorio": true
+        },
+        {
+          "id": "categoria",
+          "rotulo": "Categoria",
+          "tipo": "opcao",
+          "opcoes": [
+            "Rede e Wi-Fi",
+            "Áudio e vídeo",
+            "Automação e iluminação",
+            "Segurança eletrônica",
+            "Controle de acesso",
+            "Cabeamento e infraestrutura",
+            "Energia (nobreak e proteção)"
+          ],
+          "obrigatorio": true
+        },
+        {
+          "id": "firmware_testado",
+          "rotulo": "Firmware testado",
+          "tipo": "texto",
+          "obrigatorio": false
+        },
+        {
+          "id": "compatibilidade",
+          "rotulo": "Compatibilidade (plataformas, protocolos, limitações)",
+          "tipo": "texto_longo",
+          "obrigatorio": false
+        },
+        {
+          "id": "anatel",
+          "rotulo": "Homologação Anatel",
+          "tipo": "opcao",
+          "opcoes": [
+            "Homologado Anatel",
+            "Não se aplica",
+            "Sem homologação — bloqueado"
+          ],
+          "obrigatorio": false
+        },
+        {
+          "id": "suporte_brasil",
+          "rotulo": "Garantia e suporte no Brasil",
+          "tipo": "sim_nao",
+          "obrigatorio": false
+        },
+        {
+          "id": "resultado_teste",
+          "rotulo": "Resultado dos testes",
+          "tipo": "texto_longo",
+          "obrigatorio": false
+        }
       ]
     },
     {
@@ -206,18 +556,85 @@
       "nome": "Incidente técnico ou de segurança",
       "descricao": "Falha em sistema interno da VOICE, em rede ou sistema de cliente sob responsabilidade técnica, falha recorrente de produto ou incidente de segurança da informação.",
       "responsavel": "analista_redes",
-      "estados": ["registrado", "contencao", "resolvido", "pos_incidente", "encerrado"],
+      "estados": [
+        "registrado",
+        "contencao",
+        "resolvido",
+        "pos_incidente",
+        "encerrado"
+      ],
       "estado_inicial": "registrado",
-      "estados_finais": ["encerrado"],
+      "estados_finais": [
+        "encerrado"
+      ],
       "campos": [
-        { "id": "origem", "rotulo": "Origem", "tipo": "opcao", "opcoes": ["Sistema interno VOICE (VEOS, Zoho, integrações)", "Rede ou sistema de cliente", "Falha de produto homologado", "Segurança da informação", "Acesso indevido ou vazamento de credencial"], "obrigatorio": true },
-        { "id": "severidade", "rotulo": "Severidade", "tipo": "opcao", "opcoes": ["SEV1", "SEV2", "SEV3", "SEV4"], "obrigatorio": true },
-        { "id": "dados_pessoais", "rotulo": "Envolve dados pessoais (LGPD)", "tipo": "opcao", "opcoes": ["Não", "Em avaliação", "Sim — sem risco relevante", "Sim — risco ou dano relevante"], "obrigatorio": true },
-        { "id": "data_ciencia", "rotulo": "Data em que a VOICE tomou ciência", "tipo": "data", "obrigatorio": true },
-        { "id": "prazo_anpd", "rotulo": "Prazo de comunicação à ANPD", "tipo": "data", "obrigatorio": false },
-        { "id": "sistemas_afetados", "rotulo": "Sistemas e clientes afetados", "tipo": "texto_longo", "obrigatorio": true },
-        { "id": "causa_raiz", "rotulo": "Causa raiz", "tipo": "texto_longo", "obrigatorio": false },
-        { "id": "acoes_preventivas", "rotulo": "Ações preventivas", "tipo": "texto_longo", "obrigatorio": false }
+        {
+          "id": "origem",
+          "rotulo": "Origem",
+          "tipo": "opcao",
+          "opcoes": [
+            "Sistema interno VOICE (VEOS, Zoho, integrações)",
+            "Rede ou sistema de cliente",
+            "Falha de produto homologado",
+            "Segurança da informação",
+            "Acesso indevido ou vazamento de credencial"
+          ],
+          "obrigatorio": true
+        },
+        {
+          "id": "severidade",
+          "rotulo": "Severidade",
+          "tipo": "opcao",
+          "opcoes": [
+            "SEV1",
+            "SEV2",
+            "SEV3",
+            "SEV4"
+          ],
+          "obrigatorio": true
+        },
+        {
+          "id": "dados_pessoais",
+          "rotulo": "Envolve dados pessoais (LGPD)",
+          "tipo": "opcao",
+          "opcoes": [
+            "Não",
+            "Em avaliação",
+            "Sim — sem risco relevante",
+            "Sim — risco ou dano relevante"
+          ],
+          "obrigatorio": true
+        },
+        {
+          "id": "data_ciencia",
+          "rotulo": "Data em que a VOICE tomou ciência",
+          "tipo": "data",
+          "obrigatorio": true
+        },
+        {
+          "id": "prazo_anpd",
+          "rotulo": "Prazo de comunicação à ANPD",
+          "tipo": "data",
+          "obrigatorio": false
+        },
+        {
+          "id": "sistemas_afetados",
+          "rotulo": "Sistemas e clientes afetados",
+          "tipo": "texto_longo",
+          "obrigatorio": true
+        },
+        {
+          "id": "causa_raiz",
+          "rotulo": "Causa raiz",
+          "tipo": "texto_longo",
+          "obrigatorio": false
+        },
+        {
+          "id": "acoes_preventivas",
+          "rotulo": "Ações preventivas",
+          "tipo": "texto_longo",
+          "obrigatorio": false
+        }
       ]
     },
     {
@@ -225,19 +642,74 @@
       "nome": "Projeto técnico e as-built",
       "descricao": "Dossiê técnico de uma obra: projeto executivo, revisões, as-built, backups de configuração e referência das credenciais no cofre.",
       "responsavel": "engenheiro_projetos",
-      "estados": ["levantamento", "projeto_executivo", "revisao_pares", "liberado_obra", "asbuilt_pendente", "asbuilt_entregue", "arquivado"],
+      "estados": [
+        "levantamento",
+        "projeto_executivo",
+        "revisao_pares",
+        "liberado_obra",
+        "asbuilt_pendente",
+        "asbuilt_entregue",
+        "arquivado"
+      ],
       "estado_inicial": "levantamento",
-      "estados_finais": ["arquivado"],
+      "estados_finais": [
+        "arquivado"
+      ],
       "campos": [
-        { "id": "obra_ref", "rotulo": "Obra", "tipo": "texto", "obrigatorio": true },
-        { "id": "disciplinas", "rotulo": "Disciplinas do projeto", "tipo": "texto", "obrigatorio": true },
-        { "id": "revisao_projeto", "rotulo": "Revisão atual do projeto", "tipo": "texto", "obrigatorio": false },
-        { "id": "revisor", "rotulo": "Revisor (segundo engenheiro)", "tipo": "texto", "obrigatorio": false },
-        { "id": "certificacao_cabeamento", "rotulo": "Relatórios de certificação anexados", "tipo": "sim_nao", "obrigatorio": false },
-        { "id": "backup_configuracoes", "rotulo": "Backup de programações e configurações", "tipo": "sim_nao", "obrigatorio": false },
-        { "id": "ref_cofre", "rotulo": "Referência do item no cofre de senhas (NUNCA a senha)", "tipo": "texto", "obrigatorio": false },
-        { "id": "link_asbuilt", "rotulo": "Link do as-built", "tipo": "texto", "obrigatorio": false },
-        { "id": "data_limite_asbuilt", "rotulo": "Prazo do as-built", "tipo": "data", "obrigatorio": false }
+        {
+          "id": "obra_ref",
+          "rotulo": "Obra",
+          "tipo": "texto",
+          "obrigatorio": true
+        },
+        {
+          "id": "disciplinas",
+          "rotulo": "Disciplinas do projeto",
+          "tipo": "texto",
+          "obrigatorio": true
+        },
+        {
+          "id": "revisao_projeto",
+          "rotulo": "Revisão atual do projeto",
+          "tipo": "texto",
+          "obrigatorio": false
+        },
+        {
+          "id": "revisor",
+          "rotulo": "Revisor (segundo engenheiro)",
+          "tipo": "texto",
+          "obrigatorio": false
+        },
+        {
+          "id": "certificacao_cabeamento",
+          "rotulo": "Relatórios de certificação anexados",
+          "tipo": "sim_nao",
+          "obrigatorio": false
+        },
+        {
+          "id": "backup_configuracoes",
+          "rotulo": "Backup de programações e configurações",
+          "tipo": "sim_nao",
+          "obrigatorio": false
+        },
+        {
+          "id": "ref_cofre",
+          "rotulo": "Referência do item no cofre de senhas (NUNCA a senha)",
+          "tipo": "texto",
+          "obrigatorio": false
+        },
+        {
+          "id": "link_asbuilt",
+          "rotulo": "Link do as-built",
+          "tipo": "texto",
+          "obrigatorio": false
+        },
+        {
+          "id": "data_limite_asbuilt",
+          "rotulo": "Prazo do as-built",
+          "tipo": "data",
+          "obrigatorio": false
+        }
       ]
     },
     {
@@ -245,16 +717,72 @@
       "nome": "Solicitação de mudança",
       "descricao": "Mudança planejada em sistema interno (VEOS, Zoho, integrações), na rede da VOICE ou em sistema de cliente já entregue.",
       "responsavel": "analista_sistemas",
-      "estados": ["solicitada", "avaliacao", "aprovada", "agendada", "executada", "revertida", "encerrada", "cancelada"],
+      "estados": [
+        "solicitada",
+        "avaliacao",
+        "aprovada",
+        "agendada",
+        "executada",
+        "revertida",
+        "encerrada",
+        "cancelada"
+      ],
       "estado_inicial": "solicitada",
-      "estados_finais": ["encerrada", "cancelada"],
+      "estados_finais": [
+        "encerrada",
+        "cancelada"
+      ],
       "campos": [
-        { "id": "sistema", "rotulo": "Sistema", "tipo": "opcao", "opcoes": ["VEOS", "Zoho CRM", "Zoho Books", "Zoho Projects", "Integrações entre sistemas", "Rede e infraestrutura da VOICE", "Sistema de cliente entregue"], "obrigatorio": true },
-        { "id": "tipo_mudanca", "rotulo": "Tipo de mudança", "tipo": "opcao", "opcoes": ["Padrão (pré-aprovada)", "Normal", "Emergencial"], "obrigatorio": true },
-        { "id": "impacto", "rotulo": "Impacto (usuários, sistemas, processos)", "tipo": "texto_longo", "obrigatorio": true },
-        { "id": "plano_reversao", "rotulo": "Plano de reversão", "tipo": "texto_longo", "obrigatorio": false },
-        { "id": "janela_execucao", "rotulo": "Janela de execução", "tipo": "data", "obrigatorio": false },
-        { "id": "autorizacao_cliente", "rotulo": "Autorização do cliente registrada (se sistema de cliente)", "tipo": "sim_nao", "obrigatorio": false }
+        {
+          "id": "sistema",
+          "rotulo": "Sistema",
+          "tipo": "opcao",
+          "opcoes": [
+            "VEOS",
+            "Zoho CRM",
+            "Zoho Books",
+            "Zoho Projects",
+            "Integrações entre sistemas",
+            "Rede e infraestrutura da VOICE",
+            "Sistema de cliente entregue"
+          ],
+          "obrigatorio": true
+        },
+        {
+          "id": "tipo_mudanca",
+          "rotulo": "Tipo de mudança",
+          "tipo": "opcao",
+          "opcoes": [
+            "Padrão (pré-aprovada)",
+            "Normal",
+            "Emergencial"
+          ],
+          "obrigatorio": true
+        },
+        {
+          "id": "impacto",
+          "rotulo": "Impacto (usuários, sistemas, processos)",
+          "tipo": "texto_longo",
+          "obrigatorio": true
+        },
+        {
+          "id": "plano_reversao",
+          "rotulo": "Plano de reversão",
+          "tipo": "texto_longo",
+          "obrigatorio": false
+        },
+        {
+          "id": "janela_execucao",
+          "rotulo": "Janela de execução",
+          "tipo": "data",
+          "obrigatorio": false
+        },
+        {
+          "id": "autorizacao_cliente",
+          "rotulo": "Autorização do cliente registrada (se sistema de cliente)",
+          "tipo": "sim_nao",
+          "obrigatorio": false
+        }
       ]
     }
   ],
@@ -339,15 +867,78 @@
     }
   ],
   "indicadores": [
-    { "id": "mttr_incidentes", "nome": "Tempo médio de restabelecimento (SEV1/SEV2)", "formula": "Média de horas entre registro e resolução de incidentes SEV1 e SEV2", "meta": "SEV1 ≤ 4 h; SEV2 ≤ 1 dia útil", "frequencia": "mensal", "status": "PROPOSTA" },
-    { "id": "incidentes_lgpd_no_prazo", "nome": "Incidentes com dado pessoal avaliados no prazo legal", "formula": "Incidentes com dado pessoal e risco relevante comunicados à ANPD em até 3 dias úteis da ciência ÷ incidentes desse tipo × 100", "meta": "100% (prazo da Resolução CD/ANPD nº 15/2024)", "frequencia": "mensal", "status": "PROPOSTA" },
-    { "id": "credenciais_em_cofre", "nome": "Obras com credenciais no cofre", "formula": "Obras entregues com referência de cofre registrada ÷ obras entregues × 100", "meta": "100%", "frequencia": "mensal", "status": "PROPOSTA" },
-    { "id": "asbuilt_no_prazo", "nome": "As-built no prazo", "formula": "As-built entregues até 15 dias após a entrega técnica ÷ obras entregues × 100", "meta": "≥ 95%", "frequencia": "mensal", "status": "PROPOSTA" },
-    { "id": "projetos_revisados", "nome": "Projetos revisados por pares antes da obra", "formula": "Projetos liberados para obra com revisor registrado ÷ projetos liberados × 100", "meta": "100%", "frequencia": "mensal", "status": "PROPOSTA" },
-    { "id": "mudancas_sucesso", "nome": "Mudanças bem-sucedidas", "formula": "Mudanças executadas sem reversão nem incidente ÷ mudanças executadas × 100", "meta": "≥ 95%", "frequencia": "mensal", "status": "PROPOSTA" },
-    { "id": "lead_time_homologacao", "nome": "Tempo de homologação", "formula": "Média de dias entre solicitação e decisão da homologação", "meta": "≤ 30 dias", "frequencia": "mensal", "status": "PROPOSTA" },
-    { "id": "padroes_em_dia", "nome": "Padrões técnicos em dia", "formula": "Padrões vigentes com revisão dentro da data ÷ padrões vigentes × 100", "meta": "≥ 90%", "frequencia": "trimestral", "status": "PROPOSTA" },
-    { "id": "disponibilidade_sistemas", "nome": "Disponibilidade dos sistemas internos", "formula": "Horas disponíveis do VEOS e integrações em horário comercial ÷ horas totais em horário comercial × 100", "meta": "≥ 99,5%", "frequencia": "mensal", "status": "PROPOSTA" }
+    {
+      "id": "mttr_incidentes",
+      "nome": "Tempo médio de restabelecimento (SEV1/SEV2)",
+      "formula": "Média de horas entre registro e resolução de incidentes SEV1 e SEV2",
+      "meta": "SEV1 ≤ 4 h; SEV2 ≤ 1 dia útil",
+      "frequencia": "mensal",
+      "status": "PROPOSTA"
+    },
+    {
+      "id": "incidentes_lgpd_no_prazo",
+      "nome": "Incidentes com dado pessoal avaliados no prazo legal",
+      "formula": "Incidentes com dado pessoal e risco relevante comunicados à ANPD em até 3 dias úteis da ciência ÷ incidentes desse tipo × 100",
+      "meta": "100% (prazo da Resolução CD/ANPD nº 15/2024)",
+      "frequencia": "mensal",
+      "status": "PROPOSTA"
+    },
+    {
+      "id": "credenciais_em_cofre",
+      "nome": "Obras com credenciais no cofre",
+      "formula": "Obras entregues com referência de cofre registrada ÷ obras entregues × 100",
+      "meta": "100%",
+      "frequencia": "mensal",
+      "status": "PROPOSTA"
+    },
+    {
+      "id": "asbuilt_no_prazo",
+      "nome": "As-built no prazo",
+      "formula": "As-built entregues até 15 dias após a entrega técnica ÷ obras entregues × 100",
+      "meta": "≥ 95%",
+      "frequencia": "mensal",
+      "status": "PROPOSTA"
+    },
+    {
+      "id": "projetos_revisados",
+      "nome": "Projetos revisados por pares antes da obra",
+      "formula": "Projetos liberados para obra com revisor registrado ÷ projetos liberados × 100",
+      "meta": "100%",
+      "frequencia": "mensal",
+      "status": "PROPOSTA"
+    },
+    {
+      "id": "mudancas_sucesso",
+      "nome": "Mudanças bem-sucedidas",
+      "formula": "Mudanças executadas sem reversão nem incidente ÷ mudanças executadas × 100",
+      "meta": "≥ 95%",
+      "frequencia": "mensal",
+      "status": "PROPOSTA"
+    },
+    {
+      "id": "lead_time_homologacao",
+      "nome": "Tempo de homologação",
+      "formula": "Média de dias entre solicitação e decisão da homologação",
+      "meta": "≤ 30 dias",
+      "frequencia": "mensal",
+      "status": "PROPOSTA"
+    },
+    {
+      "id": "padroes_em_dia",
+      "nome": "Padrões técnicos em dia",
+      "formula": "Padrões vigentes com revisão dentro da data ÷ padrões vigentes × 100",
+      "meta": "≥ 90%",
+      "frequencia": "trimestral",
+      "status": "PROPOSTA"
+    },
+    {
+      "id": "disponibilidade_sistemas",
+      "nome": "Disponibilidade dos sistemas internos",
+      "formula": "Horas disponíveis do VEOS e integrações em horário comercial ÷ horas totais em horário comercial × 100",
+      "meta": "≥ 99,5%",
+      "frequencia": "mensal",
+      "status": "PROPOSTA"
+    }
   ],
   "sentinelas": [
     {
@@ -359,14 +950,30 @@
         "tipo": "vencido",
         "registro": "incidente",
         "campo": "prazo_anpd",
-        "filtros": [{ "campo": "dados_pessoais", "igual": "Sim — risco ou dano relevante" }],
+        "filtros": [
+          {
+            "campo": "dados_pessoais",
+            "igual": "Sim — risco ou dano relevante"
+          }
+        ],
         "antecedencia_dias": 1
       },
       "mensagem": "O incidente {{titulo}} envolve dados pessoais com risco relevante e o prazo de comunicação à ANPD vence em {{dias}} dia(s) ou já venceu. Verificar com o jurídico se a VOICE se enquadra como agente de pequeno porte (prazo em dobro).",
       "acoes": [
-        { "tipo": "notificar", "para": "direcao" },
-        { "tipo": "rascunho", "modelo": "avaliacao_incidente_lgpd" },
-        { "tipo": "tarefa", "titulo": "Concluir avaliação técnica e submeter à direção a decisão de comunicação", "papel": "responsavel_seguranca", "prazo_dias": 1 }
+        {
+          "tipo": "notificar",
+          "para": "direcao"
+        },
+        {
+          "tipo": "rascunho",
+          "modelo": "avaliacao_incidente_lgpd"
+        },
+        {
+          "tipo": "tarefa",
+          "titulo": "Concluir avaliação técnica e submeter à direção a decisão de comunicação",
+          "papel": "responsavel_seguranca",
+          "prazo_dias": 1
+        }
       ],
       "fonte": "PROPOSTA — regra de alerta baseada na Lei 13.709/2018 (LGPD) art. 48 e Resolução CD/ANPD nº 15/2024 (3 dias úteis)"
     },
@@ -380,14 +987,31 @@
         "registro": "incidente",
         "campo": "prazo_anpd",
         "filtros": [
-          { "campo": "dados_pessoais", "em": ["Em avaliação", "Sim — risco ou dano relevante"] },
-          { "campo": "estado", "diferente": "encerrado" }
+          {
+            "campo": "dados_pessoais",
+            "em": [
+              "Em avaliação",
+              "Sim — risco ou dano relevante"
+            ]
+          },
+          {
+            "campo": "estado",
+            "diferente": "encerrado"
+          }
         ]
       },
       "mensagem": "O incidente {{titulo}} envolve ou pode envolver dados pessoais e ainda não tem o prazo de comunicação à ANPD registrado (3 dias úteis a partir da ciência).",
       "acoes": [
-        { "tipo": "tarefa", "titulo": "Registrar data de ciência e prazo de comunicação à ANPD", "papel": "responsavel_seguranca", "prazo_dias": 1 },
-        { "tipo": "notificar", "para": "CIO" }
+        {
+          "tipo": "tarefa",
+          "titulo": "Registrar data de ciência e prazo de comunicação à ANPD",
+          "papel": "responsavel_seguranca",
+          "prazo_dias": 1
+        },
+        {
+          "tipo": "notificar",
+          "para": "CIO"
+        }
       ],
       "fonte": "PROPOSTA — regra de alerta baseada na Resolução CD/ANPD nº 15/2024"
     },
@@ -400,16 +1024,39 @@
         "tipo": "parado",
         "registro": "incidente",
         "filtros": [
-          { "campo": "severidade", "em": ["SEV1", "SEV2"] },
-          { "campo": "estado", "em": ["registrado", "contencao"] }
+          {
+            "campo": "severidade",
+            "em": [
+              "SEV1",
+              "SEV2"
+            ]
+          },
+          {
+            "campo": "estado",
+            "em": [
+              "registrado",
+              "contencao"
+            ]
+          }
         ],
         "dias": 1
       },
       "mensagem": "O incidente {{titulo}} (SEV1/SEV2) está sem atualização há {{dias}} dia(s). Clientes e usuários afetados precisam de comunicação regular.",
       "acoes": [
-        { "tipo": "tarefa", "titulo": "Atualizar status, próximos passos e horário da próxima atualização", "papel": "analista_redes", "prazo_dias": 0 },
-        { "tipo": "rascunho", "modelo": "status_incidente_cliente" },
-        { "tipo": "notificar", "para": "CIO" }
+        {
+          "tipo": "tarefa",
+          "titulo": "Atualizar status, próximos passos e horário da próxima atualização",
+          "papel": "analista_redes",
+          "prazo_dias": 0
+        },
+        {
+          "tipo": "rascunho",
+          "modelo": "status_incidente_cliente"
+        },
+        {
+          "tipo": "notificar",
+          "para": "CIO"
+        }
       ],
       "fonte": "PROPOSTA — padrão de mercado (ITIL 4 gerenciamento de incidentes; skill incident-response)"
     },
@@ -422,12 +1069,25 @@
         "tipo": "faltando",
         "registro": "incidente",
         "campo": "causa_raiz",
-        "filtros": [{ "campo": "estado", "igual": "pos_incidente" }]
+        "filtros": [
+          {
+            "campo": "estado",
+            "igual": "pos_incidente"
+          }
+        ]
       },
       "mensagem": "O incidente {{titulo}} está em pós-incidente sem causa raiz registrada.",
       "acoes": [
-        { "tipo": "rascunho", "modelo": "postmortem" },
-        { "tipo": "tarefa", "titulo": "Conduzir postmortem sem culpa (5 porquês) com ações e responsáveis", "papel": "analista_redes", "prazo_dias": 5 }
+        {
+          "tipo": "rascunho",
+          "modelo": "postmortem"
+        },
+        {
+          "tipo": "tarefa",
+          "titulo": "Conduzir postmortem sem culpa (5 porquês) com ações e responsáveis",
+          "papel": "analista_redes",
+          "prazo_dias": 5
+        }
       ],
       "fonte": "PROPOSTA — padrão de mercado (postmortem sem culpa; skill incident-response)"
     },
@@ -440,12 +1100,29 @@
         "tipo": "faltando",
         "registro": "mudanca",
         "campo": "plano_reversao",
-        "filtros": [{ "campo": "estado", "em": ["avaliacao", "aprovada", "agendada"] }]
+        "filtros": [
+          {
+            "campo": "estado",
+            "em": [
+              "avaliacao",
+              "aprovada",
+              "agendada"
+            ]
+          }
+        ]
       },
       "mensagem": "A mudança {{titulo}} está sendo avaliada ou agendada sem plano de reversão escrito.",
       "acoes": [
-        { "tipo": "tarefa", "titulo": "Escrever plano de reversão com gatilho, passos e verificação", "papel": "analista_sistemas", "prazo_dias": 1 },
-        { "tipo": "rascunho", "modelo": "solicitacao_mudanca" }
+        {
+          "tipo": "tarefa",
+          "titulo": "Escrever plano de reversão com gatilho, passos e verificação",
+          "papel": "analista_sistemas",
+          "prazo_dias": 1
+        },
+        {
+          "tipo": "rascunho",
+          "modelo": "solicitacao_mudanca"
+        }
       ],
       "fonte": "PROPOSTA — padrão de mercado (ITIL 4 habilitação de mudanças; skill change-request)"
     },
@@ -458,12 +1135,28 @@
         "tipo": "faltando",
         "registro": "projeto_tecnico",
         "campo": "ref_cofre",
-        "filtros": [{ "campo": "estado", "em": ["asbuilt_pendente", "asbuilt_entregue"] }]
+        "filtros": [
+          {
+            "campo": "estado",
+            "em": [
+              "asbuilt_pendente",
+              "asbuilt_entregue"
+            ]
+          }
+        ]
       },
       "mensagem": "O projeto {{titulo}} não tem a referência do cofre de credenciais. Senhas não podem ficar em registro, e-mail ou WhatsApp.",
       "acoes": [
-        { "tipo": "tarefa", "titulo": "Cadastrar credenciais da obra no cofre e registrar apenas a referência", "papel": "analista_redes", "prazo_dias": 2 },
-        { "tipo": "notificar", "para": "responsavel_seguranca" }
+        {
+          "tipo": "tarefa",
+          "titulo": "Cadastrar credenciais da obra no cofre e registrar apenas a referência",
+          "papel": "analista_redes",
+          "prazo_dias": 2
+        },
+        {
+          "tipo": "notificar",
+          "para": "responsavel_seguranca"
+        }
       ],
       "fonte": "PROPOSTA — padrão de mercado (ISO/IEC 27002 controle 5.17 — informações de autenticação)"
     },
@@ -476,13 +1169,26 @@
         "tipo": "vencido",
         "registro": "projeto_tecnico",
         "campo": "data_limite_asbuilt",
-        "filtros": [{ "campo": "estado", "igual": "asbuilt_pendente" }],
+        "filtros": [
+          {
+            "campo": "estado",
+            "igual": "asbuilt_pendente"
+          }
+        ],
         "antecedencia_dias": 0
       },
       "mensagem": "O as-built do projeto {{titulo}} passou do prazo há {{dias}} dia(s). Sem as-built o Pós-venda atende o cliente às cegas.",
       "acoes": [
-        { "tipo": "tarefa", "titulo": "Concluir as-built com mapa de portas, VLANs, firmware e backups", "papel": "engenheiro_projetos", "prazo_dias": 3 },
-        { "tipo": "rascunho", "modelo": "checklist_asbuilt" }
+        {
+          "tipo": "tarefa",
+          "titulo": "Concluir as-built com mapa de portas, VLANs, firmware e backups",
+          "papel": "engenheiro_projetos",
+          "prazo_dias": 3
+        },
+        {
+          "tipo": "rascunho",
+          "modelo": "checklist_asbuilt"
+        }
       ],
       "fonte": "PROPOSTA — padrão de mercado (ITIL 4 gestão de configuração; ANSI/TIA-606 documentação)"
     },
@@ -495,12 +1201,22 @@
         "tipo": "vencido",
         "registro": "padrao_tecnico",
         "campo": "data_revisao",
-        "filtros": [{ "campo": "estado", "igual": "vigente" }],
+        "filtros": [
+          {
+            "campo": "estado",
+            "igual": "vigente"
+          }
+        ],
         "antecedencia_dias": 0
       },
       "mensagem": "O padrão {{titulo}} está com a revisão vencida há {{dias}} dia(s).",
       "acoes": [
-        { "tipo": "tarefa", "titulo": "Revisar padrão frente a normas atuais e lições de campo", "papel": "engenheiro_projetos", "prazo_dias": 15 }
+        {
+          "tipo": "tarefa",
+          "titulo": "Revisar padrão frente a normas atuais e lições de campo",
+          "papel": "engenheiro_projetos",
+          "prazo_dias": 15
+        }
       ],
       "fonte": "PROPOSTA — padrão de mercado (ISO 9001 controle de informação documentada)"
     },
@@ -512,12 +1228,25 @@
       "gatilho": {
         "tipo": "parado",
         "registro": "homologacao",
-        "filtros": [{ "campo": "estado", "nao_em": ["homologado", "reprovado"] }],
+        "filtros": [
+          {
+            "campo": "estado",
+            "nao_em": [
+              "homologado",
+              "reprovado"
+            ]
+          }
+        ],
         "dias": 15
       },
       "mensagem": "A homologação {{titulo}} está sem andamento há {{dias}} dias. Produto não homologado não pode ser especificado em obra.",
       "acoes": [
-        { "tipo": "tarefa", "titulo": "Retomar teste ou decidir reprovar a homologação", "papel": "engenheiro_projetos", "prazo_dias": 5 }
+        {
+          "tipo": "tarefa",
+          "titulo": "Retomar teste ou decidir reprovar a homologação",
+          "papel": "engenheiro_projetos",
+          "prazo_dias": 5
+        }
       ],
       "fonte": "PROPOSTA — padrão de mercado (gestão de catálogo técnico)"
     },
@@ -529,7 +1258,12 @@
       "gatilho": {
         "tipo": "contagem",
         "registro": "incidente",
-        "filtros": [{ "campo": "origem", "igual": "Falha de produto homologado" }],
+        "filtros": [
+          {
+            "campo": "origem",
+            "igual": "Falha de produto homologado"
+          }
+        ],
         "janela_dias": 60,
         "data_campo": "criado_em",
         "operador": ">=",
@@ -537,8 +1271,16 @@
       },
       "mensagem": "{{total}} incidentes por falha de produto homologado nos últimos 60 dias. Avaliar suspensão da homologação ou do firmware.",
       "acoes": [
-        { "tipo": "tarefa", "titulo": "Analisar falhas por fabricante/modelo e revisar homologação", "papel": "engenheiro_projetos", "prazo_dias": 7 },
-        { "tipo": "notificar", "para": "CIO" }
+        {
+          "tipo": "tarefa",
+          "titulo": "Analisar falhas por fabricante/modelo e revisar homologação",
+          "papel": "engenheiro_projetos",
+          "prazo_dias": 7
+        },
+        {
+          "tipo": "notificar",
+          "para": "CIO"
+        }
       ],
       "fonte": "PROPOSTA — padrão de mercado (ITIL 4 gerenciamento de problemas)"
     }
@@ -601,30 +1343,115 @@
     "Inventário de dados pessoais tratados em sistemas internos e de clientes"
   ],
   "relacoes": [
-    { "setor": "operacoes", "fluxo": "Entrega projeto executivo, padrões técnicos e lista de homologados; recebe lições aprendidas de campo e dados para o as-built." },
-    { "setor": "vendas", "fluxo": "Apoia a pré-venda técnica e valida a viabilidade e os produtos da proposta antes do fechamento." },
-    { "setor": "posvenda", "fluxo": "Entrega as-built e referência de cofre; recebe falhas recorrentes de produtos e incidentes de clientes." },
-    { "setor": "financas", "fluxo": "Sustenta as integrações Zoho Books/VEOS e informa custos de licenças e homologações." },
-    { "setor": "pessoas", "fluxo": "Define trilhas de capacitação técnica e solicita concessão/remoção de acessos em admissões e desligamentos." },
-    { "setor": "direcao", "fluxo": "Submete decisões de plataforma, contratos de nuvem e comunicação de incidentes de dados pessoais." },
-    { "setor": "secretaria", "fluxo": "Recebe ordens da direção distribuídas pela Secretaria e devolve o retorno no prazo." }
+    {
+      "setor": "operacoes",
+      "fluxo": "Entrega projeto executivo, padrões técnicos e lista de homologados; recebe lições aprendidas de campo e dados para o as-built."
+    },
+    {
+      "setor": "vendas",
+      "fluxo": "Apoia a pré-venda técnica e valida a viabilidade e os produtos da proposta antes do fechamento."
+    },
+    {
+      "setor": "posvenda",
+      "fluxo": "Entrega as-built e referência de cofre; recebe falhas recorrentes de produtos e incidentes de clientes."
+    },
+    {
+      "setor": "financas",
+      "fluxo": "Sustenta as integrações Zoho Books/VEOS e informa custos de licenças e homologações."
+    },
+    {
+      "setor": "pessoas",
+      "fluxo": "Define trilhas de capacitação técnica e solicita concessão/remoção de acessos em admissões e desligamentos."
+    },
+    {
+      "setor": "direcao",
+      "fluxo": "Submete decisões de plataforma, contratos de nuvem e comunicação de incidentes de dados pessoais."
+    },
+    {
+      "setor": "secretaria",
+      "fluxo": "Recebe ordens da direção distribuídas pela Secretaria e devolve o retorno no prazo."
+    }
   ],
   "fontes": [
-    { "titulo": "Skill incident-response (severidades, comunicação e postmortem)", "tipo": "skill", "ref": "engineering/skills/incident-response/SKILL.md" },
-    { "titulo": "Skill documentation (runbooks, documentação de arquitetura)", "tipo": "skill", "ref": "engineering/skills/documentation/SKILL.md" },
-    { "titulo": "Skill deploy-checklist (verificação e gatilhos de reversão)", "tipo": "skill", "ref": "engineering/skills/deploy-checklist/SKILL.md" },
-    { "titulo": "Skill tech-debt (priorização por impacto, risco e esforço)", "tipo": "skill", "ref": "engineering/skills/tech-debt/SKILL.md" },
-    { "titulo": "Skill change-request (análise de impacto e plano de reversão)", "tipo": "skill", "ref": "operations/skills/change-request/SKILL.md" },
-    { "titulo": "Skill runbook (procedimentos operacionais)", "tipo": "skill", "ref": "operations/skills/runbook/SKILL.md" },
-    { "titulo": "Skill compliance-tracking (ISO 27001, inventário de controles e evidências)", "tipo": "skill", "ref": "operations/skills/compliance-tracking/SKILL.md" },
-    { "titulo": "Skill compliance-check (privacidade e bases legais)", "tipo": "skill", "ref": "legal/skills/compliance-check/SKILL.md" },
-    { "titulo": "ABNT NBR 16264 — Cabeamento estruturado residencial", "tipo": "norma", "ref": "https://www.normas.com.br/visualizar/abnt-nbr-nm/33990/abnt-nbr16264-cabeamento-estruturado-residencial" },
-    { "titulo": "ABNT NBR 14565 — Cabeamento estruturado para edifícios comerciais", "tipo": "norma", "ref": "ABNT NBR 14565" },
-    { "titulo": "ABNT NBR 5410 — Instalações elétricas de baixa tensão", "tipo": "norma", "ref": "ABNT NBR 5410" },
-    { "titulo": "ANSI/TIA-568 e ANSI/TIA-606 — desempenho e identificação de cabeamento", "tipo": "norma", "ref": "https://tiaonline.org" },
-    { "titulo": "ITIL 4 — práticas de gerenciamento de serviços", "tipo": "metodo", "ref": "https://www.axelos.com/certifications/itil-service-management" },
-    { "titulo": "ISO/IEC 27001 e 27002 — segurança da informação", "tipo": "norma", "ref": "https://www.iso.org/standard/27001" },
-    { "titulo": "Lei 13.709/2018 — LGPD", "tipo": "norma", "ref": "https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/l13709.htm" },
-    { "titulo": "Resolução CD/ANPD nº 15/2024 — Regulamento de comunicação de incidente de segurança", "tipo": "norma", "ref": "https://www.gov.br/anpd/pt-br/canais_atendimento/agente-de-tratamento/comunicado-de-incidente-de-seguranca-cis" }
+    {
+      "titulo": "Skill incident-response (severidades, comunicação e postmortem)",
+      "tipo": "skill",
+      "ref": "engineering/skills/incident-response/SKILL.md"
+    },
+    {
+      "titulo": "Skill documentation (runbooks, documentação de arquitetura)",
+      "tipo": "skill",
+      "ref": "engineering/skills/documentation/SKILL.md"
+    },
+    {
+      "titulo": "Skill deploy-checklist (verificação e gatilhos de reversão)",
+      "tipo": "skill",
+      "ref": "engineering/skills/deploy-checklist/SKILL.md"
+    },
+    {
+      "titulo": "Skill tech-debt (priorização por impacto, risco e esforço)",
+      "tipo": "skill",
+      "ref": "engineering/skills/tech-debt/SKILL.md"
+    },
+    {
+      "titulo": "Skill change-request (análise de impacto e plano de reversão)",
+      "tipo": "skill",
+      "ref": "operations/skills/change-request/SKILL.md"
+    },
+    {
+      "titulo": "Skill runbook (procedimentos operacionais)",
+      "tipo": "skill",
+      "ref": "operations/skills/runbook/SKILL.md"
+    },
+    {
+      "titulo": "Skill compliance-tracking (ISO 27001, inventário de controles e evidências)",
+      "tipo": "skill",
+      "ref": "operations/skills/compliance-tracking/SKILL.md"
+    },
+    {
+      "titulo": "Skill compliance-check (privacidade e bases legais)",
+      "tipo": "skill",
+      "ref": "legal/skills/compliance-check/SKILL.md"
+    },
+    {
+      "titulo": "ABNT NBR 16264 — Cabeamento estruturado residencial",
+      "tipo": "norma",
+      "ref": "https://www.normas.com.br/visualizar/abnt-nbr-nm/33990/abnt-nbr16264-cabeamento-estruturado-residencial"
+    },
+    {
+      "titulo": "ABNT NBR 14565 — Cabeamento estruturado para edifícios comerciais",
+      "tipo": "norma",
+      "ref": "ABNT NBR 14565"
+    },
+    {
+      "titulo": "ABNT NBR 5410 — Instalações elétricas de baixa tensão",
+      "tipo": "norma",
+      "ref": "ABNT NBR 5410"
+    },
+    {
+      "titulo": "ANSI/TIA-568 e ANSI/TIA-606 — desempenho e identificação de cabeamento",
+      "tipo": "norma",
+      "ref": "https://tiaonline.org"
+    },
+    {
+      "titulo": "ITIL 4 — práticas de gerenciamento de serviços",
+      "tipo": "metodo",
+      "ref": "https://www.axelos.com/certifications/itil-service-management"
+    },
+    {
+      "titulo": "ISO/IEC 27001 e 27002 — segurança da informação",
+      "tipo": "norma",
+      "ref": "https://www.iso.org/standard/27001"
+    },
+    {
+      "titulo": "Lei 13.709/2018 — LGPD",
+      "tipo": "norma",
+      "ref": "https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/l13709.htm"
+    },
+    {
+      "titulo": "Resolução CD/ANPD nº 15/2024 — Regulamento de comunicação de incidente de segurança",
+      "tipo": "norma",
+      "ref": "https://www.gov.br/anpd/pt-br/canais_atendimento/agente-de-tratamento/comunicado-de-incidente-de-seguranca-cis"
+    }
   ]
 }

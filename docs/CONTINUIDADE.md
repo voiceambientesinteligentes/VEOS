@@ -2,6 +2,16 @@
 
 Atualize este arquivo ao fim de cada sessão: última ação, resultado e próximo passo.
 
+## 04/11/2026 (tarde) — permissões liberadas + estrutura da empresa
+
+**Feito**
+- Claude Code nesta máquina com permissões liberadas (`bypassPermissions` em `~/.claude/settings.json`); memórias da sessão anterior copiadas para a pasta do projeto. Reiniciar o VS Code para o `git` e o MCP `veos` entrarem no PATH.
+- Estrutura da empresa (pedido do Fernando): hierarquia e agenda de todos os cargos dos 9 diretores, tela `#/estrutura` e aba Equipe com organograma. Ver ESTADO_ATUAL (04/11). Testes: 141 domínio + 155 Python + 20 JS; telas novas 14/14.
+
+**Próximo passo**
+- Fernando: revisar e aprovar a estrutura de cada diretor (tópicos "Estrutura do setor" na aba Pendências) e escolher a ordem das primeiras contratações (aba "Quem acumula").
+- Claude: depois da aprovação, registrar na Biblioteca e trocar `PROPOSTA` por aprovado; ligar as atividades diárias à agenda própria (CSO-05/SEC-04) para virarem tarefas no Radar.
+
 ## 03/11/2026 — troca de computador + CSO-04 (orçamento próprio no VEOS)
 
 **Feito**

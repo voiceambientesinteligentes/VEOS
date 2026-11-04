@@ -1,0 +1,40 @@
+/* Estrutura da empresa: organograma em arvore e cartoes de cargo (agenda diaria/semanal/mensal). */
+@layer views {
+  .eo-arvore, .eo-arvore ul { list-style: none; margin: 0; padding: 0; }
+  .eo-arvore ul { margin-left: var(--s4); padding-left: var(--s3); border-left: 1px solid var(--line); }
+  .eo-arvore li { position: relative; padding: var(--s1) 0; }
+  .eo-arvore ul > li::before { content: ""; position: absolute; left: calc(-1 * var(--s3)); top: 1.15em; width: var(--s3); border-top: 1px solid var(--line); }
+  .eo-no { display: inline-block; max-width: 100%; padding: 4px var(--s3); border: 1px solid var(--line); border-radius: var(--radius);
+    background: var(--bg-2); color: var(--text-0); font: inherit; font-size: var(--fs-s); text-align: left; cursor: pointer; overflow-wrap: anywhere; }
+  .eo-no:hover, .eo-no:focus-visible { border-color: var(--gold-line); background: var(--gold-dim); }
+  .eo-no.n-diretor { border-color: var(--gold-line); color: var(--gold-2); font-weight: 600; cursor: default; }
+  .eo-no.n-gestao { border-left: 3px solid var(--cyan); }
+  .eo-no.n-assessoria { border-left: 3px solid var(--text-2); }
+  .eo-no.f-crescimento { border-style: dashed; color: var(--text-1); }
+  .eo-topo { display: flex; justify-content: center; margin-bottom: var(--s3); }
+  .eo-setores { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: var(--s3); }
+  .eo-setor { border: 1px solid var(--line); border-radius: var(--radius); padding: var(--s3); background: var(--bg-1, transparent); min-width: 0; }
+  .eo-setor-cab { display: flex; gap: var(--s2); align-items: baseline; margin-bottom: var(--s2); color: var(--text-0); text-decoration: none; font-weight: 600; }
+  .eo-setor-cab:hover { color: var(--gold-2); }
+  .eo-legenda { display: flex; flex-wrap: wrap; gap: var(--s2); margin-top: var(--s3); }
+  .eo-chip { padding: 1px var(--s2); border: 1px solid var(--line); border-radius: var(--radius); font-size: var(--fs-xs); }
+  .eo-chip.n-diretor { border-color: var(--gold-line); color: var(--gold-2); }
+  .eo-chip.n-gestao { border-left: 3px solid var(--cyan); }
+  .eo-chip.n-assessoria { border-left: 3px solid var(--text-2); }
+  .eo-chip.f-crescimento { border-style: dashed; }
+  .eo-cartoes { display: flex; flex-direction: column; gap: var(--s3); }
+  .eo-cargo { border: 1px solid var(--line); border-left-width: 3px; border-radius: var(--radius); background: var(--bg-2); }
+  .eo-cargo.n-diretor { border-left-color: var(--gold-2); }
+  .eo-cargo.n-gestao { border-left-color: var(--cyan); }
+  .eo-cargo.n-assessoria { border-left-color: var(--text-2); }
+  .eo-cargo > summary { cursor: pointer; padding: var(--s3) var(--s4); display: flex; flex-wrap: wrap; align-items: center; gap: var(--s2) var(--s3); }
+  .eo-cargo > summary strong { flex: 1 1 220px; overflow-wrap: anywhere; }
+  .eo-corpo { padding: 0 var(--s4) var(--s4); display: flex; flex-direction: column; gap: var(--s3); }
+  .eo-corpo p { margin: 0; }
+  .eo-missao { color: var(--text-0); }
+  .eo-corpo h4 { margin: 0 0 var(--s1); font-size: var(--fs-xs); text-transform: uppercase; letter-spacing: .06em; color: var(--text-2); }
+  .eo-corpo ul { margin: 0; padding-left: 1.2rem; display: flex; flex-direction: column; gap: 2px; color: var(--text-1); font-size: var(--fs-s); }
+  .eo-agenda, .eo-colunas { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--s3); }
+  .eo-freq { border: 1px solid var(--line); border-radius: var(--radius); padding: var(--s2) var(--s3); min-width: 0; }
+  .eo-freq h4 { color: var(--cyan); }
+}

@@ -1,4 +1,12 @@
-# Estado atual — 24/10/2026 (ver também 03/11 abaixo)
+# Estado atual — 24/10/2026 (ver também 03/11 e 04/11 abaixo)
+
+## Estrutura da empresa: organograma e atividades de cada cargo (04/11) — PROPOSTA
+- Pedido do Fernando: estruturar a empresa (ex.: diretor comercial → gerente → vendedor) e o que cada cargo faz, em todos os diretores.
+- **Hierarquia** em `setores/*.json`: o CEO no topo, os 8 diretores respondem a ele, e os cargos respondem ao diretor ou a um gerente/coordenador do setor (ex.: CSO → Gerente comercial → Vendedor, SDR, Orçamentista, Assistente; COO → Gerente de obras → Coordenador de campo → Técnicos). 41 cargos (1 novo: `gerente_comercial`); ids antigos mantidos (registros e regras dependem deles).
+- **Cada cargo** tem nível (gestão/assessoria/execução), missão, agenda diária/semanal/mensal, entregas, o que decide sozinho, o que leva ao chefe, fase (essencial agora × quando crescer) e quem acumula enquanto o cargo não tem pessoa. Os diretores também ganharam agenda. Tudo `status: PROPOSTA`.
+- Conteúdo em `scripts/estrutura/dados.mjs` (fonte única), aplicado por `scripts/estrutura/aplicar.mjs`; validação no motor (`validarEstrutura`: chefe existente, sem ciclo, nível/fase, cobertura, agenda).
+- **Telas**: nova `#/estrutura` (Comando → Estrutura da empresa: organograma, uma aba por diretor, "Quem acumula") e aba **Equipe** de cada setor com organograma clicável + cartões. Domínio `apps/web/js/domain/estrutura.js`.
+- Testes: `tests/web/estrutura.test.mjs` (6), `tests/setores/motor.test.ts` (validador da estrutura), telas `estrutura.html` (8/8) e `setor_equipe.html` (6/6). Aba Pendências: um tópico "Estrutura do setor" por diretor (CFO-15, CSO-13, CMO-07, COO-09, CIO-14, CXO-07, CHRO-07, SEC-06, CEO-07), dono Fernando: aprovar.
 
 ## CSO-04: orçamento próprio criado e salvo no VEOS (03/11)
 - **Tabela própria** (`comercial_orcamentos`/`comercial_orcamento_itens`, migration `20261103120000_comercial_orcamentos.sql`): nasce em "rascunho", numeração `ORV-00001`; salvar de novo sobre o mesmo orçamento (`substitui`) grava uma **nova versão da mesma série** e marca a anterior "substituída" — só a vigente conta. Histórico append-only (`comercial_orcamentos_historico`). Função `orcamento_veos_criar` idempotente por chave, RLS sem policy (só a Edge Function grava).

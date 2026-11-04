@@ -57,53 +57,22 @@
       "Não altera preço ou escopo de contrato de suporte sem a direção e Finanças.",
       "Não publica nem autoriza uso de imagem do cliente — encaminha a autorização ao Marketing.",
       "Não promete troca de equipamento fora da garantia do fabricante sem aprovação da direção."
-    ]
+    ],
+    "reporta_a": "CEO",
+    "atividades": {
+      "diaria": [
+        "Olhar chamados P1/P2 e SLAs em risco."
+      ],
+      "semanal": [
+        "Revisar NPS, detratores e chamados reincidentes."
+      ],
+      "mensal": [
+        "Análise de causa raiz com Operações e Tecnologia.",
+        "Revisar contratos de suporte, renovações e receita recorrente."
+      ]
+    }
   },
   "equipe": [
-    {
-      "papel": "atendimento_cx",
-      "nome": "Atendimento e triagem (N1)",
-      "reporta_a": "CXO",
-      "responsabilidades": [
-        "Receber chamados por WhatsApp, telefone, e-mail e aplicativo e registrar no VEOS.",
-        "Classificar prioridade P1–P4, cobertura (garantia, contrato, avulso) e definir prazos de resposta e solução.",
-        "Resolver remotamente dúvidas e ajustes simples (cenas, aplicativo, reinício de equipamentos).",
-        "Manter o cliente informado até o fechamento."
-      ],
-      "indicadores": [
-        "tempo_primeira_resposta",
-        "resolucao_remota",
-        "cumprimento_sla"
-      ]
-    },
-    {
-      "papel": "tecnico_campo",
-      "nome": "Técnico de campo (N2)",
-      "reporta_a": "CXO",
-      "responsabilidades": [
-        "Atender chamados que exigem visita e executar preventivas.",
-        "Registrar causa raiz, solução e peças utilizadas.",
-        "Enviar relatório de visita e identificar oportunidades de melhoria no sistema do cliente."
-      ],
-      "indicadores": [
-        "preventivas_no_prazo",
-        "chamados_reincidentes"
-      ]
-    },
-    {
-      "papel": "gestor_contratos",
-      "nome": "Gestor de contratos de suporte",
-      "reporta_a": "CXO",
-      "responsabilidades": [
-        "Criar o registro de garantia de cada projeto entregue e oferecer contrato de suporte antes do fim da garantia.",
-        "Conduzir renovações e reajustes com Finanças.",
-        "Planejar o calendário anual de preventivas por contrato."
-      ],
-      "indicadores": [
-        "taxa_renovacao",
-        "receita_recorrente"
-      ]
-    },
     {
       "papel": "coord_cx",
       "nome": "Coordenador(a) de experiência do cliente",
@@ -117,7 +86,160 @@
         "nps",
         "indicacoes_repassadas",
         "custo_garantia"
-      ]
+      ],
+      "nivel": "gestao",
+      "missao": "Coordenar atendimento e campo para resolver rápido e transformar cliente satisfeito em indicação.",
+      "fase": "essencial",
+      "cobre_enquanto_vago": "CXO",
+      "atividades": {
+        "diaria": [
+          "Acompanhar a fila de chamados e redistribuir quando o SLA estiver em risco."
+        ],
+        "semanal": [
+          "Conduzir o huddle semanal.",
+          "Repassar indicações e ampliações ao Comercial."
+        ],
+        "mensal": [
+          "Enviar pesquisas de satisfação e fechar o ciclo com detratores."
+        ]
+      },
+      "entregas": [
+        "Chamados dentro do SLA",
+        "Indicações repassadas",
+        "Ciclo de NPS fechado"
+      ],
+      "decide": [
+        "Prioridade e distribuição dos chamados"
+      ],
+      "escala": [
+        "Cliente VIP insatisfeito",
+        "Custo de garantia fora do previsto"
+      ],
+      "status": "PROPOSTA"
+    },
+    {
+      "papel": "atendimento_cx",
+      "nome": "Atendimento e triagem (N1)",
+      "reporta_a": "coord_cx",
+      "responsabilidades": [
+        "Receber chamados por WhatsApp, telefone, e-mail e aplicativo e registrar no VEOS.",
+        "Classificar prioridade P1–P4, cobertura (garantia, contrato, avulso) e definir prazos de resposta e solução.",
+        "Resolver remotamente dúvidas e ajustes simples (cenas, aplicativo, reinício de equipamentos).",
+        "Manter o cliente informado até o fechamento."
+      ],
+      "indicadores": [
+        "tempo_primeira_resposta",
+        "resolucao_remota",
+        "cumprimento_sla"
+      ],
+      "nivel": "execucao",
+      "missao": "Ser a porta de entrada do cliente: registrar, classificar e resolver remotamente o que der.",
+      "fase": "essencial",
+      "cobre_enquanto_vago": "coord_cx",
+      "atividades": {
+        "diaria": [
+          "Registrar todos os chamados no VEOS.",
+          "Classificar P1–P4 e cobertura (garantia, contrato, avulso).",
+          "Resolver remotamente ajustes simples."
+        ],
+        "semanal": [
+          "Conferir chamados sem retorno ao cliente."
+        ],
+        "mensal": []
+      },
+      "entregas": [
+        "Chamado registrado e classificado",
+        "Primeira resposta no prazo"
+      ],
+      "decide": [
+        "Prioridade inicial pelo critério do setor"
+      ],
+      "escala": [
+        "P1 (sistema parado)",
+        "Cliente pedindo algo fora da garantia/contrato"
+      ],
+      "status": "PROPOSTA"
+    },
+    {
+      "papel": "tecnico_campo",
+      "nome": "Técnico de campo (N2)",
+      "reporta_a": "coord_cx",
+      "responsabilidades": [
+        "Atender chamados que exigem visita e executar preventivas.",
+        "Registrar causa raiz, solução e peças utilizadas.",
+        "Enviar relatório de visita e identificar oportunidades de melhoria no sistema do cliente."
+      ],
+      "indicadores": [
+        "preventivas_no_prazo",
+        "chamados_reincidentes"
+      ],
+      "nivel": "execucao",
+      "missao": "Resolver na visita e deixar registrado o porquê, para não voltar.",
+      "fase": "crescimento",
+      "cobre_enquanto_vago": "operacoes:tecnico_campo",
+      "atividades": {
+        "diaria": [
+          "Atender chamados com visita e preventivas agendadas.",
+          "Registrar causa raiz, solução e peças."
+        ],
+        "semanal": [
+          "Enviar relatórios de visita."
+        ],
+        "mensal": []
+      },
+      "entregas": [
+        "Relatório de visita",
+        "Causa raiz registrada"
+      ],
+      "decide": [
+        "Solução técnica dentro da cobertura"
+      ],
+      "escala": [
+        "Troca de equipamento fora da garantia",
+        "Defeito recorrente"
+      ],
+      "status": "PROPOSTA"
+    },
+    {
+      "papel": "gestor_contratos",
+      "nome": "Gestor de contratos de suporte",
+      "reporta_a": "CXO",
+      "responsabilidades": [
+        "Criar o registro de garantia de cada projeto entregue e oferecer contrato de suporte antes do fim da garantia.",
+        "Conduzir renovações e reajustes com Finanças.",
+        "Planejar o calendário anual de preventivas por contrato."
+      ],
+      "indicadores": [
+        "taxa_renovacao",
+        "receita_recorrente"
+      ],
+      "nivel": "execucao",
+      "missao": "Transformar cada obra entregue em contrato de suporte com receita recorrente.",
+      "fase": "crescimento",
+      "cobre_enquanto_vago": "coord_cx",
+      "atividades": {
+        "diaria": [],
+        "semanal": [
+          "Oferecer contrato aos clientes com garantia terminando em 60 dias."
+        ],
+        "mensal": [
+          "Agendar as preventivas do mês.",
+          "Conduzir renovações e reajustes com Finanças."
+        ]
+      },
+      "entregas": [
+        "Garantia registrada por projeto",
+        "Calendário de preventivas",
+        "Renovações no prazo"
+      ],
+      "decide": [
+        "Agenda de preventivas"
+      ],
+      "escala": [
+        "Desconto ou condição especial em contrato",
+        "Cancelamento de contrato"
+      ],
+      "status": "PROPOSTA"
     }
   ],
   "processos": [

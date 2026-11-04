@@ -66,7 +66,22 @@ export const CATALOGO = [
     "Não aprova exceção de margem, desconto ou exposição sem justificativa e impacto financeiro registrados (Política V1 sec.14).",
     "Não assume compromisso que leve a exposição pro forma acima de 10% sem análise do CFO (Política V1.1 sec.10).",
     "Decisões societárias, trabalhistas e tributárias relevantes são validadas com contador e advogado antes de executadas."
-   ]
+   ],
+   "reporta_a": null,
+   "atividades": {
+    "diaria": [
+     "Ler o Radar (alertas altos e críticos de todos os setores) e decidir o que precisa de você hoje.",
+     "Responder a fila de alçadas e exceções em até 1 dia útil."
+    ],
+    "semanal": [
+     "Conduzir a reunião de direção (scorecard, metas trimestrais, problemas).",
+     "Revisar caixa das 13 semanas com o CFO e o funil com o CSO."
+    ],
+    "mensal": [
+     "Conselho mensal: resultado, margem, reserva de caixa e riscos.",
+     "Revisar o Plano da VOICE e aprovar ou cancelar itens propostos."
+    ]
+   }
   },
   "equipe": [
    {
@@ -82,7 +97,37 @@ export const CATALOGO = [
     "indicadores": [
      "rocks_no_prazo",
      "scorecard_no_alvo"
-    ]
+    ],
+    "nivel": "assessoria",
+    "missao": "Manter a estratégia da VOICE transformada em metas trimestrais com dono e acompanhamento semanal.",
+    "fase": "crescimento",
+    "cobre_enquanto_vago": "CEO",
+    "atividades": {
+     "diaria": [
+      "Atualizar o quadro de metas com o que mudou no dia."
+     ],
+     "semanal": [
+      "Montar a pauta e o scorecard da reunião de direção.",
+      "Cobrar dos donos o status de cada meta trimestral."
+     ],
+     "mensal": [
+      "Consolidar o relatório de metas e propor correções de rota."
+     ]
+    },
+    "entregas": [
+     "Pauta e scorecard semanais",
+     "Quadro de metas trimestrais atualizado",
+     "Relatório trimestral de metas"
+    ],
+    "decide": [
+     "Formato e ordem da pauta",
+     "Quando cobrar um dono atrasado"
+    ],
+    "escala": [
+     "Meta que vai falhar no trimestre",
+     "Conflito de prioridade entre setores"
+    ],
+    "status": "PROPOSTA"
    },
    {
     "papel": "relator_direcao",
@@ -97,7 +142,36 @@ export const CATALOGO = [
     "indicadores": [
      "excecoes_registradas",
      "tempo_decisao_alcada"
-    ]
+    ],
+    "nivel": "assessoria",
+    "missao": "Garantir que toda decisão, alçada e exceção da direção fique registrada com justificativa e dono.",
+    "fase": "essencial",
+    "cobre_enquanto_vago": "SEC",
+    "atividades": {
+     "diaria": [
+      "Registrar na Biblioteca as decisões e pedidos de alçada do dia."
+     ],
+     "semanal": [
+      "Redigir a ata da reunião de direção e distribuir as tarefas.",
+      "Conferir se exceções da Política têm registro completo (V1 sec.14)."
+     ],
+     "mensal": [
+      "Listar decisões sem execução e devolvê-las à pauta."
+     ]
+    },
+    "entregas": [
+     "Ata da reunião em até 24h",
+     "Registro de decisões e exceções completo"
+    ],
+    "decide": [
+     "Redação da ata",
+     "Classificação do tipo de registro"
+    ],
+    "escala": [
+     "Exceção sem autorizador",
+     "Decisão que contraria política vigente"
+    ],
+    "status": "PROPOSTA"
    },
    {
     "papel": "gestor_riscos",
@@ -110,7 +184,33 @@ export const CATALOGO = [
     ],
     "indicadores": [
      "riscos_criticos_sem_plano"
-    ]
+    ],
+    "nivel": "assessoria",
+    "missao": "Manter os riscos do negócio visíveis, com dono e plano, antes que virem prejuízo.",
+    "fase": "crescimento",
+    "cobre_enquanto_vago": "CFO",
+    "atividades": {
+     "diaria": [],
+     "semanal": [
+      "Atualizar o registro de riscos com os alertas da semana."
+     ],
+     "mensal": [
+      "Conduzir a revisão mensal de riscos com os diretores.",
+      "Conferir se cada risco crítico tem plano de tratamento em andamento."
+     ]
+    },
+    "entregas": [
+     "Registro de riscos com dono e nível",
+     "Relatório mensal de riscos"
+    ],
+    "decide": [
+     "Nível inicial de um risco novo"
+    ],
+    "escala": [
+     "Risco crítico sem plano",
+     "Risco que exige gasto não previsto"
+    ],
+    "status": "PROPOSTA"
    },
    {
     "papel": "analista_indicadores",
@@ -126,7 +226,34 @@ export const CATALOGO = [
      "margem_operacional",
      "reserva_caixa_meses",
      "scorecard_no_alvo"
-    ]
+    ],
+    "nivel": "assessoria",
+    "missao": "Entregar à direção um painel único e confiável com os números de todos os setores.",
+    "fase": "crescimento",
+    "cobre_enquanto_vago": "CFO",
+    "atividades": {
+     "diaria": [],
+     "semanal": [
+      "Conferir se os setores atualizaram os dados do scorecard."
+     ],
+     "mensal": [
+      "Montar o painel consolidado (financeiro, comercial, operações, pós-venda, pessoas).",
+      "Sinalizar desvios de margem, reserva de caixa e vendas abaixo de 30%."
+     ]
+    },
+    "entregas": [
+     "Painel mensal consolidado",
+     "Lista de desvios para a reunião"
+    ],
+    "decide": [
+     "Formato dos gráficos",
+     "Quando marcar um número como LACUNA"
+    ],
+    "escala": [
+     "Número sem fonte confiável",
+     "Desvio grave de margem ou caixa"
+    ],
+    "status": "PROPOSTA"
    }
   ],
   "processos": [
@@ -1290,55 +1417,27 @@ export const CATALOGO = [
     "Não altera regras da política; propõe recalibração com dados reais (Política V1 sec.13 e sec.15).",
     "Não define enquadramento tributário, retenções nem obrigações acessórias: valida com o contador.",
     "Não paga título sem aprovação separada do lançamento e não paga automaticamente título recorrente."
-   ]
+   ],
+   "reporta_a": "CEO",
+   "atividades": {
+    "diaria": [
+     "Conferir saldo, recebimentos e pagamentos do dia.",
+     "Aprovar ou recusar exceções de margem dentro da alçada."
+    ],
+    "semanal": [
+     "Aprovar a proposta de pagamentos.",
+     "Revisar o fluxo de 13 semanas e a exposição de caixa das obras."
+    ],
+    "mensal": [
+     "Apresentar o painel financeiro à direção (Política V1 sec.13).",
+     "Revisar preço mínimo, impostos e reserva de caixa."
+    ]
+   }
   },
   "equipe": [
    {
-    "papel": "analista_pagar",
-    "nome": "Analista de contas a pagar",
-    "reporta_a": "CFO",
-    "responsabilidades": [
-     "Registrar títulos a pagar de fornecedores, prestadores, impostos, folha e custos fixos",
-     "Conferir nota contra pedido e recebimento (três vias) e checar duplicidade antes de lançar",
-     "Montar a proposta semanal de pagamentos para aprovação do CFO",
-     "Liquidar títulos somente com comprovante bancário anexado"
-    ],
-    "indicadores": [
-     "recebiveis_pagaveis"
-    ]
-   },
-   {
-    "papel": "analista_receber",
-    "nome": "Analista de contas a receber e cobrança",
-    "reporta_a": "CFO",
-    "responsabilidades": [
-     "Registrar títulos a receber fora das parcelas de projeto (contratos de suporte e monitoramento, assistências avulsas, revendas)",
-     "Enviar lembretes antes do vencimento e conduzir a régua de cobrança com tom adequado ao cliente de alto padrão",
-     "Baixar recebimentos somente pelo extrato bancário",
-     "Informar o Comercial e a direção sobre clientes com atraso recorrente"
-    ],
-    "indicadores": [
-     "inadimplencia",
-     "recebiveis_pagaveis",
-     "concentracao"
-    ]
-   },
-   {
-    "papel": "analista_fiscal",
-    "nome": "Analista fiscal e de documentos",
-    "reporta_a": "CFO",
-    "responsabilidades": [
-     "Receber, conferir e arquivar XML e PDF de notas emitidas e recebidas (NF-e, NFS-e, CT-e)",
-     "Vincular cada nota ao título financeiro e, quando houver, ao projeto",
-     "Tratar divergências com fornecedores e enviar ao contador a documentação do mês"
-    ],
-    "indicadores": [
-     "faturamento_receita"
-    ]
-   },
-   {
     "papel": "controller",
-    "nome": "Controller",
+    "nome": "Controller (gerente financeiro)",
     "reporta_a": "CFO",
     "responsabilidades": [
      "Conciliar bancos e contas a pagar/receber",
@@ -1353,7 +1452,168 @@ export const CATALOGO = [
      "exposicao_projetos",
      "necessidade_caixa_reserva",
      "faturamento_abaixo_margem"
-    ]
+    ],
+    "nivel": "gestao",
+    "missao": "Coordenar a rotina financeira e garantir números conciliados, no prazo, para o CFO decidir.",
+    "fase": "essencial",
+    "cobre_enquanto_vago": "CFO",
+    "atividades": {
+     "diaria": [
+      "Conciliar o extrato do dia com parcelas e contas a pagar.",
+      "Distribuir e acompanhar as tarefas dos analistas."
+     ],
+     "semanal": [
+      "Atualizar o fluxo de caixa de 13 semanas e a necessidade de caixa 30/60/90 dias.",
+      "Revisar a proposta de pagamentos antes de ir ao CFO."
+     ],
+     "mensal": [
+      "Conduzir o fechamento mensal e montar o pacote de indicadores.",
+      "Calcular a reserva de caixa frente a 3 meses de custos fixos."
+     ]
+    },
+    "entregas": [
+     "Fluxo de 13 semanas atualizado",
+     "Fechamento mensal e DRE",
+     "Conciliação bancária em dia"
+    ],
+    "decide": [
+     "Classificação de lançamentos",
+     "Prioridade das tarefas dos analistas"
+    ],
+    "escala": [
+     "Caixa projetado abaixo da reserva",
+     "Divergência de conciliação sem explicação"
+    ],
+    "status": "PROPOSTA"
+   },
+   {
+    "papel": "analista_pagar",
+    "nome": "Analista de contas a pagar",
+    "reporta_a": "controller",
+    "responsabilidades": [
+     "Registrar títulos a pagar de fornecedores, prestadores, impostos, folha e custos fixos",
+     "Conferir nota contra pedido e recebimento (três vias) e checar duplicidade antes de lançar",
+     "Montar a proposta semanal de pagamentos para aprovação do CFO",
+     "Liquidar títulos somente com comprovante bancário anexado"
+    ],
+    "indicadores": [
+     "recebiveis_pagaveis"
+    ],
+    "nivel": "execucao",
+    "missao": "Pagar certo, no prazo e só o que foi comprado e recebido.",
+    "fase": "crescimento",
+    "cobre_enquanto_vago": "controller",
+    "atividades": {
+     "diaria": [
+      "Lançar títulos a pagar e conferir nota × pedido × recebimento.",
+      "Checar duplicidade antes de lançar."
+     ],
+     "semanal": [
+      "Montar a proposta semanal de pagamentos.",
+      "Liquidar os títulos aprovados e anexar comprovantes."
+     ],
+     "mensal": [
+      "Conferir recorrentes (aluguel, folha, impostos) do mês seguinte."
+     ]
+    },
+    "entregas": [
+     "Proposta semanal de pagamentos",
+     "Contas a pagar sem duplicidade"
+    ],
+    "decide": [
+     "Data de agendamento dentro do vencimento"
+    ],
+    "escala": [
+     "Nota sem pedido ou recebimento",
+     "Pagamento fora da proposta aprovada"
+    ],
+    "status": "PROPOSTA"
+   },
+   {
+    "papel": "analista_receber",
+    "nome": "Analista de contas a receber e cobrança",
+    "reporta_a": "controller",
+    "responsabilidades": [
+     "Registrar títulos a receber fora das parcelas de projeto (contratos de suporte e monitoramento, assistências avulsas, revendas)",
+     "Enviar lembretes antes do vencimento e conduzir a régua de cobrança com tom adequado ao cliente de alto padrão",
+     "Baixar recebimentos somente pelo extrato bancário",
+     "Informar o Comercial e a direção sobre clientes com atraso recorrente"
+    ],
+    "indicadores": [
+     "inadimplencia",
+     "recebiveis_pagaveis",
+     "concentracao"
+    ],
+    "nivel": "execucao",
+    "missao": "Fazer o dinheiro entrar no prazo, com cobrança firme e cordial.",
+    "fase": "crescimento",
+    "cobre_enquanto_vago": "controller",
+    "atividades": {
+     "diaria": [
+      "Baixar recebimentos do dia.",
+      "Executar a régua de cobrança (lembrete antes, contato no vencimento, cobrança depois)."
+     ],
+     "semanal": [
+      "Listar parcelas a vencer nos próximos 7 dias e avisar o CFO dos riscos."
+     ],
+     "mensal": [
+      "Relatório de inadimplência por cliente e por idade."
+     ]
+    },
+    "entregas": [
+     "Recebimentos baixados no dia",
+     "Relatório de inadimplência"
+    ],
+    "decide": [
+     "Tom e momento do lembrete dentro da régua"
+    ],
+    "escala": [
+     "Atraso acima de 15 dias",
+     "Pedido de renegociação ou desconto"
+    ],
+    "status": "PROPOSTA"
+   },
+   {
+    "papel": "analista_fiscal",
+    "nome": "Analista fiscal e de documentos",
+    "reporta_a": "controller",
+    "responsabilidades": [
+     "Receber, conferir e arquivar XML e PDF de notas emitidas e recebidas (NF-e, NFS-e, CT-e)",
+     "Vincular cada nota ao título financeiro e, quando houver, ao projeto",
+     "Tratar divergências com fornecedores e enviar ao contador a documentação do mês"
+    ],
+    "indicadores": [
+     "faturamento_receita"
+    ],
+    "nivel": "execucao",
+    "missao": "Manter notas e documentos fiscais completos e entregues ao contador no prazo.",
+    "fase": "crescimento",
+    "cobre_enquanto_vago": "controller",
+    "atividades": {
+     "diaria": [
+      "Receber e conferir XML/PDF das notas emitidas e recebidas."
+     ],
+     "semanal": [
+      "Vincular cada nota ao título e ao projeto.",
+      "Tratar divergências com fornecedores."
+     ],
+     "mensal": [
+      "Enviar ao contador a documentação do mês.",
+      "Conferir se toda NF de venda bate com o pedido."
+     ]
+    },
+    "entregas": [
+     "Pasta fiscal do mês completa",
+     "Notas vinculadas a títulos e projetos"
+    ],
+    "decide": [
+     "Organização do arquivo fiscal"
+    ],
+    "escala": [
+     "Nota com imposto divergente",
+     "Prazo do contador em risco"
+    ],
+    "status": "PROPOSTA"
    }
   ],
   "processos": [
@@ -2530,13 +2790,82 @@ export const CATALOGO = [
     "Desconto acima de 2%, ou que leve a margem abaixo de 32%, sai da autonomia comercial; acima de 2% até 5% exige a direção; acima de 5% exige nova análise financeira integral (Política V1 sec.9).",
     "Não altera a condição de recebimento de referência (50% / 40% / 10%) sem alinhar com Finanças (Política V1 sec.10).",
     "Não define percentual de comissão ou reserva técnica de parceiros sem aprovação da direção."
-   ]
+   ],
+   "reporta_a": "CEO",
+   "atividades": {
+    "diaria": [
+     "Olhar o funil: oportunidades sem próximo passo e propostas vencendo.",
+     "Aprovar descontos e exceções de margem dentro da alçada."
+    ],
+    "semanal": [
+     "Revisão do pipeline com o gerente comercial.",
+     "Comitê de margem: propostas abaixo de 35% antes de enviar.",
+     "Contato com 2–3 parceiros estratégicos (arquitetos A)."
+    ],
+    "mensal": [
+     "Previsão de vendas do mês seguinte e meta por vendedor.",
+     "Análise de ganhos e perdas (motivos) com Marketing."
+    ]
+   }
   },
   "equipe": [
    {
+    "status": "PROPOSTA",
+    "papel": "gerente_comercial",
+    "nome": "Gerente comercial",
+    "nivel": "gestao",
+    "reporta_a": "CSO",
+    "fase": "crescimento",
+    "cobre_enquanto_vago": "CSO",
+    "missao": "Fazer a equipe de vendas bater a meta com método: atividade diária, funil limpo e propostas dentro da margem.",
+    "responsabilidades": [
+     "Distribuir leads e oportunidades entre os vendedores.",
+     "Acompanhar diariamente a atividade de cada vendedor e do SDR.",
+     "Revisar propostas antes do envio (escopo, margem, condição).",
+     "Treinar a equipe no roteiro SPIN e na ordem de negociação da Política."
+    ],
+    "indicadores": [
+     "cobertura_pipeline",
+     "taxa_conversao_proposta",
+     "margem_media_propostas",
+     "ciclo_venda"
+    ],
+    "atividades": {
+     "diaria": [
+      "Reunião rápida (15 min) com a equipe: metas do dia, visitas e propostas.",
+      "Distribuir leads novos e conferir se todos foram respondidos.",
+      "Revisar e liberar propostas preparadas pelo orçamentista."
+     ],
+     "semanal": [
+      "Revisão do funil por vendedor: próximo passo e data em toda oportunidade.",
+      "1:1 com cada vendedor (números, travas, ajuda).",
+      "Levar ao comitê de margem as propostas abaixo de 35%."
+     ],
+     "mensal": [
+      "Fechar o resultado do mês por vendedor e apresentar ao CSO.",
+      "Propor metas de atividade do mês seguinte (funil reverso)."
+     ]
+    },
+    "entregas": [
+     "Funil limpo toda segunda-feira",
+     "Propostas revisadas antes do envio",
+     "Resultado mensal por vendedor"
+    ],
+    "decide": [
+     "Qual vendedor atende cada lead",
+     "Prioridade de visitas da semana",
+     "Desconto até o limite que a alçada der ao gerente"
+    ],
+    "escala": [
+     "Proposta abaixo de 30% de margem",
+     "Cliente pedindo condição fora da Política",
+     "Vendedor abaixo da meta por 2 meses"
+    ]
+   },
+   {
     "papel": "sdr",
     "nome": "Pré-vendas / prospecção (SDR)",
-    "reporta_a": "CSO",
+    "reporta_a": "gerente_comercial",
     "responsabilidades": [
      "Responder leads novos no mesmo dia útil e qualificar (perfil do imóvel, fase da obra, decisor, arquiteto envolvido).",
      "Executar a cadência diária de prospecção ativa em escritórios de arquitetura, construtoras e base de clientes antigos.",
@@ -2547,12 +2876,41 @@ export const CATALOGO = [
      "leads_novos",
      "tempo_primeira_resposta",
      "taxa_qualificacao"
-    ]
+    ],
+    "nivel": "execucao",
+    "missao": "Garantir que nenhum lead fique sem resposta e que o vendedor só gaste tempo com quem tem projeto real.",
+    "fase": "crescimento",
+    "cobre_enquanto_vago": "consultor",
+    "atividades": {
+     "diaria": [
+      "Responder todos os leads novos antes das 10h.",
+      "Fazer 10 contatos ativos da lista da semana.",
+      "Qualificar (imóvel, fase da obra, decisor, arquiteto) e agendar visitas."
+     ],
+     "semanal": [
+      "Montar a lista de prospecção da semana seguinte."
+     ],
+     "mensal": [
+      "Reativar a base de clientes e parceiros sem contato há 90 dias."
+     ]
+    },
+    "entregas": [
+     "Leads respondidos no mesmo dia",
+     "Visitas agendadas na agenda do vendedor"
+    ],
+    "decide": [
+     "Se o lead é qualificado ou não, pelo critério do setor"
+    ],
+    "escala": [
+     "Lead grande ou de arquiteto A (passa direto ao gerente)",
+     "Pedido de preço sem visita"
+    ],
+    "status": "PROPOSTA"
    },
    {
     "papel": "consultor",
-    "nome": "Consultor de projetos (executivo de vendas)",
-    "reporta_a": "CSO",
+    "nome": "Consultor de projetos (vendedor)",
+    "reporta_a": "gerente_comercial",
     "responsabilidades": [
      "Conduzir visita técnica e briefing com roteiro SPIN.",
      "Conduzir proposta, negociação e fechamento seguindo a ordem de negociação da Política.",
@@ -2564,12 +2922,45 @@ export const CATALOGO = [
      "ticket_medio",
      "margem_media_propostas",
      "ciclo_venda"
-    ]
+    ],
+    "nivel": "execucao",
+    "missao": "Entender o projeto do cliente e do arquiteto, vender o escopo certo e fechar dentro da margem.",
+    "fase": "essencial",
+    "cobre_enquanto_vago": "CSO",
+    "atividades": {
+     "diaria": [
+      "Fazer as visitas técnicas e briefings agendados (roteiro SPIN).",
+      "Atualizar no VEOS o próximo passo e a data de cada oportunidade.",
+      "Fazer os follow-ups do dia (propostas enviadas e negociações)."
+     ],
+     "semanal": [
+      "Apresentar propostas ao cliente e ao arquiteto.",
+      "Revisar o próprio funil com o gerente."
+     ],
+     "mensal": [
+      "Reativar clientes antigos da própria carteira (ampliação, upgrade)."
+     ]
+    },
+    "entregas": [
+     "Briefing completo para o orçamentista",
+     "Proposta apresentada e negociada",
+     "Passagem formal do projeto ganho para Operações e Financeiro"
+    ],
+    "decide": [
+     "Roteiro da visita",
+     "Alternativas de escopo antes de dar desconto"
+    ],
+    "escala": [
+     "Qualquer desconto acima da alçada",
+     "Mudança de condição de pagamento",
+     "Cliente insatisfeito ou risco de perda grande"
+    ],
+    "status": "PROPOSTA"
    },
    {
     "papel": "projetista",
-    "nome": "Projetista de pré-venda / orçamentista",
-    "reporta_a": "CSO",
+    "nome": "Orçamentista / projetista de pré-venda",
+    "reporta_a": "gerente_comercial",
     "responsabilidades": [
      "Transformar o briefing em projeto preliminar (pontos, infraestrutura, equipamentos, programação).",
      "Montar a planilha de custos diretos e a margem de contribuição conforme a fórmula oficial (Política V1 sec.4 e sec.5), incluindo provisão de risco de 2% (sec.6).",
@@ -2578,7 +2969,38 @@ export const CATALOGO = [
     "indicadores": [
      "margem_media_propostas",
      "vendas_abaixo_30"
-    ]
+    ],
+    "nivel": "execucao",
+    "missao": "Transformar o briefing em orçamento correto, com custo completo e margem pela fórmula oficial.",
+    "fase": "essencial",
+    "cobre_enquanto_vago": "CSO",
+    "atividades": {
+     "diaria": [
+      "Montar os orçamentos da fila (pontos, infraestrutura, equipamentos, programação).",
+      "Salvar cada versão do orçamento no VEOS."
+     ],
+     "semanal": [
+      "Revisar preços de equipamentos que mudaram.",
+      "Preparar alternativas de escopo para as negociações da semana."
+     ],
+     "mensal": [
+      "Conferir com Operações as horas reais × orçadas das obras concluídas."
+     ]
+    },
+    "entregas": [
+     "Orçamento com margem calculada (Política V1 sec.4–6)",
+     "Alternativas de escopo antes do desconto"
+    ],
+    "decide": [
+     "Composição técnica do orçamento",
+     "Equipamento equivalente quando faltar o pedido"
+    ],
+    "escala": [
+     "Margem abaixo de 35%",
+     "Item sem cadastro no catálogo",
+     "Prazo de importação que atrasa a obra"
+    ],
+    "status": "PROPOSTA"
    },
    {
     "papel": "gestor_parceiros",
@@ -2592,12 +3014,41 @@ export const CATALOGO = [
     ],
     "indicadores": [
      "indicacoes_parceiros"
-    ]
+    ],
+    "nivel": "execucao",
+    "missao": "Fazer arquitetos, designers e construtoras indicarem a VOICE com frequência e confiança.",
+    "fase": "crescimento",
+    "cobre_enquanto_vago": "CSO",
+    "atividades": {
+     "diaria": [
+      "Dar retorno ao parceiro sobre cada indicação recebida."
+     ],
+     "semanal": [
+      "Contato com os parceiros A e B da agenda da semana.",
+      "Atualizar a classificação A/B/C."
+     ],
+     "mensal": [
+      "Visita ou café técnico no showroom com Marketing.",
+      "Relatório de indicações e vendas por parceiro (concentração)."
+     ]
+    },
+    "entregas": [
+     "Carteira de parceiros classificada",
+     "Retorno de 100% das indicações"
+    ],
+    "decide": [
+     "Agenda de visitas a parceiros"
+    ],
+    "escala": [
+     "Pedido de RT/comissão fora da regra",
+     "Parceiro com mais de 30% das vendas"
+    ],
+    "status": "PROPOSTA"
    },
    {
     "papel": "assistente_comercial",
     "nome": "Assistente comercial",
-    "reporta_a": "CSO",
+    "reporta_a": "gerente_comercial",
     "responsabilidades": [
      "Formatar e enviar propostas, controlar versões e validade.",
      "Reunir documentos de fechamento (contrato, dados do cliente, condição de pagamento).",
@@ -2605,7 +3056,35 @@ export const CATALOGO = [
     ],
     "indicadores": [
      "ciclo_venda"
-    ]
+    ],
+    "nivel": "execucao",
+    "missao": "Tirar do vendedor o trabalho administrativo: proposta formatada, documentos e passagem completa.",
+    "fase": "crescimento",
+    "cobre_enquanto_vago": "consultor",
+    "atividades": {
+     "diaria": [
+      "Formatar e enviar propostas liberadas, controlando versão e validade.",
+      "Atualizar o status das propostas no VEOS."
+     ],
+     "semanal": [
+      "Avisar o vendedor das propostas que vencem na semana."
+     ],
+     "mensal": [
+      "Conferir se todos os ganhos do mês têm dossiê de passagem completo."
+     ]
+    },
+    "entregas": [
+     "Proposta enviada no padrão VOICE",
+     "Dossiê de passagem (contrato, dados, condição de pagamento)"
+    ],
+    "decide": [
+     "Formatação e ordem dos documentos"
+    ],
+    "escala": [
+     "Documento faltando no fechamento",
+     "Proposta vencida sem retorno"
+    ],
+    "status": "PROPOSTA"
    }
   ],
   "processos": [
@@ -3954,7 +4433,21 @@ export const CATALOGO = [
     "Não aprova orçamento de campanha ou evento acima do planejado sem a direção.",
     "Não promete preço, desconto ou condição comercial em peças — isso é do Comercial dentro da Política V1.",
     "Não firma parceria de cobranding ou patrocínio sem a direção."
-   ]
+   ],
+   "reporta_a": "CEO",
+   "atividades": {
+    "diaria": [
+     "Aprovar publicações e materiais do dia (marca e autorização de imagem)."
+    ],
+    "semanal": [
+     "Reunião de pauta com a coordenação.",
+     "Conferir leads gerados e a qualidade relatada pelo Comercial."
+    ],
+    "mensal": [
+     "Reunião marketing × comercial: leads, oportunidades e motivos de perda.",
+     "Revisar orçamento e resultado de cada campanha."
+    ]
+   }
   },
   "equipe": [
    {
@@ -3970,12 +4463,45 @@ export const CATALOGO = [
      "leads_gerados",
      "oportunidades_marketing",
      "receita_influenciada"
-    ]
+    ],
+    "nivel": "gestao",
+    "missao": "Coordenar campanhas, conteúdo e eventos para gerar oportunidades qualificadas para o Comercial.",
+    "fase": "essencial",
+    "cobre_enquanto_vago": "CMO",
+    "atividades": {
+     "diaria": [
+      "Distribuir e acompanhar as tarefas de conteúdo, dados e eventos.",
+      "Revisar marca e autorização de imagem antes de publicar."
+     ],
+     "semanal": [
+      "Conduzir a pauta semanal.",
+      "Conferir com o gerente comercial a qualidade dos leads."
+     ],
+     "mensal": [
+      "Montar o calendário editorial do mês seguinte.",
+      "Planejar as campanhas do trimestre com o CMO."
+     ]
+    },
+    "entregas": [
+     "Calendário editorial",
+     "Campanhas no ar no prazo",
+     "Pauta semanal"
+    ],
+    "decide": [
+     "Pauta e ordem de publicação",
+     "Distribuição de tarefas"
+    ],
+    "escala": [
+     "Gasto com mídia ou evento",
+     "Publicação com cliente identificável",
+     "Comunicação externa sensível"
+    ],
+    "status": "PROPOSTA"
    },
    {
     "papel": "produtor_conteudo",
     "nome": "Produtor(a) de conteúdo",
-    "reporta_a": "CMO",
+    "reporta_a": "coord_marketing",
     "responsabilidades": [
      "Produzir textos, roteiros, fotos e vídeos de cases e conteúdos educativos.",
      "Captar autorizações e restrições do cliente junto com o Pós-venda.",
@@ -3984,12 +4510,41 @@ export const CATALOGO = [
     "indicadores": [
      "publicacoes_semana",
      "cases_publicados"
-    ]
+    ],
+    "nivel": "execucao",
+    "missao": "Mostrar o trabalho da VOICE com cases e conteúdo que educam o cliente de alto padrão.",
+    "fase": "crescimento",
+    "cobre_enquanto_vago": "coord_marketing",
+    "atividades": {
+     "diaria": [
+      "Produzir textos, fotos e vídeos da pauta."
+     ],
+     "semanal": [
+      "Entregar as publicações da semana para revisão.",
+      "Captar autorizações de imagem com o Pós-venda."
+     ],
+     "mensal": [
+      "Produzir 1 case completo de obra entregue."
+     ]
+    },
+    "entregas": [
+     "Publicações da semana",
+     "Case mensal",
+     "Banco de imagens com status de autorização"
+    ],
+    "decide": [
+     "Linguagem e enquadramento dentro do manual de marca"
+    ],
+    "escala": [
+     "Imagem sem autorização",
+     "Tema que expõe preço ou cliente"
+    ],
+    "status": "PROPOSTA"
    },
    {
     "papel": "analista_performance",
     "nome": "Analista de performance e dados",
-    "reporta_a": "CMO",
+    "reporta_a": "coord_marketing",
     "responsabilidades": [
      "Medir leads, custo por lead e conversão por campanha e canal.",
      "Registrar resultados de campanhas e eventos no VEOS.",
@@ -3999,12 +4554,39 @@ export const CATALOGO = [
      "custo_por_lead",
      "taxa_lead_oportunidade",
      "leads_gerados"
-    ]
+    ],
+    "nivel": "execucao",
+    "missao": "Medir o que gera venda para o marketing investir onde dá resultado.",
+    "fase": "crescimento",
+    "cobre_enquanto_vago": "coord_marketing",
+    "atividades": {
+     "diaria": [
+      "Registrar a origem de cada lead novo."
+     ],
+     "semanal": [
+      "Atualizar leads, custo por lead e conversão por canal."
+     ],
+     "mensal": [
+      "Relatório de performance por campanha e canal."
+     ]
+    },
+    "entregas": [
+     "Relatório mensal de performance",
+     "Origem de 100% dos leads registrada"
+    ],
+    "decide": [
+     "Método de atribuição dentro do padrão definido"
+    ],
+    "escala": [
+     "Canal com custo por lead fora do previsto",
+     "Dado inconsistente com o CRM"
+    ],
+    "status": "PROPOSTA"
    },
    {
     "papel": "eventos_parcerias",
     "nome": "Eventos, showroom e relacionamento com arquitetos",
-    "reporta_a": "CMO",
+    "reporta_a": "coord_marketing",
     "responsabilidades": [
      "Organizar cafés técnicos, visitas guiadas ao showroom e presença em mostras de decoração.",
      "Fazer o follow-up de convidados e repassar interessados ao Comercial.",
@@ -4013,7 +4595,35 @@ export const CATALOGO = [
     "indicadores": [
      "arquitetos_engajados",
      "comparecimento_eventos"
-    ]
+    ],
+    "nivel": "execucao",
+    "missao": "Levar arquitetos e clientes ao showroom e a eventos onde a VOICE é vista funcionando.",
+    "fase": "crescimento",
+    "cobre_enquanto_vago": "vendas:gestor_parceiros",
+    "atividades": {
+     "diaria": [
+      "Fazer o follow-up de convidados e inscritos."
+     ],
+     "semanal": [
+      "Confirmar visitas ao showroom da semana."
+     ],
+     "mensal": [
+      "Realizar 1 café técnico ou visita guiada.",
+      "Repassar interessados ao Comercial com contexto."
+     ]
+    },
+    "entregas": [
+     "Agenda de eventos do trimestre",
+     "Lista de interessados repassada ao Comercial"
+    ],
+    "decide": [
+     "Logística e convidados dentro do orçamento aprovado"
+    ],
+    "escala": [
+     "Evento com custo",
+     "Participação em mostra ou feira"
+    ],
+    "status": "PROPOSTA"
    }
   ],
   "processos": [
@@ -5132,12 +5742,26 @@ export const CATALOGO = [
     "Não altera escopo, preço ou prazo contratual com o cliente sem aditivo aprovado pelo Comercial e pela direção.",
     "Não substitui equipamento especificado por outro não homologado pelo CIO.",
     "Não contrata terceiro novo sem documentação de segurança do trabalho (NR-10/NR-35 quando aplicável) e sem aprovação da direção."
-   ]
+   ],
+   "reporta_a": "CEO",
+   "atividades": {
+    "diaria": [
+     "Olhar obras com atraso, restrições abertas e alertas de aceite/garantia."
+    ],
+    "semanal": [
+     "Revisar o planejamento semanal (PPC) com o gerente de obras.",
+     "Conferir compras críticas e cobertura de caixa da fase com o CFO."
+    ],
+    "mensal": [
+     "Revisão operacional: prazo, retrabalho, horas reais × orçadas e qualidade.",
+     "Avaliar fornecedores (prazo e qualidade)."
+    ]
+   }
   },
   "equipe": [
    {
     "papel": "gerente_obra",
-    "nome": "Gerente de projetos de obra",
+    "nome": "Gerente de obras (projetos de obra)",
     "reporta_a": "COO",
     "responsabilidades": [
      "Conduzir o kickoff com o Comercial, o cliente e o arquiteto/construtora e emitir o termo de abertura",
@@ -5150,12 +5774,45 @@ export const CATALOGO = [
      "entregas_no_prazo",
      "tempo_kickoff",
      "ppc_semanal"
-    ]
+    ],
+    "nivel": "gestao",
+    "missao": "Entregar cada obra no prazo, no custo e com o cliente e o arquiteto informados.",
+    "fase": "essencial",
+    "cobre_enquanto_vago": "COO",
+    "atividades": {
+     "diaria": [
+      "Acompanhar o andamento das obras com o coordenador de campo.",
+      "Remover restrições (material, liberação da construtora, energia)."
+     ],
+     "semanal": [
+      "Planejamento semanal: só entra o que está sem restrição.",
+      "Enviar status ao cliente e ao arquiteto.",
+      "Controlar mudanças de escopo e levar aditivos ao Comercial."
+     ],
+     "mensal": [
+      "Fechar horas reais × orçadas por obra."
+     ]
+    },
+    "entregas": [
+     "Termo de abertura (kickoff)",
+     "Cronograma por fases",
+     "Status semanal ao cliente"
+    ],
+    "decide": [
+     "Sequência das atividades",
+     "Alocação de equipes entre obras"
+    ],
+    "escala": [
+     "Atraso que muda a data de entrega",
+     "Mudança de escopo sem aditivo",
+     "Custo acima do orçado"
+    ],
+    "status": "PROPOSTA"
    },
    {
     "papel": "coordenador_campo",
     "nome": "Coordenador de campo",
-    "reporta_a": "COO",
+    "reporta_a": "gerente_obra",
     "responsabilidades": [
      "Distribuir e acompanhar diariamente as equipes próprias e terceirizadas",
      "Garantir segurança do trabalho (EPI, NR-10, NR-35) e proteção dos acabamentos do cliente",
@@ -5166,7 +5823,38 @@ export const CATALOGO = [
      "ppc_semanal",
      "horas_retrabalho",
      "aprovacao_primeira_inspecao"
-    ]
+    ],
+    "nivel": "gestao",
+    "missao": "Fazer as equipes de campo produzirem com segurança, qualidade e evidência.",
+    "fase": "essencial",
+    "cobre_enquanto_vago": "gerente_obra",
+    "atividades": {
+     "diaria": [
+      "Reunião de campo no início do dia: tarefas, segurança e material.",
+      "Visitar obras e conferir checklists e fotos.",
+      "Registrar ocorrências e horas da equipe."
+     ],
+     "semanal": [
+      "Planejar a escala da semana seguinte com o gerente."
+     ],
+     "mensal": [
+      "Avaliar desempenho dos técnicos com o líder de equipe."
+     ]
+    },
+    "entregas": [
+     "Checklists com evidência fotográfica",
+     "Horas da equipe lançadas no pedido"
+    ],
+    "decide": [
+     "Distribuição diária dos técnicos",
+     "Parar atividade insegura"
+    ],
+    "escala": [
+     "Acidente ou quase acidente",
+     "Dano ao acabamento do cliente",
+     "Falta de material que para a obra"
+    ],
+    "status": "PROPOSTA"
    },
    {
     "papel": "comprador",
@@ -5181,7 +5869,36 @@ export const CATALOGO = [
     "indicadores": [
      "compras_com_cobertura",
      "otif_fornecedores"
-    ]
+    ],
+    "nivel": "execucao",
+    "missao": "Ter o material certo na obra na data certa, pelo menor custo total.",
+    "fase": "essencial",
+    "cobre_enquanto_vago": "COO",
+    "atividades": {
+     "diaria": [
+      "Acompanhar entregas, importações e transportes."
+     ],
+     "semanal": [
+      "Cotar com até 3 fornecedores as compras da semana.",
+      "Conferir com Finanças a cobertura de caixa da fase."
+     ],
+     "mensal": [
+      "Avaliar fornecedores (prazo e qualidade)."
+     ]
+    },
+    "entregas": [
+     "Compras registradas no VEOS com custo total",
+     "Material entregue no prazo da obra"
+    ],
+    "decide": [
+     "Fornecedor entre os cotados, dentro da alçada"
+    ],
+    "escala": [
+     "Compra acima da alçada",
+     "Atraso de importação",
+     "Item sem estoque e sem substituto"
+    ],
+    "status": "PROPOSTA"
    },
    {
     "papel": "tecnico_campo",
@@ -5195,7 +5912,34 @@ export const CATALOGO = [
     "indicadores": [
      "aprovacao_primeira_inspecao",
      "horas_retrabalho"
-    ]
+    ],
+    "nivel": "execucao",
+    "missao": "Instalar conforme o projeto executivo, com acabamento premium e tudo documentado.",
+    "fase": "essencial",
+    "cobre_enquanto_vago": "coordenador_campo",
+    "atividades": {
+     "diaria": [
+      "Executar a tarefa do dia (infraestrutura, cabos, rack, equipamentos).",
+      "Preencher o checklist com fotos.",
+      "Deixar o ambiente limpo e protegido."
+     ],
+     "semanal": [
+      "Certificar e identificar o cabeamento concluído."
+     ],
+     "mensal": []
+    },
+    "entregas": [
+     "Instalação conforme projeto",
+     "Checklist e fotos da etapa"
+    ],
+    "decide": [
+     "Ajustes de passagem dentro do projeto"
+    ],
+    "escala": [
+     "Diferença entre projeto e obra",
+     "Risco de segurança"
+    ],
+    "status": "PROPOSTA"
    },
    {
     "papel": "inspetor_qualidade",
@@ -5209,7 +5953,34 @@ export const CATALOGO = [
     "indicadores": [
      "aprovacao_primeira_inspecao",
      "aceite_sem_pendencias"
-    ]
+    ],
+    "nivel": "execucao",
+    "missao": "Garantir, de forma independente, que nenhuma fase avance com defeito.",
+    "fase": "crescimento",
+    "cobre_enquanto_vago": "gerente_obra",
+    "atividades": {
+     "diaria": [],
+     "semanal": [
+      "Inspecionar as fases concluídas antes de liberar a próxima.",
+      "Conduzir o comissionamento e a lista de pendências (punch list)."
+     ],
+     "mensal": [
+      "Auditoria de qualidade por amostragem.",
+      "Relatório de retrabalho e causas."
+     ]
+    },
+    "entregas": [
+     "Liberação de fase",
+     "Documentação de entrega para o aceite e o Pós-venda"
+    ],
+    "decide": [
+     "Reprovar fase com defeito"
+    ],
+    "escala": [
+     "Defeito recorrente",
+     "Pendência que impede o aceite"
+    ],
+    "status": "PROPOSTA"
    }
   ],
   "processos": [
@@ -6484,12 +7255,26 @@ export const CATALOGO = [
     "Não decide sozinha a comunicação de incidente à ANPD ou aos titulares: prepara a avaliação técnica e a direção decide, com apoio jurídico.",
     "Não acessa remotamente sistemas de cliente sem autorização registrada do cliente.",
     "Não altera escopo técnico vendido sem aditivo tratado pelo Comercial e Operações."
-   ]
+   ],
+   "reporta_a": "CEO",
+   "atividades": {
+    "diaria": [
+     "Olhar incidentes abertos (clientes e sistemas internos)."
+    ],
+    "semanal": [
+     "Comitê de mudanças.",
+     "Revisão dos projetos técnicos da semana."
+    ],
+    "mensal": [
+     "Conferir backup e restauração, acessos e padrões técnicos.",
+     "Comitê de homologação de produtos (quinzenal)."
+    ]
+   }
   },
   "equipe": [
    {
     "papel": "engenheiro_projetos",
-    "nome": "Engenheiro de projetos e sistemas",
+    "nome": "Engenheiro de projetos (líder técnico)",
     "reporta_a": "CIO",
     "responsabilidades": [
      "Elaborar projetos executivos (cabeamento, rede, AV, segurança, controle de acesso, automação) conforme padrões técnicos",
@@ -6499,12 +7284,42 @@ export const CATALOGO = [
     "indicadores": [
      "projetos_revisados",
      "asbuilt_no_prazo"
-    ]
+    ],
+    "nivel": "gestao",
+    "missao": "Garantir projetos executivos corretos e coordenar a equipe técnica de programação e redes.",
+    "fase": "essencial",
+    "cobre_enquanto_vago": "CIO",
+    "atividades": {
+     "diaria": [
+      "Distribuir e apoiar as tarefas de programação e redes.",
+      "Tirar dúvidas técnicas do campo."
+     ],
+     "semanal": [
+      "Revisar por pares os projetos antes de ir para a obra.",
+      "Liberar projetos executivos da semana."
+     ],
+     "mensal": [
+      "Consolidar as-built e certificações das obras entregues."
+     ]
+    },
+    "entregas": [
+     "Projeto executivo revisado",
+     "As-built no prazo"
+    ],
+    "decide": [
+     "Solução técnica dentro dos padrões",
+     "Prioridade técnica da equipe"
+    ],
+    "escala": [
+     "Produto não homologado",
+     "Mudança de padrão técnico"
+    ],
+    "status": "PROPOSTA"
    },
    {
     "papel": "programador_automacao",
     "nome": "Programador de automação e AV",
-    "reporta_a": "CIO",
+    "reporta_a": "engenheiro_projetos",
     "responsabilidades": [
      "Programar e comissionar plataformas de automação, áudio e vídeo e iluminação",
      "Manter backup das programações e das configurações de cada obra",
@@ -6513,12 +7328,38 @@ export const CATALOGO = [
     "indicadores": [
      "asbuilt_no_prazo",
      "lead_time_homologacao"
-    ]
+    ],
+    "nivel": "execucao",
+    "missao": "Programar e entregar a automação, o áudio e o vídeo funcionando como o cliente sonhou.",
+    "fase": "essencial",
+    "cobre_enquanto_vago": "engenheiro_projetos",
+    "atividades": {
+     "diaria": [
+      "Programar e comissionar as plataformas das obras do dia."
+     ],
+     "semanal": [
+      "Fazer backup das programações concluídas.",
+      "Testar produtos em bancada para homologação."
+     ],
+     "mensal": []
+    },
+    "entregas": [
+     "Sistema programado e testado",
+     "Backup da programação de cada obra"
+    ],
+    "decide": [
+     "Lógica de cenas e interface dentro do padrão"
+    ],
+    "escala": [
+     "Incompatibilidade de produto",
+     "Pedido do cliente fora do escopo"
+    ],
+    "status": "PROPOSTA"
    },
    {
     "papel": "analista_redes",
     "nome": "Analista de redes e segurança eletrônica",
-    "reporta_a": "CIO",
+    "reporta_a": "engenheiro_projetos",
     "responsabilidades": [
      "Projetar e configurar redes, Wi-Fi, VLANs, VPN e acesso remoto seguro",
      "Configurar CFTV, alarme e controle de acesso com mínimo de dados pessoais e retenção definida",
@@ -6527,7 +7368,34 @@ export const CATALOGO = [
     "indicadores": [
      "credenciais_em_cofre",
      "mttr_incidentes"
-    ]
+    ],
+    "nivel": "execucao",
+    "missao": "Entregar redes, Wi-Fi e segurança eletrônica estáveis e seguras.",
+    "fase": "crescimento",
+    "cobre_enquanto_vago": "programador_automacao",
+    "atividades": {
+     "diaria": [
+      "Triar incidentes de rede e acesso remoto."
+     ],
+     "semanal": [
+      "Configurar redes, VLANs, VPN, CFTV e controle de acesso das obras."
+     ],
+     "mensal": [
+      "Conferir que todas as credenciais estão no cofre."
+     ]
+    },
+    "entregas": [
+     "Rede configurada e documentada",
+     "Credenciais no cofre"
+    ],
+    "decide": [
+     "Configuração dentro do padrão de rede"
+    ],
+    "escala": [
+     "Incidente de segurança",
+     "Acesso remoto fora do padrão"
+    ],
+    "status": "PROPOSTA"
    },
    {
     "papel": "analista_sistemas",
@@ -6541,7 +7409,34 @@ export const CATALOGO = [
     "indicadores": [
      "mudancas_sucesso",
      "disponibilidade_sistemas"
-    ]
+    ],
+    "nivel": "execucao",
+    "missao": "Manter o VEOS, o Zoho e as integrações funcionando e com backup testado.",
+    "fase": "crescimento",
+    "cobre_enquanto_vago": "CIO",
+    "atividades": {
+     "diaria": [
+      "Conferir a saúde do sistema e as sincronizações."
+     ],
+     "semanal": [
+      "Aplicar mudanças aprovadas com plano de reversão."
+     ],
+     "mensal": [
+      "Testar a restauração do backup."
+     ]
+    },
+    "entregas": [
+     "Sistemas disponíveis",
+     "Teste de restauração mensal"
+    ],
+    "decide": [
+     "Correção de falha sem mudança de regra"
+    ],
+    "escala": [
+     "Mudança que altera regra de negócio",
+     "Perda ou exposição de dados"
+    ],
+    "status": "PROPOSTA"
    },
    {
     "papel": "responsavel_seguranca",
@@ -6555,7 +7450,32 @@ export const CATALOGO = [
     "indicadores": [
      "incidentes_lgpd_no_prazo",
      "credenciais_em_cofre"
-    ]
+    ],
+    "nivel": "execucao",
+    "missao": "Proteger senhas, acessos e dados pessoais da VOICE e dos clientes.",
+    "fase": "crescimento",
+    "cobre_enquanto_vago": "CIO",
+    "atividades": {
+     "diaria": [],
+     "semanal": [
+      "Revisar alertas de acesso."
+     ],
+     "mensal": [
+      "Revisar acessos (quem entra onde).",
+      "Atualizar o inventário de dados pessoais."
+     ]
+    },
+    "entregas": [
+     "Revisão de acessos",
+     "Inventário de dados pessoais"
+    ],
+    "decide": [
+     "Bloquear acesso suspeito"
+    ],
+    "escala": [
+     "Incidente com dados pessoais (avaliação ANPD)"
+    ],
+    "status": "PROPOSTA"
    }
   ],
   "processos": [
@@ -7782,53 +8702,22 @@ export const CATALOGO = [
     "Não altera preço ou escopo de contrato de suporte sem a direção e Finanças.",
     "Não publica nem autoriza uso de imagem do cliente — encaminha a autorização ao Marketing.",
     "Não promete troca de equipamento fora da garantia do fabricante sem aprovação da direção."
-   ]
+   ],
+   "reporta_a": "CEO",
+   "atividades": {
+    "diaria": [
+     "Olhar chamados P1/P2 e SLAs em risco."
+    ],
+    "semanal": [
+     "Revisar NPS, detratores e chamados reincidentes."
+    ],
+    "mensal": [
+     "Análise de causa raiz com Operações e Tecnologia.",
+     "Revisar contratos de suporte, renovações e receita recorrente."
+    ]
+   }
   },
   "equipe": [
-   {
-    "papel": "atendimento_cx",
-    "nome": "Atendimento e triagem (N1)",
-    "reporta_a": "CXO",
-    "responsabilidades": [
-     "Receber chamados por WhatsApp, telefone, e-mail e aplicativo e registrar no VEOS.",
-     "Classificar prioridade P1–P4, cobertura (garantia, contrato, avulso) e definir prazos de resposta e solução.",
-     "Resolver remotamente dúvidas e ajustes simples (cenas, aplicativo, reinício de equipamentos).",
-     "Manter o cliente informado até o fechamento."
-    ],
-    "indicadores": [
-     "tempo_primeira_resposta",
-     "resolucao_remota",
-     "cumprimento_sla"
-    ]
-   },
-   {
-    "papel": "tecnico_campo",
-    "nome": "Técnico de campo (N2)",
-    "reporta_a": "CXO",
-    "responsabilidades": [
-     "Atender chamados que exigem visita e executar preventivas.",
-     "Registrar causa raiz, solução e peças utilizadas.",
-     "Enviar relatório de visita e identificar oportunidades de melhoria no sistema do cliente."
-    ],
-    "indicadores": [
-     "preventivas_no_prazo",
-     "chamados_reincidentes"
-    ]
-   },
-   {
-    "papel": "gestor_contratos",
-    "nome": "Gestor de contratos de suporte",
-    "reporta_a": "CXO",
-    "responsabilidades": [
-     "Criar o registro de garantia de cada projeto entregue e oferecer contrato de suporte antes do fim da garantia.",
-     "Conduzir renovações e reajustes com Finanças.",
-     "Planejar o calendário anual de preventivas por contrato."
-    ],
-    "indicadores": [
-     "taxa_renovacao",
-     "receita_recorrente"
-    ]
-   },
    {
     "papel": "coord_cx",
     "nome": "Coordenador(a) de experiência do cliente",
@@ -7842,7 +8731,160 @@ export const CATALOGO = [
      "nps",
      "indicacoes_repassadas",
      "custo_garantia"
-    ]
+    ],
+    "nivel": "gestao",
+    "missao": "Coordenar atendimento e campo para resolver rápido e transformar cliente satisfeito em indicação.",
+    "fase": "essencial",
+    "cobre_enquanto_vago": "CXO",
+    "atividades": {
+     "diaria": [
+      "Acompanhar a fila de chamados e redistribuir quando o SLA estiver em risco."
+     ],
+     "semanal": [
+      "Conduzir o huddle semanal.",
+      "Repassar indicações e ampliações ao Comercial."
+     ],
+     "mensal": [
+      "Enviar pesquisas de satisfação e fechar o ciclo com detratores."
+     ]
+    },
+    "entregas": [
+     "Chamados dentro do SLA",
+     "Indicações repassadas",
+     "Ciclo de NPS fechado"
+    ],
+    "decide": [
+     "Prioridade e distribuição dos chamados"
+    ],
+    "escala": [
+     "Cliente VIP insatisfeito",
+     "Custo de garantia fora do previsto"
+    ],
+    "status": "PROPOSTA"
+   },
+   {
+    "papel": "atendimento_cx",
+    "nome": "Atendimento e triagem (N1)",
+    "reporta_a": "coord_cx",
+    "responsabilidades": [
+     "Receber chamados por WhatsApp, telefone, e-mail e aplicativo e registrar no VEOS.",
+     "Classificar prioridade P1–P4, cobertura (garantia, contrato, avulso) e definir prazos de resposta e solução.",
+     "Resolver remotamente dúvidas e ajustes simples (cenas, aplicativo, reinício de equipamentos).",
+     "Manter o cliente informado até o fechamento."
+    ],
+    "indicadores": [
+     "tempo_primeira_resposta",
+     "resolucao_remota",
+     "cumprimento_sla"
+    ],
+    "nivel": "execucao",
+    "missao": "Ser a porta de entrada do cliente: registrar, classificar e resolver remotamente o que der.",
+    "fase": "essencial",
+    "cobre_enquanto_vago": "coord_cx",
+    "atividades": {
+     "diaria": [
+      "Registrar todos os chamados no VEOS.",
+      "Classificar P1–P4 e cobertura (garantia, contrato, avulso).",
+      "Resolver remotamente ajustes simples."
+     ],
+     "semanal": [
+      "Conferir chamados sem retorno ao cliente."
+     ],
+     "mensal": []
+    },
+    "entregas": [
+     "Chamado registrado e classificado",
+     "Primeira resposta no prazo"
+    ],
+    "decide": [
+     "Prioridade inicial pelo critério do setor"
+    ],
+    "escala": [
+     "P1 (sistema parado)",
+     "Cliente pedindo algo fora da garantia/contrato"
+    ],
+    "status": "PROPOSTA"
+   },
+   {
+    "papel": "tecnico_campo",
+    "nome": "Técnico de campo (N2)",
+    "reporta_a": "coord_cx",
+    "responsabilidades": [
+     "Atender chamados que exigem visita e executar preventivas.",
+     "Registrar causa raiz, solução e peças utilizadas.",
+     "Enviar relatório de visita e identificar oportunidades de melhoria no sistema do cliente."
+    ],
+    "indicadores": [
+     "preventivas_no_prazo",
+     "chamados_reincidentes"
+    ],
+    "nivel": "execucao",
+    "missao": "Resolver na visita e deixar registrado o porquê, para não voltar.",
+    "fase": "crescimento",
+    "cobre_enquanto_vago": "operacoes:tecnico_campo",
+    "atividades": {
+     "diaria": [
+      "Atender chamados com visita e preventivas agendadas.",
+      "Registrar causa raiz, solução e peças."
+     ],
+     "semanal": [
+      "Enviar relatórios de visita."
+     ],
+     "mensal": []
+    },
+    "entregas": [
+     "Relatório de visita",
+     "Causa raiz registrada"
+    ],
+    "decide": [
+     "Solução técnica dentro da cobertura"
+    ],
+    "escala": [
+     "Troca de equipamento fora da garantia",
+     "Defeito recorrente"
+    ],
+    "status": "PROPOSTA"
+   },
+   {
+    "papel": "gestor_contratos",
+    "nome": "Gestor de contratos de suporte",
+    "reporta_a": "CXO",
+    "responsabilidades": [
+     "Criar o registro de garantia de cada projeto entregue e oferecer contrato de suporte antes do fim da garantia.",
+     "Conduzir renovações e reajustes com Finanças.",
+     "Planejar o calendário anual de preventivas por contrato."
+    ],
+    "indicadores": [
+     "taxa_renovacao",
+     "receita_recorrente"
+    ],
+    "nivel": "execucao",
+    "missao": "Transformar cada obra entregue em contrato de suporte com receita recorrente.",
+    "fase": "crescimento",
+    "cobre_enquanto_vago": "coord_cx",
+    "atividades": {
+     "diaria": [],
+     "semanal": [
+      "Oferecer contrato aos clientes com garantia terminando em 60 dias."
+     ],
+     "mensal": [
+      "Agendar as preventivas do mês.",
+      "Conduzir renovações e reajustes com Finanças."
+     ]
+    },
+    "entregas": [
+     "Garantia registrada por projeto",
+     "Calendário de preventivas",
+     "Renovações no prazo"
+    ],
+    "decide": [
+     "Agenda de preventivas"
+    ],
+    "escala": [
+     "Desconto ou condição especial em contrato",
+     "Cancelamento de contrato"
+    ],
+    "status": "PROPOSTA"
    }
   ],
   "processos": [
@@ -9073,25 +10115,22 @@ export const CATALOGO = [
     "Não libera trabalho em altura ou com eletricidade sem parecer do técnico de segurança.",
     "Não contrata, desliga nem altera remuneração sem aprovação da direção.",
     "Não compartilha dados pessoais de colaboradores fora do necessário à finalidade."
-   ]
+   ],
+   "reporta_a": "CEO",
+   "atividades": {
+    "diaria": [
+     "Resolver ausências que afetam a agenda de obras."
+    ],
+    "semanal": [
+     "Conferir aptidão (NR-10/NR-35) da equipe escalada para a semana."
+    ],
+    "mensal": [
+     "Conferir vencimentos de documentos e certificações.",
+     "Revisar folha/variáveis antes do envio ao contador."
+    ]
+   }
   },
   "equipe": [
-   {
-    "papel": "analista_adm",
-    "nome": "Analista administrativo e de departamento pessoal",
-    "reporta_a": "CHRO",
-    "responsabilidades": [
-     "Cadastrar colaboradores e prestadores com o mínimo de dados necessários",
-     "Conduzir a documentação de admissão e de contratação de prestadores com o contador",
-     "Controlar férias, ausências e envio mensal das variáveis ao contador",
-     "Manter documentos administrativos e societários vigentes e arquivados"
-    ],
-    "indicadores": [
-     "documentos_vigentes",
-     "absenteismo",
-     "turnover"
-    ]
-   },
    {
     "papel": "coordenador_capacitacao",
     "nome": "Coordenador de capacitação e certificações",
@@ -9106,7 +10145,118 @@ export const CATALOGO = [
      "certificacoes_fabricante",
      "horas_treinamento",
      "integracao_no_prazo"
-    ]
+    ],
+    "nivel": "gestao",
+    "missao": "Garantir que cada técnico tenha as certificações e o treinamento que a função exige.",
+    "fase": "crescimento",
+    "cobre_enquanto_vago": "CHRO",
+    "atividades": {
+     "diaria": [],
+     "semanal": [
+      "Conduzir a integração dos novos colaboradores."
+     ],
+     "mensal": [
+      "Atualizar a matriz de certificações por função e marca.",
+      "Planejar os treinamentos do mês seguinte."
+     ]
+    },
+    "entregas": [
+     "Matriz de certificações",
+     "Plano de treinamento"
+    ],
+    "decide": [
+     "Calendário de treinamentos"
+    ],
+    "escala": [
+     "Treinamento com custo",
+     "Função sem ninguém certificado"
+    ],
+    "status": "PROPOSTA"
+   },
+   {
+    "papel": "lider_equipe",
+    "nome": "Líder de equipe técnica (gestão de pessoas)",
+    "reporta_a": "CHRO",
+    "responsabilidades": [
+     "Fazer 1:1 quinzenal com cada liderado",
+     "Dar feedback específico após cada entrega de obra",
+     "Acompanhar o plano 30/60/90 dos novos técnicos",
+     "Informar ausências e necessidades de cobertura na agenda de obras"
+    ],
+    "indicadores": [
+     "cadencia_1a1",
+     "integracao_no_prazo"
+    ],
+    "nivel": "gestao",
+    "missao": "Desenvolver os técnicos: acompanhamento próximo, feedback e plano de crescimento.",
+    "fase": "crescimento",
+    "cobre_enquanto_vago": "operacoes:coordenador_campo",
+    "atividades": {
+     "diaria": [],
+     "semanal": [
+      "Dar feedback após cada entrega de obra."
+     ],
+     "mensal": [
+      "1:1 quinzenal com cada liderado.",
+      "Acompanhar o plano 30/60/90 dos novos técnicos."
+     ]
+    },
+    "entregas": [
+     "1:1 registrados",
+     "Plano 30/60/90 acompanhado"
+    ],
+    "decide": [
+     "Pauta do 1:1 e plano de desenvolvimento"
+    ],
+    "escala": [
+     "Problema de desempenho recorrente",
+     "Pedido de aumento ou promoção"
+    ],
+    "status": "PROPOSTA"
+   },
+   {
+    "papel": "analista_adm",
+    "nome": "Analista administrativo e de departamento pessoal",
+    "reporta_a": "CHRO",
+    "responsabilidades": [
+     "Cadastrar colaboradores e prestadores com o mínimo de dados necessários",
+     "Conduzir a documentação de admissão e de contratação de prestadores com o contador",
+     "Controlar férias, ausências e envio mensal das variáveis ao contador",
+     "Manter documentos administrativos e societários vigentes e arquivados"
+    ],
+    "indicadores": [
+     "documentos_vigentes",
+     "absenteismo",
+     "turnover"
+    ],
+    "nivel": "execucao",
+    "missao": "Manter a parte administrativa das pessoas correta, em dia e sem risco trabalhista.",
+    "fase": "essencial",
+    "cobre_enquanto_vago": "CHRO",
+    "atividades": {
+     "diaria": [
+      "Registrar ausências e atestados."
+     ],
+     "semanal": [
+      "Conferir pendências de documentos de admissão e prestadores."
+     ],
+     "mensal": [
+      "Enviar as variáveis da folha ao contador.",
+      "Controlar férias e vencimentos."
+     ]
+    },
+    "entregas": [
+     "Variáveis da folha no prazo",
+     "Cadastro de colaboradores completo"
+    ],
+    "decide": [
+     "Organização dos documentos"
+    ],
+    "escala": [
+     "Risco trabalhista",
+     "Contratação ou desligamento"
+    ],
+    "status": "PROPOSTA"
    },
    {
     "papel": "tecnico_seguranca",
@@ -9120,22 +10270,34 @@ export const CATALOGO = [
     ],
     "indicadores": [
      "conformidade_nr"
-    ]
-   },
-   {
-    "papel": "lider_equipe",
-    "nome": "Líder de equipe técnica",
-    "reporta_a": "CHRO",
-    "responsabilidades": [
-     "Fazer 1:1 quinzenal com cada liderado",
-     "Dar feedback específico após cada entrega de obra",
-     "Acompanhar o plano 30/60/90 dos novos técnicos",
-     "Informar ausências e necessidades de cobertura na agenda de obras"
     ],
-    "indicadores": [
-     "cadencia_1a1",
-     "integracao_no_prazo"
-    ]
+    "nivel": "execucao",
+    "missao": "Ninguém trabalha em altura ou com eletricidade sem estar apto e protegido.",
+    "fase": "essencial",
+    "cobre_enquanto_vago": "operacoes:coordenador_campo",
+    "atividades": {
+     "diaria": [
+      "Orientar EPI e análise de risco das obras do dia (quando houver risco)."
+     ],
+     "semanal": [
+      "Checar aptidão (ASO, NR-10, NR-35) da equipe escalada."
+     ],
+     "mensal": [
+      "Inspeção de segurança por amostragem nas obras."
+     ]
+    },
+    "entregas": [
+     "Lista de aptidão semanal",
+     "Registros de treinamento NR válidos"
+    ],
+    "decide": [
+     "Impedir trabalho de quem não está apto"
+    ],
+    "escala": [
+     "Acidente",
+     "NR vencida em equipe escalada"
+    ],
+    "status": "PROPOSTA"
    },
    {
     "papel": "encarregado_dados",
@@ -9148,7 +10310,32 @@ export const CATALOGO = [
     ],
     "indicadores": [
      "documentos_vigentes"
-    ]
+    ],
+    "nivel": "execucao",
+    "missao": "Garantir que dados pessoais de equipe e clientes sejam acessados só por quem precisa.",
+    "fase": "essencial",
+    "cobre_enquanto_vago": "CHRO",
+    "atividades": {
+     "diaria": [],
+     "semanal": [
+      "Responder pedidos de titulares recebidos."
+     ],
+     "mensal": [
+      "Revisar quem acessa dados pessoais (registro de acessos do VEOS)."
+     ]
+    },
+    "entregas": [
+     "Pedidos de titulares respondidos no prazo",
+     "Revisão de acessos"
+    ],
+    "decide": [
+     "Classificação de acesso de documentos"
+    ],
+    "escala": [
+     "Incidente com dado pessoal",
+     "Pedido de exclusão que conflita com obrigação legal"
+    ],
+    "status": "PROPOSTA"
    }
   ],
   "processos": [
@@ -10259,7 +11446,21 @@ export const CATALOGO = [
     "Não assume compromisso com cliente, parceiro ou fornecedor em nome de outro setor.",
     "Não arquiva nem transmite senhas ou credenciais.",
     "Não descarta documento sem respeitar a temporalidade e sem autorização da direção quando for contrato, societário ou documento com dados pessoais."
-   ]
+   ],
+   "reporta_a": "CEO",
+   "atividades": {
+    "diaria": [
+     "Processar a entrada de ordens e recados e distribuí-los aos setores.",
+     "Preparar o briefing da agenda do dia da direção."
+    ],
+    "semanal": [
+     "Revisão semanal de pendências com a direção.",
+     "Preparar a reunião de direção."
+    ],
+    "mensal": [
+     "Revisar o arquivo e os documentos vencendo."
+    ]
+   }
   },
   "equipe": [
    {
@@ -10275,7 +11476,33 @@ export const CATALOGO = [
      "atas_24h",
      "pauta_antecedencia",
      "compromissos_confirmados"
-    ]
+    ],
+    "nivel": "gestao",
+    "missao": "Fazer a agenda da direção funcionar: compromissos confirmados, reuniões preparadas e atas enviadas.",
+    "fase": "crescimento",
+    "cobre_enquanto_vago": "SEC",
+    "atividades": {
+     "diaria": [
+      "Confirmar os compromissos do dia seguinte.",
+      "Coordenar a recepção."
+     ],
+     "semanal": [
+      "Convocar e preparar a reunião de direção.",
+      "Enviar as atas em até 24h."
+     ],
+     "mensal": []
+    },
+    "entregas": [
+     "Agenda confirmada",
+     "Ata em 24h"
+    ],
+    "decide": [
+     "Encaixes na agenda dentro das regras da direção"
+    ],
+    "escala": [
+     "Conflito de agenda com cliente importante"
+    ],
+    "status": "PROPOSTA"
    },
    {
     "papel": "controlador_pendencias",
@@ -10291,7 +11518,33 @@ export const CATALOGO = [
      "tempo_distribuicao",
      "encaminhamentos_cumpridos",
      "pendencias_vencidas"
-    ]
+    ],
+    "nivel": "execucao",
+    "missao": "Nenhuma ordem da direção se perde: todas têm dono, prazo e retorno.",
+    "fase": "essencial",
+    "cobre_enquanto_vago": "SEC",
+    "atividades": {
+     "diaria": [
+      "Registrar e distribuir as ordens recebidas.",
+      "Cobrar retornos que vencem hoje."
+     ],
+     "semanal": [
+      "Consolidar o resumo semanal de pendências."
+     ],
+     "mensal": []
+    },
+    "entregas": [
+     "Ordens distribuídas no dia",
+     "Resumo semanal"
+    ],
+    "decide": [
+     "Para qual setor vai cada ordem"
+    ],
+    "escala": [
+     "Ordem vencida sem retorno",
+     "Ordem sem dono claro"
+    ],
+    "status": "PROPOSTA"
    },
    {
     "papel": "gestor_documental",
@@ -10304,12 +11557,39 @@ export const CATALOGO = [
     ],
     "indicadores": [
      "documentos_classificados"
-    ]
+    ],
+    "nivel": "execucao",
+    "missao": "Manter contratos, atas e termos encontráveis, válidos e protegidos.",
+    "fase": "crescimento",
+    "cobre_enquanto_vago": "controlador_pendencias",
+    "atividades": {
+     "diaria": [
+      "Classificar e arquivar documentos recebidos."
+     ],
+     "semanal": [
+      "Atender pedidos de localização dos setores."
+     ],
+     "mensal": [
+      "Conferir validades e temporalidade."
+     ]
+    },
+    "entregas": [
+     "Arquivo classificado",
+     "Lista de documentos vencendo"
+    ],
+    "decide": [
+     "Classificação e local de arquivo"
+    ],
+    "escala": [
+     "Documento confidencial exposto",
+     "Contrato vencendo sem renovação"
+    ],
+    "status": "PROPOSTA"
    },
    {
     "papel": "recepcao",
     "nome": "Recepção e atendimento",
-    "reporta_a": "SEC",
+    "reporta_a": "assistente_direcao",
     "responsabilidades": [
      "Receber clientes, arquitetos e fornecedores no escritório ou showroom com padrão de atendimento premium",
      "Registrar ligações e recados como ordem ou pendência para o setor correto",
@@ -10317,7 +11597,32 @@ export const CATALOGO = [
     ],
     "indicadores": [
      "compromissos_confirmados"
-    ]
+    ],
+    "nivel": "execucao",
+    "missao": "Receber cliente, arquiteto e fornecedor com padrão premium e não perder nenhum recado.",
+    "fase": "crescimento",
+    "cobre_enquanto_vago": "assistente_direcao",
+    "atividades": {
+     "diaria": [
+      "Receber visitas no escritório e showroom.",
+      "Registrar ligações e recados como ordem ou pendência."
+     ],
+     "semanal": [
+      "Preparar a logística das reuniões presenciais."
+     ],
+     "mensal": []
+    },
+    "entregas": [
+     "Recados registrados no VEOS",
+     "Sala e demonstração prontas"
+    ],
+    "decide": [
+     "Logística da recepção"
+    ],
+    "escala": [
+     "Cliente insatisfeito na recepção"
+    ],
+    "status": "PROPOSTA"
    }
   ],
   "processos": [

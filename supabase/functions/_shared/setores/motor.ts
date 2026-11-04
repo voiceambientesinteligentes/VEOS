@@ -225,5 +225,67 @@ export function validarCatalogo(setores: Setor[]): string[] {
       }
     }
   }
+  erros.push(...validarEstrutura(setores));
   return erros;
+}
+
+// ---------------------------------------------------------------- estrutura organizacional
+export const NIVEIS = ["gestao", "assessoria", "execucao"];
+export const FASES = ["essencial", "crescimento"];
+export const FREQ_ATIVIDADE = ["diaria", "semanal", "mensal"];
+type Papel = { papel: string; nome: string; reporta_a?: string; nivel?: string; fase?: string; cobre_enquanto_vago?: string; atividades?: Record<string, unknown>; entregas?: unknown; decide?: unknown; escala?: unknown };
+
+/** Hierarquia: cada cargo reporta a um papel do proprio setor ou ao diretor; sem ciclos; atividades por frequencia.
+ *  cobre_enquanto_vago aceita papel do setor, sigla de qualquer diretor ou "setor:papel". */
+export function validarEstrutura(setores: Setor[]): string[] {
+  const erros: string[] = [];
+  const siglas = new Set(setores.map((s) => s.sigla));
+  const papelGlobal = new Set(setores.flatMap((s) => (s.equipe ?? []).map((p) => `${s.id}:${p.papel}`)));
+  for (const s of setores) {
+    const e = (m: string) => erros.push(`${s.id}: ${m}`);
+    const equipe = (s.equipe ?? []) as Papel[];
+    const porPapel = new Map(equipe.map((p) => [p.papel, p]));
+    const dir = s.diretor as Record<string, unknown>;
+    if (dir.reporta_a != null && !siglas.has(String(dir.reporta_a))) e(`diretor reporta a sigla inexistente ${dir.reporta_a}`);
+    if (dir.atividades !== undefined) checarAtividades(dir.atividades, (m) => e(`diretor: ${m}`));
+    for (const p of equipe) {
+      const q = (m: string) => e(`cargo ${p.papel}: ${m}`);
+      const chefe = p.reporta_a ?? s.sigla;
+      if (chefe !== s.sigla && !porPapel.has(chefe)) q(`reporta a ${chefe}, que não existe no setor`);
+      if (chefe === p.papel) q("reporta a si mesmo");
+      if (p.nivel !== undefined && !NIVEIS.includes(p.nivel)) q(`nivel inválido ${p.nivel}`);
+      if (p.fase !== undefined && !FASES.includes(p.fase)) q(`fase inválida ${p.fase}`);
+      const cob = p.cobre_enquanto_vago;
+      if (cob !== undefined) {
+        const ok = siglas.has(cob) || porPapel.has(cob) || (cob.includes(":") && papelGlobal.has(cob));
+        if (!ok) q(`cobre_enquanto_vago inexistente ${cob}`);
+        if (cob === p.papel) q("cobre_enquanto_vago aponta para o próprio cargo");
+      }
+      if (p.atividades !== undefined) checarAtividades(p.atividades, q);
+      for (const k of ["entregas", "decide", "escala"] as const) if (p[k] !== undefined && !(Array.isArray(p[k]) && (p[k] as unknown[]).every((x) => typeof x === "string"))) q(`${k} deve ser lista de textos`);
+      // ciclo: subir a cadeia de chefes ate o diretor
+      const vistos = new Set<string>();
+      let atual: string | undefined = p.papel;
+      while (atual && atual !== s.sigla && porPapel.has(atual)) {
+        if (vistos.has(atual)) { q("ciclo na hierarquia"); break; }
+        vistos.add(atual);
+        atual = porPapel.get(atual)!.reporta_a ?? s.sigla;
+      }
+    }
+  }
+  return erros;
+}
+
+function checarAtividades(a: unknown, q: (m: string) => void) {
+  if (!a || typeof a !== "object" || Array.isArray(a)) return q("atividades deve ser objeto {diaria, semanal, mensal}");
+  const o = a as Record<string, unknown>;
+  for (const k of Object.keys(o)) if (!FREQ_ATIVIDADE.includes(k)) q(`frequência de atividade inválida ${k}`);
+  let total = 0;
+  for (const k of FREQ_ATIVIDADE) {
+    const v = o[k];
+    if (v === undefined) continue;
+    if (!Array.isArray(v) || !v.every((x) => typeof x === "string" && x.trim())) q(`atividades.${k} deve ser lista de textos`);
+    else total += v.length;
+  }
+  if (!total) q("atividades sem nenhum item");
 }

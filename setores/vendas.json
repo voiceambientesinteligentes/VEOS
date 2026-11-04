@@ -58,13 +58,82 @@
       "Desconto acima de 2%, ou que leve a margem abaixo de 32%, sai da autonomia comercial; acima de 2% até 5% exige a direção; acima de 5% exige nova análise financeira integral (Política V1 sec.9).",
       "Não altera a condição de recebimento de referência (50% / 40% / 10%) sem alinhar com Finanças (Política V1 sec.10).",
       "Não define percentual de comissão ou reserva técnica de parceiros sem aprovação da direção."
-    ]
+    ],
+    "reporta_a": "CEO",
+    "atividades": {
+      "diaria": [
+        "Olhar o funil: oportunidades sem próximo passo e propostas vencendo.",
+        "Aprovar descontos e exceções de margem dentro da alçada."
+      ],
+      "semanal": [
+        "Revisão do pipeline com o gerente comercial.",
+        "Comitê de margem: propostas abaixo de 35% antes de enviar.",
+        "Contato com 2–3 parceiros estratégicos (arquitetos A)."
+      ],
+      "mensal": [
+        "Previsão de vendas do mês seguinte e meta por vendedor.",
+        "Análise de ganhos e perdas (motivos) com Marketing."
+      ]
+    }
   },
   "equipe": [
     {
+      "status": "PROPOSTA",
+      "papel": "gerente_comercial",
+      "nome": "Gerente comercial",
+      "nivel": "gestao",
+      "reporta_a": "CSO",
+      "fase": "crescimento",
+      "cobre_enquanto_vago": "CSO",
+      "missao": "Fazer a equipe de vendas bater a meta com método: atividade diária, funil limpo e propostas dentro da margem.",
+      "responsabilidades": [
+        "Distribuir leads e oportunidades entre os vendedores.",
+        "Acompanhar diariamente a atividade de cada vendedor e do SDR.",
+        "Revisar propostas antes do envio (escopo, margem, condição).",
+        "Treinar a equipe no roteiro SPIN e na ordem de negociação da Política."
+      ],
+      "indicadores": [
+        "cobertura_pipeline",
+        "taxa_conversao_proposta",
+        "margem_media_propostas",
+        "ciclo_venda"
+      ],
+      "atividades": {
+        "diaria": [
+          "Reunião rápida (15 min) com a equipe: metas do dia, visitas e propostas.",
+          "Distribuir leads novos e conferir se todos foram respondidos.",
+          "Revisar e liberar propostas preparadas pelo orçamentista."
+        ],
+        "semanal": [
+          "Revisão do funil por vendedor: próximo passo e data em toda oportunidade.",
+          "1:1 com cada vendedor (números, travas, ajuda).",
+          "Levar ao comitê de margem as propostas abaixo de 35%."
+        ],
+        "mensal": [
+          "Fechar o resultado do mês por vendedor e apresentar ao CSO.",
+          "Propor metas de atividade do mês seguinte (funil reverso)."
+        ]
+      },
+      "entregas": [
+        "Funil limpo toda segunda-feira",
+        "Propostas revisadas antes do envio",
+        "Resultado mensal por vendedor"
+      ],
+      "decide": [
+        "Qual vendedor atende cada lead",
+        "Prioridade de visitas da semana",
+        "Desconto até o limite que a alçada der ao gerente"
+      ],
+      "escala": [
+        "Proposta abaixo de 30% de margem",
+        "Cliente pedindo condição fora da Política",
+        "Vendedor abaixo da meta por 2 meses"
+      ]
+    },
+    {
       "papel": "sdr",
       "nome": "Pré-vendas / prospecção (SDR)",
-      "reporta_a": "CSO",
+      "reporta_a": "gerente_comercial",
       "responsabilidades": [
         "Responder leads novos no mesmo dia útil e qualificar (perfil do imóvel, fase da obra, decisor, arquiteto envolvido).",
         "Executar a cadência diária de prospecção ativa em escritórios de arquitetura, construtoras e base de clientes antigos.",
@@ -75,12 +144,41 @@
         "leads_novos",
         "tempo_primeira_resposta",
         "taxa_qualificacao"
-      ]
+      ],
+      "nivel": "execucao",
+      "missao": "Garantir que nenhum lead fique sem resposta e que o vendedor só gaste tempo com quem tem projeto real.",
+      "fase": "crescimento",
+      "cobre_enquanto_vago": "consultor",
+      "atividades": {
+        "diaria": [
+          "Responder todos os leads novos antes das 10h.",
+          "Fazer 10 contatos ativos da lista da semana.",
+          "Qualificar (imóvel, fase da obra, decisor, arquiteto) e agendar visitas."
+        ],
+        "semanal": [
+          "Montar a lista de prospecção da semana seguinte."
+        ],
+        "mensal": [
+          "Reativar a base de clientes e parceiros sem contato há 90 dias."
+        ]
+      },
+      "entregas": [
+        "Leads respondidos no mesmo dia",
+        "Visitas agendadas na agenda do vendedor"
+      ],
+      "decide": [
+        "Se o lead é qualificado ou não, pelo critério do setor"
+      ],
+      "escala": [
+        "Lead grande ou de arquiteto A (passa direto ao gerente)",
+        "Pedido de preço sem visita"
+      ],
+      "status": "PROPOSTA"
     },
     {
       "papel": "consultor",
-      "nome": "Consultor de projetos (executivo de vendas)",
-      "reporta_a": "CSO",
+      "nome": "Consultor de projetos (vendedor)",
+      "reporta_a": "gerente_comercial",
       "responsabilidades": [
         "Conduzir visita técnica e briefing com roteiro SPIN.",
         "Conduzir proposta, negociação e fechamento seguindo a ordem de negociação da Política.",
@@ -92,12 +190,45 @@
         "ticket_medio",
         "margem_media_propostas",
         "ciclo_venda"
-      ]
+      ],
+      "nivel": "execucao",
+      "missao": "Entender o projeto do cliente e do arquiteto, vender o escopo certo e fechar dentro da margem.",
+      "fase": "essencial",
+      "cobre_enquanto_vago": "CSO",
+      "atividades": {
+        "diaria": [
+          "Fazer as visitas técnicas e briefings agendados (roteiro SPIN).",
+          "Atualizar no VEOS o próximo passo e a data de cada oportunidade.",
+          "Fazer os follow-ups do dia (propostas enviadas e negociações)."
+        ],
+        "semanal": [
+          "Apresentar propostas ao cliente e ao arquiteto.",
+          "Revisar o próprio funil com o gerente."
+        ],
+        "mensal": [
+          "Reativar clientes antigos da própria carteira (ampliação, upgrade)."
+        ]
+      },
+      "entregas": [
+        "Briefing completo para o orçamentista",
+        "Proposta apresentada e negociada",
+        "Passagem formal do projeto ganho para Operações e Financeiro"
+      ],
+      "decide": [
+        "Roteiro da visita",
+        "Alternativas de escopo antes de dar desconto"
+      ],
+      "escala": [
+        "Qualquer desconto acima da alçada",
+        "Mudança de condição de pagamento",
+        "Cliente insatisfeito ou risco de perda grande"
+      ],
+      "status": "PROPOSTA"
     },
     {
       "papel": "projetista",
-      "nome": "Projetista de pré-venda / orçamentista",
-      "reporta_a": "CSO",
+      "nome": "Orçamentista / projetista de pré-venda",
+      "reporta_a": "gerente_comercial",
       "responsabilidades": [
         "Transformar o briefing em projeto preliminar (pontos, infraestrutura, equipamentos, programação).",
         "Montar a planilha de custos diretos e a margem de contribuição conforme a fórmula oficial (Política V1 sec.4 e sec.5), incluindo provisão de risco de 2% (sec.6).",
@@ -106,7 +237,38 @@
       "indicadores": [
         "margem_media_propostas",
         "vendas_abaixo_30"
-      ]
+      ],
+      "nivel": "execucao",
+      "missao": "Transformar o briefing em orçamento correto, com custo completo e margem pela fórmula oficial.",
+      "fase": "essencial",
+      "cobre_enquanto_vago": "CSO",
+      "atividades": {
+        "diaria": [
+          "Montar os orçamentos da fila (pontos, infraestrutura, equipamentos, programação).",
+          "Salvar cada versão do orçamento no VEOS."
+        ],
+        "semanal": [
+          "Revisar preços de equipamentos que mudaram.",
+          "Preparar alternativas de escopo para as negociações da semana."
+        ],
+        "mensal": [
+          "Conferir com Operações as horas reais × orçadas das obras concluídas."
+        ]
+      },
+      "entregas": [
+        "Orçamento com margem calculada (Política V1 sec.4–6)",
+        "Alternativas de escopo antes do desconto"
+      ],
+      "decide": [
+        "Composição técnica do orçamento",
+        "Equipamento equivalente quando faltar o pedido"
+      ],
+      "escala": [
+        "Margem abaixo de 35%",
+        "Item sem cadastro no catálogo",
+        "Prazo de importação que atrasa a obra"
+      ],
+      "status": "PROPOSTA"
     },
     {
       "papel": "gestor_parceiros",
@@ -120,12 +282,41 @@
       ],
       "indicadores": [
         "indicacoes_parceiros"
-      ]
+      ],
+      "nivel": "execucao",
+      "missao": "Fazer arquitetos, designers e construtoras indicarem a VOICE com frequência e confiança.",
+      "fase": "crescimento",
+      "cobre_enquanto_vago": "CSO",
+      "atividades": {
+        "diaria": [
+          "Dar retorno ao parceiro sobre cada indicação recebida."
+        ],
+        "semanal": [
+          "Contato com os parceiros A e B da agenda da semana.",
+          "Atualizar a classificação A/B/C."
+        ],
+        "mensal": [
+          "Visita ou café técnico no showroom com Marketing.",
+          "Relatório de indicações e vendas por parceiro (concentração)."
+        ]
+      },
+      "entregas": [
+        "Carteira de parceiros classificada",
+        "Retorno de 100% das indicações"
+      ],
+      "decide": [
+        "Agenda de visitas a parceiros"
+      ],
+      "escala": [
+        "Pedido de RT/comissão fora da regra",
+        "Parceiro com mais de 30% das vendas"
+      ],
+      "status": "PROPOSTA"
     },
     {
       "papel": "assistente_comercial",
       "nome": "Assistente comercial",
-      "reporta_a": "CSO",
+      "reporta_a": "gerente_comercial",
       "responsabilidades": [
         "Formatar e enviar propostas, controlar versões e validade.",
         "Reunir documentos de fechamento (contrato, dados do cliente, condição de pagamento).",
@@ -133,7 +324,35 @@
       ],
       "indicadores": [
         "ciclo_venda"
-      ]
+      ],
+      "nivel": "execucao",
+      "missao": "Tirar do vendedor o trabalho administrativo: proposta formatada, documentos e passagem completa.",
+      "fase": "crescimento",
+      "cobre_enquanto_vago": "consultor",
+      "atividades": {
+        "diaria": [
+          "Formatar e enviar propostas liberadas, controlando versão e validade.",
+          "Atualizar o status das propostas no VEOS."
+        ],
+        "semanal": [
+          "Avisar o vendedor das propostas que vencem na semana."
+        ],
+        "mensal": [
+          "Conferir se todos os ganhos do mês têm dossiê de passagem completo."
+        ]
+      },
+      "entregas": [
+        "Proposta enviada no padrão VOICE",
+        "Dossiê de passagem (contrato, dados, condição de pagamento)"
+      ],
+      "decide": [
+        "Formatação e ordem dos documentos"
+      ],
+      "escala": [
+        "Documento faltando no fechamento",
+        "Proposta vencida sem retorno"
+      ],
+      "status": "PROPOSTA"
     }
   ],
   "processos": [

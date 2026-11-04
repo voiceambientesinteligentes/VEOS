@@ -111,3 +111,24 @@ test("validador aponta referencias quebradas", () => {
     assert.ok(erros.includes(esperado), `faltou: ${esperado}\n${erros}`);
   }
 });
+
+test("validador da estrutura: chefe inexistente, ciclo, nivel, fase, cobertura e agenda", () => {
+  const ok = structuredClone(SETOR);
+  ok.diretor = { ...ok.diretor, reporta_a: null, atividades: { diaria: ["Olhar o funil"] } };
+  ok.equipe = [
+    { papel: "gerente", nome: "Gerente", nivel: "gestao", fase: "crescimento", cobre_enquanto_vago: "CSO", atividades: { semanal: ["Revisar funil"] } },
+    { papel: "consultor", nome: "Consultor", reporta_a: "gerente", nivel: "execucao", fase: "essencial", atividades: { diaria: ["Visitar"] }, entregas: ["Proposta"] },
+    { papel: "sdr", nome: "SDR", reporta_a: "gerente", cobre_enquanto_vago: "vendas:consultor" },
+  ];
+  assert.deepEqual(validarCatalogo([ok]), []);
+  const ruim = structuredClone(ok);
+  ruim.diretor.reporta_a = "XYZ";
+  ruim.equipe[0].reporta_a = "sdr"; // gerente -> sdr -> gerente
+  ruim.equipe[1] = { ...ruim.equipe[1], nivel: "chefe", fase: "talvez", cobre_enquanto_vago: "ninguem", atividades: { anual: ["x"] }, entregas: "texto" };
+  ruim.equipe.push({ papel: "orfao", nome: "Órfão", reporta_a: "nao_existe", atividades: {} });
+  const erros = validarCatalogo([ruim]).join("\n");
+  for (const esperado of ["diretor reporta a sigla inexistente XYZ", "ciclo na hierarquia", "nivel inválido chefe", "fase inválida talvez", "cobre_enquanto_vago inexistente ninguem",
+    "frequência de atividade inválida anual", "entregas deve ser lista", "reporta a nao_existe", "atividades sem nenhum item"]) {
+    assert.ok(erros.includes(esperado), `faltou: ${esperado}\n${erros}`);
+  }
+});

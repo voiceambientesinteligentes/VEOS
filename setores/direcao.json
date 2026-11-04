@@ -64,7 +64,22 @@
       "Não aprova exceção de margem, desconto ou exposição sem justificativa e impacto financeiro registrados (Política V1 sec.14).",
       "Não assume compromisso que leve a exposição pro forma acima de 10% sem análise do CFO (Política V1.1 sec.10).",
       "Decisões societárias, trabalhistas e tributárias relevantes são validadas com contador e advogado antes de executadas."
-    ]
+    ],
+    "reporta_a": null,
+    "atividades": {
+      "diaria": [
+        "Ler o Radar (alertas altos e críticos de todos os setores) e decidir o que precisa de você hoje.",
+        "Responder a fila de alçadas e exceções em até 1 dia útil."
+      ],
+      "semanal": [
+        "Conduzir a reunião de direção (scorecard, metas trimestrais, problemas).",
+        "Revisar caixa das 13 semanas com o CFO e o funil com o CSO."
+      ],
+      "mensal": [
+        "Conselho mensal: resultado, margem, reserva de caixa e riscos.",
+        "Revisar o Plano da VOICE e aprovar ou cancelar itens propostos."
+      ]
+    }
   },
   "equipe": [
     {
@@ -80,7 +95,37 @@
       "indicadores": [
         "rocks_no_prazo",
         "scorecard_no_alvo"
-      ]
+      ],
+      "nivel": "assessoria",
+      "missao": "Manter a estratégia da VOICE transformada em metas trimestrais com dono e acompanhamento semanal.",
+      "fase": "crescimento",
+      "cobre_enquanto_vago": "CEO",
+      "atividades": {
+        "diaria": [
+          "Atualizar o quadro de metas com o que mudou no dia."
+        ],
+        "semanal": [
+          "Montar a pauta e o scorecard da reunião de direção.",
+          "Cobrar dos donos o status de cada meta trimestral."
+        ],
+        "mensal": [
+          "Consolidar o relatório de metas e propor correções de rota."
+        ]
+      },
+      "entregas": [
+        "Pauta e scorecard semanais",
+        "Quadro de metas trimestrais atualizado",
+        "Relatório trimestral de metas"
+      ],
+      "decide": [
+        "Formato e ordem da pauta",
+        "Quando cobrar um dono atrasado"
+      ],
+      "escala": [
+        "Meta que vai falhar no trimestre",
+        "Conflito de prioridade entre setores"
+      ],
+      "status": "PROPOSTA"
     },
     {
       "papel": "relator_direcao",
@@ -95,7 +140,36 @@
       "indicadores": [
         "excecoes_registradas",
         "tempo_decisao_alcada"
-      ]
+      ],
+      "nivel": "assessoria",
+      "missao": "Garantir que toda decisão, alçada e exceção da direção fique registrada com justificativa e dono.",
+      "fase": "essencial",
+      "cobre_enquanto_vago": "SEC",
+      "atividades": {
+        "diaria": [
+          "Registrar na Biblioteca as decisões e pedidos de alçada do dia."
+        ],
+        "semanal": [
+          "Redigir a ata da reunião de direção e distribuir as tarefas.",
+          "Conferir se exceções da Política têm registro completo (V1 sec.14)."
+        ],
+        "mensal": [
+          "Listar decisões sem execução e devolvê-las à pauta."
+        ]
+      },
+      "entregas": [
+        "Ata da reunião em até 24h",
+        "Registro de decisões e exceções completo"
+      ],
+      "decide": [
+        "Redação da ata",
+        "Classificação do tipo de registro"
+      ],
+      "escala": [
+        "Exceção sem autorizador",
+        "Decisão que contraria política vigente"
+      ],
+      "status": "PROPOSTA"
     },
     {
       "papel": "gestor_riscos",
@@ -108,7 +182,33 @@
       ],
       "indicadores": [
         "riscos_criticos_sem_plano"
-      ]
+      ],
+      "nivel": "assessoria",
+      "missao": "Manter os riscos do negócio visíveis, com dono e plano, antes que virem prejuízo.",
+      "fase": "crescimento",
+      "cobre_enquanto_vago": "CFO",
+      "atividades": {
+        "diaria": [],
+        "semanal": [
+          "Atualizar o registro de riscos com os alertas da semana."
+        ],
+        "mensal": [
+          "Conduzir a revisão mensal de riscos com os diretores.",
+          "Conferir se cada risco crítico tem plano de tratamento em andamento."
+        ]
+      },
+      "entregas": [
+        "Registro de riscos com dono e nível",
+        "Relatório mensal de riscos"
+      ],
+      "decide": [
+        "Nível inicial de um risco novo"
+      ],
+      "escala": [
+        "Risco crítico sem plano",
+        "Risco que exige gasto não previsto"
+      ],
+      "status": "PROPOSTA"
     },
     {
       "papel": "analista_indicadores",
@@ -124,7 +224,34 @@
         "margem_operacional",
         "reserva_caixa_meses",
         "scorecard_no_alvo"
-      ]
+      ],
+      "nivel": "assessoria",
+      "missao": "Entregar à direção um painel único e confiável com os números de todos os setores.",
+      "fase": "crescimento",
+      "cobre_enquanto_vago": "CFO",
+      "atividades": {
+        "diaria": [],
+        "semanal": [
+          "Conferir se os setores atualizaram os dados do scorecard."
+        ],
+        "mensal": [
+          "Montar o painel consolidado (financeiro, comercial, operações, pós-venda, pessoas).",
+          "Sinalizar desvios de margem, reserva de caixa e vendas abaixo de 30%."
+        ]
+      },
+      "entregas": [
+        "Painel mensal consolidado",
+        "Lista de desvios para a reunião"
+      ],
+      "decide": [
+        "Formato dos gráficos",
+        "Quando marcar um número como LACUNA"
+      ],
+      "escala": [
+        "Número sem fonte confiável",
+        "Desvio grave de margem ou caixa"
+      ],
+      "status": "PROPOSTA"
     }
   ],
   "processos": [

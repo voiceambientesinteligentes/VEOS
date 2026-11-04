@@ -67,12 +67,26 @@
       "Não altera escopo, preço ou prazo contratual com o cliente sem aditivo aprovado pelo Comercial e pela direção.",
       "Não substitui equipamento especificado por outro não homologado pelo CIO.",
       "Não contrata terceiro novo sem documentação de segurança do trabalho (NR-10/NR-35 quando aplicável) e sem aprovação da direção."
-    ]
+    ],
+    "reporta_a": "CEO",
+    "atividades": {
+      "diaria": [
+        "Olhar obras com atraso, restrições abertas e alertas de aceite/garantia."
+      ],
+      "semanal": [
+        "Revisar o planejamento semanal (PPC) com o gerente de obras.",
+        "Conferir compras críticas e cobertura de caixa da fase com o CFO."
+      ],
+      "mensal": [
+        "Revisão operacional: prazo, retrabalho, horas reais × orçadas e qualidade.",
+        "Avaliar fornecedores (prazo e qualidade)."
+      ]
+    }
   },
   "equipe": [
     {
       "papel": "gerente_obra",
-      "nome": "Gerente de projetos de obra",
+      "nome": "Gerente de obras (projetos de obra)",
       "reporta_a": "COO",
       "responsabilidades": [
         "Conduzir o kickoff com o Comercial, o cliente e o arquiteto/construtora e emitir o termo de abertura",
@@ -85,12 +99,45 @@
         "entregas_no_prazo",
         "tempo_kickoff",
         "ppc_semanal"
-      ]
+      ],
+      "nivel": "gestao",
+      "missao": "Entregar cada obra no prazo, no custo e com o cliente e o arquiteto informados.",
+      "fase": "essencial",
+      "cobre_enquanto_vago": "COO",
+      "atividades": {
+        "diaria": [
+          "Acompanhar o andamento das obras com o coordenador de campo.",
+          "Remover restrições (material, liberação da construtora, energia)."
+        ],
+        "semanal": [
+          "Planejamento semanal: só entra o que está sem restrição.",
+          "Enviar status ao cliente e ao arquiteto.",
+          "Controlar mudanças de escopo e levar aditivos ao Comercial."
+        ],
+        "mensal": [
+          "Fechar horas reais × orçadas por obra."
+        ]
+      },
+      "entregas": [
+        "Termo de abertura (kickoff)",
+        "Cronograma por fases",
+        "Status semanal ao cliente"
+      ],
+      "decide": [
+        "Sequência das atividades",
+        "Alocação de equipes entre obras"
+      ],
+      "escala": [
+        "Atraso que muda a data de entrega",
+        "Mudança de escopo sem aditivo",
+        "Custo acima do orçado"
+      ],
+      "status": "PROPOSTA"
     },
     {
       "papel": "coordenador_campo",
       "nome": "Coordenador de campo",
-      "reporta_a": "COO",
+      "reporta_a": "gerente_obra",
       "responsabilidades": [
         "Distribuir e acompanhar diariamente as equipes próprias e terceirizadas",
         "Garantir segurança do trabalho (EPI, NR-10, NR-35) e proteção dos acabamentos do cliente",
@@ -101,7 +148,38 @@
         "ppc_semanal",
         "horas_retrabalho",
         "aprovacao_primeira_inspecao"
-      ]
+      ],
+      "nivel": "gestao",
+      "missao": "Fazer as equipes de campo produzirem com segurança, qualidade e evidência.",
+      "fase": "essencial",
+      "cobre_enquanto_vago": "gerente_obra",
+      "atividades": {
+        "diaria": [
+          "Reunião de campo no início do dia: tarefas, segurança e material.",
+          "Visitar obras e conferir checklists e fotos.",
+          "Registrar ocorrências e horas da equipe."
+        ],
+        "semanal": [
+          "Planejar a escala da semana seguinte com o gerente."
+        ],
+        "mensal": [
+          "Avaliar desempenho dos técnicos com o líder de equipe."
+        ]
+      },
+      "entregas": [
+        "Checklists com evidência fotográfica",
+        "Horas da equipe lançadas no pedido"
+      ],
+      "decide": [
+        "Distribuição diária dos técnicos",
+        "Parar atividade insegura"
+      ],
+      "escala": [
+        "Acidente ou quase acidente",
+        "Dano ao acabamento do cliente",
+        "Falta de material que para a obra"
+      ],
+      "status": "PROPOSTA"
     },
     {
       "papel": "comprador",
@@ -116,7 +194,36 @@
       "indicadores": [
         "compras_com_cobertura",
         "otif_fornecedores"
-      ]
+      ],
+      "nivel": "execucao",
+      "missao": "Ter o material certo na obra na data certa, pelo menor custo total.",
+      "fase": "essencial",
+      "cobre_enquanto_vago": "COO",
+      "atividades": {
+        "diaria": [
+          "Acompanhar entregas, importações e transportes."
+        ],
+        "semanal": [
+          "Cotar com até 3 fornecedores as compras da semana.",
+          "Conferir com Finanças a cobertura de caixa da fase."
+        ],
+        "mensal": [
+          "Avaliar fornecedores (prazo e qualidade)."
+        ]
+      },
+      "entregas": [
+        "Compras registradas no VEOS com custo total",
+        "Material entregue no prazo da obra"
+      ],
+      "decide": [
+        "Fornecedor entre os cotados, dentro da alçada"
+      ],
+      "escala": [
+        "Compra acima da alçada",
+        "Atraso de importação",
+        "Item sem estoque e sem substituto"
+      ],
+      "status": "PROPOSTA"
     },
     {
       "papel": "tecnico_campo",
@@ -130,7 +237,34 @@
       "indicadores": [
         "aprovacao_primeira_inspecao",
         "horas_retrabalho"
-      ]
+      ],
+      "nivel": "execucao",
+      "missao": "Instalar conforme o projeto executivo, com acabamento premium e tudo documentado.",
+      "fase": "essencial",
+      "cobre_enquanto_vago": "coordenador_campo",
+      "atividades": {
+        "diaria": [
+          "Executar a tarefa do dia (infraestrutura, cabos, rack, equipamentos).",
+          "Preencher o checklist com fotos.",
+          "Deixar o ambiente limpo e protegido."
+        ],
+        "semanal": [
+          "Certificar e identificar o cabeamento concluído."
+        ],
+        "mensal": []
+      },
+      "entregas": [
+        "Instalação conforme projeto",
+        "Checklist e fotos da etapa"
+      ],
+      "decide": [
+        "Ajustes de passagem dentro do projeto"
+      ],
+      "escala": [
+        "Diferença entre projeto e obra",
+        "Risco de segurança"
+      ],
+      "status": "PROPOSTA"
     },
     {
       "papel": "inspetor_qualidade",
@@ -144,7 +278,34 @@
       "indicadores": [
         "aprovacao_primeira_inspecao",
         "aceite_sem_pendencias"
-      ]
+      ],
+      "nivel": "execucao",
+      "missao": "Garantir, de forma independente, que nenhuma fase avance com defeito.",
+      "fase": "crescimento",
+      "cobre_enquanto_vago": "gerente_obra",
+      "atividades": {
+        "diaria": [],
+        "semanal": [
+          "Inspecionar as fases concluídas antes de liberar a próxima.",
+          "Conduzir o comissionamento e a lista de pendências (punch list)."
+        ],
+        "mensal": [
+          "Auditoria de qualidade por amostragem.",
+          "Relatório de retrabalho e causas."
+        ]
+      },
+      "entregas": [
+        "Liberação de fase",
+        "Documentação de entrega para o aceite e o Pós-venda"
+      ],
+      "decide": [
+        "Reprovar fase com defeito"
+      ],
+      "escala": [
+        "Defeito recorrente",
+        "Pendência que impede o aceite"
+      ],
+      "status": "PROPOSTA"
     }
   ],
   "processos": [

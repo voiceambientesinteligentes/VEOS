@@ -38,12 +38,21 @@ não bloqueio). Margem de contribuição e caixa seguem a Política V1/V1.1.
     "limites": ["o que NÃO decide sozinho / exige aprovação"]
   },
   "equipe": [{
-    "papel": "consultor",            // id curto [a-z_]
+    "papel": "consultor",            // id curto [a-z_] (NUNCA renomear: registros e regras apontam para ele)
     "nome": "Consultor de vendas",
-    "reporta_a": "CSO",
+    "reporta_a": "gerente_comercial", // sigla do diretor ou outro papel do setor (sem ciclo)
     "responsabilidades": ["..."],
-    "indicadores": ["ids de indicadores deste setor"]
+    "indicadores": ["ids de indicadores deste setor"],
+    // estrutura organizacional (04/11/2026) — conteúdo em scripts/estrutura/dados.mjs, aplicado por scripts/estrutura/aplicar.mjs
+    "nivel": "gestao|assessoria|execucao",
+    "fase": "essencial|crescimento",  // essencial = a função existe já (mesmo acumulada); crescimento = cargo dedicado no futuro
+    "cobre_enquanto_vago": "CSO",     // quem faz enquanto não há pessoa: papel do setor, sigla de diretor ou "setor:papel"
+    "missao": "1 frase",
+    "atividades": { "diaria": ["..."], "semanal": ["..."], "mensal": ["..."] },
+    "entregas": ["..."], "decide": ["o que decide sozinho"], "escala": ["o que leva ao chefe"],
+    "status": "PROPOSTA"
   }],
+  // o diretor também tem "reporta_a" (sigla; null só no CEO) e "atividades" no mesmo formato.
   "processos": [{
     "id": "funil",
     "nome": "Funil de vendas",
@@ -124,6 +133,6 @@ Tipos de gatilho:
 - Janela: registros cuja `data_campo` está nos últimos `janela_dias` dias.
 - `parado`, `vencido` e `faltando` ignoram registros em estado final, **exceto** quando a própria sentinela filtra `estado` (aí vale o filtro, ex.: oportunidade `ganha` sem passagem).
 
-Limites de qualidade por setor: 3–6 papéis, 1–3 processos, 2–5 tipos de registro, 4–8 rotinas,
+Limites de qualidade por setor: 3–7 papéis, 1–3 processos, 2–5 tipos de registro, 4–8 rotinas,
 5–10 indicadores, 5–10 sentinelas, 3–8 modelos. Tudo específico para a VOICE (automação premium),
 nada genérico demais.
