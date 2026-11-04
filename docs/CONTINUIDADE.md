@@ -2,6 +2,21 @@
 
 Atualize este arquivo ao fim de cada sessão: última ação, resultado e próximo passo.
 
+## 03/11/2026 — troca de computador + CSO-04 (orçamento próprio no VEOS)
+
+**Feito**
+- Troca de máquina: GitHub CLI, Git e Node.js instalados e autenticados (conta `voiceambientesinteligentes`); repositório clonado em `C:\Users\ferna\VEOS` (antes `C:\Users\voice\VOICE_360\VEOS`). Autonomia técnica total (decisão de 30/09 em DECISOES.md) reafirmada pelo Fernando.
+- Implementado o item **CSO-04** do fluxo de pendências (`#/pendencias`): orçamento próprio do VEOS, versionado (série/versão), com botão "Salvar orçamento no VEOS" na Negociação ao Vivo e Proposta em PDF direto dele (`#/propostas/orcamento/:id`), sem depender do Zoho. Ver detalhe técnico em `docs/ESTADO_ATUAL.md` (seção 03/11).
+- Testes escritos (domínio, banco em transação, tela), seguindo exatamente os padrões já usados no projeto (ex.: `pedido_criar`, `comercial_implantacao_marcar`).
+
+**Feito (continuação)**
+- `npm test` (134 domínio + 155 Python + 20 JS) e `npm run test:telas` (134/134) rodando verde nesta máquina.
+- Supabase CLI autenticada por token de acesso pessoal (o Fernando gerou em supabase.com/dashboard/account/tokens; o login interativo por navegador trava neste terminal não interativo — registrar como limitação do ambiente, igual ao `npx.cmd` de 06/10). Projeto `veos` vinculado; migration `20261103120000_comercial_orcamentos.sql` aplicada (`supabase db push`); `tests/banco/comercial_orcamentos.sql` rodado contra o banco real: **10/10 cenários OK**.
+- Achado durante os testes: o texto mais longo do tópico CSO-04 em `pendencias_projeto.js` (auto-aberto na Visão geral por ser `quando:agora` + `dono:Claude`) causava rolagem lateral em 390px — token técnico comprido sem espaço para quebrar. Corrigido deixando o texto mais curto e em prosa (sem nomes de tabela/rota embutidos).
+
+**Não executado nesta sessão**
+- Uso de ponta a ponta com login real (criar um orçamento TESTE na Negociação ao Vivo, abrir o PDF pela proposta). Só então marcar CSO-04 como "feito" em `pendencias_projeto.js`.
+
 ## 30/09/2026 — sessão de transição (Claude Code, VS Code)
 
 **Feito**

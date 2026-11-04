@@ -1,4 +1,11 @@
-# Estado atual — 24/10/2026
+# Estado atual — 24/10/2026 (ver também 03/11 abaixo)
+
+## CSO-04: orçamento próprio criado e salvo no VEOS (03/11)
+- **Tabela própria** (`comercial_orcamentos`/`comercial_orcamento_itens`, migration `20261103120000_comercial_orcamentos.sql`): nasce em "rascunho", numeração `ORV-00001`; salvar de novo sobre o mesmo orçamento (`substitui`) grava uma **nova versão da mesma série** e marca a anterior "substituída" — só a vigente conta. Histórico append-only (`comercial_orcamentos_historico`). Função `orcamento_veos_criar` idempotente por chave, RLS sem policy (só a Edge Function grava).
+- **Negociação ao Vivo** (`#/negociacao`): novo botão "Salvar orçamento no VEOS" (ao lado de "Salvar como proposta" e "Fechar negociação"), com os mesmos itens já usados para fechar o pedido; salvar de novo mostra "Salvar nova versão do orçamento" e versiona. `apps/web/js/domain/precificacao.js` → `paraOrcamentoVeos`.
+- **Proposta em PDF sem o Zoho** (`#/propostas/orcamento/:id`): `telaProposta` (`apps/web/js/ui/views/proposta.js`) passou a aceitar tanto o id numérico do Zoho quanto o uuid do orçamento próprio, reaproveitando `agruparItens`/a mesma renderização; tipo de cada item (produto/serviço) já é conhecido por item no orçamento próprio, não precisa adivinhar como no Zoho. `apps/web/js/domain/proposta.js` → `linhasDoOrcamentoVeos`, `totaisDoOrcamentoVeos`.
+- API: `GET/POST /comercial/orcamentos`, `GET /comercial/orcamentos/:id` (`supabase/functions/api/comercial.ts`).
+- Testes: domínio (`tests/web/precificacao.test.mjs`, `tests/web/proposta.test.mjs`) e telas (134/134, incluindo `tests/telas/negociacao.js` com o botão novo e `tests/telas/proposta_orcamento.html/js`) passando nesta máquina (03–04/11). Migration aplicada no projeto online (`npx supabase db push`) e `tests/banco/comercial_orcamentos.sql` rodado contra o banco real: **10/10 cenários OK**. **Falta só**: usar uma vez de ponta a ponta com login real (criar um orçamento TESTE na Negociação e abrir o PDF).
 
 ## Setor comercial, orçamento e segurança do site (07/10 a 24/10)
 - **Proposta em PDF** (`#/propostas/<id>`): formato padrão igual ao Zoho Books (Nº, item e descrição, quantidade com unidade, valor unitário, desconto quando houver, total); o "global" (sem preço por item, totais de mão de obra e materiais) virou opção.

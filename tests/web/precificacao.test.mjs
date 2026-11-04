@@ -117,6 +117,25 @@ test("salvar como proposta: campos que as regras vivas do Comercial vigiam", asy
   assert.throws(() => paraProposta(negociacao({ tabela: R(120000), ...base }), { cliente: "a", referencia: "", condicao: "c" }), /referência/);
 });
 
+test("salvar orcamento no VEOS: nasce com os itens e versiona sem o Zoho (CSO-04)", async () => {
+  const { paraOrcamentoVeos } = await import("../../apps/web/js/domain/precificacao.js");
+  const base = { custos: [{ tipo: "servico", total: R(20000) }], impostos: { produto: pct(400n), servico: pct(600n) } };
+  const r = negociacao({ tabela: R(120000), desconto: { modo: "pct", valor: 150n }, ...base });
+  const itens = [{ item_id: null, nome: "Instalação TESTE", tipo: "servico", quantidade: "1", preco_unit: "118200.00", custo_unit: "200.00" }];
+  const ok = paraOrcamentoVeos(r, itens, { cliente: "Cliente TESTE", clienteZohoId: null, referencia: "EST-1", condicao: "30/70" });
+  assert.equal(ok.cliente_nome, "Cliente TESTE");
+  assert.equal(ok.valor_total, "118200.00");
+  assert.ok(ok.desconto); // 1,5% de desconto: nao e zero
+  assert.equal(ok.resumo.alcada, r.alcada.nivel);
+  assert.equal(ok.itens, itens);
+  assert.equal(ok.substitui, null);
+  // nova versao: mesmo payload, com o id do orcamento anterior em "substitui"
+  const v2 = paraOrcamentoVeos(r, itens, { cliente: "Cliente TESTE", substitui: "11111111-1111-1111-1111-111111111111" });
+  assert.equal(v2.substitui, "11111111-1111-1111-1111-111111111111");
+  assert.throws(() => paraOrcamentoVeos(r, itens, { cliente: "" }), /cliente/);
+  assert.throws(() => paraOrcamentoVeos(r, [], { cliente: "Cliente TESTE" }), /itens/);
+});
+
 test("aceite com a tela validada (EST-000962): impostos da tela validada 11,33%, overhead 20%", async () => {
   const { IMPOSTOS_PADRAO, somaAliquotas } = await import("../../apps/web/js/domain/precificacao.js");
   const r = negociacao({

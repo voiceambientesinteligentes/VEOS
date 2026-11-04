@@ -226,3 +226,20 @@ export function paraProposta(r, { cliente, referencia, condicao, versao = 1 }) {
     },
   };
 }
+
+/**
+ * Converte o resultado da Negociacao ao Vivo e os itens do pedido (mesmo formato usado para
+ * fechar o pedido) num orcamento proprio do VEOS (CSO-04): nasce e e versionado sem depender
+ * do Zoho, e serve para gerar a Proposta em PDF direto dele. "substitui" (id do orcamento
+ * anterior) grava uma nova versao da mesma serie em vez de um orcamento novo.
+ */
+export function paraOrcamentoVeos(r, itens, { cliente, clienteZohoId, referencia, condicao, substitui } = {}) {
+  if (!cliente?.trim()) throw new PrecoError("informe o cliente");
+  if (!itens?.length) throw new PrecoError("inclua os itens do orçamento");
+  return {
+    cliente_nome: cliente.trim(), cliente_zoho_id: clienteZohoId || null, referencia: referencia?.trim() || null, condicao: condicao?.trim() || null,
+    valor_total: fixo2(r.liquido), desconto: r.descontoRs ? fixo2(r.descontoRs) : null,
+    resumo: { tabela: fixo2(r.tabela), impostos: r.comNota.impostos === null ? null : fixo2(r.comNota.impostos), custo_total: fixo2(r.custoTotal), margem_com_nota: String(r.comNota.margemH), mc_politica: String(r.pctH), alcada: r.alcada.nivel },
+    itens, substitui: substitui || null,
+  };
+}

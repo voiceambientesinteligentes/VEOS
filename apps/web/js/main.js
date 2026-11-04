@@ -50,7 +50,7 @@ const el = {
 const SITUACAO = { OK: ["OK", "ok"], REVISAR: ["Revisar", "warn"], BLOQUEAR_ENVIO: ["Não enviar", "risk"] };
 let eu = null;
 // Fontes automaticas da Negociacao ao Vivo (Zoho); a tela funciona sem elas.
-const fontesZoho = { rbt12: api.zohoRbt12, orcamentos: api.zohoOrcamentos, orcamento: api.zohoOrcamento, salvarProposta: api.criarRegistro, criarPedido: api.fluxoCriarPedido, consultarPrecedentes: api.bibConsultar };
+const fontesZoho = { rbt12: api.zohoRbt12, orcamentos: api.zohoOrcamentos, orcamento: api.zohoOrcamento, salvarProposta: api.criarRegistro, salvarOrcamento: api.comercialOrcamentoCriar, criarPedido: api.fluxoCriarPedido, consultarPrecedentes: api.bibConsultar };
 const rotaBase = () => location.hash.split("?")[0];
 let atual = null;
 
@@ -288,7 +288,7 @@ async function navegar() {
   const bibReg = /^#\/biblioteca\/r\/([0-9a-f-]{36})$/.exec(rotaBase());
   const contratoRota = /^#\/pedidos\/([0-9a-f-]{36})\/contrato$/.exec(rotaBase());
   const produtoRota = /^#\/produtos\/([0-9a-f-]{36})$/.exec(rotaBase());
-  const propostaRota = /^#\/propostas\/([0-9]{5,25})$/.exec(rotaBase());
+  const propostaRota = /^#\/propostas\/(?:orcamento\/([0-9a-f-]{36})|([0-9]{5,25}))$/.exec(rotaBase());
   const aceiteRota = /^#\/pedidos\/([0-9a-f-]{36})\/aceite$/.exec(rotaBase());
   const compraRota = /^#\/compras\/([0-9a-f-]{36})$/.exec(rotaBase());
   const pendRota = /^#\/pendencias\/([a-z]+)$/.exec(rotaBase());
@@ -300,7 +300,7 @@ async function navegar() {
     def = { fn: (root) => telaProduto(root, produtoRota[1]), titulo: ["Produto", "Nomes, variantes de origem, ficha técnica, compras e preços"] };
   } else if (propostaRota) {
     rota = "#/propostas";
-    def = { fn: (root) => telaProposta(root, propostaRota[1]), titulo: ["Proposta comercial", "Identidade VOICE · imprimir ou salvar em PDF · envio por rascunho"] };
+    def = { fn: (root) => telaProposta(root, propostaRota[1] ?? propostaRota[2]), titulo: ["Proposta comercial", "Identidade VOICE · imprimir ou salvar em PDF · envio por rascunho"] };
   } else if (aceiteRota) {
     rota = "#/pedidos";
     def = { fn: (root) => telaTermoAceite(root, aceiteRota[1]), titulo: ["Termo de aceite", "Gerado do pedido · imprimir ou salvar em PDF"] };

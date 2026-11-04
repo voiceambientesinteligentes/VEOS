@@ -10,9 +10,11 @@ const ORC = {
   a: { id: "a", numero: "EST-TA", cliente: "Cliente TESTE", subtotal: "10000.00", total: "10000.00", status: "draft", itens: [{ tipo: "produto", nome: "Interruptor TESTE", quantidade: "10", custo_unit: "150", venda_unit: "300" }, { tipo: "servico", nome: "Instalação TESTE", quantidade: "20", custo_unit: "50", venda_unit: "350" }] },
   b: { id: "b", numero: "EST-TB", cliente: "Cliente TESTE", subtotal: "5000.00", total: "5000.00", status: "draft", itens: [{ tipo: "produto", nome: "Access point TESTE", quantidade: "2", custo_unit: "900", venda_unit: "1800" }, { tipo: "servico", nome: "Rede TESTE", quantidade: "4", custo_unit: "50", venda_unit: "350" }] },
 };
+const salvos = [];
 const fontes = {
   orcamentos: async () => ({ orcamentos: Object.values(ORC).map((o) => ({ id: o.id, numero: o.numero, cliente: o.cliente, data: "2026-10-01", total: o.total, status: o.status })) }),
   orcamento: async (id) => ORC[id],
+  salvarOrcamento: async (p) => { salvos.push(p); return { id: "11111111-2222-3333-4444-555555555555", numero: "ORV-00001", versao: salvos.length, repetido: false }; },
 };
 rodar(async (v) => {
   telaNegociacao(v, fontes);
@@ -35,4 +37,18 @@ rodar(async (v) => {
   // tirar um orcamento da soma
   v.querySelector(".orc-item").click(); await espera();
   if (v.querySelector("#neg-ref").value !== "EST-TB") throw new Error("não tirou da soma");
+  // escolhe o anexo do Simples (ha servico no orcamento): sem isso o status fica "nao resolvido"
+  v.querySelector("#reg-anexo").value = "III";
+  v.querySelector("#reg-anexo").dispatchEvent(new Event("change"));
+  await espera();
+  // CSO-04: salvar orcamento no VEOS (nasce e versiona sem fechar negociacao, sem o Zoho)
+  const salvarOrc = [...v.querySelectorAll("button")].find((b) => b.textContent.includes("Salvar orçamento no VEOS"));
+  if (!salvarOrc) throw new Error("botão de salvar orçamento não apareceu");
+  salvarOrc.click();
+  await espera(200);
+  if (!salvos.length) throw new Error("orçamento não foi enviado para salvar");
+  if (salvos[0].cliente_nome !== "Cliente TESTE") throw new Error(`cliente no payload: ${salvos[0].cliente_nome}`);
+  if (!salvos[0].itens.length) throw new Error("itens não foram no payload");
+  if (!v.textContent.includes("ORV-00001")) throw new Error("confirmação sem o número do orçamento");
+  if (!v.querySelector('a[href="#/propostas/orcamento/11111111-2222-3333-4444-555555555555"]')) throw new Error("sem link para a proposta em PDF");
 });

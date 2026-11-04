@@ -21,6 +21,23 @@ export function totaisProposta(est) {
   return { subtotal: n(est.sub_total), desconto: n(est.discount_total), impostos: n(est.tax_total), ajuste: n(est.adjustment), total: n(est.total) };
 }
 
+/** Itens do orcamento proprio do VEOS (CSO-04) no mesmo formato de linha do Zoho Books, para
+ * reaproveitar agruparItens() sem duplicar a logica de secoes/numeracao. O tipo (produto/servico)
+ * ja e conhecido por item (nao precisa adivinhar como no orcamento do Zoho). */
+export function linhasDoOrcamentoVeos(itens = []) {
+  return itens.map((i, k) => ({
+    item_order: k + 1, header_name: i.secao ?? "", name: i.nome, description: i.descricao ?? "",
+    quantity: n(i.quantidade), unit: i.unidade ?? "", rate: n(i.preco_unit), discount_amount: 0, item_total: Math.round(n(i.quantidade) * n(i.preco_unit) * 100) / 100,
+    item_id: i.item_id ?? null, _tipo: i.tipo,
+  }));
+}
+
+/** Totais do orcamento proprio: nao ha impostos/ajuste destacados (ficam no preco negociado). */
+export function totaisDoOrcamentoVeos(orcamento) {
+  const total = n(orcamento.valor_total), desconto = n(orcamento.desconto);
+  return { subtotal: Math.round((total + desconto) * 100) / 100, desconto, impostos: 0, ajuste: 0, total };
+}
+
 const brl = (v) => `R$ ${n(v).toFixed(2).replace(".", ",").replace(/\B(?=(\d{3})+(?!\d))/g, ".")}`;
 
 /** Textos dos rascunhos (o envio e humano: o VEOS so prepara). */

@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 
-import { agruparItens, rascunhosEnvio, telefoneWhatsApp, totaisProposta } from "../../apps/web/js/domain/proposta.js";
+import { agruparItens, linhasDoOrcamentoVeos, rascunhosEnvio, telefoneWhatsApp, totaisDoOrcamentoVeos, totaisProposta } from "../../apps/web/js/domain/proposta.js";
 
 test("agrupa pelas secoes do orcamento, na ordem dos itens", () => {
   const s = agruparItens([
@@ -25,4 +25,20 @@ test("totais e rascunhos de envio", () => {
   assert.equal(telefoneWhatsApp("(47) 99999-0000"), "5547999990000");
   assert.equal(telefoneWhatsApp("+55 47 99999 0000"), "5547999990000");
   assert.equal(telefoneWhatsApp("1234"), "");
+});
+
+test("orcamento proprio do VEOS (CSO-04): mesmo agrupamento por secao, sem adivinhar o tipo", () => {
+  const itens = [
+    { secao: "Cozinha", nome: "Central", descricao: " Central TESTE ", quantidade: "1", unidade: "un", preco_unit: "1000", tipo: "produto", item_id: null },
+    { secao: "Cozinha", nome: "Sensor", quantidade: "3", unidade: "un", preco_unit: "33.33", tipo: "produto" },
+    { secao: "Sala", nome: "Teclado", quantidade: "2", preco_unit: "100", tipo: "produto" },
+    { nome: "Programação", quantidade: "1", preco_unit: "500", tipo: "servico" },
+  ];
+  const linhas = linhasDoOrcamentoVeos(itens);
+  assert.equal(linhas[3]._tipo, "servico");
+  const s = agruparItens(linhas);
+  assert.deepEqual(s.map((x) => [x.secao, x.itens.length]), [["Cozinha", 2], ["Sala", 1], ["Itens", 1]]);
+  assert.equal(s[0].itens[0].descricao, "Central TESTE");
+  assert.deepEqual(totaisDoOrcamentoVeos({ valor_total: 1899.99, desconto: 100 }), { subtotal: 1999.99, desconto: 100, impostos: 0, ajuste: 0, total: 1899.99 });
+  assert.deepEqual(totaisDoOrcamentoVeos({ valor_total: 500 }), { subtotal: 500, desconto: 0, impostos: 0, ajuste: 0, total: 500 });
 });

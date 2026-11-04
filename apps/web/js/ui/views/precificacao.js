@@ -4,7 +4,7 @@
 // conferencia da Politica V1 (MC oficial com provisao de 2%, faixas e alcada de desconto).
 // Destinos: "Salvar como proposta" (Comercial) e "Fechar negociacao" (vira pedido no fluxo:
 // estoque, parcelas, NF e caixa). Nada e enviado ao cliente daqui.
-import { FONTE_POLITICA, FONTE_SIMPLES, IMPOSTOS_PADRAO, OVERHEAD_PADRAO, SIMPLES_ATE, aliquotaSimples, calculadora, negociacao, paraProposta, somaAliquotas } from "../../domain/precificacao.js";
+import { FONTE_POLITICA, FONTE_SIMPLES, IMPOSTOS_PADRAO, OVERHEAD_PADRAO, SIMPLES_ATE, aliquotaSimples, calculadora, negociacao, paraOrcamentoVeos, paraProposta, somaAliquotas } from "../../domain/precificacao.js";
 import { parseMoneyInput } from "../../domain/controls.js";
 import { formatBRL, toScaled } from "../../domain/format.js";
 import { clear, field, h, method, panel, stamp, stat } from "../dom.js";
@@ -153,6 +153,7 @@ export function telaNegociacao(root, fontes = null) {
   const regime = painelRegime(fontes, () => calcular());
   let orcamento = null; // { zoho_id, numero, cliente_zoho_id }
   let ultimo = null;    // ultimo calculo valido (para os botoes)
+  let orcamentoVeos = null; // { id, numero, versao } do ultimo orcamento proprio salvo (para versionar)
 
   // linhas de custo: tipo, descricao, qtd (fixa quando vem do orcamento), custo total da linha
   function novoCusto(d = {}) {
@@ -324,6 +325,25 @@ export function telaNegociacao(root, fontes = null) {
           al.length ? h("ul", { class: "list-plain stack-s" }, al.map((a) => h("li", null, h("strong", null, a.titulo), h("p", { class: "field-hint" }, a.mensagem)))) : null);
       } catch (e) { proposta.disabled = false; saida.append(h("p", { class: "field-error" }, `Não foi possível salvar: ${e.message}`)); }
     });
+    const salvarOrc = botao(orcamentoVeos ? "Salvar nova versão do orçamento" : "Salvar orçamento no VEOS");
+    salvarOrc.addEventListener("click", async () => {
+      clear(saida);
+      if (!cliente.value.trim()) return saida.append(h("p", { class: "field-error" }, "Informe o cliente."));
+      if (!ultimo?.itensPedido.length) return saida.append(h("p", { class: "field-error" }, "Inclua os itens do orçamento."));
+      let payload;
+      try { payload = paraOrcamentoVeos(r, ultimo.itensPedido, { cliente: cliente.value, clienteZohoId: orcamento?.cliente_zoho_id, referencia: referencia.value, condicao: condicao.value, substitui: orcamentoVeos?.id }); }
+      catch (e) { return saida.append(h("p", { class: "field-error" }, e.message)); }
+      salvarOrc.disabled = true;
+      try {
+        const antes = await consultarPrecedentes(r, null, precedentes).catch(() => null);
+        if (antes?.conflitos?.length && !confirm("Há conflito entre precedentes (veja abaixo). Salvar o orçamento mesmo assim? O conflito deve ir à autoridade competente.")) { salvarOrc.disabled = false; return; }
+        const res = await fontes.salvarOrcamento(payload);
+        orcamentoVeos = { id: res.id, numero: res.numero, versao: res.versao };
+        salvarOrc.textContent = "Salvar nova versão do orçamento";
+        if (!res.repetido) await consultarPrecedentes(r, `orcamento:${res.id}`).catch(() => null);
+        saida.append(h("p", { class: "notice notice-ok" }, `Orçamento ${res.numero} salvo (versão ${res.versao}). `, h("a", { href: `#/propostas/orcamento/${res.id}` }, "Gerar proposta em PDF")));
+      } catch (e) { saida.append(h("p", { class: "field-error" }, `Não foi possível salvar: ${e.message}`)); } finally { salvarOrc.disabled = false; }
+    });
     const fechar = botao("Fechar negociação e lançar no fluxo de caixa", "primary");
     fechar.addEventListener("click", async () => {
       clear(saida);
@@ -345,10 +365,10 @@ export function telaNegociacao(root, fontes = null) {
         location.hash = `#/pedidos/${res.id}`;
       } catch (e) { fechar.disabled = false; saida.append(h("p", { class: "field-error" }, `Não foi possível criar o pedido: ${e.message}`)); }
     });
-    if (fontes?.salvarProposta || fontes?.criarPedido) acoes.append(
+    if (fontes?.salvarProposta || fontes?.criarPedido || fontes?.salvarOrcamento) acoes.append(
       panel({ title: "Precedentes", subtitle: "Antes de salvar ou fechar, o VEOS consulta a Biblioteca (decisões, políticas e aprendizados que valem para o Comercial). Busca por regras, não IA. Precedente orienta; não autoriza." },
         h("div", { class: "row" }, verPrec), precedentes),
-      h("div", { class: "row" }, fontes.salvarProposta ? proposta : null, fontes.criarPedido ? fechar : null), saida);
+      h("div", { class: "row" }, fontes.salvarOrcamento ? salvarOrc : null, fontes.salvarProposta ? proposta : null, fontes.criarPedido ? fechar : null), saida);
   }
 
   // lista de orcamentos do Zoho (esquerda), carregada ao abrir
@@ -435,7 +455,7 @@ export function telaNegociacao(root, fontes = null) {
 
   const limpar = botao("Limpar tudo");
   limpar.addEventListener("click", () => {
-    orcamento = null; clear(linhasCusto); clear(linhasExtra);
+    orcamento = null; orcamentoVeos = null; clear(linhasCusto); clear(linhasExtra);
     for (const c of [cliente, tabela, referencia, condicao, descValor]) c.value = "";
     origem.textContent = "Escolha um orçamento à esquerda ou preencha à mão.";
     novoCusto(); calcular();

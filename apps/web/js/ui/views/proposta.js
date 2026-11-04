@@ -5,12 +5,13 @@ import { condicaoSugerida } from "../../domain/condicao.js";
 import { parametros } from "../../domain/formulario_cfo.js";
 import { api } from "../../data/api.js";
 import { formatBRL, formatDate, formatDateTime } from "../../domain/format.js";
-import { agruparItens, rascunhosEnvio, telefoneWhatsApp, totaisProposta } from "../../domain/proposta.js";
+import { agruparItens, linhasDoOrcamentoVeos, rascunhosEnvio, telefoneWhatsApp, totaisDoOrcamentoVeos, totaisProposta } from "../../domain/proposta.js";
 import { clear, errorNotice, field, h, panel, s, stamp, table } from "../dom.js";
 import { botaoCaixaSaida } from "./mensagens.js";
 
 const brl = (v) => formatBRL(String(Number(v ?? 0).toFixed(2)));
 const qtd = (v) => Number(v ?? 0).toLocaleString("pt-BR", { maximumFractionDigits: 3 });
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
 const STATUS = { draft: ["Rascunho", "neutral"], sent: ["Enviado", "live"], accepted: ["Aceito", "ok"], declined: ["Recusado", "risk"], expired: ["Expirado", "neutral"], invoiced: ["Faturado", "ok"] };
 const endereco = (e) => (e ? [e.address, e.street2, [e.city, e.state].filter(Boolean).join(" - "), e.zip].filter(Boolean).join(", ") : "");
 
@@ -44,21 +45,37 @@ export async function telaPropostas(root) {
 function gruposGlobais(linhas, tipos) {
   const g = { "Equipamentos e materiais": 0, "Mão de obra (instalação, configuração e programação)": 0, "Outros": 0 };
   for (const l of linhas) {
-    const t = tipos.get(String(l.item_id ?? "")) ?? (/instala|configura|m[aã]o de obra|programa/i.test(l.name ?? "") ? "service" : "goods");
+    // orcamento proprio do VEOS: tipo ja conhecido por item (_tipo), nao precisa adivinhar
+    const t = l._tipo === "servico" ? "service" : l._tipo === "produto" ? "goods"
+      : tipos.get(String(l.item_id ?? "")) ?? (/instala|configura|m[aã]o de obra|programa/i.test(l.name ?? "") ? "service" : "goods");
     g[t === "service" ? "Mão de obra (instalação, configuração e programação)" : t === "goods" ? "Equipamentos e materiais" : "Outros"] += Number(l.item_total) || 0;
   }
   return Object.entries(g).filter(([, v]) => v > 0);
 }
 
 export async function telaProposta(root, id) {
-  const { dados: e } = await api.zohoEspelhoRegistro("books", "estimates", id);
+  const veos = UUID_RE.test(id);
+  let e, custoProdutos = 0;
+  if (veos) {
+    const { orcamento: o, itens } = await api.comercialOrcamento(id);
+    const t = totaisDoOrcamentoVeos(o);
+    e = { estimate_number: o.numero, customer_name: o.cliente_nome, customer_id: o.cliente_zoho_id ?? null, line_items: linhasDoOrcamentoVeos(itens),
+      sub_total: t.subtotal, discount_total: t.desconto, tax_total: t.impostos, adjustment: t.ajuste, total: t.total,
+      date: (o.criado_em ?? "").slice(0, 10), expiry_date: null, notes: o.observacao ?? "", terms: "", salesperson_name: "",
+      reference_number: o.referencia ?? null, shipping_address: null, billing_address: null };
+    // tipo e custo de cada item ja sao conhecidos (nao precisam do cruzamento com o Diagnostico, so Zoho)
+    custoProdutos = itens.filter((i) => i.tipo === "produto" && Number(i.custo_unit) > 0).reduce((a, i) => a + Number(i.custo_unit) * Number(i.quantidade), 0);
+  } else {
+    e = (await api.zohoEspelhoRegistro("books", "estimates", id)).dados;
+  }
   let cli = {};
   if (e.customer_id) { try { cli = (await api.zohoEspelhoRegistro("books", "contacts", String(e.customer_id))).dados ?? {}; } catch { cli = {}; } }
   const secoes = agruparItens(e.line_items);
-  // tipo de cada item (produto/servico) e custo dos produtos: so direcao/financas leem; sem acesso, segue sem
-  let tipos = new Map(), custoProdutos = 0, ptax = null, pForm = null;
+  // tipo de cada item (produto/servico) pelo cruzamento com o Diagnostico: so para o orcamento do Zoho
+  // (do VEOS ja vem em cada item, via _tipo); so direcao/financas leem, sem acesso segue sem
+  let tipos = new Map(), ptax = null, pForm = null;
   try {
-    const [orcs, cb, f] = await Promise.all([api.cfoOrcamentos(), api.cfoCambio().catch(() => ({ serie: [] })), api.cfoFormulario().catch(() => null)]);
+    const [orcs, cb, f] = await Promise.all([veos ? { orcamentos: [] } : api.cfoOrcamentos(), api.cfoCambio().catch(() => ({ serie: [] })), api.cfoFormulario().catch(() => null)]);
     const este = orcs.orcamentos.find((x) => x.numero === e.estimate_number);
     for (const [i, l] of (este?.linhas ?? []).entries()) { const li = e.line_items[i]; if (li) tipos.set(String(li.item_id ?? ""), l.tipo); if (l.tipo === "goods" && Number(l.custo) > 1) custoProdutos += Number(l.custo) * (Number(l.qtd) || 0); }
     ptax = cb.serie?.length ? cb.serie[cb.serie.length - 1] : null;
@@ -124,7 +141,7 @@ export async function telaProposta(root, id) {
       h("p", null, h("strong", null, "Validade da proposta: "), v("pp-validade") ? formatDate(v("pp-validade")) : "____/____/______"),
       v("pp-termos") ? h("div", { class: "zoho-texto" }, v("pp-termos")) : null,
       h("div", { class: "contrato-assinaturas" }, h("div", null, h("span", null, "VOICE"), h("span", null, v("pp-contato"))), h("div", null, h("span", null, "DE ACORDO (CLIENTE)"), h("span", null, e.customer_name ?? ""))),
-      h("p", { class: "contrato-rodape" }, `Orçamento ${e.estimate_number ?? ""} (Zoho Books) · gerado pelo VEOS em ${formatDateTime(new Date().toISOString())}.`)].filter(Boolean));
+      h("p", { class: "contrato-rodape" }, `Orçamento ${e.estimate_number ?? ""} (${veos ? "VEOS" : "Zoho Books"}) · gerado pelo VEOS em ${formatDateTime(new Date().toISOString())}.`)].filter(Boolean));
   }
 
   const imprimir = h("button", { class: "btn btn-primary", type: "button" }, "Imprimir / salvar em PDF");
@@ -154,14 +171,14 @@ export async function telaProposta(root, id) {
       campo("pp-contato", "Responsável VOICE", e.salesperson_name ?? ""),
       campo("pp-emp", "Empresa", "VOICE Ambientes Inteligentes"), campo("pp-cnpj", "CNPJ", "12.323.599/0001-83"), campo("pp-end", "Endereço", "Balneário Camboriú/SC")),
     area("pp-intro", "Apresentação (opcional)", ""),
-    area("pp-termos", "Termos e observações", [e.notes, e.terms].filter(Boolean).join("\n\n"), "Vêm das notas e termos do orçamento no Zoho; ajuste se precisar."),
+    area("pp-termos", "Termos e observações", [e.notes, e.terms].filter(Boolean).join("\n\n"), veos ? "Vêm da observação do orçamento; ajuste se precisar." : "Vêm das notas e termos do orçamento no Zoho; ajuste se precisar."),
     h("div", { class: "row" }, imprimir));
   form.classList.add("nao-imprimir");
-  const painelEnvio = panel({ title: "Enviar ao cliente", subtitle: emailCli || foneCli ? `Contato do Zoho: ${[emailCli, foneCli].filter(Boolean).join(" · ")}` : "Cliente sem e-mail/telefone no Zoho." }, envio);
+  const painelEnvio = panel({ title: "Enviar ao cliente", subtitle: emailCli || foneCli ? `Contato${veos ? "" : " do Zoho"}: ${[emailCli, foneCli].filter(Boolean).join(" · ")}` : `Cliente sem e-mail/telefone${veos ? "" : " no Zoho"}.` }, envio);
   painelEnvio.classList.add("nao-imprimir");
   form.addEventListener("input", () => { montar(); desenharEnvio(); });
   root.append(h("p", { class: "nao-imprimir" }, h("a", { href: "#/propostas" }, "‹ Propostas")), form, painelEnvio, doc);
   montar();
   desenharEnvio();
-  if (!secoes.length) root.prepend(errorNotice("Este orçamento não tem itens no espelho do Zoho."));
+  if (!secoes.length) root.prepend(errorNotice(veos ? "Este orçamento não tem itens." : "Este orçamento não tem itens no espelho do Zoho."));
 }
