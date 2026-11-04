@@ -90,7 +90,21 @@ export async function responderPergunta(perguntaId: string) {
 
     const gratuito = provs.some((p) => p.gratuito);
     const sistema = montarSistema({ diretor: dir.diretor, setorNome: dir.setorNome, hoje: hojeBR(), quem: `${autor?.nome ?? "membro"} (papel: ${ctx.papel})`, gratuito, procedimentos: procedimentosDoSetor(ctx.setor) });
-    const pergunta = `PERGUNTA (feita no VEOS em ${new Date(reservada.criada_em).toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo" })}${reservada.contexto ? `; referência: ${reservada.contexto}` : ""}):\n${reservada.pergunta}\n\nPRECEDENTES JÁ CONSULTADOS (termos: ${termos}):\n${resumoPrec}`;
+    // conversa: as trocas anteriores (ate 6, da mais antiga a mais recente) entram antes da pergunta nova
+    let historico = "";
+    try {
+      const [eu0] = await servico(`/rest/v1/perguntas_diretores?id=eq.${perguntaId}&select=conversa_id,criada_em`);
+      if (eu0?.conversa_id) {
+        const turnos = await servico(`/rest/v1/perguntas_diretores?or=(id.eq.${eu0.conversa_id},conversa_id.eq.${eu0.conversa_id})&criada_em=lt.${encodeURIComponent(eu0.criada_em)}&estado=eq.respondida&select=pergunta,criada_em,respostas:respostas_diretores(resposta,id)&order=criada_em.desc&limit=6`);
+        historico = turnos.reverse().map((x: any) => {
+          const resp = (x.respostas ?? []).sort((a: any, b: any) => b.id - a.id)[0]?.resposta ?? "(sem resposta)";
+          return `${autor?.nome ?? "Pessoa"}: ${x.pergunta}\nVocê (${dir.diretor.nome}): ${String(resp).replace(/\n\nConferência automática do VEOS:[\s\S]*$/, "").slice(0, 1800)}`;
+        }).join("\n\n");
+      }
+    } catch (e) {
+      console.error("historico da conversa", e);
+    }
+    const pergunta = `${historico ? `CONVERSA ATÉ AQUI (continue a mesma conversa: responda à mensagem nova considerando o que já foi dito; não repita o que já explicou; se a mensagem for curta, como "e isso?" ou "detalhe o item 2", ela se refere ao que veio antes):\n${historico}\n\n` : ""}${historico ? "MENSAGEM NOVA" : "PERGUNTA"} (feita no VEOS em ${new Date(reservada.criada_em).toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo" })}${reservada.contexto ? `; referência: ${reservada.contexto}` : ""}):\n${reservada.pergunta}\n\nPRECEDENTES JÁ CONSULTADOS (termos: ${termos}):\n${resumoPrec}\n\nLEMBRE: número (percentual, valor, quantidade) só se vier de uma ferramenta chamada nesta resposta ou do histórico acima; para falar de vendas, funil, clientes ou caixa, CHAME a ferramenta antes. Sem dado, escreva LACUNA.`;
 
     const resultados: unknown[] = [precedentes];
     const coletados: { nome: string; args: unknown; texto: string }[] = [];
@@ -129,7 +143,12 @@ export async function responderPergunta(perguntaId: string) {
     const texto0 = limparMarkdown(r.resultado.texto);
     const conhecidos = numerosDe(resultados);
     numerosDe(reservada.pergunta, conhecidos);
-    const texto = (texto0 + rodapeConferencia(conferirValores(texto0, conhecidos))).slice(0, 19_500);
+    numerosDe(historico, conhecidos);
+    numerosDe(resumoPrec, conhecidos);
+    // respondeu sem consultar nenhum dado do VEOS e citou numeros: aviso no topo (o modelo pequeno as vezes inventa)
+    const semDados = coletados.length === 0 && /\d+(?:,\d+)?\s?%|R\$\s?\d/.test(texto0);
+    const aviso = semDados ? "ATENÇÃO (conferência do VEOS): nesta resposta o diretor não consultou nenhum dado do VEOS. Percentuais e valores abaixo NÃO são fatos da VOICE: trate como hipótese e peça \"use os dados do VEOS\" para ele refazer com as ferramentas.\n\n" : "";
+    const texto = (aviso + texto0 + rodapeConferencia(conferirValores(texto0, conhecidos))).slice(0, 19_500);
 
     // fontes: ferramentas usadas + registros da Biblioteca citados na resposta
     for (const [cod, b] of ctx.bib) if (texto.includes(cod)) ctx.fontes.set(cod, { titulo: `${cod} · ${b.titulo}`.slice(0, 200), natureza: `${b.tipo} ${b.estado}`.slice(0, 30), url: null });

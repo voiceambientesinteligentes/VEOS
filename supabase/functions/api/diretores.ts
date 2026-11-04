@@ -1,7 +1,8 @@
 // PERGUNTAS AOS DIRETORES na funcao "api".
 //   GET  /diretores/motores                       motores de IA disponiveis (sem expor chaves)
 //   GET  /diretores/perguntas?estado=&setor=      fila e historico (com respostas e trilha da IA)
-//   POST /diretores/perguntas                     {setor_id, pergunta, contexto?} -> motor de IA analisa em segundo plano
+//   POST /diretores/perguntas                     {setor_id, pergunta, contexto?, conversa_id?} -> motor de IA analisa em segundo plano
+//                                                 conversa_id: continua a conversa (mesmo diretor; o motor le as trocas anteriores)
 //   POST /diretores/perguntas/:id/pensar          tenta de novo com o motor de IA (quem perguntou ou direcao)
 //   POST /diretores/perguntas/:id/cancelar
 //   POST /diretores/perguntas/:id/responder       {resposta, procedimento?, fontes?, motor}  (so direcao: sessao do Claude Code)
@@ -10,6 +11,7 @@
 import { HttpError, lerCorpo, type Membro, servico } from "../_shared/banco.ts";
 import { dispararAnalise, provedores, situacaoMotores } from "../_shared/ia/motor.ts";
 import { acessiveis, podeVer } from "./setores.ts";
+import { filtroAutor } from "../_shared/teste.ts";
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
 const CHAVE_RE = /^[A-Za-z0-9-]{16,64}$/;
@@ -29,7 +31,7 @@ export async function rotearDiretores(req: Request, partes: string[], eu: Membro
     const setor = /^[a-z]{3,12}$/.test(q.get("setor") ?? "") ? `&setor_id=eq.${q.get("setor")}` : "";
     const visivel = eu.papel === "direcao" ? "" : `&or=(autor.eq.${eu.user_id},setor_id.in.(${acessiveis(eu).join(",")}))`;
     const [perguntas, membros] = await Promise.all([
-      servico(`/rest/v1/perguntas_diretores?select=*,respostas:respostas_diretores(id,resposta,procedimento,fontes,motor,em),execucoes:ia_execucoes(provedor,modelo,ok,passos,ms,erro,em)${est}${setor}${visivel}&order=criada_em.desc&limit=200`),
+      servico(`/rest/v1/perguntas_diretores?select=*,respostas:respostas_diretores(id,resposta,procedimento,fontes,motor,em),execucoes:ia_execucoes(provedor,modelo,ok,passos,ms,erro,em)${est}${setor}${visivel}${await filtroAutor(eu, "autor")}&order=criada_em.desc&limit=200`),
       servico("/rest/v1/membros?select=user_id,nome"),
     ]);
     const nome = new Map(membros.map((m: { user_id: string; nome: string }) => [m.user_id, m.nome]));
@@ -45,15 +47,28 @@ export async function rotearDiretores(req: Request, partes: string[], eu: Membro
     };
   }
   if (post && !b) {
-    const setor = txt(corpo.setor_id, 20);
-    if (!setor || !podeVer(eu, setor)) throw new HttpError(403, "setor inválido ou fora do seu acesso");
+    let setor = txt(corpo.setor_id, 20);
     const pergunta = txt(corpo.pergunta, 4000);
-    if (!pergunta || pergunta.length < 5) throw new HttpError(400, "escreva a pergunta");
-    const [p] = await servico("/rest/v1/perguntas_diretores", { method: "POST", headers: { Prefer: "return=representation" }, body: JSON.stringify({ setor_id: setor, pergunta, contexto: txt(corpo.contexto, 200), autor: eu.user_id }) });
+    if (!pergunta || pergunta.length < 2) throw new HttpError(400, "escreva a pergunta");
+    // continuacao: a conversa e sempre a raiz (primeira pergunta), do mesmo diretor, visivel para quem pergunta
+    let conversa: string | null = null;
+    if (corpo.conversa_id) {
+      if (!UUID_RE.test(String(corpo.conversa_id))) throw new HttpError(400, "conversa inválida");
+      const [ref] = await servico(`/rest/v1/perguntas_diretores?id=eq.${corpo.conversa_id}&select=id,conversa_id,setor_id,autor`);
+      if (!ref) throw new HttpError(404, "conversa inexistente");
+      conversa = ref.conversa_id ?? ref.id;
+      const [raiz] = conversa === ref.id ? [ref] : await servico(`/rest/v1/perguntas_diretores?id=eq.${conversa}&select=id,setor_id,autor`);
+      if (raiz.autor !== eu.user_id && eu.papel !== "direcao") throw new HttpError(403, "só quem abriu a conversa (ou a direção) continua");
+      setor = raiz.setor_id;
+      const pendentes = await servico(`/rest/v1/perguntas_diretores?or=(id.eq.${conversa},conversa_id.eq.${conversa})&estado=eq.pendente&select=id&limit=1`);
+      if (pendentes.length) throw new HttpError(409, "aguarde o diretor responder a mensagem anterior");
+    } else if (pergunta.length < 5) throw new HttpError(400, "escreva a pergunta");
+    if (!setor || !podeVer(eu, setor)) throw new HttpError(403, "setor inválido ou fora do seu acesso");
+    const [p] = await servico("/rest/v1/perguntas_diretores", { method: "POST", headers: { Prefer: "return=representation" }, body: JSON.stringify({ setor_id: setor, pergunta, contexto: txt(corpo.contexto, 200), autor: eu.user_id, conversa_id: conversa }) });
     // ia:false = so registrar (testes automaticos nao gastam a cota do motor)
     const ia = provedores().length > 0 && corpo.ia !== false;
     if (ia) dispararAnalise(p.id);
-    return { id: p.id, estado: p.estado, ia: ia ? "analisando" : "fila" };
+    return { id: p.id, conversa_id: conversa ?? p.id, estado: p.estado, ia: ia ? "analisando" : "fila" };
   }
   if (post && b && UUID_RE.test(b)) {
     const [p] = await servico(`/rest/v1/perguntas_diretores?id=eq.${b}&select=id,autor,estado,setor_id`);

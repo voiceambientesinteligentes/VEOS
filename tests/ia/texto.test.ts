@@ -32,4 +32,7 @@ test("conferência: valor em reais sem origem nas ferramentas é apontado; os qu
   assert.deepEqual(conferirValores(texto, conhecidos), ["R$ 9.999,99", "R$ 12,00"]);
   assert.match(rodapeConferencia(["R$ 9.999,99"]), /este valor não veio de uma ferramenta/);
   assert.equal(rodapeConferencia([]), "");
+  // percentuais: inventado e apontado; vindo de ferramenta (como fracao ou ponto) e faixas da Politica passam
+  const pcts = numerosDe([{ conversao: 0.28 }, { margem: 41.1 }]);
+  assert.deepEqual(conferirValores("Conversão 28%, margem 41,1%, meta 35% e piso 25%; indicação 68,0% e 42%.", pcts), ["68,0%", "42%"]);
 });

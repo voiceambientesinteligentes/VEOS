@@ -11,7 +11,7 @@ const PASTA = process.env.VEOS_FOTOS ?? "fotos";
 const local = !process.env.VEOS_SITE;
 const SITE = process.env.VEOS_SITE ?? "http://127.0.0.1:8878/";
 const telas = process.argv.slice(2).length ? process.argv.slice(2) : ["#/hoje"];
-const EMAIL = "teste-fotos@veos-teste.invalid";
+const EMAIL = process.env.VEOS_FOTO_EMAIL ?? "teste-fotos@veos-teste.invalid";
 const admin = { apikey: SERVICE, Authorization: `Bearer ${SERVICE}`, "Content-Type": "application/json" };
 mkdirSync(PASTA, { recursive: true });
 let srv = null;

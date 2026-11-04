@@ -82,7 +82,7 @@ export function numerosDe(v: unknown, saida: Set<number> = new Set()): Set<numbe
   return saida;
 }
 
-/** Valores "R$ x" da resposta que nao aparecem (com tolerancia de 1 centavo) em nenhum resultado de ferramenta. */
+/** Valores "R$ x" e percentuais da resposta que nao aparecem (com tolerancia de 1 centavo) em nenhum resultado de ferramenta. */
 export function conferirValores(texto: string, conhecidos: Set<number>) {
   const lista = [...conhecidos];
   const nao: string[] = [];
@@ -91,8 +91,16 @@ export function conferirValores(texto: string, conhecidos: Set<number>) {
     if (!Number.isFinite(v) || v === 0) continue;
     if (!lista.some((k) => Math.abs(k - v) <= 0.011 || Math.abs(Math.abs(k) - v) <= 0.011)) nao.push(m[0]);
   }
+  // percentuais (ex.: "68,0%") que nao vieram de ferramenta nem sao faixas da Politica V1 (35/32/30/25/2/5%) ou a RT padrao (10%)
+  for (const m of texto.matchAll(/(\d{1,3}(?:,\d{1,2})?)\s?%/g)) {
+    const v = Number(m[1].replace(",", "."));
+    if (!Number.isFinite(v) || v === 0 || POLITICA_PCT.has(v)) continue;
+    const ok = lista.some((k) => Math.abs(k - v) <= 0.051 || Math.abs(k * 100 - v) <= 0.051);
+    if (!ok) nao.push(`${m[1]}%`);
+  }
   return [...new Set(nao)];
 }
+const POLITICA_PCT = new Set([35, 32, 30, 25, 2, 5, 10, 100]);
 
 /** Rodape de conferencia acrescentado pelo sistema (nao pelo modelo). */
 export function rodapeConferencia(naoConferidos: string[]) {
