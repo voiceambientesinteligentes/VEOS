@@ -29,8 +29,8 @@ export async function telaOperar(root) {
       { t: "Dar acesso à equipe (cada pessoa no seu setor)", feito: null, info: "Vendedor no Comercial, técnico em Operações etc. Cada um vê só o que precisa.", quem: "Fernando", href: "#/sistema/usuarios", botao: "Usuários" },
     ] },
     { grupo: "Trazer cliente (todo dia)", itens: [
-      { t: "Registrar todo contato que chega (Instagram, WhatsApp, site, indicação)", feito: vendas ? regs(vendas, "lead").length > 0 : null, info: vendas ? `${regs(vendas, "lead").length} contato(s) registrados.` : "", quem: "SDR (hoje: vendedor)", href: "#/contato", botao: "Contato rápido" },
-      { t: "Prospectar arquitetos, designers e construtoras", feito: vendas ? regs(vendas, "parceiro").length > 0 : null, info: vendas ? `${regs(vendas, "parceiro").length} parceiro(s)/alvo(s).` : "", quem: "Gestor de parceiros (hoje: CSO)", href: "#/prospeccao", botao: "Prospecção" },
+      { t: "Prospectar e cultivar escritórios de arquitetura e design (o cliente principal da VOICE)", feito: vendas ? regs(vendas, "parceiro").length > 0 : null, info: vendas ? `${regs(vendas, "parceiro").length} escritório(s)/parceiro(s). O arquiteto especifica e indica; o cliente final chega por ele.` : "", quem: "Gestor de parceiros (hoje: CSO)", href: "#/prospeccao", botao: "Prospecção" },
+      { t: "Registrar toda indicação e todo contato que chega (arquiteto, Instagram, WhatsApp, site)", feito: vendas ? regs(vendas, "lead").length > 0 : null, info: vendas ? `${regs(vendas, "lead").length} contato(s) registrados.` : "", quem: "SDR (hoje: vendedor)", href: "#/contato", botao: "Contato rápido" },
       { t: "Publicar no Instagram com calendário", feito: mkt ? regs(mkt, "conteudo").length > 0 : null, info: mkt ? `${regs(mkt, "conteudo").length} conteúdo(s) no calendário.` : "", quem: "Produtor de conteúdo (hoje: marketing)", href: "#/conteudo", botao: "Calendário" },
       { t: "Responder no prazo e seguir a cadência (tarefas e rascunhos)", feito: null, info: "O Radar mostra os toques do dia; a Caixa de saída guarda as mensagens prontas.", quem: "Vendedor", href: "#/radar", botao: "Radar" },
     ] },

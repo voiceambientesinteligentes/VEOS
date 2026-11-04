@@ -30,3 +30,5 @@
   .orc-produtos { grid-template-columns: repeat(2, minmax(0, 1fr)); max-height: 420px; }
   .orc-tabela .orc-desc { min-width: 160px; }
 }
+.cfo-estimado { border-color: var(--gold-line, #c9a54a) !important; background: var(--gold-dim, rgba(201,165,74,0.08)); }
+.cfo-estimado-aviso { color: var(--gold, #c9a54a); }

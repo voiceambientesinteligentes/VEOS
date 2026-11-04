@@ -1,3 +1,4 @@
+import { MODELO_NEGOCIO } from "../../apps/web/js/domain/empresa.js";
 // Ferramentas do MCP do VEOS e o tratador JSON-RPC (sem E/S: testavel). Cada ferramenta chama a
 // MESMA API do site com a sessao do usuario: permissoes e regras do banco valem igual. Escritas
 // so criam o que a governanca permite a qualquer membro (ideia, proposta, rascunho, tarefa);
@@ -67,7 +68,7 @@ export const FERRAMENTAS = [
     rota: (a) => ["POST", "mensagens", { canal: a.canal, corpo: a.corpo, destinatario: a.destinatario, assunto: a.assunto, setor_id: a.setor_id, origem: "manual" }] },
 ];
 
-const INSTRUCOES = "VEOS da VOICE Ambientes Inteligentes. Para agir como um diretor (CEO, CFO, CMO...), leia antes veos_manual_diretor com o pedido. Antes de recomendar ou executar algo relevante, use veos_consultar_precedentes. Precedente orienta, não autoriza. Não deduza regime tributário, alçada, meta ou política: registre como ideia/proposta. Diferencie fato, opinião, inferência e hipótese. Nada é enviado a clientes pelo VEOS.";
+const INSTRUCOES = "VEOS da VOICE Ambientes Inteligentes. " + MODELO_NEGOCIO + " Para agir como um diretor (CEO, CFO, CMO...), leia antes veos_manual_diretor com o pedido. Antes de recomendar ou executar algo relevante, use veos_consultar_precedentes. Precedente orienta, não autoriza. Não deduza regime tributário, alçada, meta ou política: registre como ideia/proposta. Diferencie fato, opinião, inferência e hipótese. Nada é enviado a clientes pelo VEOS.";
 
 /** Trata uma mensagem JSON-RPC. chamar(metodo, rota, corpo) -> dados da API (ou lanca erro). */
 export async function responder(msg, chamar) {

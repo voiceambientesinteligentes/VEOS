@@ -377,3 +377,67 @@ export function canaisDe(d = {}) {
     { nome: "Turn key", comissao: com, rt: 0, outros: 0, padrao: false },
   ];
 }
+
+// ---------------------------------------------------------------- valores estimados (a ajustar)
+// Campo que o fundador deixou em branco recebe uma MEDIA DE MERCADO para o preco funcionar, marcada em
+// dados._estimados = { campo: { valor, fonte, em } }. A tela do formulario mostra "ESTIMADO" no campo; o
+// vigia do caixa mantem o alerta CFO_VALORES_ESTIMADOS no Radar e no resumo do dia ate o ajuste.
+// Salvar o campo com outro valor, ou marcar "Confirmo este valor", tira a marca.
+export const ESTIMATIVAS = {
+  compras: {
+    margem_cambial_pct: ["4", "média da faixa de pesquisa 3–5% para compra em até 30 dias"],
+    spread_aliexpress_pct: ["3", "conversão típica de plataformas/cartão acima do dólar oficial (2–4%)"],
+    validade_proposta_dias: ["7", "padrão do VEOS para itens importados (o CDC presume 10 dias sem validade escrita)"],
+  },
+  vendas: {
+    entrada_pct: ["40", "padrão usado pelo VEOS na condição sugerida (sinal cobre o material)"],
+    parcelas_max: ["6", "prática comum em projetos de automação residencial"],
+    desconto_pix_pct: ["3", "desconto à vista usual; dentro da autonomia comercial da Política (até 2% exige MC ≥ 32%: confira)"],
+    taxa_boleto: ["3,50", "média de bancos digitais PJ (R$ 2 a R$ 4 por boleto)"],
+  },
+  tempos: {
+    metros_por_ponto: ["25", "padrão do VEOS (metros médios de cabo por ponto)"],
+    comissionamento_pct: ["10", "média da faixa de pesquisa 8–15%"],
+    entrega_horas: ["3", "média da faixa de pesquisa 1–4 h por obra"],
+  },
+};
+
+/** Completa so os campos vazios com a estimativa marcada. Devolve { secao: dadosNovos } so das secoes que mudam. */
+export function completarComEstimativas(respostasBrutas = {}, em = new Date().toISOString()) {
+  const respostas = comCompatibilidade(respostasBrutas);
+  const novas = {};
+  for (const [secao, campos] of Object.entries(ESTIMATIVAS)) {
+    const dados = { ...(respostas[secao]?.dados ?? {}) };
+    const est = { ...(dados._estimados ?? {}) };
+    let mudou = Boolean(respostas[secao]?.convertido);
+    for (const [campo, [valor, fonte]] of Object.entries(campos)) {
+      if (dados[campo] !== undefined && String(dados[campo]).trim() !== "") continue;
+      dados[campo] = valor;
+      est[campo] = { valor, fonte, em };
+      mudou = true;
+    }
+    if (mudou) novas[secao] = { ...dados, _estimados: est };
+  }
+  return novas;
+}
+
+/** Lista dos campos ainda estimados (valor salvo igual ao estimado). */
+export function valoresEstimados(respostasBrutas = {}) {
+  const r = comCompatibilidade(respostasBrutas);
+  const out = [];
+  for (const s of SECOES) {
+    const d = r[s.id]?.dados ?? {};
+    for (const [campo, e] of Object.entries(d._estimados ?? {})) {
+      if (String(d[campo] ?? "") !== String(e.valor)) continue;
+      const c = s.campos.find((x) => x.id === campo);
+      out.push({ secao: s.id, secaoTitulo: s.titulo, campo, rotulo: c?.rotulo ?? campo, valor: e.valor, fonte: e.fonte });
+    }
+  }
+  return out;
+}
+
+/** Marcas que continuam depois de salvar: so as dos campos que ficaram com o valor estimado. */
+export function estimadosQueFicam(anteriores = {}, dados = {}) {
+  const fica = Object.fromEntries(Object.entries(anteriores).filter(([k, e]) => String(dados[k] ?? "") === String(e.valor)));
+  return Object.keys(fica).length ? fica : null;
+}

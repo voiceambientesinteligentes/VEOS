@@ -1,5 +1,11 @@
 # Estado atual — 24/10/2026 (ver também 03/11 e 04/11 abaixo)
 
+## Valores estimados do CFO, modelo de negócio e captação (04/11, fim do dia)
+- **Formulário do CFO**: os 10 campos vazios que afetam preço/condição ganharam média de mercado marcada `_estimados` (nova versão de compras, vendas e tempos; autor "Claude (estimativa do VEOS)", membro inativo; `scripts/estimativas-cfo.mjs`). Tela mostra "ESTIMADO" no campo + quadro no topo; ajustar ou marcar "Confirmo" tira a marca. Domínio `completarComEstimativas`, `valoresEstimados`, `estimadosQueFicam` (`formulario_cfo.js`). Nada informado pelo fundador foi trocado.
+- **Avisos**: vigia do caixa cria `CAIXA_CFO_VALORES_ESTIMADOS` e `CAIXA_CFO_PRODUTIVIDADE_ALTA` (produtividade 100% → hora R$ 35; com 70% ≈ R$ 50) com tarefa do dia para o CFO: aparecem no Radar e no resumo do dia e resolvem sozinhos.
+- **Modelo de negócio** (`apps/web/js/domain/empresa.js`, `MODELO_NEGOCIO`): cliente principal = arquiteto/designer (declaração do Fernando em 04/11), no prompt de todos os diretores (`_shared/ia/texto.ts`) e nas instruções do MCP (`scripts/mcp/ferramentas.mjs`); Começar a operar põe a prospecção de escritórios primeiro; Contato rápido abre em "Indicação de arquiteto". Registrar como decisão: CEO-09.
+- **Captação automatizada**: não há robô de curtir/seguir (viola as regras do Instagram). Próximos: dados abertos do CNPJ por CNAE (CSO-17, aguardando o OK do Fernando por causa da BIB-0107) e publicação pela API oficial da Meta (CMO-10).
+
 ## Operação comercial do zero: do contato ao pedido (04/11, noite)
 - Pedido do Fernando: "partir do zero (só produtos e orçamentos antigos) e deixar tudo pronto para operar: criar cliente, gerar orçamento, todos os aspectos".
 - **Menu Vender** (direção, finanças, vendas, marketing, pós-venda): Contato rápido · Clientes · Orçamentos · Novo orçamento · Prospecção · Calendário do Instagram. **Comando → Começar a operar** (`#/operar`): etapas com situação real e o botão da ferramenta.

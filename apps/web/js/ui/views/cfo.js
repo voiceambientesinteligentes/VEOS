@@ -9,7 +9,7 @@ import { qualidadeDaBase } from "../../domain/base_orcamentos.js";
 import { corrigirOrcamento } from "../../domain/correcao_orcamento.js";
 import { projetos } from "../../domain/estoque_sugerido.js";
 import { custoNoBrasil, FAIXAS, faixa, faturamentoMinimo, fatorProduto, margem, precoPolitica, variacaoDolar } from "../../domain/formacao_preco.js";
-import { comCompatibilidade, numeroBR, parametros, progresso, SECOES, SUGESTOES_TEMPOS, temTextoExtra } from "../../domain/formulario_cfo.js";
+import { comCompatibilidade, estimadosQueFicam, numeroBR, parametros, progresso, SECOES, SUGESTOES_TEMPOS, temTextoExtra, valoresEstimados } from "../../domain/formulario_cfo.js";
 import { formatBRL, formatDateTime } from "../../domain/format.js";
 import { clear, errorNotice, field, h, method, panel, stamp, stat, table } from "../dom.js";
 
@@ -95,6 +95,13 @@ function montarCampos(s, d, aceitos) {
     ctls.push({ c, ctl, id });
     if (!grade) { grade = h("div", { class: "form-grid" }); blocos.push(grade); }
     const lido = NUMERICOS.includes(c.tipo) && temTextoExtra(d[c.id]) ? `Lido como ${String(numeroBR(d[c.id])).replace(".", ",")}` : null;
+    const est = d._estimados?.[c.id];
+    if (est && String(d[c.id] ?? "") === String(est.valor)) {
+      ctl.classList.add("cfo-estimado");
+      const conf = h("label", { class: "field-hint cfo-estimado-aviso" }, h("input", { type: "checkbox", "data-confirma": c.id }), ` ESTIMADO pelo VEOS (${est.fonte}). Ajuste o valor ou marque para confirmar.`);
+      grade.append(field(id, rotulo(c), h("div", { class: "stack-s" }, ctl, conf), [c.ajuda, lido].filter(Boolean).join(" · ") || null));
+      continue;
+    }
     grade.append(field(id, rotulo(c), ctl, [c.ajuda, lido].filter(Boolean).join(" · ") || null));
   }
   return { ctls, blocos };
@@ -136,6 +143,11 @@ export async function telaFormularioCfo(root) {
         if (NUMERICOS.includes(x.c.tipo) && numeroBR(v) === null) return saida.append(errorNotice(`"${x.c.rotulo}": digite só o número (ex.: 1.234,56).`));
         dados[x.c.id] = v;
       }
+      // marca de valor estimado: some quando o campo muda ou quando a pessoa confirma
+      const anteriores = { ...(respostas[s.id]?.dados?._estimados ?? {}) };
+      for (const k of [...form.querySelectorAll("[data-confirma]:checked")].map((x) => x.dataset.confirma)) delete anteriores[k];
+      const fica = estimadosQueFicam(anteriores, dados);
+      if (fica) dados._estimados = fica;
       salvar.disabled = true;
       try {
         const r = await api.cfoSalvarSecao(s.id, dados);
@@ -152,6 +164,11 @@ export async function telaFormularioCfo(root) {
   root.append(
     panel({ title: "Formulário do CFO", subtitle: "O que preciso saber de você para o preço certo dos produtos e da mão de obra, o diagnóstico e o plano. Preencha no seu ritmo: cada seção salva separada e guarda o histórico." },
       indice,
+      (() => {
+        const est = valoresEstimados(brutas);
+        return est.length ? h("div", { class: "notice notice-warn stack-s" }, h("strong", null, `${est.length} valor(es) ESTIMADO(S) pelo VEOS — ajuste conforme a sua realidade:`),
+          h("ul", null, est.map((e) => h("li", null, h("a", { href: `#/cfo/formulario?secao=${e.secao}` }, `${e.rotulo}: ${e.valor}`), ` (${e.fonte})`)))) : null;
+      })(),
       method("Como estas respostas são usadas", "Impostos, cartão, comissão e importação entram na fórmula de preço da Política V1 (tela Preço dos produtos).", "Equipe, produtividade e tempos de serviço dão o custo da hora e as horas de cada orçamento (Diagnóstico).", "Custos fixos, sua retirada e as parcelas dão o faturamento mínimo e as metas do Plano da VOICE.", "Não sabe um campo? Deixe em branco: ele aparece como lacuna, nunca como zero.")),
     ...secoes,
   );

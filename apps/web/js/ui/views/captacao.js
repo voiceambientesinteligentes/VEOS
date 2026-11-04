@@ -28,7 +28,7 @@ export async function telaContatoRapido(root) {
   const nome = inp("ct-nome", { placeholder: "Nome da pessoa" });
   const tel = inp("ct-tel", { inputmode: "tel", placeholder: "(47) 99999-9999" });
   const email = inp("ct-email", { type: "email", placeholder: "opcional" });
-  const origem = h("select", { class: "select", id: "ct-origem" }, opc(ORIGENS.filter(([v]) => !["google", "whatsapp"].includes(v)), "instagram"));
+  const origem = h("select", { class: "select", id: "ct-origem" }, opc(ORIGENS.filter(([v]) => !["google", "whatsapp"].includes(v)), "indicacao_arquiteto"));
   const imovel = h("select", { class: "select", id: "ct-imovel" }, opc(TIPOS_IMOVEL, "casa_alto_padrao"));
   const fase = h("select", { class: "select", id: "ct-fase" }, opc(FASES_OBRA, "", "Não sei ainda"));
   const cidade = inp("ct-cidade", { placeholder: "Cidade da obra" });

@@ -177,3 +177,27 @@ test("atividades dos cargos apontam para a ferramenta certa", () => {
   const com = ativs.filter((a) => ferramentaDaAtividade(a));
   assert.ok(com.length / ativs.length >= 0.5, `${com.length} de ${ativs.length} atividades do Comercial com ferramenta`);
 });
+
+// ---------------------------------------------------------------- formulario do CFO: estimativas
+import { completarComEstimativas, estimadosQueFicam, valoresEstimados } from "../../apps/web/js/domain/formulario_cfo.js";
+
+test("estimativas: so completam campo vazio, ficam marcadas e somem ao ajustar", () => {
+  const respostas = { vendas: { dados: { entrada_pct: "50", taxa_cartao_pct: "4,5" } }, compras: { dados: {} } };
+  const novas = completarComEstimativas(respostas, "2026-11-04T00:00:00Z");
+  assert.equal(novas.vendas.entrada_pct, "50", "valor do fundador nunca é trocado");
+  assert.equal(novas.vendas._estimados.entrada_pct, undefined);
+  assert.equal(novas.vendas.parcelas_max, "6");
+  assert.equal(novas.compras.margem_cambial_pct, "4");
+  assert.ok(novas.compras._estimados.margem_cambial_pct.fonte.includes("3–5%"));
+  const depois = Object.fromEntries(Object.entries(novas).map(([s, d]) => [s, { dados: d }]));
+  const lista = valoresEstimados(depois);
+  assert.ok(lista.some((e) => e.campo === "parcelas_max" && e.secao === "vendas"));
+  assert.ok(!lista.some((e) => e.campo === "entrada_pct"));
+  // completar de novo nao mexe no que ja foi estimado
+  assert.deepEqual(Object.keys(completarComEstimativas(depois)), []);
+  // ajustou um campo: a marca dele some; as outras ficam
+  const fica = estimadosQueFicam(novas.vendas._estimados, { ...novas.vendas, parcelas_max: "10" });
+  assert.equal(fica.parcelas_max, undefined);
+  assert.ok(fica.desconto_pix_pct);
+  assert.equal(estimadosQueFicam({}, {}), null);
+});

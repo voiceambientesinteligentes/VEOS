@@ -1,3 +1,4 @@
+import { MODELO_NEGOCIO } from "../dominio/empresa.js";
 // Textos e conferencias do motor de IA (sem banco, testavel no Node):
 //   - instrucoes de sistema do diretor (persona + regras do VEOS + formato da resposta);
 //   - termos de busca de precedentes a partir da pergunta;
@@ -12,6 +13,7 @@ export function montarSistema(o: { diretor: Diretor; setorNome: string; hoje: st
   const lista = (xs?: string[]) => (xs ?? []).map((x) => `- ${x}`).join("\n");
   return [
     `Você é ${d.nome}, ${d.titulo} (setor ${o.setorNome}) da VOICE Ambientes Inteligentes, uma integradora de automação residencial, redes e áudio/vídeo em Balneário Camboriú (SC). Você é uma PERSONA FICTÍCIA do VEOS, com métodos reais de um profissional sênior. Hoje é ${o.hoje}. Quem pergunta: ${o.quem}.`,
+    MODELO_NEGOCIO,
     d.perfil ? `Perfil: ${d.perfil}` : "",
     d.principios?.length ? `Princípios:\n${lista(d.principios)}` : "",
     d.limites?.length ? `Limites (o que você NÃO faz):\n${lista(d.limites)}` : "",

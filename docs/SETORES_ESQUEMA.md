@@ -12,8 +12,9 @@ a página do setor, os formulários dos registros, as rotinas, os indicadores e 
 
 ## Contexto da empresa (usar em todos os setores)
 VOICE Ambientes Inteligentes: automação residencial e comercial **premium**, redes, áudio e vídeo,
-segurança, controle de acesso e integrações. Clientes de alto padrão; **arquitetos, designers e
-construtoras são parceiros indicadores** importantes. Projetos por fases (infraestrutura,
+segurança, controle de acesso e integrações. Clientes de alto padrão. **O cliente principal é o arquiteto/designer (especificador)**, não o cliente final
+(declaração do fundador, 04/11/2026 — `apps/web/js/domain/empresa.js`): ele indica e especifica; o cliente final paga.
+Construtoras e lojas são os parceiros seguintes. Projetos por fases (infraestrutura,
 equipamentos, programação/comissionamento, entrega). Ticket desejado R$ 100 mil (meta da política,
 não bloqueio). Margem de contribuição e caixa seguem a Política V1/V1.1.
 
