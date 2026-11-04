@@ -56,6 +56,7 @@ export async function telaOrcamentos(root, aba = "veos") {
   if (aba === "zoho") return listaZoho(corpo);
   const estado = h("select", { class: "select", id: "orc-estado", "aria-label": "Situação" }, h("option", { value: "" }, "Todas (vigentes)"), Object.entries(SITUACOES).filter(([k]) => k !== "substituido").map(([k, [t]]) => h("option", { value: k }, t)));
   const busca = h("input", { class: "input", type: "search", id: "orc-busca", placeholder: "Cliente ou número", "aria-label": "Buscar orçamento" });
+  estado.value = new URLSearchParams(location.hash.split("?")[1] ?? "").get("estado") ?? "";
   const lista = h("div", { "aria-live": "polite" });
   let t;
   async function desenhar() {
@@ -102,7 +103,10 @@ async function listaZoho(corpo) {
 
 // ---------------------------------------------------------------- montador
 export async function telaNovoOrcamento(root, { clienteId = null, zohoId = null, editarId = null } = {}) {
+  const carregando = h("p", { class: "muted" }, "Carregando preços, custos e impostos do CFO…");
+  root.append(carregando);
   const ctx = await contextoPreco();
+  carregando.remove();
   let cliente = null, substitui = null, referencia = null;
   let linhas = [];
   let observacaoInicial = "";

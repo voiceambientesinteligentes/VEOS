@@ -5,7 +5,7 @@ import { capturarRetornoDoLink, enviarLink, sair, token } from "./auth.js";
 import { formatBRL, formatDateTime } from "./domain/format.js";
 import { clear, errorNotice, field, h, panel, stamp, table, testTag } from "./ui/dom.js";
 import { enableMotion } from "./ui/motion.js";
-import { markActive, setupDrawer } from "./ui/shell.js";
+import { setupDrawer } from "./ui/shell.js";
 import { renderVigia } from "./ui/views/cfo_vigia.js";
 import { renderOrbita } from "./ui/views/orbita.js";
 import { renderIA } from "./ui/views/ia.js";
@@ -43,6 +43,9 @@ import { telaCompra, telaCompras, telaContasPagar, telaNovaCompra } from "./ui/v
 import { telaAcessos, telaExportar, telaSaude } from "./ui/views/sistema.js";
 import { formCodigoMfa, telaConta, telaUsuarios } from "./ui/views/usuarios.js";
 import { CATALOGO } from "./data/catalogo.js";
+import { abaDaRota, itensDeBusca, menuDoPerfil, NOVOS, secaoDaRota } from "./data/navegacao.js";
+import { icone } from "./ui/icones.js";
+import { telaHoje } from "./ui/views/hoje.js";
 
 const el = {
   view: document.getElementById("view"),
@@ -51,7 +54,11 @@ const el = {
   main: document.getElementById("conteudo"),
   title: document.getElementById("view-title"),
   sub: document.getElementById("view-sub"),
+  novo: document.getElementById("novo"),
+  subnav: document.getElementById("subnav"),
+  celular: document.getElementById("barra-celular"),
 };
+let menu = [];
 const SITUACAO = { OK: ["OK", "ok"], REVISAR: ["Revisar", "warn"], BLOQUEAR_ENVIO: ["Não enviar", "risk"] };
 let eu = null;
 // Fontes automaticas da Negociacao ao Vivo (Zoho); a tela funciona sem elas.
@@ -59,8 +66,6 @@ const fontesZoho = { rbt12: api.zohoRbt12, orcamentos: api.zohoOrcamentos, orcam
 const rotaBase = () => location.hash.split("?")[0];
 let atual = null;
 
-const link = (href, sigla, texto) =>
-  h("a", { class: "nav-link", href }, h("span", { class: "nav-sigla", "aria-hidden": "true" }, sigla), h("span", { class: "nav-text" }, texto));
 
 // ---------------------------------------------------------------- telas
 async function telaOrbita(root, signal) {
@@ -119,6 +124,7 @@ async function telaHistorico(root) {
 
 const consulta = () => new URLSearchParams(location.hash.split("?")[1] ?? "");
 const TELAS = {
+  "#/hoje": { fn: (root) => telaHoje(root, eu), titulo: ["Hoje", "O que precisa de você agora"] },
   "#/operar": { fn: (root) => telaOperar(root), titulo: ["Começar a operar", "Do primeiro contato ao pedido entregue: o que já está feito e a ferramenta de cada etapa"] },
   "#/clientes": { fn: (root) => telaClientes(root), titulo: ["Clientes", "Cadastro de clientes da VOICE: contato, obra, origem e tudo o que foi orçado"] },
   "#/orcamentos": { fn: (root) => telaOrcamentos(root, consulta().get("aba") === "zoho" ? "zoho" : "veos"), titulo: ["Orçamentos", "Do rascunho ao pedido: PDF, envio, aceite e versões"] },
@@ -221,82 +227,25 @@ function montarMenu() {
     eu = null;
     telaLogin();
   });
-  clear(el.nav).append(
-    h("div", { class: "nav-group", role: "group", "aria-labelledby": "nav-cmd" },
-      h("span", { class: "nav-label", id: "nav-cmd" }, "Comando"),
-      link("#/operar", "▶", "Começar a operar"),
-      eu.papel === "direcao" ? link("#/pendencias", "☑", "Pendências do projeto") : null,
-      ["direcao", "financas"].includes(eu.papel) ? link("#/visao", "▦", "Visão geral") : null,
-      ["direcao", "financas"].includes(eu.papel) ? link("#/painel-dono", "◎", "Painel do dono") : null,
-      link("#/estrutura", "⌬", "Estrutura da empresa"),
-      link("#/plano", "★", "Plano da VOICE"),
-      ["direcao", "financas", "vendas", "marketing"].includes(eu.papel) ? link("#/comercial", "↗", "Setor comercial") : null,
-      link("#/orbita", "◉", "Órbita"),
-      link("#/radar", "◈", "Radar"),
-      link("#/mensagens", "✉", "Caixa de saída"),
-      link("#/ia", "✦", "IA VEOS"),
-      link("#/conselho", "◇", "Conselho"),
-      link("#/diretores", "?", "Perguntar aos diretores"),
-      link("#/integracoes", "⇄", "Integrações")),
-    ["direcao", "financas", "vendas", "marketing", "posvenda"].includes(eu.papel) ? h("div", { class: "nav-group", role: "group", "aria-labelledby": "nav-vendas" },
-      h("span", { class: "nav-label", id: "nav-vendas" }, "Vender"),
-      link("#/contato", "+CT", "Contato rápido"),
-      link("#/clientes", "CLI", "Clientes"),
-      link("#/orcamentos", "ORV", "Orçamentos"),
-      link("#/orcamentos/novo", "+ORV", "Novo orçamento"),
-      link("#/prospeccao", "PROS", "Prospecção"),
-      link("#/conteudo", "IG", "Calendário do Instagram")) : null,
-    h("div", { class: "nav-group", role: "group", "aria-labelledby": "nav-cfo" },
-      h("span", { class: "nav-label", id: "nav-cfo" }, "Ferramentas do CFO"),
-      ["direcao", "financas"].includes(eu.papel) ? link("#/cfo/diagnostico", "DIAG", "Diagnóstico dos orçamentos") : null,
-      ["direcao", "financas"].includes(eu.papel) ? link("#/cfo/caixa", "CAIXA", "Caixa e extrato") : null,
-      ["direcao", "financas"].includes(eu.papel) ? link("#/cfo/fluxo", "13SEM", "Fluxo de 13 semanas") : null,
-      ["direcao", "financas"].includes(eu.papel) ? link("#/cfo/fechamento", "DRE", "Fechamento do mês") : null,
-      ["direcao", "financas"].includes(eu.papel) ? link("#/cfo/indicadores", "IND", "Indicadores da Política") : null,
-      ["direcao", "financas"].includes(eu.papel) ? link("#/cfo/recorrentes", "FIXO", "Contas fixas e dívidas") : null,
-      ["direcao", "financas"].includes(eu.papel) ? link("#/cfo/precos", "PREÇO", "Preço dos produtos e da hora") : null,
-      ["direcao", "financas"].includes(eu.papel) ? link("#/cfo/formulario", "FORM", "Formulário do CFO") : null,
-      ["direcao", "financas"].includes(eu.papel) ? link("#/cfo/estoque", "ESTQ", "Estoque estratégico") : null,
-      link("#/negociacao", "NEG", "Negociação ao Vivo"),
-      link("#/propostas", "PROP", "Propostas (PDF)"),
-      link("#/calculadora", "CALC", "Calculadora de Preços"),
-      link("#/projetos", "PRJ", "Projetos e caixa"),
-      link("#/cfo", "ORÇ", "Avisos de orçamento"),
-      link("#/historico", "HIST", "Histórico de orçamentos")),
-    h("div", { class: "nav-group", role: "group", "aria-labelledby": "nav-biblioteca" },
-      h("span", { class: "nav-label", id: "nav-biblioteca" }, "Biblioteca"),
-      link("#/biblioteca/governanca", "GOV", "Governança"),
-      link("#/biblioteca/decisoes", "DEC", "Decisões e precedentes"),
-      link("#/biblioteca/aprendizados", "APR", "Erros e aprendizados"),
-      link("#/biblioteca/referencias", "REF", "Pesquisas e referências"),
-      link("#/biblioteca/politicas", "POL", "Políticas vigentes"),
-      link("#/biblioteca/revisoes", "REV", "Revisões em andamento"),
-      link("#/biblioteca/consultar", "CON", "Consultar precedentes")),
-    h("div", { class: "nav-group", role: "group", "aria-labelledby": "nav-operacao" },
-      h("span", { class: "nav-label", id: "nav-operacao" }, "Operação"),
-      link("#/pedidos", "PED", "Pedidos"),
-      link("#/estoque", "EST", "Estoque"),
-      link("#/produtos", "PROD", "Catálogo de produtos"),
-      link("#/compras", "COM", "Compras"),
-      link("#/recebimentos", "REC", "Recebimentos e faturamento"),
-      ["direcao", "financas"].includes(eu.papel) ? link("#/contas-pagar", "PAG", "Contas a pagar") : null),
-    h("div", { class: "nav-group", role: "group", "aria-labelledby": "nav-zoho" },
-      h("span", { class: "nav-label", id: "nav-zoho" }, "Zoho"),
-      Object.entries(PRODUTOS).map(([id, p]) => link(`#/zoho/${id}`, id === "books" ? "BKS" : id === "crm" ? "CRM" : "ZPR", `Zoho ${p.nome}`))),
-    h("div", { class: "nav-group", role: "group", "aria-labelledby": "nav-setores" },
-      h("span", { class: "nav-label", id: "nav-setores" }, "Setores"),
-      CATALOGO.map((s) => link(`#/setor/${s.id}`, s.sigla, s.nome))),
-    h("div", { class: "nav-group", role: "group", "aria-labelledby": "nav-sistema" },
-      h("span", { class: "nav-label", id: "nav-sistema" }, "Sistema"),
-      ["direcao", "tecnologia"].includes(eu.papel) ? link("#/sistema/saude", "SAU", "Saúde do sistema") : null,
-      eu.papel === "direcao" ? link("#/sistema/usuarios", "USR", "Usuários e acessos") : null,
-      eu.papel === "direcao" ? link("#/sistema/exportar", "EXP", "Exportar dados") : null,
-      eu.papel === "direcao" ? link("#/sistema/independencia", "IND", "Independência do Zoho") : null,
-      eu.papel === "direcao" ? link("#/sistema/acessos", "LGPD", "Acessos a dados pessoais") : null,
-      link("#/sistema/validacao", "VAL", "Validação guiada"),
-      link("#/conta", "EU", "Minha conta")),
-  );
-  clear(el.status).append(h("a", { class: "pill tone-ok", href: "#/conta", title: "Minha conta" }, h("span", { class: "dot" }), eu.email), botaoSair);
+  menu = menuDoPerfil(eu.papel);
+  clear(el.nav).append(...menu.map((s) => h("a", { class: "nav-link nav-area", href: s.itens[0].href, "data-area": s.id }, icone(s.icone), h("span", { class: "nav-text" }, s.rotulo))));
+  // "+ Novo": o que mais se cria no dia a dia
+  const novos = NOVOS.filter(([, , , p]) => !p || p.includes(eu.papel));
+  const painelNovo = h("div", { class: "novo-menu", role: "menu", hidden: true }, novos.map(([href, t, sub]) => h("a", { href, role: "menuitem", class: "novo-item" }, h("strong", null, t), h("small", null, sub))));
+  const botaoNovo = h("button", { class: "btn btn-primary novo-botao", type: "button", "aria-haspopup": "menu", "aria-expanded": "false" }, icone("mais"), "Novo");
+  const alternar = (abrir) => { painelNovo.hidden = !abrir; botaoNovo.setAttribute("aria-expanded", String(abrir)); };
+  botaoNovo.addEventListener("click", (e) => { e.stopPropagation(); alternar(painelNovo.hidden); });
+  painelNovo.addEventListener("click", () => alternar(false));
+  document.addEventListener("click", (e) => { if (!el.novo.contains(e.target)) alternar(false); });
+  clear(el.novo).append(botaoNovo, painelNovo);
+  // celular: barra inferior com o essencial
+  const areaCel = (id, rotulo, href, nome) => h("a", { class: "bc-item", href, "data-area": id }, icone(nome), h("span", null, rotulo));
+  const vender = menu.find((s) => s.id === "vender"), operacao = menu.find((s) => s.id === "operacao");
+  const botaoMenuCel = h("button", { class: "bc-item", type: "button", "aria-label": "Abrir o menu completo" }, icone("menu"), h("span", null, "Menu"));
+  botaoMenuCel.addEventListener("click", () => document.getElementById("menu-toggle").click());
+  const novoCel = h("a", { class: "bc-item bc-novo", href: vender ? "#/contato" : "#/diretores", "aria-label": "Novo" }, icone("mais"), h("span", null, "Novo"));
+  clear(el.celular).append(areaCel("hoje", "Hoje", "#/hoje", "hoje"), vender ? areaCel("vender", "Vender", vender.itens[0].href, "vender") : null, novoCel,
+    operacao ? areaCel("operacao", "Operação", operacao.itens[0].href, "operacao") : null, botaoMenuCel);  clear(el.status).append(h("a", { class: "pill tone-ok", href: "#/conta", title: "Minha conta" }, h("span", { class: "dot" }), eu.email), botaoSair);
 }
 
 async function navegar() {
@@ -368,7 +317,7 @@ async function navegar() {
     rota = `#/setor/${setor.id}`;
     def = { fn: (root, signal) => telaSetor(root, setor.id, signal, setorRota[2]), titulo: [`${setor.sigla} · ${setor.nome}`, setor.diretor.titulo] };
   } else {
-    rota = TELAS[rotaBase()] ? rotaBase() : "#/orbita";
+    rota = TELAS[rotaBase()] ? rotaBase() : "#/hoje";
     def = TELAS[rota];
   }
   atual?.abort();
@@ -376,16 +325,29 @@ async function navegar() {
   atual = controle;
   [el.title.textContent, el.sub.textContent] = def.titulo;
   document.title = `${def.titulo[0]} · VEOS`;
-  markActive(el.nav, rota);
+  // area no menu lateral + abas da area no topo (so as telas da area atual)
+  const area = secaoDaRota(rota, menu);
+  for (const a of [...el.nav.querySelectorAll(".nav-area"), ...el.celular.querySelectorAll("[data-area]")]) {
+    if (a.dataset.area === area?.id) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current");
+  }
+  const aba = abaDaRota(rota, area);
+  el.subnav.hidden = !area || area.itens.length < 2;
+  clear(el.subnav).append(...(area?.itens ?? []).map((i) => h("a", { class: "subnav-aba", href: i.href, "aria-current": i.href === aba ? "page" : null }, i.rotulo)));
+  el.subnav.querySelector("[aria-current]")?.scrollIntoView({ block: "nearest", inline: "nearest" });
   drawer.close(false);
   const root = h("div", { class: "stack view-enter" });
   clear(el.view).append(root);
+  // tela lenta: aviso de carregamento depois de 300 ms (nunca tela em branco)
+  const espera = h("div", { class: "carregando-tela", role: "status" }, h("span", { class: "carregando-ponto", "aria-hidden": "true" }), "Carregando…");
+  const mostrar = setTimeout(() => root.prepend(espera), 300);
   try {
     await def.fn(root, controle.signal);
   } catch (e) {
     if (e instanceof ApiError && e.status === 401) return iniciar("Sua sessão expirou. Entre novamente.");
     root.append(errorNotice(`Não foi possível abrir esta tela: ${e.message}`));
   }
+  clearTimeout(mostrar);
+  espera.remove();
   if (!controle.signal.aborted) enableMotion(root);
   el.main.focus({ preventScroll: true });
 }
@@ -402,13 +364,15 @@ async function iniciar(mensagem) {
   }
   montarMenu();
   iniciarAvisos();
-  if (!TELAS[rotaBase()] && !/^#\/(projetos|setor|zoho|pedidos|estoque|biblioteca|compras|propostas|produtos|pendencias|estrutura|clientes|orcamentos)\//.test(location.hash)) history.replaceState(null, "", "#/orbita");
+  if (!TELAS[rotaBase()] && !/^#\/(projetos|setor|zoho|pedidos|estoque|biblioteca|compras|propostas|produtos|pendencias|estrutura|clientes|orcamentos)\//.test(location.hash)) history.replaceState(null, "", "#/hoje");
   navegar();
 }
 
 window.addEventListener("hashchange", navegar);
-ligarAtalhos(el.nav);
-document.getElementById("busca-botao")?.addEventListener("click", () => eu && abrirBusca(el.nav));
+// busca global: todas as telas do perfil (mapa de navegacao), atalhos de criacao e os setores
+const telasDaBusca = () => [...itensDeBusca(menu), ...NOVOS.map(([href, t]) => ({ titulo: `Novo: ${t}`, href, tipo: "Criar", extra: "novo" })), ...CATALOGO.map((s) => ({ titulo: `${s.sigla} · ${s.nome}`, href: `#/setor/${s.id}`, tipo: "Setor", extra: "setor" }))];
+ligarAtalhos(telasDaBusca);
+document.getElementById("busca-botao")?.addEventListener("click", () => eu && abrirBusca(telasDaBusca));
 // PWA: instalavel no celular; o service worker so guarda os arquivos do site (nunca dados)
 if ("serviceWorker" in navigator && location.protocol === "https:") navigator.serviceWorker.register("sw.js").catch(() => {});
 iniciar();

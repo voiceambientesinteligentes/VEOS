@@ -3,13 +3,13 @@
 // Nao decide nada: mostra o que falta e quem faz.
 import { api } from "../../data/api.js";
 import { parametros } from "../../domain/formulario_cfo.js";
-import { h, panel, stamp } from "../dom.js";
+import { h } from "../dom.js";
 
 const contar = async (fn) => { try { return await fn(); } catch { return null; } };
 
 export async function telaOperar(root) {
   const corpo = h("div", { class: "stack" });
-  root.append(panel({ title: "Começar a operar", subtitle: "Do primeiro contato ao pedido entregue. Cada etapa mostra o que já está feito no VEOS e abre a ferramenta." }, h("p", { class: "muted" }, "Conferindo o que já existe…")), corpo);
+  root.append(h("p", { class: "muted" }, "Conferindo o que já existe…"), corpo);
   const [form, clientes, orcs, vendas, mkt, produtos] = await Promise.all([
     contar(() => api.cfoFormulario()), contar(() => api.clientes()), contar(() => api.comercialOrcamentos()),
     contar(() => api.setor("vendas")), contar(() => api.setor("marketing")), contar(() => api.produtos({ situacao: "ativo" })),
@@ -49,13 +49,27 @@ export async function telaOperar(root) {
       { t: "Pós-venda: boas-vindas, NPS, indicação e plano de suporte", feito: null, info: "A cadência de pós-venda começa quando a oportunidade é ganha.", quem: "CXO", href: "#/setor/posvenda", botao: "Pós-venda" },
     ] },
   ];
-  const total = etapas.flatMap((g) => g.itens).filter((i) => i.feito !== null);
-  const feitos = total.filter((i) => i.feito).length;
-  corpo.append(h("p", { class: "notice" }, `${feitos} de ${total.length} etapas verificáveis já têm movimento no VEOS. As demais dependem de um pedido real para começar.`));
+  const verificaveis = etapas.flatMap((g) => g.itens).filter((i) => i.feito !== null);
+  const feitos = verificaveis.filter((i) => i.feito).length;
+  const pct = verificaveis.length ? Math.round((feitos / verificaveis.length) * 100) : 0;
+  const proximo = etapas.flatMap((g) => g.itens).find((i) => i.feito === false);
+  corpo.append(h("div", { class: "op-progresso" },
+    h("div", { class: "row" }, h("strong", null, `${feitos} de ${verificaveis.length} etapas com movimento`), h("span", { class: "field-hint" }, `${pct}%`)),
+    h("div", { class: "op-barra", role: "progressbar", "aria-valuenow": String(pct), "aria-valuemin": "0", "aria-valuemax": "100" }, h("span", { style: null, dataset: { pct: String(pct) } })),
+    proximo ? h("p", null, "Próximo passo: ", h("a", { href: proximo.href }, proximo.t)) : h("p", { class: "field-hint" }, "As etapas que faltam dependem de um pedido real.")));
+  // largura da barra sem style inline (a CSP nao permite): classe por faixa de 10%
+  corpo.querySelector(".op-barra > span").className = `op-p${Math.round(pct / 10) * 10}`;
   for (const g of etapas) {
-    corpo.append(panel({ title: g.grupo }, h("ol", { class: "list-plain stack-s operar-lista" }, g.itens.map((i) => h("li", { class: "panel panel-tight operar-item" },
-      h("div", { class: "row" }, i.feito === null ? stamp("acompanhar", "neutral") : i.feito ? stamp("feito", "ok") : stamp("falta", "warn"), h("strong", null, i.t)),
-      i.info ? h("p", { class: "field-hint" }, i.info) : null,
-      h("div", { class: "row" }, h("span", { class: "field-hint" }, `Quem: ${i.quem}`), h("a", { class: "btn btn-ghost btn-mini", href: i.href }, i.botao)))))));
+    const faltam = g.itens.filter((i) => i.feito === false).length;
+    const grupo = h("details", { class: "op-grupo", open: faltam > 0 || g === etapas[0] },
+      h("summary", null, h("span", null, g.grupo), h("small", null, faltam ? `${faltam} a fazer` : "em dia")),
+      h("div", { class: "op-itens" }, g.itens.map((i) => {
+        const estado = i.feito === null ? "acompanhar" : i.feito ? "feito" : "falta";
+        return h("div", { class: `op-item ${estado}` },
+          h("span", { class: "op-icone", "aria-label": estado }, i.feito ? "✓" : ""),
+          h("div", { class: "op-texto" }, h("span", { class: "op-titulo" }, i.t), h("small", null, i.feito ? `Quem: ${i.quem}` : [i.info, `Quem: ${i.quem}`].filter(Boolean).join(" · "))),
+          h("a", { class: `btn ${estado === "falta" ? "btn-primary" : "btn-ghost"} btn-mini`, href: i.href }, i.botao));
+      })));
+    corpo.append(grupo);
   }
 }

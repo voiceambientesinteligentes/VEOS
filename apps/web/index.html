@@ -23,7 +23,8 @@
   <link rel="stylesheet" href="css/setores.css">
   <link rel="stylesheet" href="css/pendencias.css">
   <link rel="stylesheet" href="css/estrutura.css">
-<link rel="stylesheet" href="css/operacao.css">
+  <link rel="stylesheet" href="css/operacao.css">
+  <link rel="stylesheet" href="css/tema.css">
   <script type="module" src="js/main.js"></script>
 </head>
 <body>
@@ -31,7 +32,7 @@
 
   <div class="app">
     <aside class="sidebar" id="sidebar" aria-label="Navegação principal">
-      <a class="brand" href="#/orbita">
+      <a class="brand" href="#/hoje">
         <svg class="brand-mark" viewBox="0 0 36 36" aria-hidden="true">
           <circle cx="18" cy="18" r="16.5" fill="none" stroke="#c9a54c" stroke-opacity=".55"/>
           <circle cx="18" cy="18" r="10" fill="none" stroke="#6ec8d4" stroke-opacity=".45" stroke-dasharray="3 3"/>
@@ -44,7 +45,8 @@
         </span>
       </a>
 
-      <nav class="nav" id="nav" aria-label="Salas"></nav>
+      <div class="novo" id="novo"></div>
+      <nav class="nav" id="nav" aria-label="Áreas do VEOS"></nav>
 
       <div class="sidebar-foot" id="sidebar-status" aria-live="polite">
         <span class="pill"><span class="dot"></span>Carregando…</span>
@@ -66,12 +68,14 @@
         <div class="topbar-spacer"></div>
         <button class="btn btn-ghost busca-botao" id="busca-botao" type="button" aria-keyshortcuts="Control+K" title="Buscar (Ctrl+K ou /)">Buscar <kbd>Ctrl K</kbd></button>
       </header>
+      <nav class="subnav" id="subnav" aria-label="Telas desta área" hidden></nav>
 
       <main class="content" id="conteudo" tabindex="-1">
         <noscript><p class="notice notice-risk">O portal precisa de JavaScript habilitado.</p></noscript>
         <div id="view" aria-live="off"></div>
       </main>
     </div>
+    <nav class="barra-celular" id="barra-celular" aria-label="Atalhos"></nav>
   </div>
 </body>
 </html>

@@ -29,7 +29,7 @@ export function abrirBusca(nav) {
   const dica = h("p", { class: "field-hint" }, "↑ ↓ para escolher · Enter para abrir · Esc para fechar");
   dialogo = h("dialog", { class: "busca-dialogo", "aria-label": "Busca global" }, entrada, lista, dica);
   document.body.append(dialogo);
-  const menu = itensDoMenu(nav);
+  const menu = typeof nav === "function" ? nav() : itensDoMenu(nav);
   const fontes = {};
   let atuais = [], sel = 0, versao = 0, t;
   const ir = (i) => { if (!i) return; dialogo.close(); location.hash = i.href; };

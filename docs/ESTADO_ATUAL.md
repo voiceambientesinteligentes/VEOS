@@ -1,5 +1,12 @@
 # Estado atual — 24/10/2026 (ver também 03/11 e 04/11 abaixo)
 
+## Novo design: menu por áreas, Hoje e celular (04/11, noite)
+- Pedido do Fernando: "design prático, intuitivo, fácil de ler; não preciso ver um milhão de coisas". Mesmas telas e funções; só a moldura e a aparência mudaram (padrão de Pipedrive/HubSpot/Linear).
+- **Menu lateral com 7 áreas** (Hoje · Vender · Operação · Financeiro · Empresa · Biblioteca · Ajustes) e **abas da área no topo**, só da área atual; mapa único em `apps/web/js/data/navegacao.js` (perfil por tela; alimenta também a busca Ctrl+K: todas as telas, atalhos "Novo" e os 9 setores). Ícones SVG em `ui/icones.js`.
+- **"+ Novo"** (contato, orçamento, cliente, compra, pergunta ao diretor). **Página inicial `#/hoje`** (`ui/views/hoje.js`): saudação, atalhos, "Para fazer hoje" (alertas graves + tarefas vencidas/de hoje, com "Feito" na linha) e "Agora na VOICE". Rota desconhecida cai em Hoje (Órbita segue em Empresa → Setores).
+- **Celular**: barra inferior Hoje · Vender · + Novo · Operação · Menu. **Começar a operar** compacto (progresso, próximo passo, grupos que abrem/fecham). Aviso "Carregando…" em toda tela lenta (>300 ms); sem contorno azul do foco no conteúdo.
+- Visual em `apps/web/css/tema.css` (sem @layer, carregado por último). Testes: `tests/web/navegacao.test.mjs` (5), telas `hoje.html` 4/4, bateria 176/176; fotos de revisão com `tests/online/fotos.mjs`.
+
 ## Valores estimados do CFO, modelo de negócio e captação (04/11, fim do dia)
 - **Formulário do CFO**: os 10 campos vazios que afetam preço/condição ganharam média de mercado marcada `_estimados` (nova versão de compras, vendas e tempos; autor "Claude (estimativa do VEOS)", membro inativo; `scripts/estimativas-cfo.mjs`). Tela mostra "ESTIMADO" no campo + quadro no topo; ajustar ou marcar "Confirmo" tira a marca. Domínio `completarComEstimativas`, `valoresEstimados`, `estimadosQueFicam` (`formulario_cfo.js`). Nada informado pelo fundador foi trocado.
 - **Avisos**: vigia do caixa cria `CAIXA_CFO_VALORES_ESTIMADOS` e `CAIXA_CFO_PRODUTIVIDADE_ALTA` (produtividade 100% → hora R$ 35; com 70% ≈ R$ 50) com tarefa do dia para o CFO: aparecem no Radar e no resumo do dia e resolvem sozinhos.

@@ -15,13 +15,13 @@ const SITE = process.env.VEOS_SITE ?? "https://voiceambientesinteligentes.github
 const EMAIL = `teste-navegador${process.env.CI ? "-ci" : ""}@veos-teste.invalid`;
 const admin = { apikey: SERVICE, Authorization: `Bearer ${SERVICE}`, "Content-Type": "application/json" };
 const TELAS = [
-  "#/visao", "#/orbita", "#/radar", "#/diretores", "#/mensagens", "#/conselho", "#/integracoes", "#/biblioteca/governanca", "#/biblioteca/decisoes", "#/biblioteca/revisoes",
+  "#/hoje", "#/operar", "#/visao", "#/orbita", "#/radar", "#/diretores", "#/mensagens", "#/conselho", "#/integracoes", "#/biblioteca/governanca", "#/biblioteca/decisoes", "#/biblioteca/revisoes",
   "#/pedidos", "#/estoque", "#/recebimentos", "#/produtos", "#/produtos/revisao", "#/compras", "#/compras/nova", "#/contas-pagar", "#/zoho/books", "#/zoho/crm", "#/setor/financas", "#/setor/vendas", "#/setor/marketing/manual", "#/setor/direcao/manual",
   "#/negociacao", "#/propostas", "#/calculadora", "#/projetos", "#/sistema/saude", "#/sistema/usuarios", "#/sistema/exportar", "#/sistema/validacao", "#/conta",
   "#/painel-dono", "#/comercial", "#/plano", "#/cfo/diagnostico", "#/cfo/precos", "#/cfo/formulario", "#/cfo/estoque",
   "#/operar", "#/clientes", "#/orcamentos", "#/orcamentos?aba=zoho", "#/orcamentos/novo", "#/contato", "#/prospeccao", "#/conteudo", "#/estrutura/vendas",
 ];
-const CELULAR = ["#/operar", "#/contato", "#/orcamentos/novo", "#/clientes", "#/conteudo", "#/painel-dono", "#/plano", "#/visao", "#/orbita", "#/radar", "#/produtos", "#/pedidos", "#/compras", "#/contas-pagar", "#/recebimentos", "#/biblioteca/revisoes", "#/negociacao", "#/sistema/saude", "#/sistema/usuarios", "#/conta"];
+const CELULAR = ["#/hoje", "#/operar", "#/contato", "#/orcamentos/novo", "#/clientes", "#/conteudo", "#/painel-dono", "#/plano", "#/hoje", "#/operar", "#/visao", "#/orbita", "#/radar", "#/produtos", "#/pedidos", "#/compras", "#/contas-pagar", "#/recebimentos", "#/biblioteca/revisoes", "#/negociacao", "#/sistema/saude", "#/sistema/usuarios", "#/conta"];
 const membro = (user_id, ativo) => fetch(`${URL_BASE}/rest/v1/membros`, { method: "POST", headers: { ...admin, Prefer: "resolution=merge-duplicates" }, body: JSON.stringify({ user_id, nome: "Usuario TESTE navegador", papel: "direcao", ativo }) });
 
 // usuario TESTE e sessao
@@ -59,7 +59,7 @@ async function percorrer(nome, viewport, telas, { extras = true } = {}) {
     const prob = [];
     if (/Não foi possível abrir esta tela|Entrar|Enviar link de acesso/.test(r.titulo + r.texto.slice(0, 200))) prob.push(`não abriu (${r.titulo}: ${r.texto.slice(0, 120).replace(/\s+/g, " ")})`);
     if (/\b(undefined|NaN)\b/.test(r.texto)) prob.push("texto undefined/NaN");
-    if (t !== "#/orbita" && r.titulo === "Órbita") prob.push("rota caiu na Órbita (tela não publicada?)");
+    if (t !== "#/hoje" && r.titulo === "Hoje") prob.push("rota caiu em Hoje (tela não publicada?)");
     if (r.lateral) prob.push("rolagem lateral");
     if (errosJs.length) prob.push(`erro JS: ${errosJs.join(" | ").slice(0, 300)}`);
     const linha = `${nome} ${t}${prob.length ? ` -> ${prob.join("; ")}` : ""}`;

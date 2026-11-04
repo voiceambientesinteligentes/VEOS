@@ -103,6 +103,6 @@ rodar(async (v) => {
     exigir("Levar os 12 posts ao Marketing", "Copiar legenda", "#automacaoresidencial", "Rotina do Instagram");
   } else if (caso === "operar") {
     await telaOperar(v);
-    exigir("Começar a operar", "Preparar (uma vez)", "Trazer cliente", "Vender", "Entregar e receber", "Contato rápido", "Novo orçamento");
+    exigir("etapas com movimento", "Próximo passo", "Preparar (uma vez)", "Trazer cliente", "Vender", "Entregar e receber", "Contato rápido", "Novo orçamento");
   }
 });
