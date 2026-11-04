@@ -17,6 +17,22 @@ Atualize este arquivo ao fim de cada sessão: última ação, resultado e próxi
 **Não executado nesta sessão**
 - Uso de ponta a ponta com login real (criar um orçamento TESTE na Negociação ao Vivo, abrir o PDF pela proposta). Só então marcar CSO-04 como "feito" em `pendencias_projeto.js`.
 
+## 04/11/2026 — CI quebrado, reversão do tema claro e fim da sessão
+
+**Feito**
+- CI: `online` job do workflow `testes` estava falhando desde a migração do runner `ubuntu-latest` para Ubuntu 26.04 (19/10) — o Playwright 1.55 não instala o Chromium nela. Fixado em `ubuntu-24.04`. Confirmado rodando o workflow manualmente (job `online` passou da etapa "Instalar navegador").
+- Achado ao conferir isso: o teste de navegador no site publicado agora falha em `catalogo: 0/8 fotos carregadas` — parece não relacionado (fotos de produto não carregando do Storage), **não investigado, fora do escopo de hoje**.
+- **Revertido o redesenho visual de 02/11** (commits `0aa235a` e `628f26f`, feitos na sessão anterior, no outro computador): tinham trocado o tema do site inteiro de escuro para claro e a tela de entrada padrão de Órbita para Visão geral — isso contraria a decisão de 30/09 ("layout e base do VEOS ficam como estão, sem troca de tema") e deixou a Órbita (desenhada para fundo escuro) destoando. Revertido para o tema escuro original; Visão geral continua existindo e acessível pelo menu, só deixou de ser a tela de entrada. O conserto de selos longos quebrando linha no celular (parte daqueles commits) foi mantido, pois já vivia em `components.css`, independente do tema. 134/134 telas e 134/134 testes de domínio continuam passando. Registrado em DECISOES.md.
+
+**Não executado nesta sessão**
+- O item "0/8 fotos do catálogo" no teste de navegador (achado, não investigado).
+- Uso de ponta a ponta do CSO-04 com login real (ver sessão de 03/11 acima).
+
+**Próximo passo**
+- Conferir visualmente no navegador (voiceambientesinteligentes.github.io/VEOS/) se a Órbita voltou a ficar como o Fernando lembra, depois que o GitHub Pages republicar.
+- Investigar o "0/8 fotos do catálogo" se for relevante.
+- Fazer o uso de ponta a ponta do CSO-04 (orçamento próprio) e marcar como "feito" em `pendencias_projeto.js`.
+
 ## 30/09/2026 — sessão de transição (Claude Code, VS Code)
 
 **Feito**
