@@ -46,6 +46,7 @@ import { CATALOGO } from "./data/catalogo.js";
 import { abaDaRota, itensDeBusca, menuDoPerfil, NOVOS, secaoDaRota } from "./data/navegacao.js";
 import { icone } from "./ui/icones.js";
 import { telaHoje } from "./ui/views/hoje.js";
+import { iniciarAssistente, pararAssistente } from "./ui/assistente.js";
 
 const el = {
   view: document.getElementById("view"),
@@ -134,7 +135,7 @@ const TELAS = {
   "#/conteudo": { fn: (root) => telaConteudo(root), titulo: ["Calendário do Instagram", "Pautas com legenda, roteiro e hashtags; cada post vira conteúdo no Marketing"] },
   "#/radar": { fn: telaRadar, titulo: ["Radar", "Alertas e tarefas de todos os setores"] },
   "#/conselho": { fn: telaConselho, titulo: ["Conselho consultivo", "Os diretores especialistas da VOICE"] },
-  "#/ia": { fn: (root, signal) => renderIA(root, signal), titulo: ["IA VEOS", "Comando por voz"] },
+  "#/ia": { fn: (root, signal) => renderIA(root, signal, eu), titulo: ["IA VEOS", "Converse com os diretores por voz ou texto"] },
   "#/orbita": { fn: telaOrbita, titulo: ["Órbita", "Os setores em órbita do VEOS"] },
   "#/visao": { fn: (root) => (["direcao", "financas"].includes(eu.papel) ? telaPainel(root) : telaVisao(root)), titulo: ["Visão geral", "Painel executivo: vendas, faturamento, caixa, funil e alertas"] },
   "#/pendencias": { fn: (root, signal) => telaPendencias(root, signal), titulo: ["Pendências do projeto", "O que já foi feito, o que falta e os próximos passos, diretor por diretor"] },
@@ -225,6 +226,7 @@ function montarMenu() {
   botaoSair.addEventListener("click", async () => {
     await sair();
     eu = null;
+    pararAssistente();
     telaLogin();
   });
   menu = menuDoPerfil(eu.papel);
@@ -364,6 +366,7 @@ async function iniciar(mensagem) {
   }
   montarMenu();
   iniciarAvisos();
+  iniciarAssistente(eu);
   if (!TELAS[rotaBase()] && !/^#\/(projetos|setor|zoho|pedidos|estoque|biblioteca|compras|propostas|produtos|pendencias|estrutura|clientes|orcamentos)\//.test(location.hash)) history.replaceState(null, "", "#/hoje");
   navegar();
 }

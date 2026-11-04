@@ -1,6 +1,5 @@
 import { api } from "../js/data/api.js";
 import { telaSetor } from "../js/ui/views/setor.js";
-import { renderIA } from "../js/ui/views/ia.js";
 import { rodar } from "./_kit.js";
 
 const caso = location.hash.slice(1);
@@ -17,13 +16,5 @@ rodar(async (v) => {
     busca.value = caso === "marketing" ? "campanha arquitetos" : "proposta negociação";
     busca.dispatchEvent(new Event("input"));
     if (!v.textContent.includes("Procedimento(s) mais próximo(s)")) throw new Error("busca no manual nao achou procedimento");
-  }
-  if (caso === "ia") {
-    window.speechSynthesis && (window.speechSynthesis.speak = () => {});
-    renderIA(v, new AbortController().signal);
-    v.querySelector("#ia-texto").value = "prepare uma campanha para arquitetos no instagram";
-    v.querySelector("form").requestSubmit();
-    await espera(800);
-    if (!v.textContent.includes("Como o CMO age neste pedido")) throw new Error("IA nao mostrou o procedimento: " + v.textContent.slice(0, 300));
   }
 });

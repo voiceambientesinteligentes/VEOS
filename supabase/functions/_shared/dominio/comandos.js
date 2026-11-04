@@ -1,7 +1,6 @@
 // GERADO por scripts/gerar-catalogo.mjs a partir de apps/web/js/domain/comandos.js - nao editar a mao.
-// Interpretacao deterministica de comandos de voz/texto do VEOS (sem IA).
-// Hoje: navegacao entre telas e indicacao do diretor que receberia o pedido.
-// Quando a IA for integrada, o pedido vai ao diretor indicado aqui.
+// Interpretacao deterministica de comandos de voz/texto do VEOS (sem IA): pedido de tela abre a tela;
+// o resto vai ao diretor indicado aqui, que responde pelo motor de IA do servidor (ui/assistente.js).
 
 const normalizar = (t) =>
   String(t || "")
@@ -14,6 +13,8 @@ const normalizar = (t) =>
 
 // Ordem importa: o primeiro que casar vence.
 const NAVEGACAO = [
+  { rota: "#/hoje", fala: "Abrindo o seu dia.", termos: ["hoje", "inicio", "tela inicial", "pagina inicial", "meu dia"] },
+  { rota: "#/orcamentos/novo", fala: "Abrindo um orçamento novo.", termos: ["novo orcamento", "orcamento novo", "montar orcamento", "fazer orcamento"] },
   { rota: "#/radar", fala: "Abrindo o radar de alertas e tarefas.", termos: ["radar", "alertas", "pendencias", "tarefas"] },
   { rota: "#/conselho", fala: "Abrindo o conselho consultivo.", termos: ["conselho", "diretores"] },
   { rota: "#/projetos", fala: "Abrindo projetos e caixa.", termos: ["projetos", "caixa", "exposicao"] },
@@ -27,8 +28,12 @@ const NAVEGACAO = [
   { rota: "#/setor/direcao", fala: "Abrindo a Direção Geral.", termos: ["direcao", "direcao geral"] },
   { rota: "#/setor/financas", fala: "Abrindo o Financeiro.", termos: ["financeiro", "setor financeiro"] },
   { rota: "#/historico", fala: "Abrindo o histórico de orçamentos.", termos: ["historico", "orcamentos salvos", "orcamentos registrados"] },
-  { rota: "#/cfo", fala: "Abrindo os avisos do CFO.", termos: ["avisos", "aviso do cfo", "vigia", "novo orcamento", "conferir orcamento"] },
-  { rota: "#/orbita", fala: "Abrindo a órbita dos setores.", termos: ["orbita", "setores em orbita", "inicio", "tela inicial"] },
+  { rota: "#/orcamentos", fala: "Abrindo os orçamentos.", termos: ["orcamentos", "lista de orcamentos"] },
+  { rota: "#/clientes", fala: "Abrindo os clientes.", termos: ["clientes", "cadastro de clientes"] },
+  { rota: "#/contato", fala: "Abrindo o contato rápido.", termos: ["contato rapido", "novo contato", "novo lead"] },
+  { rota: "#/pedidos", fala: "Abrindo os pedidos.", termos: ["pedidos"] },
+  { rota: "#/cfo", fala: "Abrindo os avisos do CFO.", termos: ["avisos do cfo", "aviso do cfo", "vigia", "conferir orcamento"] },
+  { rota: "#/orbita", fala: "Abrindo a órbita dos setores.", termos: ["orbita", "setores em orbita"] },
   { rota: "#/visao", fala: "Abrindo a visão geral.", termos: ["visao geral", "resumo", "painel"] },
 ];
 
@@ -57,7 +62,7 @@ export function interpretar(bruto) {
     texto,
     diretor,
     fala: diretor
-      ? `Pedido para o ${diretor.sigla}, ${diretor.nome}. A inteligência artificial ainda não está integrada; quando estiver, ele responderá.`
-      : "Pedido recebido. A inteligência artificial ainda não está integrada; quando estiver, a Secretaria vai encaminhar.",
+      ? `Pedido para o ${diretor.sigla}, ${diretor.nome}. Ele vai analisar com os dados do VEOS e responder.`
+      : "Pedido para a Direção. Vou analisar com os dados do VEOS e responder.",
   };
 }

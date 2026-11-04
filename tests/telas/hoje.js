@@ -26,7 +26,7 @@ rodar(async (v) => {
   const t = v.textContent;
   for (const x of ["Fernando", "Para fazer hoje", "Agora na VOICE", "Contato que chegou", "Orçamento", "Começar a operar"]) if (!t.includes(x)) throw new Error(`falta: ${x}`);
   if (v.querySelectorAll(".hj-orbita .orbita-no").length !== 2) throw new Error("orbita na pagina inicial com os setores");
-  if (!v.querySelector(".hj-ia .ia-microfone") || !v.querySelector("#ia-texto")) throw new Error("IA VEOS na pagina inicial");
+  if (!v.querySelector(".hj-ia .as-mic") || !v.querySelector(".hj-ia .as-campo")) throw new Error("IA VEOS na pagina inicial");
   if (caso === "vazio") { if (!t.includes("Tudo em dia.")) throw new Error("vazio"); return; }
   const itens = [...v.querySelectorAll(".hj-item strong")].map((e) => e.textContent);
   if (itens[0] !== "Lead TESTE sem resposta há 2 horas") throw new Error(`crítico primeiro: ${itens}`);

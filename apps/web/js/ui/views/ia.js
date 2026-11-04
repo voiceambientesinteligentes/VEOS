@@ -1,182 +1,79 @@
-// Tela IA VEOS: onda de voz (WebGL) + comando por voz do navegador (pt-BR).
-// Hoje executa comandos de navegacao e indica o diretor que receberia o pedido;
-// a resposta escrita na voz do diretor sai em Perguntar aos diretores (motor de IA no servidor).
-import { interpretar } from "../../domain/comandos.js";
-import { CATALOGO } from "../../data/catalogo.js";
-import { carregarManual, cartaoProcedimento, procedimentoPara } from "./manual.js";
-import { clear, h, s } from "../dom.js";
+// IA VEOS (tela cheia), no estilo de um app de conversa com IA: coluna central, saudacao grande quando
+// vazia, caixa de texto arredondada com microfone e enviar, sugestoes, respostas em texto corrido.
+// O orbe (onda WebGL) reage quando o VEOS escuta ou fala. Mesmo cerebro do chat flutuante
+// (ui/assistente.js): telas abrem na hora; perguntas vao ao diretor certo pelo motor de IA do servidor.
+import { assinar, caixaDeEntrada, definirVoz, desenharMensagens, enviar, escolherVoz, estado, ligarVoz, limparConversa, quandoFalar, vozesDisponiveis, vozLigada } from "../assistente.js";
+import { h } from "../dom.js";
 import { montarOnda } from "../onda.js";
 
-const EXEMPLOS = ["Abrir a órbita", "Mostrar os avisos do CFO", "Abrir o histórico", "Qual a margem do projeto da cobertura?", "Prepare uma campanha para arquitetos"];
+const SUGESTOES = [
+  ["Qual canal de captação eu trabalho primeiro este mês?", "Vendas"],
+  ["Quanto devo cobrar pela hora de mão de obra?", "Finanças"],
+  ["Monte uma campanha de Instagram para arquitetos", "Marketing"],
+  ["Abrir o radar", "Tela"],
+];
 
-export function renderIA(root, signal) {
-  const Reconhecimento = window.SpeechRecognition || window.webkitSpeechRecognition;
-  const temVoz = !!Reconhecimento;
-  const temFala = "speechSynthesis" in window;
+export function renderIA(root, signal, eu = {}, { embutida = false } = {}) {
+  const nome = String(eu.nome ?? "").split(" ")[0];
+  const canvas = h("canvas", { class: "ia2-onda", "aria-hidden": "true" });
+  const orbe = h("div", { class: "ia2-orbe" }, canvas);
+  const lista = h("div", { class: "ia2-lista", "aria-live": "polite" });
+  const { form, campo } = caixaDeEntrada({ grande: true, placeholder: "Pergunte a um diretor ou peça uma tela… (Enter envia)", aoOuvir: (v) => energia(v ? 0.7 : 0.12) });
+  const sugestoes = h("div", { class: "ia2-sugestoes" }, SUGESTOES.map(([t, tag]) => {
+    const b = h("button", { class: "ia2-sugestao", type: "button" }, h("small", null, tag), h("span", null, t));
+    b.addEventListener("click", () => enviar(t));
+    return b;
+  }));
+  // voz: escolha e liga/desliga
+  const seletor = h("select", { class: "select ia2-voz", "aria-label": "Voz do VEOS" });
+  const vozBox = h("label", { class: "ia2-opcao" }, h("input", { type: "checkbox", checked: vozLigada() }), "Responder em voz");
+  vozBox.firstChild.addEventListener("change", (e) => ligarVoz(e.target.checked));
+  seletor.addEventListener("change", () => definirVoz(seletor.value));
+  const preencherVozes = () => {
+    const vs = vozesDisponiveis();
+    const atual = escolherVoz(vs);
+    seletor.replaceChildren(...(vs.length ? vs : [{ name: "", lang: "" }]).map((v) => h("option", { value: v.name, selected: v.name === atual?.name }, v.name ? v.name.replace(/^Microsoft\s+/, "").replace(/ - Portuguese \(Brazil\)| \(Portuguese.*\)$/, "") : "Voz do sistema")));
+    seletor.disabled = !vs.length;
+  };
+  const novo = h("button", { class: "btn btn-ghost btn-mini", type: "button" }, "Nova conversa");
+  novo.addEventListener("click", () => { if (confirm("Começar uma conversa nova? As anteriores continuam em Perguntar aos diretores.")) limparConversa(); });
 
-  const canvas = h("canvas", { class: "ia-onda", "aria-hidden": "true" });
-  const palco = h("div", { class: "ia-palco" }, canvas, h("div", { class: "ia-marca" }, h("span", { class: "ia-marca-simbolo", "aria-hidden": "true" }, "✦"), h("span", null, "VEOS IA")));
-  const estado = h("p", { class: "ia-estado", role: "status" }, temVoz ? "Toque no microfone e fale." : "Este navegador não tem reconhecimento de voz. Use o Chrome ou o Edge, ou digite abaixo.");
-  const transcricao = h("p", { class: "ia-transcricao", "aria-live": "polite" });
-  const resposta = h("div", { class: "ia-resposta", "aria-live": "polite" });
-  const microfone = h("button", { class: "ia-microfone", type: "button", "aria-pressed": "false", disabled: !temVoz, "aria-label": "Falar com o VEOS" },
-    s("svg", { viewBox: "0 0 24 24", "aria-hidden": "true" }),
-  );
-  microfone.firstChild.append(...iconeMicrofone());
-  const falarResposta = h("input", { type: "checkbox", id: "ia-falar", checked: temFala, disabled: !temFala });
-  const campo = h("input", { class: "input", id: "ia-texto", type: "text", autocomplete: "off", placeholder: "Ou digite um comando…" });
-  const form = h("form", { class: "ia-form" }, campo, h("button", { class: "btn", type: "submit" }, "Enviar"));
+  const vazio = h("div", { class: "ia2-vazio" },
+    h("h1", { class: "ia2-saudacao" }, h("span", { class: "ia2-estrela", "aria-hidden": "true" }, "✦"), ` Como posso ajudar${nome ? `, ${nome}` : ""}?`),
+    form, sugestoes,
+    h("p", { class: "ia2-nota" }, "Os diretores respondem com a IA do servidor, pelo manual de cada um e com os dados do VEOS. É opinião, não decisão."));
+  const rodape = h("div", { class: "ia2-rodape" });
+  const coluna = h("div", { class: "ia2-coluna" }, lista, rodape);
+  root.append(h("section", { class: `ia2${embutida ? " ia2-embutida" : ""}`, "aria-label": "IA VEOS" },
+    h("div", { class: "ia2-topo" }, orbe, h("div", { class: "ia2-topo-texto" }, h("strong", null, "VEOS"), h("small", null, "Assistente da VOICE")), h("div", { class: "ia2-topo-acoes" }, seletor, vozBox, novo)),
+    coluna,
+    h("p", { class: "ia2-privacidade" }, "Privacidade: o reconhecimento e a voz são do próprio navegador (o áudio pode ir ao Google no Chrome ou à Microsoft no Edge). O VEOS não grava áudio. Não fale dados pessoais de clientes.")));
 
-  clear(root).append(
-    h("section", { class: "ia", "aria-label": "Assistente VEOS" },
-      palco,
-      h("div", { class: "ia-controles" },
-        h("div", { class: "ia-selos" },
-          h("a", { class: "pill tone-ok", href: "#/diretores", title: "Respostas escritas dos diretores pela IA do servidor" }, h("span", { class: "dot" }), "Diretores: IA ligada"),
-          h("span", { class: `pill tone-${temVoz ? "ok" : "risk"}` }, h("span", { class: "dot" }), temVoz ? "Voz: pronta" : "Voz: indisponível")),
-        microfone,
-        estado,
-        transcricao,
-        resposta,
-        form,
-        h("label", { class: "ia-opcao", for: "ia-falar" }, falarResposta, "Responder em voz"),
-      ),
-      h("div", { class: "ia-ajuda" },
-        h("p", { class: "ia-ajuda-titulo" }, "Experimente dizer"),
-        h("ul", { class: "ia-exemplos" }, EXEMPLOS.map((e) => h("li", null, h("button", { class: "orbita-chip", type: "button", onclick: () => executar(e) }, `“${e}”`)))),
-        h("p", { class: "ia-privacidade" },
-          "Privacidade: o reconhecimento de voz é do próprio navegador e pode enviar o áudio ao fornecedor dele (Google no Chrome, Microsoft no Edge). O VEOS não grava áudio. Aqui o VEOS abre telas e mostra o procedimento do diretor; a resposta escrita na voz dele sai em Perguntar aos diretores (IA no servidor, rotulada como opinião)."),
-      ),
-    ),
-  );
-
-  const onda = montarOnda(canvas, signal);
-  if (!onda) palco.classList.add("sem-webgl");
-  const energia = (v) => onda?.definirEnergia(v);
-  energia(0.12);
-
-  function falar(texto) {
-    if (!temFala || !falarResposta.checked) return;
-    speechSynthesis.cancel();
-    const u = new SpeechSynthesisUtterance(texto);
-    u.lang = "pt-BR";
-    u.rate = 1.02;
-    u.onstart = () => energia(0.55);
-    u.onend = () => energia(0.12);
-    speechSynthesis.speak(u);
-  }
-
-  function executar(texto) {
-    const r = interpretar(texto);
-    transcricao.textContent = r.texto ? `“${texto}”` : "";
-    clear(resposta);
-    if (r.rota) {
-      resposta.append(h("p", null, h("strong", null, "Ação: "), r.fala));
-      falar(r.fala);
-      setTimeout(() => { if (!signal.aborted) location.hash = r.rota; }, 1100);
-    } else if (r.diretor) {
-      const setor = CATALOGO.find((s) => s.sigla === r.diretor.sigla);
-      const comoAge = h("div", { class: "stack-s" });
-      resposta.append(
-        h("p", null, h("strong", null, "Encaminhamento: "), `${r.diretor.sigla} — ${r.diretor.nome}`),
-        comoAge,
-        h("p", { class: "muted" }, "Aqui aparece o procedimento do manual do diretor. Para a resposta escrita na voz dele, use o botão abaixo (vai para Perguntar aos diretores)."),
-      );
-      if (setor) carregarManual(setor.id).then((m) => {
-        const p = m && procedimentoPara(m, texto);
-        if (signal.aborted || !p) return falar(r.fala);
-        comoAge.append(h("p", null, h("strong", null, `Como o ${setor.sigla} age neste pedido:`)), cartaoProcedimento(p, true),
-          h("div", { class: "row" }, h("a", { class: "btn btn-ghost", href: `#/setor/${setor.id}/manual` }, "Abrir o manual completo"),
-            h("a", { class: "btn btn-primary", href: `#/diretores?${new URLSearchParams({ setor: setor.id, pergunta: texto })}` }, `Pedir resposta ao ${setor.sigla}`)));
-        falar(`Pedido para o ${setor.sigla}. Procedimento: ${p.pedido}. Primeiro passo: ${p.passos[0]}`);
-      }).catch(() => falar(r.fala));
-      else falar(r.fala);
-    } else {
-      resposta.append(h("p", { class: "muted" }, r.fala));
-      falar(r.fala);
-    }
-  }
-
-  form.addEventListener("submit", (e) => {
-    e.preventDefault();
-    if (campo.value.trim()) executar(campo.value.trim());
-    campo.value = "";
-  });
-
-  // ------------------------------------------------ reconhecimento de voz
-  let rec = null, ouvindo = false;
-  function parar() {
-    ouvindo = false;
-    microfone.setAttribute("aria-pressed", "false");
-    microfone.classList.remove("is-ouvindo");
-    energia(0.12);
-  }
-  microfone.addEventListener("click", () => {
-    if (ouvindo) {
-      rec?.stop();
+  function desenhar() {
+    const st = estado();
+    // so avisos do Radar ainda nao e conversa: a saudacao fica e os avisos aparecem embaixo
+    const temConversa = st.msgs.some((m) => m.de !== "aviso") || st.pensando;
+    coluna.classList.toggle("ia2-com-conversa", Boolean(temConversa));
+    if (!temConversa) {
+      const avisos = st.msgs.filter((m) => m.de === "aviso").slice(-4);
+      const caixaAvisos = avisos.length ? h("div", { class: "ia2-avisos" }, h("small", null, "Avisos"), avisos.map((m) => h("a", { class: "ia2-aviso", href: m.href ?? "#/radar" }, h("span", { class: "as-avatar as-avatar-aviso", "aria-hidden": "true" }, "!"), h("span", null, m.texto)))) : null;
+      lista.replaceChildren(vazio, ...(caixaAvisos ? [caixaAvisos] : []));
+      rodape.replaceChildren();
+      if (form.parentElement !== vazio) vazio.insertBefore(form, sugestoes);
       return;
     }
-    rec = new Reconhecimento();
-    rec.lang = "pt-BR";
-    rec.interimResults = true;
-    rec.continuous = false;
-    rec.maxAlternatives = 1;
-    rec.onstart = () => {
-      ouvindo = true;
-      microfone.setAttribute("aria-pressed", "true");
-      microfone.classList.add("is-ouvindo");
-      estado.textContent = "Ouvindo…";
-      clear(resposta);
-      transcricao.textContent = "";
-      energia(0.6);
-      if (temFala) speechSynthesis.cancel();
-    };
-    rec.onspeechstart = () => energia(1);
-    rec.onresult = (ev) => {
-      let parcial = "", final = "";
-      for (const r of ev.results) (r.isFinal ? (final += r[0].transcript) : (parcial += r[0].transcript));
-      transcricao.textContent = `“${(final || parcial).trim()}”`;
-      if (final) {
-        estado.textContent = "Entendido.";
-        executar(final.trim());
-      }
-    };
-    rec.onerror = (ev) => {
-      estado.textContent = {
-        "not-allowed": "Microfone bloqueado. Libere o microfone para este site no ícone de cadeado da barra de endereço.",
-        "service-not-allowed": "Microfone bloqueado. Libere o microfone para este site no ícone de cadeado da barra de endereço.",
-        "no-speech": "Não ouvi nada. Toque de novo e fale.",
-        "audio-capture": "Nenhum microfone encontrado.",
-        network: "Sem conexão com o serviço de voz do navegador.",
-      }[ev.error] || `Falha na voz: ${ev.error}`;
-    };
-    rec.onend = () => {
-      parar();
-      if (estado.textContent === "Ouvindo…") estado.textContent = "Toque no microfone e fale.";
-    };
-    try {
-      rec.start();
-    } catch (e) {
-      estado.textContent = `Não foi possível iniciar a voz: ${e.message}`;
-    }
-  });
-
-  signal.addEventListener("abort", () => {
-    try { rec?.abort(); } catch { /* ja parado */ }
-    if (temFala) speechSynthesis.cancel();
-  });
-}
-
-function iconeMicrofone() {
-  const NS = "http://www.w3.org/2000/svg";
-  const el = (tag, attrs) => {
-    const e = document.createElementNS(NS, tag);
-    for (const [k, v] of Object.entries(attrs)) e.setAttribute(k, v);
-    return e;
-  };
-  const traco = { fill: "none", stroke: "currentColor", "stroke-width": "1.6", "stroke-linecap": "round" };
-  return [
-    el("rect", { x: "9", y: "3", width: "6", height: "11", rx: "3", ...traco }),
-    el("path", { d: "M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21M8.5 21h7", ...traco }),
-  ];
+    desenharMensagens(lista);
+    if (form.parentElement !== rodape) rodape.replaceChildren(form);
+  }
+  const sair = assinar(desenhar);
+  desenhar();
+  preencherVozes();
+  if ("speechSynthesis" in window) speechSynthesis.addEventListener?.("voiceschanged", preencherVozes, { signal });
+  const onda = montarOnda(canvas, signal, { escala: 0.5 });
+  if (!onda) orbe.classList.add("sem-webgl");
+  const energia = (v) => onda?.definirEnergia(v);
+  energia(0.12);
+  quandoFalar((falando) => energia(falando ? 0.6 : 0.12));
+  if (!embutida) campo.focus();
+  signal.addEventListener("abort", () => { sair(); quandoFalar(null); if ("speechSynthesis" in window) speechSynthesis.cancel(); });
 }

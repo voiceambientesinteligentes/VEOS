@@ -52,7 +52,7 @@ export async function telaHoje(root, eu = {}, signal = new AbortController().sig
       h("section", { class: "hj-card hj-orbita" }, h("div", { class: "hj-card-topo" }, h("h2", null, "Órbita"), h("a", { href: "#/orbita", class: "hj-link" }, "Tela cheia")), orbitaBox),
       h("section", { class: "hj-card hj-ia" }, h("div", { class: "hj-card-topo" }, h("h2", null, "IA VEOS"), h("a", { href: "#/ia", class: "hj-link" }, "Tela cheia")), iaBox)),
   );
-  renderIA(iaBox, signal);
+  renderIA(iaBox, signal, eu, { embutida: true });
 
   const [radar, orcs, peds, cad] = await Promise.all([tentar(() => api.radar()), tentar(() => api.comercialOrcamentos()), tentar(() => api.fluxoPedidos()), tentar(() => api.setores())]);
   // orbita: os setores com os alertas e tarefas do Radar (mesma regra da tela Orbita)
