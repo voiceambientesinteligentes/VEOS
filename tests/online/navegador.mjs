@@ -19,8 +19,9 @@ const TELAS = [
   "#/pedidos", "#/estoque", "#/recebimentos", "#/produtos", "#/produtos/revisao", "#/compras", "#/compras/nova", "#/contas-pagar", "#/zoho/books", "#/zoho/crm", "#/setor/financas", "#/setor/vendas", "#/setor/marketing/manual", "#/setor/direcao/manual",
   "#/negociacao", "#/propostas", "#/calculadora", "#/projetos", "#/sistema/saude", "#/sistema/usuarios", "#/sistema/exportar", "#/sistema/validacao", "#/conta",
   "#/painel-dono", "#/comercial", "#/plano", "#/cfo/diagnostico", "#/cfo/precos", "#/cfo/formulario", "#/cfo/estoque",
+  "#/operar", "#/clientes", "#/orcamentos", "#/orcamentos?aba=zoho", "#/orcamentos/novo", "#/contato", "#/prospeccao", "#/conteudo", "#/estrutura/vendas",
 ];
-const CELULAR = ["#/painel-dono", "#/plano", "#/visao", "#/orbita", "#/radar", "#/produtos", "#/pedidos", "#/compras", "#/contas-pagar", "#/recebimentos", "#/biblioteca/revisoes", "#/negociacao", "#/sistema/saude", "#/sistema/usuarios", "#/conta"];
+const CELULAR = ["#/operar", "#/contato", "#/orcamentos/novo", "#/clientes", "#/conteudo", "#/painel-dono", "#/plano", "#/visao", "#/orbita", "#/radar", "#/produtos", "#/pedidos", "#/compras", "#/contas-pagar", "#/recebimentos", "#/biblioteca/revisoes", "#/negociacao", "#/sistema/saude", "#/sistema/usuarios", "#/conta"];
 const membro = (user_id, ativo) => fetch(`${URL_BASE}/rest/v1/membros`, { method: "POST", headers: { ...admin, Prefer: "resolution=merge-duplicates" }, body: JSON.stringify({ user_id, nome: "Usuario TESTE navegador", papel: "direcao", ativo }) });
 
 // usuario TESTE e sessao
