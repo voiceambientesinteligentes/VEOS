@@ -2,6 +2,21 @@
 
 Atualize este arquivo ao fim de cada sessão: última ação, resultado e próximo passo.
 
+## 04/11/2026 (fim do dia) — encerramento da sessão
+
+**Feito nesta sessão (em ordem)**
+- Operação comercial do zero (clientes, montador de orçamento, ciclo até o pedido, retomada do Zoho, captação), numeração real do 1 e robôs fora da visão real.
+- Formulário do CFO: 10 valores estimados marcados + avisos no Radar; arquiteto como cliente principal no contexto dos diretores e do MCP.
+- Auditoria do que funciona (8 testes online, 133 verificações) e do que falta.
+- Novo design: 9 áreas no menu com abas, página Hoje (com Órbita e IA), "+ Novo", barra no celular.
+- Perguntar aos diretores em formato de conversa, com continuação; conferência de percentuais e aviso de resposta sem dados.
+- IA VEOS ligada aos diretores + chat flutuante com avisos + voz masculina natural (estilo assistente).
+- Verificado no fim: domínio 160 + Python 155 + JS 20; telas 184/184; site publicado 77/77; uso real da IA 6/6 e do montador 8/8.
+
+**Próximo passo**
+- Seguir `docs/PROXIMA_SESSAO.md` → "O que falta no PROGRAMA" (P0 primeiro: erro 502 intermitente no `#/conteudo` e refazer resposta da IA quando ela não consultar dados).
+- Fernando (programa): revogar a chave exposta no site antigo, entrar com login real, configurar o MCP, trocar as chaves de IA.
+
 ## 04/11/2026 (noite) — operação comercial do zero
 
 **Feito**

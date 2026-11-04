@@ -1,108 +1,93 @@
-# Próxima sessão — ponto de partida (atualizado em 24/10/2026)
+# Próxima sessão — ponto de partida (atualizado em 04/11/2026, fim do dia)
 
-## Urgente e decisões do Fernando (24/10)
-1. **Revogar a chave da Anthropic que está no site** (console.anthropic.com → Settings → API Keys), trocar a senha da área "Equipe Interna" e republicar o site (BIB-0104; aba Pendências CIO-13).
-2. Decidir: RT × CAU (BIB-0105), quem define cada meta + faturamento e mix por segmento (BIB-0106), regras de prospecção e mensagens (BIB-0107), CRM dos setores em produção (BIB-0109).
-3. Começar a usar o comercial: registrar todo contato novo como lead no setor Comercial (implantação COM-B1) e dar situação aos 83 orçamentos sem decisão no Zoho (COM-B2). A aba Implantação (`#/comercial?aba=implantacao`) lista o resto.
-4. No final: trocar todas as chaves de IA e fazer o MCP ampliado (ver abaixo).
+Este arquivo trata só do **PROGRAMA** (o VEOS: telas, servidor, banco, IA, integrações).
+O que é operação da empresa (decidir metas, RT, alíquotas, preencher dados reais, ligar para clientes)
+fica na aba **Pendências do projeto** do site, não aqui.
 
 ## Prompt para colar no início da próxima conversa
 
 ```
-Você é o Claude Code no projeto VEOS da VOICE Ambientes Inteligentes (Fernando, fundador).
-Atue como especialista sênior em engenharia de software, produto e UX.
+Você é o Claude Code no projeto VEOS (VOICE Executive Operating System) da VOICE Ambientes
+Inteligentes. O Fernando é o fundador e CEO. Atue como engenheiro de software sênior, de produto e
+UX, com autonomia técnica total (pode editar, testar, publicar, fazer commit e push sem pedir
+confirmação), mas nunca gaste dinheiro, nunca envie nada a clientes ou terceiros e nunca altere
+política, meta, alçada ou regime tributário: isso é decisão do Fernando.
 
-1. Leia, nesta ordem: C:\Users\voice\VOICE_360\CLAUDE.md, VEOS/docs/PROXIMA_SESSAO.md,
-   VEOS/docs/ESTADO_ATUAL.md, VEOS/docs/DECISOES.md e VEOS/docs/CONTINUIDADE.md.
-2. Antes de propor ou executar algo relevante, consulte a Biblioteca do VEOS
-   (bib_consultar / POST /api/biblioteca/consultar): decisões vigentes, políticas,
-   aprendizados validados e propostas pendentes. Precedente orienta, não autoriza.
-3. Confira comigo as decisões pendentes listadas em PROXIMA_SESSAO.md (seção
-   "Decisões que dependem do Fernando") antes de mexer nesses assuntos.
-4. Siga o backlog em ordem de prioridade (P0 → P1 → P2), um bloco por vez:
-   implementar, testar (testes automatizados + banco em transação desfeita + tela
-   simulada), publicar, registrar na Biblioteca e atualizar ESTADO_ATUAL.
-5. Nunca deduza regime tributário, alçada, meta ou política: pergunte ou marque como
-   proposta/hipótese. Não declare "100%" sem teste verificado.
+Repositório: C:\Users\ferna\VEOS (GitHub voiceambientesinteligentes/VEOS, público; o site publica
+sozinho no GitHub Pages a cada push na main). Banco e servidor: Supabase, projeto vkrwxvnfstvriibjwuvw.
+
+1. Leia, nesta ordem: docs/PROXIMA_SESSAO.md (este), docs/ESTADO_ATUAL.md (as seções do topo são as
+   mais recentes), docs/CONTINUIDADE.md, docs/DECISOES.md e docs/SETORES_ESQUEMA.md.
+2. No PowerShell desta máquina, antes de tudo:
+   $env:PATH += ";C:\Program Files\Git\cmd;C:\Program Files\nodejs"
+   A CLI do Supabase já está logada: npx -y supabase@2.118.0 ...
+3. Trabalhe pelo backlog "O que falta no programa" abaixo, em ordem (P0 → P1 → P2), um bloco por vez:
+   implementar → testar (npm test; node scripts/testar-telas.mjs; banco com tests/banco/*.sql em
+   transação desfeita; online com node scripts/online.mjs tests/online/<teste>.mjs) → publicar
+   (db push, functions deploy, git push) → conferir no site publicado (tests/online/navegador.mjs) →
+   atualizar docs/ESTADO_ATUAL.md, docs/CONTINUIDADE.md e a aba Pendências.
+4. Antes de recomendar algo de negócio, consulte a Biblioteca do VEOS (precedente orienta, não autoriza).
+   Nada que não foi aprovado vira regra: marque como PROPOSTA ou LACUNA.
+5. Não declare "100%" ou "pronto" sem teste verificado; diga o que foi testado e o que não foi.
+6. Responda ao Fernando em português do Brasil, simples e direto, sem jargão.
 ```
 
+## Como rodar (comandos desta máquina)
+- Testes de regras e domínio: `npm test` (gera/confere o catálogo e roda 160 testes + 155 Python + 20 JS).
+- Catálogo e cópia do domínio para o servidor: `node scripts/gerar-catalogo.mjs` (rode sempre que mexer em `setores/*.json` ou `apps/web/js/domain/*.js`; o `npm test` falha com "Desatualizado" se esquecer).
+- Telas com dados simulados (Edge headless, 1366 px e 390 px): `node scripts/testar-telas.mjs [filtro]` (184 telas em 04/11). Cada página lista os casos em `<!-- casos: ... -->`.
+- Banco: `npx -y supabase@2.118.0 db push --linked --yes` (migrations) e `npx -y supabase@2.118.0 db query --linked -f tests/banco/<arquivo>.sql`. Ensaiar migration antes: junte migration + teste num arquivo com `begin; ... rollback;` e rode o db query.
+- Funções: `npx -y supabase@2.118.0 functions deploy <api|saude|ia-fila|zoho|zoho-sync|vigia> --use-api --project-ref vkrwxvnfstvriibjwuvw`.
+- Testes online contra o sistema real (robôs `@veos-teste.invalid`, ficam inativos no fim): `node scripts/online.mjs tests/online/<e2e_api|e2e_financeiro|e2e_setores|e2e_sistema|e2e_mcp|e2e_ia|e2e_caixa|e2e_operacao>.mjs`.
+- No navegador (precisa do Playwright, que não fica instalado): `$env:PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD="1"; npm install --no-save --no-package-lock playwright` e então `navegador.mjs` (77 telas do site publicado), `uso_orcamento.mjs` (montador de ponta a ponta), `uso_ia.mjs` (IA real) e `fotos.mjs "#/rota"` (fotos para revisar o visual; `VEOS_FOTOS`, `VEOS_FOTO_INTEIRA=1`, `VEOS_SITE` para o publicado).
+- Comandos com muitas aspas: escreva um script na pasta de rascunho e execute. `Remove-Item` no mesmo comando que cita "C:\Program Files" é bloqueado: apague em comando separado.
+
 ## Onde está tudo
-- Site: https://voiceambientesinteligentes.github.io/VEOS/ (GitHub Pages, publica a cada push em `main`). A Netlify ficou congelada (créditos esgotados).
-- Servidor: Supabase `veos` (ref vkrwxvnfstvriibjwuvw), funções `api`, `saude`, `zoho`, `zoho-sync`, `vigia`; pg_cron chama `zoho-sync` a cada 2 min.
-- Repositório público: voiceambientesinteligentes/VEOS. Conteúdo real (Biblioteca, Zoho, pedidos) fica só no banco.
+- Site: https://voiceambientesinteligentes.github.io/VEOS/ — código em `apps/web` (JavaScript puro, sem React/Tailwind/build; CSP só do próprio site). Estilos do portal em `apps/portal/web/css` + `apps/web/css` (o visual novo está em `tema.css`, carregado por último).
+- Menu e abas: `apps/web/js/data/navegacao.js` (9 áreas; alimenta também a busca Ctrl+K). Página inicial `#/hoje`.
+- Servidor: Edge Function `api` (`supabase/functions/api/*.ts`), `saude` (vigias a cada 10 min), `ia-fila` (motor de IA a cada 5 min), `zoho-sync` (a cada 2 min). Domínio compartilhado copiado para `supabase/functions/_shared/dominio/`.
+- IA dos diretores: `supabase/functions/_shared/ia/` (motor com fallback gratuito Gemini → Mistral → OpenRouter → Groq; hoje responde a Mistral `ministral-14b`). Contexto da empresa em `apps/web/js/domain/empresa.js` (cliente principal = arquiteto). Assistente do site: `apps/web/js/ui/assistente.js` (chat flutuante + tela IA VEOS).
+- Robôs de teste: dados criados por `@veos-teste.invalid` não aparecem para usuários reais (`_shared/teste.ts`); numeração real (CLI/ORV/PED/COM) começa do 1 e teste usa série T.
+- Regra de custo zero da IA: nenhuma conta de IA pode ter cartão; quando a cota gratuita acaba, o provedor recusa e o motor passa ao próximo (detalhes em ESTADO_ATUAL, 07/10).
 
-## O que já funciona (resumo)
-Setores vivos (9) e Radar · Negociação e Calculadora · Zoho espelho + edição · Pedidos → estoque → parcelas → NF → recebimento · Biblioteca e governança · Contrato e termo de aceite em PDF · **P0** (validação guiada, saúde do sistema, usuários e MFA, exportação, backup criptografado, CI) · **P1** (painel executivo, compras e contas a pagar, previsão de caixa, caixa do pedido V1.1, obra no pedido, margem realizada, proposta em PDF, caixa de saída, resumo do dia, avisos) · **P2** (MCP do VEOS, independência do Zoho, busca Ctrl+K, PWA, registro LGPD).
+## O que já existe (resumo de 04/11)
+Setores vivos (9) com registros, regras vivas e Radar · Estrutura da empresa (organograma, agenda de cada cargo, atividade → ferramenta) · Operação comercial do zero (clientes, montador de orçamento com preço pela Política V1, PDF, enviado/aceito/recusado, pedido gerado do orçamento, retomada dos orçamentos antigos do Zoho, contato rápido, prospecção, calendário do Instagram, Começar a operar) · Pedidos → estoque → parcelas → NF → recebimento, compras e contas a pagar · Financeiro do CFO (caixa por extrato OFX, 13 semanas, DRE, indicadores, preço dos produtos, formulário com valores estimados marcados) · Biblioteca e governança · Zoho espelhado e editável · Diretores com IA em formato de conversa (continuação no mesmo fio, conferência de valores e percentuais) · IA VEOS por voz/texto ligada aos diretores e chat flutuante com avisos · Novo design (menu por áreas, Hoje, celular) · Usuários, MFA, LGPD, backup, exportação, MCP `veos` (17 ferramentas), PWA.
 
-## Mais motores de IA gratuitos (07/10)
-Situação dos segredos no Supabase: GEMINI_API_KEY (ok), MISTRAL_API_KEY (ok desde 07/10: plano gratuito sem cartão, modelos Ministral 14B e 8B; testado com pergunta do tamanho do CFO e ferramentas), GROQ_API_KEY + GROQ_MODELOS (ok, mas o gratuito aguenta só perguntas curtas: ~8 mil tokens por minuto; análise de orçamento passa disso e o motor pula para o próximo), OPENROUTER_API_KEY + OPENROUTER_MODELOS (ok desde 07/10: Nemotron Super testado com ferramentas; Ultra e Gemma às vezes sobrecarregados).
-1. **Mistral (ligada)**: o plano gratuito ("Uso da API incluso", até US$ 10/mês, sem cartão) só libera os modelos Ministral (`ministral-14b-2512`: 30 chamadas/min); Medium/Small respondem "limite 0" e Large responde "tier not allowed" — pedem plano pago (não ativar sem decisão). Privacidade: uso para treino **desligado** e "modelos Labs" desligado (conferido em 07/10; não ligar Labs: autoriza treino sempre).
-2. **OpenRouter (ligado)**: conta no nível gratuito, créditos 0, nunca comprou créditos; modelo pago responde 402 "Insufficient credits". Limite: 50 chamadas/dia nos modelos `:free`. O VEOS só aceita modelos `:free` no OpenRouter (trava no código; liberar pagos exigiria `OPENROUTER_PAGO=sim`, decisão de custo). O "credit limit" de US$ 100 da chave é só teto sobre créditos comprados — não é crédito concedido.
-**Garantia de custo zero (regra do Fernando: nada pago, nenhum cartão)**: nenhuma conta (Google AI Studio, Mistral, OpenRouter, Groq) pode ter cartão ou crédito comprado. Sem forma de pagamento não há como cobrar: quando a cota gratuita acaba, o provedor recusa (429/402) e o motor passa ao próximo; no fim, a pergunta fica para o Claude Code. Conferir de vez em quando: OpenRouter `GET /api/v1/credits` = 0; Mistral → Assinatura "Gratuito" e Faturamento sem forma de pagamento; Google AI Studio → Faturamento: "Nenhuma conta de faturamento" (conferido em 07/10, BIB-0100).
-**Pendente no final (Fernando)**: trocar todas as chaves de IA (Gemini, Mistral, OpenRouter, Groq), que apareceram na conversa, e cadastrar as novas direto nos segredos do Supabase. A do OpenRouter vence em 05/04/2027.
-Provedor instável não segura a pergunta: depois de 40 s em falhas ou 3 falhas, o motor passa ao próximo (antes o Gemini sobrecarregado consumia todo o tempo).
-3. Ordem: `IA_ORDEM` (padrão gemini,mistral,openrouter,groq,nvidia,openai).
+## O que falta no PROGRAMA (backlog técnico, em ordem)
 
-## Para ligar o que foi feito em 05/10 (ações do Fernando)
-1. ~~Chave do Gemini~~ **Feito em 06/10** (a chave apareceu numa imagem da conversa: trocar por uma nova é recomendável). Decidir formalmente BIB-0091 e BIB-0092. Se a cota gratuita não bastar no dia a dia: nível pago do Gemini (GEMINI_PAGO=sim) ou OpenAI — decisão de custo (BIB-0044). Instruções originais: aistudio.google.com → "Get API key" → copiar. No Supabase: Project Settings → Edge Functions → Secrets → `GEMINI_API_KEY` = a chave. Depois: `node scripts/online.mjs tests/online/e2e_ia.mjs` (ciclo completo com IA). Decidir BIB-0091 (Gemini gratuito, dados usados pelo Google) e BIB-0092 (OpenAI paga × teto zero).
-2. **Caixa real**: Ferramentas do CFO → Caixa e extrato → cadastrar as contas da empresa → importar o OFX de cada uma (internet banking → exportar extrato → OFX/Money). Classificar os lançamentos (marcar "lembrar").
-3. **Contas fixas**: Contas fixas e dívidas → "Trazer do Formulário do CFO" → conferir valores e dias de vencimento.
-4. **Contador**: alíquotas reais (2026 e 2027). Até lá vale a ADOTADA (BIB-0094).
-5. **Pedidos daqui para frente** (BIB-0095): cada orçamento aceito a partir de 06/10 vira pedido com parcelas; preencher o favorecido da RT no pedido.
-6. ~~P-9~~ decidido (BIB-0096).
+### P0 — corrigir/garantir antes de crescer
+1. **Erro 502 intermitente na tela Calendário do Instagram** (`#/conteudo`): apareceu na 1ª tentativa do `navegador.mjs` duas vezes em 04/11 (passa ao repetir). Provável carga de `GET /produtos` com URLs assinadas das fotos; investigar o log da função `api` e, se for isso, pedir só os produtos com foto e em menos quantidade.
+2. **Qualidade das respostas da IA** (modelo gratuito pequeno): às vezes responde sem consultar dados, se contradiz ou cita coisas que não existem. Já existe aviso e conferência; falta: quando a pergunta for de dados (vendas, funil, caixa, clientes) e o modelo não chamar nenhuma ferramenta, **refazer automaticamente uma vez exigindo a ferramenta**; testar com `uso_ia.mjs` e perguntas de exemplo.
+3. **E-mail de login (Supabase Auth)**: conferir no painel o limite do envio padrão antes de convidar a equipe; se for baixo, preparar a configuração de SMTP próprio (gratuito, ex.: conta de e-mail da empresa) — a configuração final depende do Fernando passar o acesso.
+4. **Testes online que criam pedido real** (`e2e_operacao`, `uso_orcamento`) estão fora do CI de propósito; decidir se entram no CI com limpeza total ou ficam manuais (hoje: pedido TESTE cancelado e série T).
 
-## Decisões que dependem do Fernando (registradas na Biblioteca)
-Já decididas em 01/10: IA no servidor = teto zero (BIB-0044); Fernando exerce a CEO (BIB-0045); repositório continua público.
-1. **Revisar as propostas em consulta** (Biblioteca → Revisões), cada uma com a recomendação do Claude registrada como opinião: BIB-0037 papel do fundador (aprovar); BIB-0038 base da faixa do Simples (aprovar com ajuste: usar o faturado; validar com o contador); BIB-0039 ticket mínimo R$ 15 mil (não aprovar como bloqueio: contraria BIB-0022); BIB-0040 anexo do Simples (contador); BIB-0042 siglas (manter); BIB-0046 MFA da direção (aprovar após cadastrar o próprio MFA); BIB-0051 retenção de dados (LGPD, jurídico); BIB-0052 termo de uso interno (jurídico).
-2. Lacunas de alçada: assuntos reservados ao fundador; precedência entre autoridades; quem altera políticas; compras/fornecedores; preços de tabela; contratações; comunicação externa (envio automático); quem valida ticket < R$ 100 mil; desconto ≤ 2% com MC 30–32%.
-3. Textos jurídicos: cláusulas do contrato e texto do termo de aceite (o VEOS só monta os dados).
-4. ~~Segredos do GitHub~~ **Feito em 01/10**: `SUPABASE_SERVICE_ROLE_KEY` e `BACKUP_SENHA` criados; backup manual e testes online no CI executados com sucesso.
-5. **Dados reais nos registros dos setores** (hoje só TESTE): liberar quando quiser usar os catálogos dos setores (chamados, contratos de suporte, obras...) com dados reais.
-6. NF integrada (custo do emissor) e domínio próprio (comprar/apontar o domínio).
+### P1 — completar a estrutura
+5. **Fornecedores próprios** (cadastro, ligado a compras e contas a pagar) — fecha a parte "fornecedores" do CSO-06.
+6. **Agenda por pessoa**: as atividades diárias/semanais de cada cargo (Estrutura) virando tarefas no Radar para quem ocupa o cargo; base para "o que eu faço hoje" por pessoa (CSO-05/SEC-04).
+7. **Importar o histórico do CRM do Zoho** (leads, negócios, atividades) para o funil próprio sem perder origem (CSO-05).
+8. **Importação dos escritórios de arquitetura pelos dados abertos do CNPJ** (CNAE 7111-1/00 e 7410-2/02, região de SC) por um job mensal gratuito no GitHub Actions, entrando como alvos na Prospecção (CSO-17). **Aguarda o OK do Fernando** (regra de prospecção BIB-0107).
+9. **Aviso com o navegador fechado** (Web Push com chaves VAPID nos segredos do Supabase; gratuito) — hoje os avisos só aparecem com o VEOS aberto (CIO-08).
+10. **MCP do VEOS ampliado** ("tudo que eu pedir no Claude ele cria no VEOS"): ferramentas de criação pela API com as permissões do usuário — cliente, orçamento, pedido em rascunho, conta a pagar, tarefa —, sempre com rascunho + confirmação humana para o que for irreversível (CIO-06). Configurar o MCP nesta máquina depende do Fernando gerar o código (Minha conta → Acesso do Claude Code).
+11. **Avisos do assistente**: incluir no chat flutuante as respostas dos diretores dadas em "Perguntar aos diretores" e as tarefas vencidas do dia (hoje entram só os alertas ALTO/CRÍTICO).
+12. **Indicadores calculados sozinhos** (marketing, pós-venda, satisfação e retrabalho) com fonte e LACUNA quando faltar dado (CMO-06, CXO-06).
+13. **Receita recorrente dos contratos de suporte** (contrato → parcelas mensais → caixa e indicadores) (CFO-13, CXO-05).
 
-## Primeiros passos com login real (sugestão)
-1. Minha conta: cadastrar o app autenticador (MFA) e ligar os avisos do navegador.
-2. Sistema → Validação guiada: percorrer os 17 passos e registrar.
-3. Biblioteca → Revisões: decidir as propostas acima.
-4. Sistema → Usuários: dar acesso à equipe (cada pessoa entra pelo link do e-mail).
-5. (Opcional) Minha conta → Acesso do Claude Code: `node scripts/mcp/veos-mcp.mjs --configurar <código>` e o Claude Code passa a ler o VEOS pelo MCP `veos`.
+### P2 — acabamento e independência do Zoho
+14. **Vínculos de produto a revisar** (37 "a_revisar" entre o catálogo do VEOS e os itens do Zoho): tela de revisão rápida; hoje a retomada de orçamentos antigos reconhece poucos itens do catálogo.
+15. **Mesclar o catálogo com os itens do Zoho** e o roteiro de desligamento do Zoho por módulo (BIB-0077, COO-04, CIO-05) — só quando o Fernando pedir.
+16. **Publicação automática no Instagram** pela API oficial da Meta (agendar os posts do calendário) — depende da conta comercial ligada a uma Página do Facebook e de quem aprova (CMO-03/CMO-10).
+17. **Histórico visível por registro** nas telas dos setores (SEC-05) e procedimentos que faltam nos manuais (funil no CSO, obra nova no COO, Wi-Fi lento no CIO).
+18. **Desempenho**: Formulário e telas do CFO carregam `GET /cfo/orcamentos` (~3 s, 220 KB); criar um resumo leve só com o faturamento de 12 meses para o montador de orçamento e o formulário.
+19. **Limpeza**: estilos antigos da tela IA (`apps/web/css/ia.css`, classes `.ia-*` não usadas), tela "Comando por voz" antiga e textos que ainda falam em "TESTE" para o usuário real.
 
-## Para o FINAL do projeto (decidir junto com o Fernando, só quando ele pedir)
-- **Mesclar o catálogo do VEOS com os itens do Zoho** — plano completo na Biblioteca **BIB-0077**: revisar duplicados e itens "Conferir", definir preços de venda, enviar/aposentar itens no Zoho, ligar estoque/compras/pedidos ao catálogo do VEOS, importar os demais itens do Zoho e desligar o módulo de itens.
-- **MCP do VEOS ampliado** (pedido do Fernando em 07/10: "tudo que pedir no Claude ele cria ou gera no VEOS"). Já existe o MCP `veos` (`scripts/mcp/veos-mcp.mjs`, 17 ferramentas: leitura, perguntas dos diretores, Biblioteca, ideia/proposta, tarefa, rascunho de mensagem), ainda não configurado neste computador (Minha conta → Acesso do Claude Code → `--configurar <código>`). Falta: ferramentas de criação (orçamento/simulação, pedido em rascunho, contas a pagar, recorrentes, cadastro de item, classificação de extrato, documentos em PDF), sempre pela API com as permissões do usuário, rascunho + confirmação humana para o que for irreversível, sem enviar a clientes e sem transações automáticas.
+## Depende do Fernando para o PROGRAMA funcionar por completo (não é operação da empresa)
+- **Revogar a chave da Anthropic exposta no site antigo da VOICE** e trocar a senha da área interna (BIB-0104, CIO-13). Urgente.
+- **Entrar com o login real uma vez**: MFA da direção, Validação guiada e um orçamento de verdade (os testes usaram robôs).
+- **Reiniciar o VS Code e configurar o MCP `veos`** (Minha conta → Acesso do Claude Code → `node scripts/mcp/veos-mcp.mjs --configurar <código>`).
+- **Trocar as chaves de IA** que apareceram em conversas (Gemini, Mistral, OpenRouter, Groq) direto nos segredos do Supabase.
+- OK para o item 8 (CNPJ), acesso para o SMTP (item 3), e, quando quiser, domínio próprio (CNAME + ORIGENS da `api` + Auth).
 
-## Motor de IA dos diretores (05/10) — substitui a seção abaixo quando houver chave
-- Pergunta no site → motor no servidor (Gemini → OpenAI → fila do Claude Code) com 21 ferramentas do VEOS; sem chave, segue a fila do Claude Code (abaixo).
-- Variáveis (segredos do Supabase): `GEMINI_API_KEY`, opcional `GEMINI_MODELOS` (padrão gemini-3.8-flash, 3.5-flash, 3.5-flash-lite, 2.5-flash), `GEMINI_PAGO=sim` se for o nível pago; `OPENAI_API_KEY`, `OPENAI_MODELOS`; `IA_ORDEM` (padrão gemini,openai).
-- Políticas no banco: `node scripts/online.mjs scripts/carregar-politicas.mjs` sempre que a Política V1/V1.1 mudar.
-
-## IA dos diretores pela assinatura (01/10, noite)
-- Claude Pro/Max e ChatGPT Plus NÃO incluem API (a API é paga à parte). Caminho sem custo implantado: **Perguntar aos diretores** (site) → fila no banco → o Claude Code (plano Max) lê pelo MCP (`veos_perguntas_pendentes`, `veos_manual_diretor`), responde e grava (`veos_responder_pergunta`). Resposta sempre rotulada "IA · opinião, não decisão".
-- Para usar: Minha conta → Acesso do Claude Code (uma vez) e, no VS Code, pedir "responda as perguntas pendentes dos diretores".
-- Respostas instantâneas no site exigem API paga (decisão de custo: hoje teto zero, BIB-0044).
-
-## Manuais dos diretores (01/10, noite)
-- 9 manuais de atuação de nível sênior (`setores/manuais/*.json`, pesquisa com fontes: competências, frameworks, 13 procedimentos por diretor com perguntas/passos/entrega/critérios/quando escalar, indicadores com fórmula, rotinas, armadilhas, aplicação na VOICE, cursos/certificações de referência, bibliografia). Validados pelo gerador de catálogo; carregados sob demanda.
-- Onde aparecem: aba **Manual** em cada setor (com "O que você precisa?"), Conselho, tela **IA VEOS** (mostra o procedimento do diretor para o pedido falado/digitado, sem IA paga) e MCP `veos_manual_diretor` para o Claude Code.
-- Melhorar depois: procedimentos que faltam (ex.: diagnóstico de Wi-Fi lento no CIO; planejamento de obra nova no COO; funil comercial no CSO).
-
-## Catálogo de produtos (01/10, noite)
-- Catálogo próprio no VEOS (Operação → Catálogo de produtos): 139 produtos importados do inventário AliExpress (`scripts/importar_aliexpress.py`, idempotente, preserva decisões manuais), 157 variantes, ficha técnica, 380 compras de origem, fotos no Storage privado. 5 compras pessoais excluídas (histórico preservado); 3 talvez pessoais em "Conferir" (PRD-0005, PRD-0101, PRD-0119).
-- Preço de compra = último preço pago (sem frete/impostos); preço de venda = lacuna. Simulador pelo markup do Sebrae (BIB-0074); alçada de preço proposta (BIB-0075).
-
-## Próximo grande bloco (pedido do Fernando em 05/10)
-Financeiro completo → **alinhar com o comercial**: orçamento criado e salvo no VEOS (com o canal RT ou RT + comissão; RT/comissão como contas a pagar já feito em 06/10), régua de cobrança (PL-050, proposta), receitas recorrentes de contratos de suporte.
-
-## Backlog sugerido (próximos blocos técnicos)
-1. **Catálogo de itens próprio** (maior dependência do Zoho: base de estoque, compras e pedidos) — ver Sistema → Independência do Zoho.
-2. **Clientes e fornecedores próprios**, unificando Books e CRM.
-3. **Orçamento criado e salvo no VEOS** (a Negociação já calcula) → proposta PDF direto do VEOS.
-4. **Funil comercial próprio** (leads e negócios) e agenda de atividades.
-5. **Saldo bancário/conciliação** (a previsão de caixa não tem saldo inicial) — via extrato OFX/CSV importado, grátis.
-6. **Aviso com a aba fechada** (Web Push com VAPID; gratuito, exige chave nos segredos).
-7. Domínio próprio: quando houver o domínio — `CNAME` em `apps/web`, DNS (CNAME para voiceambientesinteligentes.github.io), incluir a origem em `supabase/functions/api/index.ts` (ORIGENS) e na lista de redirecionamento do Auth do Supabase.
-
-## Limites do ambiente (para não perder tempo)
-- O classificador bloqueia criar sessão de login de teste e matar processos em massa: teste telas com página local + dados simulados (`dist/_teste/`, servidor `node scripts/serve-web.mjs`, Edge headless na porta 9230) e regras no banco com `tests/banco/*.sql` (transação desfeita).
-- No PowerShell do Fernando use `npx.cmd`. Supabase CLI: `npx -y supabase@2.118.0 ...` (já logada).
-- Comandos com aspas complexas no terminal: escreva um script em arquivo (scratchpad) e execute.
+## Limites do ambiente
+- O classificador de segurança bloqueia algumas ações automáticas (ex.: apagar com caminho de "Program Files" no mesmo comando); separe os comandos.
+- A Supabase CLI interativa trava aqui; se precisar logar de novo, use `npx supabase login --token <PAT de escopo completo>`.
+- Edge headless é o navegador dos testes de tela; o Playwright usa o Edge instalado (`channel: "msedge"`).
