@@ -2,6 +2,14 @@
 
 Atualize este arquivo ao fim de cada sessão: última ação, resultado e próximo passo.
 
+## 04/11/2026 (sessão seguinte) — P0 itens 1 e 2
+
+**Feito**
+- P0-1 (502 no Calendário do Instagram): a lista `GET /produtos` buscava até 10 mil vínculos a revisar a cada chamada; agora busca só os dos produtos da página (`produtos.ts`). Função `api` publicada. Site publicado `navegador.mjs` 77/77 na 1ª tentativa; como o erro era intermitente, só se confirma com o uso dos próximos dias.
+- P0-2 (IA sem consultar dados): se a pergunta é de dados (`perguntaDeDados`) e o modelo não chamou nenhuma ferramenta, o motor refaz UMA vez exigindo a consulta (só se houver tempo; senão mantém a primeira resposta com o aviso). Funções `api` e `ia-fila` publicadas. Testes: domínio 161, Python 155, JS 20, `uso_ia.mjs` 6/6. Não observei o retry disparar ao vivo.
+
+**Próximo passo**
+- P0-3 (limite do e-mail de login, precisa do Fernando), P0-4 (decidir se os testes que criam pedido entram no CI), depois P1 (fornecedores próprios).
 ## 04/11/2026 (fim do dia) — encerramento da sessão
 
 **Feito nesta sessão (em ordem)**
@@ -149,3 +157,4 @@ Atualize este arquivo ao fim de cada sessão: última ação, resultado e próxi
 ## 01/10/2026 (noite) — manuais dos diretores
 - Fundador: não decidir nada da empresa agora; terminar o programa e tornar cada diretor especialista sênior. Feito: 9 pesquisas em paralelo (fontes abertas; benchmarks só com fonte), manuais integrados ao portal, IA VEOS e MCP.
 - Achado legal relevante: reserva técnica a arquitetos é vedada (Lei 12.378/2010, art. 18, VI; CAU) — BIB-0078.
+

@@ -36,3 +36,9 @@ test("conferência: valor em reais sem origem nas ferramentas é apontado; os qu
   const pcts = numerosDe([{ conversao: 0.28 }, { margem: 41.1 }]);
   assert.deepEqual(conferirValores("Conversão 28%, margem 41,1%, meta 35% e piso 25%; indicação 68,0% e 42%.", pcts), ["68,0%", "42%"]);
 });
+
+test("pergunta de dados: reconhece vendas, funil e caixa; ignora conversa genérica", async () => {
+  const { perguntaDeDados } = await import("../../supabase/functions/_shared/ia/texto.ts");
+  for (const p of ["Quanto vendemos em outubro?", "Como está o funil?", "qual o saldo do caixa", "Quantos orçamentos abertos?"]) assert.ok(perguntaDeDados(p), p);
+  for (const p of ["Obrigado, ajudou", "Detalhe o primeiro passo", "Como escrever uma boa legenda?"]) assert.ok(!perguntaDeDados(p), p);
+});

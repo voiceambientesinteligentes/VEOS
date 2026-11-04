@@ -107,3 +107,12 @@ export function rodapeConferencia(naoConferidos: string[]) {
   if (!naoConferidos.length) return "";
   return `\n\nConferência automática do VEOS: ${naoConferidos.length === 1 ? "este valor não veio" : "estes valores não vieram"} de uma ferramenta de cálculo e ${naoConferidos.length === 1 ? "precisa" : "precisam"} ser conferido${naoConferidos.length === 1 ? "" : "s"}: ${naoConferidos.slice(0, 12).join("; ")}.`;
 }
+
+/** A pergunta pede fatos da empresa (vendas, funil, caixa, clientes...)? Se sim, a resposta precisa de ferramenta. */
+export function perguntaDeDados(pergunta: string) {
+  const t = pergunta.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
+  return /\b(venda|vendas|vendi|faturamento|faturei|funil|lead|leads|oportunidade|orcamento|orcamentos|pedido|pedidos|cliente|clientes|caixa|saldo|receita|despesa|margem|conta a pagar|contas a pagar|a receber|quanto|quantos|quantas|ticket|meta|indicador|indicadores|prospecc\w*|estoque|cadencia|follow.?up)\b/.test(t);
+}
+
+/** Instrucao extra para refazer a resposta quando o modelo nao consultou nenhuma ferramenta. */
+export const REFAZER_COM_FERRAMENTA = "\n\nIMPORTANTE (segunda tentativa): na resposta anterior você NÃO consultou nenhuma ferramenta do VEOS. Esta pergunta é sobre dados da VOICE. CHAME agora pelo menos uma ferramenta de dados antes de responder e use só os números que ela devolver; se a ferramenta não trouxer o dado, escreva LACUNA.";

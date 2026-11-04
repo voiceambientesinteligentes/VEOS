@@ -11,6 +11,7 @@
 import { servico } from "../banco.ts";
 import { apenasGratuitos, type Provedor, responderComFallback } from "./provedores.ts";
 import { conferirValores, limparMarkdown, montarSistema, numerosDe, rodapeConferencia, termosDaPergunta } from "./texto.ts";
+import { perguntaDeDados, REFAZER_COM_FERRAMENTA } from "./texto.ts";
 import { type Contexto, diretorDoSetor, executarFerramenta, ferramentasDoSetor, procedimentosDoSetor } from "./ferramentas.ts";
 
 const lista = (v: string | undefined, padrao: string) => (v || padrao).split(",").map((x) => x.trim()).filter(Boolean);
@@ -110,9 +111,9 @@ export async function responderPergunta(perguntaId: string) {
     const coletados: { nome: string; args: unknown; texto: string }[] = [];
     const ferramentas = ferramentasDoSetor(ctx.setor);
     // tempo da funcao no plano gratuito: 150 s no total (ferramentas ate ~80 s; resposta final ate ~125 s)
-    const r = await responderComFallback(provs, {
-      sistema, pergunta, ferramentas,
-      maxPassos: 8, prazo: t0 + 80_000, limite: t0 + 125_000,
+    const rodar = (perg: string, prazo: number, limite: number) => responderComFallback(provs, {
+      sistema, pergunta: perg, ferramentas,
+      maxPassos: 8, prazo, limite,
       executar: async (c) => {
         const out = await executarFerramenta(c.nome, c.args, ctx);
         resultados.push(out);
@@ -125,6 +126,13 @@ export async function responderPergunta(perguntaId: string) {
         return unicos.map((x) => `- ${x.nome}(${JSON.stringify(x.args)}) → ${x.texto}`).join("\n").slice(0, 24_000);
       },
     });
+    let r = await rodar(pergunta, t0 + 80_000, t0 + 125_000);
+    // pergunta de dados respondida sem nenhuma ferramenta: refaz UMA vez exigindo a consulta (se ainda houver tempo)
+    if (r.ok && coletados.length === 0 && perguntaDeDados(reservada.pergunta) && Date.now() - t0 < 50_000) {
+      const r2 = await rodar(pergunta + REFAZER_COM_FERRAMENTA, Date.now() + 40_000, t0 + 140_000);
+      r.tentativas.push(...r2.tentativas);
+      if (r2.ok && coletados.length > 0) r = { ...r2, tentativas: r.tentativas };
+    }
 
     // trilha de cada tentativa (inclusive as que falharam)
     for (const t of r.tentativas) {

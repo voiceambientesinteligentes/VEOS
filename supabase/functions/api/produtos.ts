@@ -54,7 +54,7 @@ export async function rotearProdutos(req: Request, partes: string[], eu: Membro)
     const produtos = await r.json();
     const [fotos, revisar] = await Promise.all([
       assinar(produtos.map((p: { imagem: string | null }) => p.imagem)),
-      servico("/rest/v1/produto_vinculos_zoho?situacao=eq.a_revisar&select=produto_id&limit=10000"),
+      produtos.length ? servico(`/rest/v1/produto_vinculos_zoho?situacao=eq.a_revisar&produto_id=in.(${produtos.map((p: { id: string }) => p.id).join(",")})&select=produto_id&limit=1000`) : Promise.resolve([]),
     ]);
     const nRev = new Map<string, number>();
     for (const v of revisar) nRev.set(v.produto_id, (nRev.get(v.produto_id) ?? 0) + 1);

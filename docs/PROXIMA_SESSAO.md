@@ -56,8 +56,8 @@ Setores vivos (9) com registros, regras vivas e Radar · Estrutura da empresa (o
 ## O que falta no PROGRAMA (backlog técnico, em ordem)
 
 ### P0 — corrigir/garantir antes de crescer
-1. **Erro 502 intermitente na tela Calendário do Instagram** (`#/conteudo`): apareceu na 1ª tentativa do `navegador.mjs` duas vezes em 04/11 (passa ao repetir). Provável carga de `GET /produtos` com URLs assinadas das fotos; investigar o log da função `api` e, se for isso, pedir só os produtos com foto e em menos quantidade.
-2. **Qualidade das respostas da IA** (modelo gratuito pequeno): às vezes responde sem consultar dados, se contradiz ou cita coisas que não existem. Já existe aviso e conferência; falta: quando a pergunta for de dados (vendas, funil, caixa, clientes) e o modelo não chamar nenhuma ferramenta, **refazer automaticamente uma vez exigindo a ferramenta**; testar com `uso_ia.mjs` e perguntas de exemplo.
+1. **FEITO em 04/11 (aguarda confirmação ao longo dos dias) — Erro 502 intermitente na tela Calendário do Instagram** (`#/conteudo`): apareceu na 1ª tentativa do `navegador.mjs` duas vezes em 04/11 (passa ao repetir). Provável carga de `GET /produtos` com URLs assinadas das fotos; investigar o log da função `api` e, se for isso, pedir só os produtos com foto e em menos quantidade.
+2. **FEITO em 04/11 (retry coberto por teste de domínio; não observado ao vivo) — Qualidade das respostas da IA** (modelo gratuito pequeno): às vezes responde sem consultar dados, se contradiz ou cita coisas que não existem. Já existe aviso e conferência; falta: quando a pergunta for de dados (vendas, funil, caixa, clientes) e o modelo não chamar nenhuma ferramenta, **refazer automaticamente uma vez exigindo a ferramenta**; testar com `uso_ia.mjs` e perguntas de exemplo.
 3. **E-mail de login (Supabase Auth)**: conferir no painel o limite do envio padrão antes de convidar a equipe; se for baixo, preparar a configuração de SMTP próprio (gratuito, ex.: conta de e-mail da empresa) — a configuração final depende do Fernando passar o acesso.
 4. **Testes online que criam pedido real** (`e2e_operacao`, `uso_orcamento`) estão fora do CI de propósito; decidir se entram no CI com limpeza total ou ficam manuais (hoje: pedido TESTE cancelado e série T).
 
@@ -91,3 +91,4 @@ Setores vivos (9) com registros, regras vivas e Radar · Estrutura da empresa (o
 - O classificador de segurança bloqueia algumas ações automáticas (ex.: apagar com caminho de "Program Files" no mesmo comando); separe os comandos.
 - A Supabase CLI interativa trava aqui; se precisar logar de novo, use `npx supabase login --token <PAT de escopo completo>`.
 - Edge headless é o navegador dos testes de tela; o Playwright usa o Edge instalado (`channel: "msedge"`).
+
