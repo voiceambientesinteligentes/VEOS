@@ -2,7 +2,7 @@
 // todo dia, semana e mes. Vem do catalogo dos setores (setores/*.json). Tudo PROPOSTA ate a direcao aprovar.
 // Tambem exporta os blocos usados na aba Equipe de cada setor.
 import { CATALOGO } from "../../data/catalogo.js";
-import { acumulos, arvoreEmpresa, arvoreSetor, FASE_ROTULO, FREQ_ROTULO, NIVEL_ROTULO, nomeCobertura, resumoEstrutura } from "../../domain/estrutura.js";
+import { acumulos, arvoreEmpresa, arvoreSetor, FASE_ROTULO, ferramentaDaAtividade, FREQ_ROTULO, NIVEL_ROTULO, nomeCobertura, resumoEstrutura } from "../../domain/estrutura.js";
 import { clear, h, panel, stamp, stat } from "../dom.js";
 
 const TOM_NIVEL = { gestao: "live", assessoria: "neutral", execucao: "neutral" };
@@ -13,7 +13,7 @@ function atividades(a) {
   if (!a) return null;
   return h("div", { class: "eo-agenda" }, Object.entries(FREQ_ROTULO).map(([k, rot]) => h("div", { class: "eo-freq" },
     h("h4", null, rot),
-    a[k]?.length ? h("ul", null, a[k].map((x) => h("li", null, x))) : h("p", { class: "muted" }, "—"))));
+    a[k]?.length ? h("ul", null, a[k].map((x) => { const f = ferramentaDaAtividade(x); return h("li", null, x, f ? h("a", { class: "eo-ferramenta", href: f.href, title: `Abrir ${f.rotulo}` }, ` → ${f.rotulo}`) : null); })) : h("p", { class: "muted" }, "—"))));
 }
 
 /** Cartao completo de um cargo (missao, agenda, entregas, alcada). */

@@ -7,11 +7,41 @@
 //   GET  /comercial/orcamentos[?busca=]    orcamentos proprios do VEOS (so a versao vigente de cada serie), mais recentes primeiro
 //   GET  /comercial/orcamentos/:id         orcamento completo (cabecalho + itens), de qualquer versao
 //   POST /comercial/orcamentos             {cliente_nome, itens:[...], valor_total, ...}: cria ou versiona (CSO-04)
+//   POST /comercial/orcamentos/:id/situacao {estado: enviado|recusado|expirado|rascunho, motivo?} (aceito: POST /fluxo/pedidos {orcamento_veos_id})
+//   GET  /comercial/clientes[?busca=]      clientes do VEOS (cadastro proprio)
+//   GET  /comercial/clientes/:id           ficha: dados, orcamentos, pedidos, oportunidades e historico
+//   POST /comercial/clientes[/:id]         cria / altera (parcial)
+//   POST /comercial/clientes/zoho/:zid     cria o cliente a partir de um contato do Zoho Books (ou devolve o existente)
+//   GET  /comercial/retomar[?busca=]       orcamentos antigos do Zoho nao fechados (rascunho, enviado, expirado, recusado)
+//   GET  /comercial/retomar/:zid           itens do orcamento antigo ligados ao catalogo do VEOS, para virar orcamento novo
 // Conteudo (itens, cadencias, canais, donos das metas) em apps/web/js/domain/comercial.js.
 // deno-lint-ignore-file no-explicit-any
 import { HttpError, lerCorpo, type Membro, registrarAcesso, servico } from "../_shared/banco.ts";
 import { baseComercial, cadenciaDoRegistro, CADENCIAS, IMPLANTACAO } from "../_shared/dominio/comercial.js";
+import { clienteDoZoho, normalizarCliente } from "../_shared/dominio/clientes.js";
 import { contatoDoRegistro } from "../_shared/comercial_vigia.ts";
+import { ehTeste, filtroAutor, idsTeste } from "../_shared/teste.ts";
+
+const CADASTRAR = ["direcao", "vendas", "financas", "marketing", "posvenda"];
+const DATA_RE = /^\d{4}-\d{2}-\d{2}$/;
+const CLIENTE_COLS = "id,codigo,tipo,nome,documento,contato_nome,telefone,email,cidade,uf,endereco_obra,tipo_imovel,fase_obra,origem,parceiro,aceita_contato,observacao,zoho_contact_id,estado,criado_por,criado_em,atualizado_em";
+const ORC_COLS = "id,numero,versao,serie,cliente_id,cliente_nome,referencia,condicao,estado,valor_total,desconto,validade,prazo_execucao,enviado_em,decidido_em,motivo_recusa,pedido_id,criado_em,atualizado_em";
+const limparBusca = (v: unknown) => String(v ?? "").replace(/[%*,()."]/g, " ").trim().slice(0, 60);
+
+/** O usuario so enxerga clientes/orcamentos do proprio "mundo" (real ou robo de teste). */
+async function visivel(eu: Membro, criadoPor: string) {
+  const ids = await idsTeste();
+  return ids.includes(criadoPor) === ehTeste(eu);
+}
+async function clienteVisivel(eu: Membro, id: string) {
+  if (!UUID_RE.test(id)) throw new HttpError(404, "cliente inexistente");
+  const [c] = await servico(`/rest/v1/clientes?id=eq.${id}&select=${CLIENTE_COLS}`);
+  if (!c || !(await visivel(eu, c.criado_por))) throw new HttpError(404, "cliente inexistente");
+  return c;
+}
+async function salvarCliente(eu: Membro, chave: string, dados: Record<string, unknown>, id: string | null = null) {
+  return await servico("/rest/v1/rpc/cliente_salvar", { method: "POST", body: JSON.stringify({ p: { chave: `${eu.user_id}:${chave}`, usuario: eu.user_id, id, dados } }) });
+}
 
 const VER = ["direcao", "financas", "vendas", "marketing", "posvenda"];
 const MARCAR = ["direcao", "vendas", "marketing", "posvenda", "tecnologia", "secretaria", "pessoas"];
@@ -33,8 +63,9 @@ function validarItensOrcamento(itens: unknown): Record<string, any>[] {
     if (!MONEY_RE.test(String(i.preco_unit ?? "0"))) throw new HttpError(400, `item ${k + 1}: preço inválido`);
     if (i.custo_unit !== null && i.custo_unit !== undefined && !/^\d{1,12}(\.\d{1,4})?$/.test(String(i.custo_unit))) throw new HttpError(400, `item ${k + 1}: custo inválido`);
     if (i.item_id && !ZID_RE.test(String(i.item_id))) throw new HttpError(400, `item ${k + 1}: item inválido`);
-    return { secao: texto(i.secao, 200), item_id: i.item_id ?? null, nome: String(i.nome ?? "Item").slice(0, 300), descricao: texto(i.descricao, 2000),
-      tipo: i.tipo, quantidade: String(i.quantidade), preco_unit: String(i.preco_unit ?? "0"), custo_unit: i.custo_unit ?? null };
+    if (i.produto_id && !UUID_RE.test(String(i.produto_id))) throw new HttpError(400, `item ${k + 1}: produto inválido`);
+    return { secao: texto(i.secao, 200), item_id: i.item_id ?? null, produto_id: i.produto_id ?? null, nome: String(i.nome ?? "Item").slice(0, 300), descricao: texto(i.descricao, 2000),
+      tipo: i.tipo, quantidade: String(i.quantidade), unidade: texto(i.unidade, 20), preco_unit: String(i.preco_unit ?? "0"), custo_unit: i.custo_unit ?? null };
   });
   if (!lista.length || lista.length > 300) throw new HttpError(400, "o orçamento precisa de 1 a 300 itens");
   return lista;
@@ -102,9 +133,121 @@ export async function rotearComercial(req: Request, partes: string[], eu: Membro
   }
   if (!post && a === "orcamentos" && !b) {
     exigir(eu, VER);
-    const busca = texto(new URL(req.url).searchParams.get("busca"), 60);
-    const filtro = busca ? `&or=(cliente_nome.ilike.*${encodeURIComponent(busca)}*,numero.ilike.*${encodeURIComponent(busca)}*)` : "";
-    return { orcamentos: await servico(`/rest/v1/comercial_orcamentos?estado=eq.rascunho${filtro}&select=id,numero,versao,cliente_nome,referencia,valor_total,criado_em,atualizado_em&order=atualizado_em.desc&limit=300`) };
+    const q = new URL(req.url).searchParams;
+    const busca = limparBusca(q.get("busca"));
+    const estado = q.get("estado") ?? "";
+    const filtro = (busca ? `&or=(cliente_nome.ilike.*${encodeURIComponent(busca)}*,numero.ilike.*${encodeURIComponent(busca)}*)` : "")
+      + (["rascunho", "enviado", "aceito", "recusado", "expirado"].includes(estado) ? `&estado=eq.${estado}` : "&estado=neq.substituido")
+      + (UUID_RE.test(q.get("cliente") ?? "") ? `&cliente_id=eq.${q.get("cliente")}` : "");
+    return { orcamentos: await servico(`/rest/v1/comercial_orcamentos?select=${ORC_COLS}${filtro}${await filtroAutor(eu)}&order=atualizado_em.desc&limit=300`) };
+  }
+  if (post && a === "orcamentos" && b && partes[3] === "situacao") {
+    exigir(eu, COMERCIAL);
+    if (!UUID_RE.test(b)) throw new HttpError(400, "orçamento inválido");
+    const estado = String(corpo.estado ?? "");
+    if (!["enviado", "recusado", "expirado", "rascunho"].includes(estado)) throw new HttpError(400, "situação: enviado, recusado, expirado ou rascunho (aceito = gerar o pedido)");
+    const [o] = await servico(`/rest/v1/comercial_orcamentos?id=eq.${b}&select=id,criado_por`);
+    if (!o || !(await visivel(eu, o.criado_por))) throw new HttpError(404, "orçamento inexistente");
+    return await servico("/rest/v1/rpc/orcamento_veos_situacao", { method: "POST", body: JSON.stringify({ p: { id: b, estado, motivo: texto(corpo.motivo, 500), usuario: eu.user_id } }) });
+  }
+
+  // ---------------------------------------------------------------- clientes
+  if (!post && a === "clientes" && !b) {
+    exigir(eu, VER);
+    const q = new URL(req.url).searchParams;
+    const busca = limparBusca(q.get("busca"));
+    const dig = busca.replace(/\D/g, "");
+    const ors = busca ? [`nome.ilike.*${encodeURIComponent(busca)}*`, `codigo.ilike.*${encodeURIComponent(busca)}*`, `email.ilike.*${encodeURIComponent(busca)}*`, `cidade.ilike.*${encodeURIComponent(busca)}*`, ...(dig.length >= 4 ? [`telefone.like.*${dig}*`, `documento.like.*${dig}*`] : [])] : [];
+    const estado = q.get("estado") === "inativo" ? "inativo" : "ativo";
+    const clientes = await servico(`/rest/v1/clientes?estado=eq.${estado}${ors.length ? `&or=(${ors.join(",")})` : ""}${await filtroAutor(eu)}&select=id,codigo,tipo,nome,telefone,email,cidade,uf,origem,parceiro,tipo_imovel,fase_obra,zoho_contact_id,criado_em&order=atualizado_em.desc&limit=300`);
+    await registrarAcesso(eu.user_id, "comercial:clientes");
+    return { clientes };
+  }
+  if (!post && a === "clientes" && b) {
+    exigir(eu, VER);
+    const c = await clienteVisivel(eu, b);
+    const [orcamentos, oportunidades, historico] = await Promise.all([
+      servico(`/rest/v1/comercial_orcamentos?cliente_id=eq.${b}&estado=neq.substituido&select=${ORC_COLS}&order=atualizado_em.desc&limit=100`),
+      servico(`/rest/v1/registros?setor_id=eq.vendas&dados->>cliente_ref=eq.${encodeURIComponent(c.codigo)}&select=id,tipo,titulo,estado,valor::text,atualizado_em&order=atualizado_em.desc&limit=50`),
+      servico(`/rest/v1/clientes_historico?cliente_id=eq.${b}&select=acao,detalhe,usuario,em&order=id.desc&limit=50`),
+    ]);
+    const pids = orcamentos.map((o: any) => o.pedido_id).filter(Boolean);
+    const pedidos = pids.length ? await servico(`/rest/v1/pedidos?id=in.(${pids.join(",")})&select=id,numero,estado,valor_total,criado_em`) : [];
+    await registrarAcesso(eu.user_id, `cliente:${b}`);
+    const { criado_por: _c, ...cliente } = c;
+    return { cliente, orcamentos, pedidos, oportunidades, historico };
+  }
+  if (post && a === "clientes" && b === "zoho" && partes[3]) {
+    exigir(eu, CADASTRAR);
+    const zid = partes[3];
+    if (!ZID_RE.test(zid)) throw new HttpError(400, "contato inválido");
+    const [ja] = await servico(`/rest/v1/clientes?zoho_contact_id=eq.${zid}&select=id,codigo,criado_por`);
+    if (ja && (await visivel(eu, ja.criado_por))) return { id: ja.id, codigo: ja.codigo, repetido: true };
+    const [z] = await servico(`/rest/v1/zoho_registros?produto=eq.books&modulo=eq.contacts&zoho_id=eq.${zid}&select=dados`);
+    if (!z) throw new HttpError(404, "contato não encontrado no espelho do Zoho");
+    const { dados, erros } = normalizarCliente(clienteDoZoho(z.dados));
+    // contato antigo sem telefone/e-mail: cadastra assim mesmo (a pessoa completa depois)
+    const graves = erros.filter((e: string) => !/pelo menos um contato/.test(e));
+    if (graves.length) throw new HttpError(400, graves.join(" "));
+    return await salvarCliente(eu, chave, { ...dados, zoho_contact_id: zid });
+  }
+  if (post && a === "clientes") {
+    exigir(eu, CADASTRAR);
+    const { dados, erros } = normalizarCliente(corpo, { parcial: Boolean(b) });
+    if (erros.length) throw new HttpError(400, erros.join(" "));
+    if (b) { await clienteVisivel(eu, b); await registrarAcesso(eu.user_id, `cliente:${b}`, "edicao"); }
+    if (!b && dados.documento) {
+      const [dup] = await servico(`/rest/v1/clientes?documento=eq.${dados.documento}&select=id,codigo,nome,criado_por`);
+      if (dup && (await visivel(eu, dup.criado_por))) throw new HttpError(400, `já existe o cliente ${dup.codigo} (${dup.nome}) com este CPF/CNPJ`);
+    }
+    return await salvarCliente(eu, chave, dados, b ?? null);
+  }
+
+  // ---------------------------------------------------------------- orcamentos antigos do Zoho
+  if (!post && a === "retomar" && !b) {
+    exigir(eu, VER);
+    const busca = limparBusca(new URL(req.url).searchParams.get("busca"));
+    const f = busca ? `&or=(nome.ilike.*${encodeURIComponent(busca)}*,dados->>customer_name.ilike.*${encodeURIComponent(busca)}*)` : "";
+    const [est, retomados] = await Promise.all([
+      servico(`/rest/v1/zoho_registros?produto=eq.books&modulo=eq.estimates&excluido=is.false&dados->>status=in.(draft,sent,expired,declined)${f}&select=zoho_id,numero:dados->>estimate_number,data:dados->>date,status:dados->>status,cliente:dados->>customer_name,cliente_id:dados->>customer_id,total:dados->>total&order=dados->>date.desc&limit=300`),
+      servico(`/rest/v1/comercial_orcamentos?referencia=like.Zoho*&select=referencia,numero,estado${await filtroAutor(eu)}&limit=2000`),
+    ]);
+    const por = new Map(retomados.map((r: any) => [String(r.referencia).replace(/^Zoho\s+/, ""), r]));
+    return { orcamentos: est.map((e: any) => ({ ...e, total: Number(e.total) || 0, retomado: por.get(e.numero) ?? null })) };
+  }
+  if (!post && a === "retomar" && b) {
+    exigir(eu, VER);
+    if (!ZID_RE.test(b)) throw new HttpError(400, "orçamento inválido");
+    const [orc] = await servico(`/rest/v1/zoho_registros?produto=eq.books&modulo=eq.estimates&zoho_id=eq.${b}&select=dados,detalhe_em`);
+    if (!orc) throw new HttpError(404, "orçamento não encontrado no espelho do Zoho");
+    if (!orc.detalhe_em) throw new HttpError(409, "a ficha completa deste orçamento ainda não foi copiada do Zoho; tente em alguns minutos");
+    const e = orc.dados;
+    const linhas = (e.line_items ?? []) as Record<string, any>[];
+    const ids = [...new Set(linhas.map((l) => l.item_id).filter(Boolean))] as string[];
+    const lista = ids.map((x) => `"${x}"`).join(",");
+    const [itensZoho, vinculos] = ids.length ? await Promise.all([
+      servico(`/rest/v1/zoho_registros?produto=eq.books&modulo=eq.items&zoho_id=in.(${lista})&select=zoho_id,tipo:dados->>product_type,compra:dados->>purchase_rate,unidade:dados->>unit`),
+      servico(`/rest/v1/produto_vinculos_zoho?zoho_item_id=in.(${lista})&situacao=in.(confirmado,a_revisar)&select=zoho_item_id,situacao,produto:produtos(id,codigo,nome,custo_ultimo,preco_venda,unidade)`),
+    ]) : [[], []];
+    const zi = new Map(itensZoho.map((x: any) => [x.zoho_id, x]));
+    const vi = new Map<string, any>();
+    for (const v of vinculos) if (!vi.has(v.zoho_item_id) || v.situacao === "confirmado") vi.set(v.zoho_item_id, v);
+    await registrarAcesso(eu.user_id, `zoho:estimate:${b}`);
+    return {
+      numero: e.estimate_number, data: e.date, status: e.status, cliente_nome: e.customer_name, cliente_zoho_id: e.customer_id ?? null, total: Number(e.total) || 0,
+      desconto: Number(e.discount_total) || 0, notas: [e.notes, e.terms].filter(Boolean).join("\n\n"),
+      itens: linhas.sort((x, y) => Number(x.item_order) - Number(y.item_order)).map((l) => {
+        const z: any = l.item_id ? zi.get(l.item_id) : null;
+        const v: any = l.item_id ? vi.get(l.item_id) : null;
+        const tipo = (l.product_type ?? z?.tipo) === "service" ? "servico" : "produto";
+        const custoZoho = Number(z?.compra) > 0 ? Number(z.compra) : null;
+        return {
+          secao: (l.header_name ?? "").trim() || "Geral", tipo, nome: String(l.name || l.description || "Item").slice(0, 300), descricao: (l.description ?? "").trim(),
+          quantidade: Number(l.quantity) || 1, unidade: l.unit || z?.unidade || "", preco_antigo: Number(l.rate) || 0, item_id: l.item_id ?? null,
+          custo_zoho: custoZoho, produto: v?.produto ? { ...v.produto, vinculo: v.situacao } : null,
+        };
+      }),
+    };
   }
   if (!post && a === "orcamentos" && b) {
     exigir(eu, VER);
@@ -115,7 +258,10 @@ export async function rotearComercial(req: Request, partes: string[], eu: Membro
     ]);
     if (!orcamento) throw new HttpError(404, "orçamento inexistente");
     await registrarAcesso(eu.user_id, `orcamento:${b}`);
-    return { orcamento, itens };
+    const [cliente] = orcamento.cliente_id ? await servico(`/rest/v1/clientes?id=eq.${orcamento.cliente_id}&select=id,codigo,tipo,nome,documento,contato_nome,telefone,email,cidade,uf,endereco_obra,aceita_contato`) : [null];
+    const historico = await servico(`/rest/v1/comercial_orcamentos_historico?orcamento_id=eq.${b}&select=acao,detalhe,em&order=id.desc&limit=30`);
+    const versoes = await servico(`/rest/v1/comercial_orcamentos?serie=eq.${orcamento.serie}&select=id,numero,versao,estado,valor_total,criado_em&order=versao.desc`);
+    return { orcamento, itens, cliente: cliente ?? null, historico, versoes };
   }
   if (post && a === "orcamentos" && !b) {
     exigir(eu, COMERCIAL);
@@ -125,7 +271,12 @@ export async function rotearComercial(req: Request, partes: string[], eu: Membro
     const itens = validarItensOrcamento(corpo.itens);
     const substitui = texto(corpo.substitui, 36);
     if (substitui && !UUID_RE.test(substitui)) throw new HttpError(400, "orçamento anterior inválido");
+    const clienteId = texto(corpo.cliente_id, 36);
+    if (clienteId) await clienteVisivel(eu, clienteId);
+    const validade = texto(corpo.validade, 10);
+    if (validade && !DATA_RE.test(validade)) throw new HttpError(400, "validade inválida (AAAA-MM-DD)");
     const r = await servico("/rest/v1/rpc/orcamento_veos_criar", { method: "POST", body: JSON.stringify({ p: {
+      cliente_id: clienteId, validade, prazo_execucao: texto(corpo.prazo_execucao, 300),
       chave: `${eu.user_id}:${chave}`, usuario: eu.user_id, cliente_nome: clienteNome, cliente_zoho_id: texto(corpo.cliente_zoho_id, 40),
       referencia: texto(corpo.referencia, 300), condicao: texto(corpo.condicao, 300), valor_total: Number(corpo.valor_total).toFixed(2),
       desconto: corpo.desconto !== undefined && corpo.desconto !== null ? Number(corpo.desconto).toFixed(2) : null,

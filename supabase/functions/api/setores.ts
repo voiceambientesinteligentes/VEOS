@@ -16,6 +16,15 @@ import { vigiarBiblioteca, vigiarFluxo } from "../_shared/fluxo_vigia.ts";
 import { vigiarCadencias } from "../_shared/comercial_vigia.ts";
 import { vigiarCaixa } from "../_shared/caixa_vigia.ts";
 import { HttpError, lerCorpo, type Membro, servico } from "../_shared/banco.ts";
+import { ehTeste, filtroAutor, idsTeste } from "../_shared/teste.ts";
+
+/** Registros dos robos de teste: somem do Radar e dos setores de quem usa de verdade (e vice-versa). */
+async function separarTeste<T extends { registro_id?: string | null }>(eu: Membro, linhas: T[]): Promise<T[]> {
+  const ids = await idsTeste();
+  if (!ids.length) return ehTeste(eu) ? linhas.filter((l) => !l.registro_id) : linhas;
+  const deTeste = new Set((await servico(`/rest/v1/registros?criado_por=in.(${ids.join(",")})&select=id&limit=10000`)).map((r: { id: string }) => r.id));
+  return linhas.filter((l) => !l.registro_id || deTeste.has(l.registro_id) === ehTeste(eu));
+}
 
 // Setores com dados sensiveis: so direcao e o proprio setor.
 const RESTRITOS: Record<string, string[]> = { financas: ["direcao", "financas"], pessoas: ["direcao", "pessoas"] };
@@ -50,7 +59,7 @@ export async function rotearSetores(req: Request, partes: string[], eu: Membro) 
         servico(`/rest/v1/tarefas?estado=eq.aberta&setor_id=in.(${lista})&select=id,setor_id,titulo,papel,prazo,origem,registro_id,criado_em&order=prazo.asc.nullslast&limit=500`),
         servico("/rest/v1/varreduras?select=origem,alertas_ativos,novos,resolvidos,ms,em&order=em.desc&limit=1"),
       ]);
-      return { alertas, tarefas, ultima_varredura: ultima[0] ?? null, setores: acessiveis(eu) };
+      return { alertas: await separarTeste(eu, alertas), tarefas: await separarTeste(eu, tarefas), ultima_varredura: ultima[0] ?? null, setores: acessiveis(eu) };
     }
     if (raiz === "radar" && req.method === "POST" && id === "varrer") {
       const r = await varrer(SETORES, acessiveis(eu), `manual:${eu.email}`);
@@ -63,12 +72,13 @@ export async function rotearSetores(req: Request, partes: string[], eu: Membro) 
 
     if (raiz === "setor" && req.method === "GET" && id) {
       const s = setorDe(eu, id);
+      const autor = await filtroAutor(eu);
       const [registros, tarefas, alertas] = await Promise.all([
-        servico(`/rest/v1/registros?setor_id=eq.${s.id}&ambiente=eq.TESTE&select=id,tipo,titulo,estado,responsavel,prazo,valor::text,dados,criado_em,atualizado_em&order=atualizado_em.desc&limit=500`),
+        servico(`/rest/v1/registros?setor_id=eq.${s.id}&ambiente=eq.TESTE${autor}&select=id,tipo,titulo,estado,responsavel,prazo,valor::text,dados,criado_em,atualizado_em&order=atualizado_em.desc&limit=500`),
         servico(`/rest/v1/tarefas?setor_id=eq.${s.id}&estado=eq.aberta&select=id,titulo,papel,prazo,origem,registro_id,criado_em&order=prazo.asc.nullslast&limit=300`),
         servico(`/rest/v1/alertas?setor_id=eq.${s.id}&estado=eq.ativo&select=id,sentinela,severidade,titulo,mensagem,fonte,registro_id,rascunhos,notificar,atualizado_em&order=atualizado_em.desc&limit=300`),
       ]);
-      return { setor: s.id, registros, tarefas, alertas };
+      return { setor: s.id, registros, tarefas: await separarTeste(eu, tarefas), alertas: await separarTeste(eu, alertas) };
     }
 
     if (raiz === "registros" && req.method === "POST") {

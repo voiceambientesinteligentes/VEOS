@@ -3314,6 +3314,12 @@ export const CATALOGO = [
       "rotulo": "Próximo contato",
       "tipo": "data",
       "obrigatorio": false
+     },
+     {
+      "id": "cliente_ref",
+      "rotulo": "Cliente no VEOS (código CLI-)",
+      "tipo": "texto",
+      "obrigatorio": false
      }
     ]
    },
@@ -3451,6 +3457,12 @@ export const CATALOGO = [
       "id": "excecao_ticket",
       "rotulo": "Justificativa de exceção ao ticket desejado",
       "tipo": "texto_longo",
+      "obrigatorio": false
+     },
+     {
+      "id": "cliente_ref",
+      "rotulo": "Cliente no VEOS (código CLI-)",
+      "tipo": "texto",
       "obrigatorio": false
      }
     ]

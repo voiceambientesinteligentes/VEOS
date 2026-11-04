@@ -18,6 +18,7 @@
 //   GET  /fluxo/rt-padrao                 RT/comissao padrao do Formulario do CFO (canais)
 //   /fluxo/compras, /fluxo/contas-pagar, /fluxo/caixa -> compras, contas a pagar e previsao (ver compras.ts)
 import { HttpError, lerCorpo, type Membro, registrarAcesso, SERVICE, servico, URL_BASE } from "../_shared/banco.ts";
+import { filtroAutor } from "../_shared/teste.ts";
 
 // Storage privado (bucket "anexos"): URLs assinadas de curta duracao, emitidas so pelo servidor.
 async function storage(caminho: string, corpo: unknown) {
@@ -141,7 +142,7 @@ export async function rotearFluxo(req: Request, partes: string[], eu: Membro) {
     const hoje = new Date().toISOString().slice(0, 10);
     const mes = hoje.slice(0, 7);
     const [pedidos, abertas, notasMes, recebidasMes, saldos] = await Promise.all([
-      servico("/rest/v1/pedidos?select=estado,valor_total&limit=10000"),
+      servico(`/rest/v1/pedidos?select=estado,valor_total${await filtroAutor(eu)}&limit=10000`),
       servico("/rest/v1/parcelas?estado=eq.aberta&select=vencimento,valor,pedido:pedidos(estado)&limit=10000"),
       servico(`/rest/v1/notas_fiscais?emitida_em=gte.${mes}-01&select=valor&limit=10000`),
       servico(`/rest/v1/parcelas?estado=eq.recebida&recebido_em=gte.${mes}-01&select=valor_recebido&limit=10000`),
@@ -176,7 +177,7 @@ export async function rotearFluxo(req: Request, partes: string[], eu: Membro) {
     exigir(eu, VER);
     const est = q.get("estado");
     const filtro = est && /^[a-z]{3,12}$/.test(est) ? `&estado=eq.${est}` : "";
-    return { pedidos: await servico(`/rest/v1/pedidos?select=id,numero,cliente_nome,orcamento_numero,estado,valor_total,custo_total,criado_em,atualizado_em${filtro}&order=criado_em.desc&limit=300`) };
+    return { pedidos: await servico(`/rest/v1/pedidos?select=id,numero,cliente_nome,orcamento_numero,estado,valor_total,custo_total,criado_em,atualizado_em${filtro}${await filtroAutor(eu)}&order=criado_em.desc&limit=300`) };
   }
   if (!post && a === "rt-padrao") return await rtPadrao();
   if (!post && a === "pedidos" && b) {
@@ -220,6 +221,30 @@ export async function rotearFluxo(req: Request, partes: string[], eu: Membro) {
   }
 
   // ---------------------------------------------------------------- escrita
+  if (post && a === "pedidos" && !b && corpo.orcamento_veos_id) {
+    // Cliente aceitou o orcamento proprio do VEOS: o pedido nasce com os itens e o preco do orcamento,
+    // e o orcamento passa a "aceito" ligado ao pedido (historico nos dois).
+    exigir(eu, COMERCIAL);
+    const oid = String(corpo.orcamento_veos_id);
+    if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/.test(oid)) throw new HttpError(400, "orçamento inválido");
+    const [[o], linhas] = await Promise.all([
+      servico(`/rest/v1/comercial_orcamentos?id=eq.${oid}&select=*`),
+      servico(`/rest/v1/comercial_orcamento_itens?orcamento_id=eq.${oid}&select=*&order=ordem`),
+    ]);
+    if (!o) throw new HttpError(404, "orçamento inexistente");
+    if (o.estado === "aceito" && o.pedido_id) return { id: o.pedido_id, repetido: true };
+    if (!["rascunho", "enviado", "expirado"].includes(o.estado)) throw new HttpError(400, `orçamento ${o.estado} não vira pedido`);
+    const r = await servico("/rest/v1/rpc/pedido_criar", { method: "POST", body: JSON.stringify({ p: {
+      chave: `${eu.user_id}:${chave}`, usuario: eu.user_id, orcamento_zoho_id: null, orcamento_numero: o.numero, cliente_zoho_id: o.cliente_zoho_id,
+      cliente_nome: o.cliente_nome, valor_total: num(o.valor_total).toFixed(2), condicao: texto(corpo.condicao, 300) ?? o.condicao,
+      observacao: [texto(corpo.observacao, 1500), `Orçamento ${o.numero} v${o.versao} aceito pelo cliente.`, o.prazo_execucao ? `Prazo: ${o.prazo_execucao}` : null].filter(Boolean).join(" | "),
+      itens: linhas.map((l: Record<string, any>) => ({ item_id: l.item_id ?? null, nome: String(l.nome).slice(0, 300), tipo: l.tipo, quantidade: String(l.quantidade), preco_unit: num(l.preco_unit).toFixed(2), custo_unit: l.custo_unit === null ? null : String(l.custo_unit) })),
+    } }) });
+    await servico("/rest/v1/rpc/orcamento_veos_situacao", { method: "POST", body: JSON.stringify({ p: { id: oid, estado: "aceito", pedido_id: r.id, usuario: eu.user_id } }) });
+    if (!r.repetido) await aplicarRt(r.id, corpo, eu.user_id);
+    await vigiar();
+    return r;
+  }
   if (post && a === "pedidos" && !b && corpo.negociacao) {
     // Fechar negociacao: o pedido nasce com o preco negociado e os custos da Negociacao ao Vivo.
     exigir(eu, COMERCIAL);

@@ -158,18 +158,19 @@ function lerControle(c, el, problemas) {
 }
 
 /** Formulario de criacao/edicao de registro gerado pelo catalogo. */
-export function formularioRegistro(setor, tipo, existente, aoSalvar) {
+export function formularioRegistro(setor, tipo, existente, aoSalvar, prefill = null) {
   const pre = `f-${tipo.tipo}`;
+  const base = existente ?? prefill; // prefill: criacao ja preenchida (ex.: oportunidade aberta da ficha do cliente)
   const campos = [
     { id: "titulo", rotulo: "Título", tipo: "texto", obrigatorio: true, base: true },
     ...tipo.campos,
   ];
-  const estado = h("select", { class: "select", id: `${pre}-estado` }, tipo.estados.map((e) => h("option", { value: e, selected: e === (existente?.estado ?? tipo.estado_inicial) }, e)));
+  const estado = h("select", { class: "select", id: `${pre}-estado` }, tipo.estados.map((e) => h("option", { value: e, selected: e === (base?.estado ?? tipo.estado_inicial) }, e)));
   const papeis = [...setor.equipe.map((p) => [p.papel, p.nome]), [setor.sigla, setor.diretor.titulo]];
-  const resp = h("select", { class: "select", id: `${pre}-resp` }, papeis.map(([p, n]) => h("option", { value: p, selected: p === (existente?.responsavel ?? tipo.responsavel) }, n)));
-  const prazo = h("input", { class: "input", id: `${pre}-prazo`, type: "date", value: existente?.prazo ?? "" });
-  const valor = h("input", { class: "input num", id: `${pre}-valor`, type: "text", inputmode: "decimal", value: existente?.valor ? formatBRL(existente.valor).replace("R$ ", "") : "" });
-  const controles = campos.map((c) => [c, controle(c, c.base ? existente?.titulo : existente?.dados?.[c.id], `${pre}-${c.id}`)]);
+  const resp = h("select", { class: "select", id: `${pre}-resp` }, papeis.map(([p, n]) => h("option", { value: p, selected: p === (base?.responsavel ?? tipo.responsavel) }, n)));
+  const prazo = h("input", { class: "input", id: `${pre}-prazo`, type: "date", value: base?.prazo ?? "" });
+  const valor = h("input", { class: "input num", id: `${pre}-valor`, type: "text", inputmode: "decimal", value: base?.valor ? formatBRL(base.valor).replace("R$ ", "") : "" });
+  const controles = campos.map((c) => [c, controle(c, c.base ? base?.titulo : base?.dados?.[c.id], `${pre}-${c.id}`)]);
   const erro = h("div", { role: "alert" });
   const botao = h("button", { class: "btn btn-primary", type: "submit" }, existente ? "Salvar alterações" : `Criar ${tipo.nome.toLowerCase()}`);
   const form = h("form", { class: "stack-s", novalidate: true },

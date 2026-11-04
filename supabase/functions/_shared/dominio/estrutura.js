@@ -88,3 +88,33 @@ export function resumoEstrutura(setores) {
     atividades: todos.reduce((n, { p }) => n + Object.values(p.atividades ?? {}).reduce((m, l) => m + l.length, 0), 0),
   };
 }
+
+// ---------------------------------------------------------------- atividade -> ferramenta do VEOS
+// Cada atividade do cargo aponta para a tela que a executa (por palavras-chave, em ordem: a primeira
+// que casar vence). Sem casar: a atividade e feita fora do VEOS (ligacao, visita, obra) e o registro
+// fica no setor. Lista revisavel: ao criar ferramenta nova, inclua a regra aqui (testes em tests/web).
+export const FERRAMENTAS = [
+  [/or[cç]amento|proposta|precifica|escopo e pre[cç]o/i, "#/orcamentos", "Orçamentos"],
+  [/lead|contato novo|primeiro contato|responder (os )?(contatos|leads|directs?)|inbound/i, "#/contato", "Contato rápido"],
+  [/prospec|parceir|arquitet|especificador|construtora|caf[eé] t[eé]cnico/i, "#/prospeccao", "Prospecção"],
+  [/instagram|post|conte[uú]do|calend[aá]rio editorial|redes sociais|stories/i, "#/conteudo", "Calendário do Instagram"],
+  [/cliente|cadastro de cliente|carteira/i, "#/clientes", "Clientes"],
+  [/funil|pipeline|oportunidade|follow-?up|cad[eê]ncia/i, "#/setor/vendas/registros", "Funil do Comercial"],
+  [/pedido|passagem|kickoff/i, "#/pedidos", "Pedidos"],
+  [/compra|cota[cç][aã]o|fornecedor/i, "#/compras", "Compras"],
+  [/estoque|invent[aá]rio/i, "#/estoque", "Estoque"],
+  [/caixa|extrato|concilia|13 semanas|fluxo de caixa/i, "#/cfo/caixa", "Caixa e extrato"],
+  [/contas? a pagar|pagamento|vencimento/i, "#/contas-pagar", "Contas a pagar"],
+  [/receb|cobran[cç]a|inadimpl|nota fiscal|faturamento/i, "#/recebimentos", "Recebimentos"],
+  [/fechamento|dre|resultado do m[eê]s/i, "#/cfo/fechamento", "Fechamento do mês"],
+  [/margem|pre[cç]o|pol[ií]tica/i, "#/cfo/precos", "Preço dos produtos"],
+  [/indicador|meta|kpi/i, "#/cfo/indicadores", "Indicadores"],
+  [/mensage|e-?mail|whatsapp|caixa de sa[ií]da/i, "#/mensagens", "Caixa de saída"],
+  [/alerta|radar|tarefa|pend[eê]ncia/i, "#/radar", "Radar"],
+  [/decis[aã]o|precedente|biblioteca|ata/i, "#/biblioteca/decisoes", "Biblioteca"],
+  [/cat[aá]logo|produto|homologa/i, "#/produtos", "Catálogo"],
+];
+export function ferramentaDaAtividade(texto) {
+  const r = FERRAMENTAS.find(([re]) => re.test(String(texto ?? "")));
+  return r ? { href: r[1], rotulo: r[2] } : null;
+}

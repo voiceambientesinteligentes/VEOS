@@ -2,6 +2,16 @@
 
 Atualize este arquivo ao fim de cada sessão: última ação, resultado e próximo passo.
 
+## 04/11/2026 (noite) — operação comercial do zero
+
+**Feito**
+- Pedido do Fernando: "começar do zero e deixar tudo pronto para operar (cliente, orçamento, todos os aspectos)". Clientes próprios, montador de orçamento do zero (catálogo + mão de obra + margem/alçada ao vivo), ciclo enviado/aceito/recusado com o pedido gerado do orçamento, retomada dos orçamentos antigos do Zoho, Contato rápido, Prospecção, Calendário do Instagram, Começar a operar e o link atividade → ferramenta na Estrutura. Robôs de teste fora da visão real; numeração real recomeça do 1. Ver ESTADO_ATUAL (04/11, noite).
+- Verificado: domínio 152 + Python 155 + JS 20; telas 172/172; banco 18/18 (e os testes de compras, fluxo, RT, margem, caixa e orçamentos com as migrations); API real `e2e_operacao` 21/21.
+
+**Próximo passo**
+- Fernando: CEO-08 (Começar a operar), CSO-15 (primeiro cliente e orçamento com login real), CSO-16 (retomar antigos vivos), CFO-16/17 (preço de tabela e custo da hora), CMO-09 (rotina do Instagram).
+- Claude: fornecedores próprios e importação do histórico do CRM (CSO-05/06); agenda por pessoa; ligar os vínculos de produto a revisar (37) para a retomada do Zoho achar mais itens no catálogo.
+
 ## 04/11/2026 (tarde) — permissões liberadas + estrutura da empresa
 
 **Feito**

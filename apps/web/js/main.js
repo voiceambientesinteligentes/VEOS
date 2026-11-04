@@ -32,6 +32,10 @@ import { telaPainelDono } from "./ui/views/painel_dono.js";
 import { telaSetorComercial } from "./ui/views/comercial.js";
 import { telaPendencias } from "./ui/views/pendencias.js";
 import { telaEstrutura } from "./ui/views/estrutura.js";
+import { telaCliente, telaClientes } from "./ui/views/clientes.js";
+import { telaNovoOrcamento, telaOrcamentoFicha, telaOrcamentos } from "./ui/views/orcamento.js";
+import { telaContatoRapido, telaConteudo, telaProspeccao } from "./ui/views/captacao.js";
+import { telaOperar } from "./ui/views/operar.js";
 import { telaPendentesProdutos, telaProduto, telaProdutos, telaRevisaoProdutos } from "./ui/views/produtos.js";
 import { iniciarAvisos } from "./ui/notificar.js";
 import { abrirBusca, ligarAtalhos } from "./ui/busca_global.js";
@@ -113,7 +117,15 @@ async function telaHistorico(root) {
   );
 }
 
+const consulta = () => new URLSearchParams(location.hash.split("?")[1] ?? "");
 const TELAS = {
+  "#/operar": { fn: (root) => telaOperar(root), titulo: ["Começar a operar", "Do primeiro contato ao pedido entregue: o que já está feito e a ferramenta de cada etapa"] },
+  "#/clientes": { fn: (root) => telaClientes(root), titulo: ["Clientes", "Cadastro de clientes da VOICE: contato, obra, origem e tudo o que foi orçado"] },
+  "#/orcamentos": { fn: (root) => telaOrcamentos(root, consulta().get("aba") === "zoho" ? "zoho" : "veos"), titulo: ["Orçamentos", "Do rascunho ao pedido: PDF, envio, aceite e versões"] },
+  "#/orcamentos/novo": { fn: (root) => telaNovoOrcamento(root, { clienteId: consulta().get("cliente"), zohoId: consulta().get("zoho"), editarId: consulta().get("editar") }), titulo: ["Novo orçamento", "Cliente, ambientes, produtos do catálogo e mão de obra · margem e alçada ao vivo"] },
+  "#/contato": { fn: (root) => telaContatoRapido(root), titulo: ["Contato rápido", "Quem chegou vira lead em 30 segundos; a cadência cuida do primeiro contato"] },
+  "#/prospeccao": { fn: (root) => telaProspeccao(root), titulo: ["Prospecção", "Arquitetos, designers, construtoras e lojas: onde achar, como abordar e o registro do alvo"] },
+  "#/conteudo": { fn: (root) => telaConteudo(root), titulo: ["Calendário do Instagram", "Pautas com legenda, roteiro e hashtags; cada post vira conteúdo no Marketing"] },
   "#/radar": { fn: telaRadar, titulo: ["Radar", "Alertas e tarefas de todos os setores"] },
   "#/conselho": { fn: telaConselho, titulo: ["Conselho consultivo", "Os diretores especialistas da VOICE"] },
   "#/ia": { fn: (root, signal) => renderIA(root, signal), titulo: ["IA VEOS", "Comando por voz"] },
@@ -212,6 +224,7 @@ function montarMenu() {
   clear(el.nav).append(
     h("div", { class: "nav-group", role: "group", "aria-labelledby": "nav-cmd" },
       h("span", { class: "nav-label", id: "nav-cmd" }, "Comando"),
+      link("#/operar", "▶", "Começar a operar"),
       eu.papel === "direcao" ? link("#/pendencias", "☑", "Pendências do projeto") : null,
       ["direcao", "financas"].includes(eu.papel) ? link("#/visao", "▦", "Visão geral") : null,
       ["direcao", "financas"].includes(eu.papel) ? link("#/painel-dono", "◎", "Painel do dono") : null,
@@ -225,6 +238,14 @@ function montarMenu() {
       link("#/conselho", "◇", "Conselho"),
       link("#/diretores", "?", "Perguntar aos diretores"),
       link("#/integracoes", "⇄", "Integrações")),
+    ["direcao", "financas", "vendas", "marketing", "posvenda"].includes(eu.papel) ? h("div", { class: "nav-group", role: "group", "aria-labelledby": "nav-vendas" },
+      h("span", { class: "nav-label", id: "nav-vendas" }, "Vender"),
+      link("#/contato", "+CT", "Contato rápido"),
+      link("#/clientes", "CLI", "Clientes"),
+      link("#/orcamentos", "ORV", "Orçamentos"),
+      link("#/orcamentos/novo", "+ORV", "Novo orçamento"),
+      link("#/prospeccao", "PROS", "Prospecção"),
+      link("#/conteudo", "IG", "Calendário do Instagram")) : null,
     h("div", { class: "nav-group", role: "group", "aria-labelledby": "nav-cfo" },
       h("span", { class: "nav-label", id: "nav-cfo" }, "Ferramentas do CFO"),
       ["direcao", "financas"].includes(eu.papel) ? link("#/cfo/diagnostico", "DIAG", "Diagnóstico dos orçamentos") : null,
@@ -296,7 +317,15 @@ async function navegar() {
   const compraRota = /^#\/compras\/([0-9a-f-]{36})$/.exec(rotaBase());
   const pendRota = /^#\/pendencias\/([a-z]+)$/.exec(rotaBase());
   const estrRota = /^#\/estrutura\/([a-z]+)$/.exec(rotaBase());
-  if (estrRota) {
+  const clienteRota = /^#\/clientes\/([0-9a-f-]{36})$/.exec(rotaBase());
+  const orcRota = /^#\/orcamentos\/([0-9a-f-]{36})$/.exec(rotaBase());
+  if (clienteRota) {
+    rota = "#/clientes";
+    def = { fn: (root) => telaCliente(root, clienteRota[1]), titulo: ["Cliente", "Dados, orçamentos, pedidos, funil e histórico"] };
+  } else if (orcRota) {
+    rota = "#/orcamentos";
+    def = { fn: (root) => telaOrcamentoFicha(root, orcRota[1]), titulo: ["Orçamento", "Itens, conferência, versões e o próximo passo"] };
+  } else if (estrRota) {
     rota = "#/estrutura";
     def = { ...TELAS[rota], fn: (root, signal) => telaEstrutura(root, signal, estrRota[1]) };
   } else if (pendRota) {
@@ -373,7 +402,7 @@ async function iniciar(mensagem) {
   }
   montarMenu();
   iniciarAvisos();
-  if (!TELAS[rotaBase()] && !/^#\/(projetos|setor|zoho|pedidos|estoque|biblioteca|compras|propostas|produtos|pendencias|estrutura)\//.test(location.hash)) history.replaceState(null, "", "#/orbita");
+  if (!TELAS[rotaBase()] && !/^#\/(projetos|setor|zoho|pedidos|estoque|biblioteca|compras|propostas|produtos|pendencias|estrutura|clientes|orcamentos)\//.test(location.hash)) history.replaceState(null, "", "#/orbita");
   navegar();
 }
 

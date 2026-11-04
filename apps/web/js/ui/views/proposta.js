@@ -55,14 +55,15 @@ function gruposGlobais(linhas, tipos) {
 
 export async function telaProposta(root, id) {
   const veos = UUID_RE.test(id);
-  let e, custoProdutos = 0;
+  let e, custoProdutos = 0, orcVeos = null, cliVeos = null;
   if (veos) {
-    const { orcamento: o, itens } = await api.comercialOrcamento(id);
+    const { orcamento: o, itens, cliente: cv } = await api.comercialOrcamento(id);
+    orcVeos = o; cliVeos = cv ?? null;
     const t = totaisDoOrcamentoVeos(o);
     e = { estimate_number: o.numero, customer_name: o.cliente_nome, customer_id: o.cliente_zoho_id ?? null, line_items: linhasDoOrcamentoVeos(itens),
       sub_total: t.subtotal, discount_total: t.desconto, tax_total: t.impostos, adjustment: t.ajuste, total: t.total,
-      date: (o.criado_em ?? "").slice(0, 10), expiry_date: null, notes: o.observacao ?? "", terms: "", salesperson_name: "",
-      reference_number: o.referencia ?? null, shipping_address: null, billing_address: null };
+      date: (o.criado_em ?? "").slice(0, 10), expiry_date: o.validade ?? null, notes: o.observacao ?? "", terms: "", salesperson_name: "",
+      reference_number: o.referencia ?? null, payment_terms_label: o.condicao ?? "", shipping_address: cv?.endereco_obra ? { address: cv.endereco_obra, city: cv.cidade, state: cv.uf } : null, billing_address: null };
     // tipo e custo de cada item ja sao conhecidos (nao precisam do cruzamento com o Diagnostico, so Zoho)
     custoProdutos = itens.filter((i) => i.tipo === "produto" && Number(i.custo_unit) > 0).reduce((a, i) => a + Number(i.custo_unit) * Number(i.quantidade), 0);
   } else {
@@ -83,8 +84,8 @@ export async function telaProposta(root, id) {
   } catch { /* vendas: sem custos */ }
   const tot = totaisProposta(e);
   const contatoCli = (cli.contact_persons ?? []).find((c) => c.is_primary_contact) ?? (cli.contact_persons ?? [])[0] ?? {};
-  const emailCli = cli.email || contatoCli.email || "";
-  const foneCli = cli.mobile || contatoCli.mobile || cli.phone || contatoCli.phone || "";
+  const emailCli = cliVeos ? (cliVeos.aceita_contato ? cliVeos.email ?? "" : "") : cli.email || contatoCli.email || "";
+  const foneCli = cliVeos ? (cliVeos.aceita_contato ? cliVeos.telefone ?? "" : "") : cli.mobile || contatoCli.mobile || cli.phone || contatoCli.phone || "";
 
   const canalPadrao = pForm?.canais?.find((x) => x.padrao) ?? null;
   const naAssinatura = canalPadrao && (pForm?.quandoPagaRt ?? "assinatura") === "assinatura" ? (tot.total * (canalPadrao.rt + canalPadrao.comissao)) / 100 : 0;
@@ -148,7 +149,7 @@ export async function telaProposta(root, id) {
   imprimir.addEventListener("click", () => { montar(); window.print(); });
   const envio = h("div", { class: "stack-s" });
   function desenharEnvio() {
-    const r = rascunhosEnvio({ numero: e.estimate_number ?? "", cliente: (contatoCli.first_name || e.customer_name || "").trim(), total: tot.total, validade: v("pp-validade"), contato: v("pp-contato") });
+    const r = rascunhosEnvio({ numero: e.estimate_number ?? "", cliente: (cliVeos?.contato_nome || contatoCli.first_name || e.customer_name || "").trim().split(" ")[0], total: tot.total, validade: v("pp-validade"), contato: v("pp-contato") });
     const tel = telefoneWhatsApp(foneCli);
     clear(envio).append(
       h("p", { class: "field-hint" }, "1. Salve o PDF (botão acima). 2. Abra o rascunho, anexe o PDF, revise e envie. O VEOS não envia nada sozinho."),
@@ -158,7 +159,14 @@ export async function telaProposta(root, id) {
       h("div", { class: "row" },
         botaoCaixaSaida({ canal: "email", destinatario: emailCli || null, assunto: r.assunto, corpo: r.corpo, origem: `proposta:${id}` }, "Guardar e-mail na caixa de saída"),
         botaoCaixaSaida({ canal: "whatsapp", destinatario: foneCli || null, corpo: r.whatsapp, origem: `proposta:${id}` }, "Guardar WhatsApp na caixa de saída")),
-      h("details", { class: "rascunho" }, h("summary", null, "Ver texto do e-mail"), h("pre", { class: "rascunho-corpo" }, `${r.assunto}\n\n${r.corpo}`)));
+      h("details", { class: "rascunho" }, h("summary", null, "Ver texto do e-mail"), h("pre", { class: "rascunho-corpo" }, `${r.assunto}\n\n${r.corpo}`)),
+      cliVeos && !cliVeos.aceita_contato ? h("p", { class: "notice notice-warn" }, "Este cliente não autorizou mensagens da VOICE (LGPD): entregue a proposta pessoalmente ou peça a autorização antes.") : null,
+      orcVeos && ["rascunho", "expirado"].includes(orcVeos.estado) ? marcarEnviado() : orcVeos?.estado === "enviado" ? h("p", { class: "notice notice-ok" }, `Marcado como enviado em ${formatDateTime(orcVeos.enviado_em)}.`) : null);
+  }
+  function marcarEnviado() {
+    const b = h("button", { class: "btn btn-ghost", type: "button" }, "Já enviei ao cliente: marcar como enviado");
+    b.addEventListener("click", async () => { b.disabled = true; try { await api.orcamentoSituacao(id, "enviado"); orcVeos.estado = "enviado"; orcVeos.enviado_em = new Date().toISOString(); desenharEnvio(); } catch (err) { b.disabled = false; b.after(errorNotice(err.message)); } });
+    return b;
   }
   const form = panel({ title: `Proposta do orçamento ${e.estimate_number ?? ""}`, subtitle: `${e.customer_name ?? ""} · ${brl(tot.total)} · confira, complete e gere o PDF.` },
     h("div", { class: "form-grid" },
@@ -166,8 +174,8 @@ export async function telaProposta(root, id) {
       campo("pp-data", "Data", e.date ?? new Date().toISOString().slice(0, 10), { type: "date" }),
       campo("pp-validade", "Validade", e.expiry_date ?? cond.validade ?? "", { type: "date" }, "Curta para itens importados (o CDC presume 10 dias se não estiver escrita)."),
       field("pp-formato", "Formato", h("select", { class: "select", id: "pp-formato" }, h("option", { value: "detalhado" }, "Detalhado (como no Zoho Books): Nº, item, quantidade, valor unitário e total"), h("option", { value: "global" }, "Global: itens com quantidade e totais por grupo")), "O detalhado repete as colunas do orçamento no Books. O global esconde o preço de cada item e mostra os totais de mão de obra e de materiais (o CDC pede os dois separados)."),
-      campo("pp-pag", "Condições de pagamento", cond.texto || (e.payment_terms_label ?? ""), {}, cond.texto ? "Sugerida pelo CFO: sinal cobre o material, etapas, validade e dólar do dia. Ajuste se precisar." : "Preencha conforme a negociação."),
-      campo("pp-prazo", "Prazo de execução"),
+      campo("pp-pag", "Condições de pagamento", (veos && e.payment_terms_label) || cond.texto || (e.payment_terms_label ?? ""), {}, veos && e.payment_terms_label ? "A condição salva no orçamento." : cond.texto ? "Sugerida pelo CFO: sinal cobre o material, etapas, validade e dólar do dia. Ajuste se precisar." : "Preencha conforme a negociação."),
+      campo("pp-prazo", "Prazo de execução", orcVeos?.prazo_execucao ?? ""),
       campo("pp-contato", "Responsável VOICE", e.salesperson_name ?? ""),
       campo("pp-emp", "Empresa", "VOICE Ambientes Inteligentes"), campo("pp-cnpj", "CNPJ", "12.323.599/0001-83"), campo("pp-end", "Endereço", "Balneário Camboriú/SC")),
     area("pp-intro", "Apresentação (opcional)", ""),
@@ -177,7 +185,7 @@ export async function telaProposta(root, id) {
   const painelEnvio = panel({ title: "Enviar ao cliente", subtitle: emailCli || foneCli ? `Contato${veos ? "" : " do Zoho"}: ${[emailCli, foneCli].filter(Boolean).join(" · ")}` : `Cliente sem e-mail/telefone${veos ? "" : " no Zoho"}.` }, envio);
   painelEnvio.classList.add("nao-imprimir");
   form.addEventListener("input", () => { montar(); desenharEnvio(); });
-  root.append(h("p", { class: "nao-imprimir" }, h("a", { href: "#/propostas" }, "‹ Propostas")), form, painelEnvio, doc);
+  root.append(h("p", { class: "nao-imprimir" }, veos ? h("a", { href: `#/orcamentos/${id}` }, "‹ Orçamento") : h("a", { href: "#/propostas" }, "‹ Propostas")), form, painelEnvio, doc);
   montar();
   desenharEnvio();
   if (!secoes.length) root.prepend(errorNotice(veos ? "Este orçamento não tem itens." : "Este orçamento não tem itens no espelho do Zoho."));
