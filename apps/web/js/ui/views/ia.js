@@ -1,6 +1,6 @@
 // Tela IA VEOS: onda de voz (WebGL) + comando por voz do navegador (pt-BR).
 // Hoje executa comandos de navegacao e indica o diretor que receberia o pedido;
-// a IA (respostas dos diretores) entra quando for integrada - nada e inventado aqui.
+// a resposta escrita na voz do diretor sai em Perguntar aos diretores (motor de IA no servidor).
 import { interpretar } from "../../domain/comandos.js";
 import { CATALOGO } from "../../data/catalogo.js";
 import { carregarManual, cartaoProcedimento, procedimentoPara } from "./manual.js";
@@ -32,7 +32,7 @@ export function renderIA(root, signal) {
       palco,
       h("div", { class: "ia-controles" },
         h("div", { class: "ia-selos" },
-          h("span", { class: "pill tone-warn" }, h("span", { class: "dot" }), "IA: integração pendente"),
+          h("a", { class: "pill tone-ok", href: "#/diretores", title: "Respostas escritas dos diretores pela IA do servidor" }, h("span", { class: "dot" }), "Diretores: IA ligada"),
           h("span", { class: `pill tone-${temVoz ? "ok" : "risk"}` }, h("span", { class: "dot" }), temVoz ? "Voz: pronta" : "Voz: indisponível")),
         microfone,
         estado,
@@ -45,7 +45,7 @@ export function renderIA(root, signal) {
         h("p", { class: "ia-ajuda-titulo" }, "Experimente dizer"),
         h("ul", { class: "ia-exemplos" }, EXEMPLOS.map((e) => h("li", null, h("button", { class: "orbita-chip", type: "button", onclick: () => executar(e) }, `“${e}”`)))),
         h("p", { class: "ia-privacidade" },
-          "Privacidade: o reconhecimento de voz é do próprio navegador e pode enviar o áudio ao fornecedor dele (Google no Chrome, Microsoft no Edge). O VEOS não grava áudio. As respostas dos diretores dependem da integração da IA, ainda pendente."),
+          "Privacidade: o reconhecimento de voz é do próprio navegador e pode enviar o áudio ao fornecedor dele (Google no Chrome, Microsoft no Edge). O VEOS não grava áudio. Aqui o VEOS abre telas e mostra o procedimento do diretor; a resposta escrita na voz dele sai em Perguntar aos diretores (IA no servidor, rotulada como opinião)."),
       ),
     ),
   );
@@ -80,7 +80,7 @@ export function renderIA(root, signal) {
       resposta.append(
         h("p", null, h("strong", null, "Encaminhamento: "), `${r.diretor.sigla} — ${r.diretor.nome}`),
         comoAge,
-        h("p", { class: "muted" }, "Sem IA no servidor (teto zero): o VEOS mostra o procedimento do manual do diretor; a resposta escrita na voz dele depende da IA."),
+        h("p", { class: "muted" }, "Aqui aparece o procedimento do manual do diretor. Para a resposta escrita na voz dele, use o botão abaixo (vai para Perguntar aos diretores)."),
       );
       if (setor) carregarManual(setor.id).then((m) => {
         const p = m && procedimentoPara(m, texto);

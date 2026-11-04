@@ -38,7 +38,7 @@ try {
       await pg.waitForFunction(() => !document.querySelector("#view .carregando-tela") && !document.querySelector("#view .muted")?.textContent?.match(/Carregando|Conferindo|Buscando/), null, { timeout: 45000 }).catch(() => {});
       await pg.waitForTimeout(800);
       const arq = `${PASTA}/${nome}-${t.replace(/[^a-z0-9]+/gi, "_").replace(/^_+|_+$/g, "") || "raiz"}.png`;
-      await pg.screenshot({ path: arq, fullPage: false });
+      await pg.screenshot({ path: arq, fullPage: process.env.VEOS_FOTO_INTEIRA === "1" });
       console.log(`${arq}${erros.length ? ` · erros: ${erros.join(" | ")}` : ""}`);
       erros.length = 0;
     }

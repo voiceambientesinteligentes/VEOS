@@ -1,6 +1,7 @@
 # Estado atual — 24/10/2026 (ver também 03/11 e 04/11 abaixo)
 
 ## Novo design: menu por áreas, Hoje e celular (04/11, noite)
+- Ajuste pedido pelo Fernando: **Órbita e IA VEOS na página inicial** (Hoje: abaixo dos afazeres, lado a lado no computador; no celular só as siglas na Órbita) **e como áreas próprias no menu** (Hoje · Órbita · IA VEOS · Vender · …, 9 áreas). Setores fora do Comercial abrem na área Órbita. Textos da IA atualizados: os diretores já respondem pela IA do servidor (Perguntar aos diretores).
 - Pedido do Fernando: "design prático, intuitivo, fácil de ler; não preciso ver um milhão de coisas". Mesmas telas e funções; só a moldura e a aparência mudaram (padrão de Pipedrive/HubSpot/Linear).
 - **Menu lateral com 7 áreas** (Hoje · Vender · Operação · Financeiro · Empresa · Biblioteca · Ajustes) e **abas da área no topo**, só da área atual; mapa único em `apps/web/js/data/navegacao.js` (perfil por tela; alimenta também a busca Ctrl+K: todas as telas, atalhos "Novo" e os 9 setores). Ícones SVG em `ui/icones.js`.
 - **"+ Novo"** (contato, orçamento, cliente, compra, pergunta ao diretor). **Página inicial `#/hoje`** (`ui/views/hoje.js`): saudação, atalhos, "Para fazer hoje" (alertas graves + tarefas vencidas/de hoje, com "Feito" na linha) e "Agora na VOICE". Rota desconhecida cai em Hoje (Órbita segue em Empresa → Setores).

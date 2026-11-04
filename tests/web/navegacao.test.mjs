@@ -6,8 +6,9 @@ import { abaDaRota, itensDeBusca, menuDoPerfil, NOVOS, SECOES, secaoDaRota } fro
 
 const main = readFileSync("apps/web/js/main.js", "utf8");
 
-test("no maximo 7 areas no menu e nenhuma tela repetida", () => {
-  assert.ok(SECOES.length <= 7);
+test("no maximo 9 areas no menu (Orbita e IA proprias) e nenhuma tela repetida", () => {
+  assert.ok(SECOES.length <= 9);
+  assert.deepEqual(SECOES.slice(0, 3).map((s) => s.id), ["hoje", "orbita", "ia"]);
   const hrefs = SECOES.flatMap((s) => s.itens.map(([h]) => h));
   assert.equal(new Set(hrefs).size, hrefs.length);
 });
@@ -49,7 +50,9 @@ test("rota -> area e aba (inclui fichas e setores)", () => {
   caso("#/compras/nova", "operacao", "#/compras");
   caso("#/produtos/revisao", "operacao", "#/produtos");
   caso("#/setor/vendas", "vender", "#/setor/vendas");
-  caso("#/setor/financas", "empresa", "#/orbita");
+  caso("#/setor/financas", "orbita", "#/orbita");
+  caso("#/orbita", "orbita", "#/orbita");
+  caso("#/ia", "ia", "#/ia");
   caso("#/zoho/crm", "ajustes", "#/zoho/crm");
   caso("#/cfo/caixa", "financeiro", "#/cfo/caixa");
 });

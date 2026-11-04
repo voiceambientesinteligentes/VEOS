@@ -1,11 +1,14 @@
 // HOJE (#/hoje): a pagina inicial. Responde "o que eu faco agora?": as prioridades do dia (alertas
 // mais graves e tarefas vencidas/de hoje), os atalhos do que mais se cria e os numeros do momento.
+// Abaixo, a Orbita dos setores e o comando de voz da IA VEOS (pedido do Fernando: na pagina inicial).
 // O resto do VEOS continua a um clique (menu) ou na busca (Ctrl+K).
 import { api } from "../../data/api.js";
 import { CATALOGO } from "../../data/catalogo.js";
 import { NOVOS } from "../../data/navegacao.js";
 import { formatBRL } from "../../domain/format.js";
 import { clear, errorNotice, h } from "../dom.js";
+import { renderIA } from "./ia.js";
+import { renderOrbita } from "./orbita.js";
 
 const brl = (v) => formatBRL(String(Number(v ?? 0).toFixed(2)));
 const SEV = { CRITICO: 0, ALTO: 1, MEDIO: 2, INFO: 3 };
@@ -24,7 +27,7 @@ export function prioridades(radar, hoje = hojeISO(), limite = 7) {
   return { itens: todas.slice(0, limite), total: todas.length };
 }
 
-export async function telaHoje(root, eu = {}) {
+export async function telaHoje(root, eu = {}, signal = new AbortController().signal) {
   const agora = new Date();
   const hora = agora.getHours();
   const saudacao = hora < 12 ? "Bom dia" : hora < 18 ? "Boa tarde" : "Boa noite";
@@ -34,6 +37,8 @@ export async function telaHoje(root, eu = {}) {
 
   const lista = h("div", { class: "hj-lista", "aria-live": "polite" }, h("p", { class: "muted" }, "Carregando o seu dia…"));
   const numeros = h("div", { class: "hj-numeros" });
+  const orbitaBox = h("div", { class: "hj-orbita-box" }, h("p", { class: "muted" }, "Montando a órbita…"));
+  const iaBox = h("div", { class: "hj-ia-box" });
   const atalhos = h("div", { class: "hj-atalhos" }, NOVOS.filter(([, , , p]) => !p || p.includes(eu.papel)).slice(0, 4).map(([href, t, sub]) =>
     h("a", { class: "hj-atalho", href }, h("span", { class: "hj-atalho-mais", "aria-hidden": "true" }, "+"), h("span", null, h("strong", null, t), h("small", null, sub)))));
 
@@ -43,9 +48,22 @@ export async function telaHoje(root, eu = {}) {
     h("div", { class: "hj-grade" },
       h("section", { class: "hj-card hj-prioridades" }, h("div", { class: "hj-card-topo" }, h("h2", null, "Para fazer hoje"), h("a", { href: "#/radar", class: "hj-link" }, "Ver tudo")), lista),
       h("section", { class: "hj-card" }, h("div", { class: "hj-card-topo" }, h("h2", null, "Agora na VOICE")), numeros)),
+    h("div", { class: "hj-centro" },
+      h("section", { class: "hj-card hj-orbita" }, h("div", { class: "hj-card-topo" }, h("h2", null, "Órbita"), h("a", { href: "#/orbita", class: "hj-link" }, "Tela cheia")), orbitaBox),
+      h("section", { class: "hj-card hj-ia" }, h("div", { class: "hj-card-topo" }, h("h2", null, "IA VEOS"), h("a", { href: "#/ia", class: "hj-link" }, "Tela cheia")), iaBox)),
   );
+  renderIA(iaBox, signal);
 
-  const [radar, orcs, peds] = await Promise.all([tentar(() => api.radar()), tentar(() => api.comercialOrcamentos()), tentar(() => api.fluxoPedidos())]);
+  const [radar, orcs, peds, cad] = await Promise.all([tentar(() => api.radar()), tentar(() => api.comercialOrcamentos()), tentar(() => api.fluxoPedidos()), tentar(() => api.setores())]);
+  // orbita: os setores com os alertas e tarefas do Radar (mesma regra da tela Orbita)
+  if (cad && !signal.aborted) {
+    const atividade = Object.fromEntries(cad.setores.map((s) => [s.id, {
+      alertas: (radar?.alertas ?? []).filter((a) => a.setor_id === s.id).length,
+      tarefas: (radar?.tarefas ?? []).filter((x) => x.setor_id === s.id).length,
+      acessivel: (radar?.setores ?? []).includes(s.id),
+    }]));
+    renderOrbita(orbitaBox, { setores: cad.setores, diretores: cad.diretores, atividade, signal });
+  } else clear(orbitaBox).append(h("p", { class: "muted" }, "Órbita indisponível agora."));
   // prioridades
   clear(lista);
   if (!radar) lista.append(errorNotice("Não deu para ler o Radar agora."));

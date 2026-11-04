@@ -17,6 +17,7 @@ const feitas = [];
 Object.assign(api, {
   radar: async () => RADAR, concluirTarefa: async (id) => { feitas.push(id); return { id }; },
   comercialOrcamentos: async () => ({ orcamentos: caso === "vazio" ? [] : [{ estado: "enviado", valor_total: "12000" }, { estado: "rascunho", valor_total: "8000" }, { estado: "aceito", valor_total: "5000" }] }),
+  setores: async () => ({ setores: [{ id: "vendas", sigla: "CSO", nome: "Comercial", descricao: "TESTE" }, { id: "financas", sigla: "CFO", nome: "Finanças", descricao: "TESTE" }], diretores: [{ setor_id: "vendas", sigla: "CSO", nome: "Diretor TESTE" }] }),
   fluxoPedidos: async () => ({ pedidos: caso === "vazio" ? [] : [{ estado: "confirmado", valor_total: "5000" }] }),
 });
 
@@ -24,6 +25,8 @@ rodar(async (v) => {
   await telaHoje(v, { nome: "Fernando TESTE", papel: "direcao" });
   const t = v.textContent;
   for (const x of ["Fernando", "Para fazer hoje", "Agora na VOICE", "Contato que chegou", "Orçamento", "Começar a operar"]) if (!t.includes(x)) throw new Error(`falta: ${x}`);
+  if (v.querySelectorAll(".hj-orbita .orbita-no").length !== 2) throw new Error("orbita na pagina inicial com os setores");
+  if (!v.querySelector(".hj-ia .ia-microfone") || !v.querySelector("#ia-texto")) throw new Error("IA VEOS na pagina inicial");
   if (caso === "vazio") { if (!t.includes("Tudo em dia.")) throw new Error("vazio"); return; }
   const itens = [...v.querySelectorAll(".hj-item strong")].map((e) => e.textContent);
   if (itens[0] !== "Lead TESTE sem resposta há 2 horas") throw new Error(`crítico primeiro: ${itens}`);

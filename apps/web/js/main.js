@@ -124,7 +124,7 @@ async function telaHistorico(root) {
 
 const consulta = () => new URLSearchParams(location.hash.split("?")[1] ?? "");
 const TELAS = {
-  "#/hoje": { fn: (root) => telaHoje(root, eu), titulo: ["Hoje", "O que precisa de você agora"] },
+  "#/hoje": { fn: (root, signal) => telaHoje(root, eu, signal), titulo: ["Hoje", "O que precisa de você agora"] },
   "#/operar": { fn: (root) => telaOperar(root), titulo: ["Começar a operar", "Do primeiro contato ao pedido entregue: o que já está feito e a ferramenta de cada etapa"] },
   "#/clientes": { fn: (root) => telaClientes(root), titulo: ["Clientes", "Cadastro de clientes da VOICE: contato, obra, origem e tudo o que foi orçado"] },
   "#/orcamentos": { fn: (root) => telaOrcamentos(root, consulta().get("aba") === "zoho" ? "zoho" : "veos"), titulo: ["Orçamentos", "Do rascunho ao pedido: PDF, envio, aceite e versões"] },

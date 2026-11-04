@@ -155,3 +155,16 @@
 .carregando-ponto { width: 14px; height: 14px; border-radius: 50%; border: 2px solid var(--gold-line); border-top-color: var(--gold); animation: girar 0.9s linear infinite; }
 @keyframes girar { to { transform: rotate(360deg); } }
 @media (prefers-reduced-motion: reduce) { .carregando-ponto { animation: none; } }
+
+/* Hoje: Orbita e IA VEOS lado a lado (empilhadas em tela menor) */
+.hj-centro { display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(320px, 1fr); gap: var(--s4); align-items: start; }
+.hj-orbita .orbita { grid-template-columns: minmax(0, 1fr) !important; }
+.hj-orbita .orbita-palco { height: clamp(380px, 58vh, 600px); }
+.hj-orbita .orbita-dica { font-size: var(--fs-xs); color: var(--text-2); margin: var(--s2) 0 0; }
+.hj-ia .ia { gap: var(--s4); }
+.hj-ia .ia-palco { height: clamp(160px, 22vh, 220px); }
+.hj-ia .ia-microfone { width: 72px; height: 72px; }
+.hj-ia .ia-ajuda { padding-top: var(--s3); }
+@media (max-width: 1280px) { .hj-centro { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 560px) { .hj-orbita .orbita-palco { height: 420px; } }
+@media (max-width: 560px) { .hj-orbita .orbita-no-nome { display: none; } }

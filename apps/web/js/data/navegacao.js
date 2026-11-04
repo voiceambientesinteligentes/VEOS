@@ -1,4 +1,4 @@
-// MAPA DE NAVEGACAO do VEOS: 7 areas no menu lateral; as telas de cada area aparecem como abas no
+// MAPA DE NAVEGACAO do VEOS: 9 areas no menu lateral (Orbita e IA VEOS como areas proprias, pedido do Fernando em 04/11); as telas de cada area aparecem como abas no
 // topo so quando a pessoa esta nela (padrao de apps de gestao como Pipedrive, HubSpot e Linear).
 // O mesmo mapa alimenta a busca global (Ctrl+K) e respeita o perfil (papeis) de cada tela.
 // Sem DOM: testado em tests/web/navegacao.test.mjs.
@@ -9,6 +9,8 @@ export const SECOES = [
   { id: "hoje", rotulo: "Hoje", icone: "hoje", itens: [
     ["#/hoje", "Hoje"], ["#/radar", "Alertas e tarefas"], ["#/mensagens", "Mensagens a enviar"], ["#/operar", "Começar a operar"],
   ] },
+  { id: "orbita", rotulo: "Órbita", icone: "orbita", itens: [["#/orbita", "Órbita dos setores"]] },
+  { id: "ia", rotulo: "IA VEOS", icone: "ia", itens: [["#/ia", "IA VEOS"]] },
   { id: "vender", rotulo: "Vender", icone: "vender", papeis: VENDER, itens: [
     ["#/orcamentos", "Orçamentos"], ["#/clientes", "Clientes"], ["#/contato", "Contato rápido"], ["#/prospeccao", "Prospecção"],
     ["#/conteudo", "Instagram"], ["#/setor/vendas", "Funil"], ["#/comercial", "Plano comercial"], ["#/negociacao", "Negociação ao vivo"], ["#/propostas", "Propostas do Zoho"],
@@ -24,7 +26,7 @@ export const SECOES = [
   ] },
   { id: "empresa", rotulo: "Empresa", icone: "empresa", itens: [
     ["#/painel-dono", "Painel do dono", FIN], ["#/plano", "Plano da VOICE"], ["#/estrutura", "Estrutura"], ["#/diretores", "Perguntar aos diretores"],
-    ["#/orbita", "Setores"], ["#/conselho", "Conselho"], ["#/ia", "Comando por voz"],
+    ["#/conselho", "Conselho"],
   ] },
   { id: "biblioteca", rotulo: "Biblioteca", icone: "biblioteca", itens: [
     ["#/biblioteca/decisoes", "Decisões"], ["#/biblioteca/politicas", "Políticas"], ["#/biblioteca/revisoes", "Revisões"], ["#/biblioteca/aprendizados", "Aprendizados"],
@@ -58,7 +60,7 @@ export function menuDoPerfil(papel) {
 /** Area da rota atual (a rota ja vem normalizada pelo roteador, ex.: "#/pedidos"). */
 export function secaoDaRota(rota, menu) {
   const r = String(rota ?? "").split("?")[0];
-  if (/^#\/setor\//.test(r)) return menu.find((s) => s.id === (r === "#/setor/vendas" ? "vender" : "empresa")) ?? null;
+  if (/^#\/setor\//.test(r)) return menu.find((s) => s.id === (r.startsWith("#/setor/vendas") ? "vender" : "orbita")) ?? null;
   const exata = menu.find((s) => s.itens.some((i) => i.href === r));
   if (exata) return exata;
   // prefixo mais longo (ex.: #/orcamentos/novo -> Vender)
