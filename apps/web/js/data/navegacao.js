@@ -21,7 +21,7 @@ export const SECOES = [
   ] },
   { id: "financeiro", rotulo: "Financeiro", icone: "financeiro", papeis: FIN, itens: [
     ["#/visao", "Visão geral"], ["#/cfo/caixa", "Caixa e extrato"], ["#/cfo/fluxo", "13 semanas"], ["#/cfo/fechamento", "Fechamento"], ["#/cfo/indicadores", "Indicadores"],
-    ["#/cfo/recorrentes", "Contas fixas"], ["#/cfo/precos", "Preços"], ["#/cfo/formulario", "Formulário do CFO"], ["#/cfo/diagnostico", "Diagnóstico"],
+    ["#/cfo/recorrentes", "Contas fixas"], ["#/contratos", "Contratos de suporte"], ["#/cfo/precos", "Preços"], ["#/cfo/formulario", "Formulário do CFO"], ["#/cfo/diagnostico", "Diagnóstico"],
     ["#/cfo/estoque", "Estoque estratégico"], ["#/calculadora", "Calculadora"], ["#/cfo", "Avisos de orçamento"], ["#/historico", "Histórico"],
   ] },
   { id: "empresa", rotulo: "Empresa", icone: "empresa", itens: [

@@ -4,6 +4,7 @@
 // deno-lint-ignore-file no-explicit-any
 import { servico } from "./banco.ts";
 import { rbt12 } from "./zoho.ts";
+import { idsTeste } from "./teste.ts";
 import { parametros } from "./dominio/formulario_cfo.js";
 import { impostosSimulados } from "./dominio/cfo_cenarios.js";
 
@@ -53,19 +54,23 @@ export async function contasComSaldo() {
 }
 
 /** Dados do fluxo de N semanas (saldos, parcelas, contas, recorrentes, imposto e o recebido no mes). */
-export async function dadosSemanas(n: number) {
+export async function dadosSemanas(n: number, comTeste = false) {
   const semanas = Math.min(26, Math.max(4, n || 13));
   const hoje = hojeSP(), ate = somaDias(hoje, semanas * 7);
-  const [saldos, parcelas, contas, recorrentes, imp, mesAtual] = await Promise.all([
+  const [saldos, parcelas, contas, recorrentes, imp, mesAtual, cobrancasContrato] = await Promise.all([
     rpc("saldo_contas", { p_data: hoje }),
     servico(`/rest/v1/parcelas?estado=eq.aberta&vencimento=lte.${ate}&select=id,numero,vencimento,valor,pedido:pedidos!inner(numero,estado)&pedido.estado=neq.cancelado&order=vencimento&limit=2000`),
     servico(`/rest/v1/contas_pagar?estado=eq.aberta&vencimento=lte.${ate}&select=id,descricao,fornecedor,categoria,plano_conta,vencimento,valor,recorrente_id&order=vencimento&limit=3000`),
     servico("/rest/v1/contas_recorrentes?ativa=is.true&select=descricao,plano_conta,valor,parcelas,inicio"),
     aliquotaMedia(),
     rpc("caixa_resumo_mensal", { p_de: `${hoje.slice(0, 7)}-01`, p_ate: hoje }),
+    // receita recorrente: cobrancas abertas de contratos de suporte ativos entram como entradas previstas
+    servico(`/rest/v1/contrato_cobrancas?estado=eq.aberta&vencimento=lte.${ate}&select=id,vencimento,valor,contrato:contratos_suporte!inner(codigo,estado,criado_por)&contrato.estado=eq.ativo&order=vencimento&limit=2000`).catch(() => []),
   ]);
+  const testes = new Set(comTeste ? [] : await idsTeste()); // robos de teste so entram na previsao do proprio robo
+  const recorrencia = cobrancasContrato.filter((x: Record<string, any>) => !testes.has(x.contrato?.criado_por)).map((x: Record<string, any>) => ({ id: x.id, numero: 1, vencimento: x.vencimento, valor: x.valor, pedido: x.contrato?.codigo }));
   const entradasRealizadasMes = r2(mesAtual.filter((x: { grupo: string }) => x.grupo === "receita").reduce((t: number, x: { entradas: number }) => t + Number(x.entradas ?? 0), 0));
-  return { hoje, semanas, entradas_realizadas_mes: entradasRealizadasMes, saldos, parcelas: parcelas.map((x: Record<string, any>) => ({ ...x, pedido: x.pedido?.numero })), contas, recorrentes, impostos: imp };
+  return { hoje, semanas, entradas_realizadas_mes: entradasRealizadasMes, saldos, parcelas: [...parcelas.map((x: Record<string, any>) => ({ ...x, pedido: x.pedido?.numero })), ...recorrencia], contas, recorrentes, impostos: imp };
 }
 
 /** Dados do fechamento (DRE) de um mes AAAA-MM. */

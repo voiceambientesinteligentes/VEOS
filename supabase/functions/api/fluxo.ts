@@ -30,6 +30,7 @@ async function storage(caminho: string, corpo: unknown) {
 import { vigiarFluxo } from "../_shared/fluxo_vigia.ts";
 import { rtPadrao } from "../_shared/caixa_dados.ts";
 import { caixaPedido, rotearCompras } from "./compras.ts";
+import { rotearContratos } from "./contratos.ts";
 
 const VER = ["direcao", "vendas", "operacoes", "financas"];
 const COMERCIAL = ["direcao", "vendas", "financas"];
@@ -134,6 +135,7 @@ export async function rotearFluxo(req: Request, partes: string[], eu: Membro) {
   const corpo = post ? ((await lerCorpo(req)) ?? {}) : {};
   const chave = req.headers.get("Idempotency-Key") ?? "";
   if (post && !CHAVE_RE.test(chave)) throw new HttpError(400, "Idempotency-Key obrigatorio (16-64 caracteres)");
+  if (a === "contratos-suporte") return await rotearContratos(req, partes, eu, corpo, chave);
   if (a === "compras" || a === "contas-pagar" || a === "caixa" || a === "fornecedores") return await rotearCompras(req, partes, eu, corpo, chave, vigiar);
 
   // ---------------------------------------------------------------- leitura

@@ -17,6 +17,7 @@
 //   GET  /caixa/fechamento?mes=AAAA-MM         dados do DRE gerencial do mes
 //   GET  /caixa/indicadores                    dados dos indicadores (12 meses)
 import { HttpError, type Membro, registrarAcesso, servico } from "../_shared/banco.ts";
+import { ehTeste } from "../_shared/teste.ts";
 import { contasComSaldo, dadosFechamento, dadosIndicadores, dadosSemanas, hojeSP } from "../_shared/caixa_dados.ts";
 import { vigiarCaixa } from "../_shared/caixa_vigia.ts";
 
@@ -190,7 +191,7 @@ export async function rotearCaixa(req: Request, partes: string[], eu: Membro, co
   }
 
   // ---------------------------------------------------------------- dados dos calculos
-  if (a === "semanas" && !post) return await dadosSemanas(Number(q.get("semanas")) || 13);
+  if (a === "semanas" && !post) return await dadosSemanas(Number(q.get("semanas")) || 13, ehTeste(eu));
   if (a === "fechamento" && !post) {
     const mes = MES_RE.test(q.get("mes") ?? "") ? q.get("mes")! : hojeSP().slice(0, 7);
     await registrarAcesso(u, `caixa:fechamento ${mes}`);

@@ -34,6 +34,7 @@ import { telaPendencias } from "./ui/views/pendencias.js";
 import { telaEstrutura } from "./ui/views/estrutura.js";
 import { telaCliente, telaClientes } from "./ui/views/clientes.js";
 import { telaFornecedor, telaFornecedores } from "./ui/views/fornecedores.js";
+import { telaContrato, telaContratos } from "./ui/views/contratos.js";
 import { telaNovoOrcamento, telaOrcamentoFicha, telaOrcamentos } from "./ui/views/orcamento.js";
 import { telaContatoRapido, telaConteudo, telaProspeccao } from "./ui/views/captacao.js";
 import { telaOperar } from "./ui/views/operar.js";
@@ -165,6 +166,7 @@ const TELAS = {
   "#/diretores": { fn: telaDiretores, titulo: ["Perguntar aos diretores", "Respostas da IA na voz de cada diretor, pelo manual de atuação e com as contas feitas pelo VEOS"] },
   "#/mensagens": { fn: telaMensagens, titulo: ["Caixa de saída", "Mensagens preparadas: você revisa, envia e marca como enviada"] },
   "#/propostas": { fn: telaPropostas, titulo: ["Propostas", "Proposta comercial em PDF a partir do orçamento do Zoho"] },
+  "#/contratos": { fn: (root) => telaContratos(root), titulo: ["Contratos de suporte", "Receita recorrente: contrato, cobrança mensal e previsão de caixa"] },
   "#/fornecedores": { fn: (root) => telaFornecedores(root), titulo: ["Fornecedores", "Quem vende para a VOICE: contato, prazos, compras e contas a pagar"] },
   "#/compras": { fn: telaCompras, titulo: ["Compras", "Faltas de estoque, compras registradas e recebimento de mercadoria"] },
   "#/compras/nova": { fn: telaNovaCompra, titulo: ["Nova compra", "Itens, fornecedor e parcelas a pagar"] },
@@ -270,10 +272,14 @@ async function navegar() {
   const compraRota = /^#\/compras\/([0-9a-f-]{36})$/.exec(rotaBase());
   const pendRota = /^#\/pendencias\/([a-z]+)$/.exec(rotaBase());
   const estrRota = /^#\/estrutura\/([a-z]+)$/.exec(rotaBase());
-  const fornRota = /^#\/fornecedores\/([0-9a-f-]{36})$/.exec(rotaBase());
+  const contratoRota = /^#\/contratos\/([0-9a-f-]{36})$/.exec(rotaBase());
+  const fornRota =/^#\/fornecedores\/([0-9a-f-]{36})$/.exec(rotaBase());
   const clienteRota = /^#\/clientes\/([0-9a-f-]{36})$/.exec(rotaBase());
   const orcRota = /^#\/orcamentos\/([0-9a-f-]{36})$/.exec(rotaBase());
-  if (fornRota) {
+  if (contratoRota) {
+    rota = "#/contratos";
+    def = { fn: (root) => telaContrato(root, contratoRota[1]), titulo: ["Contrato de suporte", "Cobranças mensais, situação e histórico"] };
+  } else if (fornRota) {
     rota = "#/fornecedores";
     def = { fn: (root) => telaFornecedor(root, fornRota[1]), titulo: ["Fornecedor", "Dados, compras, contas a pagar e histórico"] };
   } else if (clienteRota) {
@@ -373,7 +379,7 @@ async function iniciar(mensagem) {
   montarMenu();
   iniciarAvisos();
   iniciarAssistente(eu);
-  if (!TELAS[rotaBase()] && !/^#\/(projetos|setor|zoho|pedidos|estoque|biblioteca|compras|propostas|produtos|pendencias|estrutura|clientes|orcamentos|fornecedores)\//.test(location.hash)) history.replaceState(null, "", "#/hoje");
+  if (!TELAS[rotaBase()] && !/^#\/(projetos|setor|zoho|pedidos|estoque|biblioteca|compras|propostas|produtos|pendencias|estrutura|clientes|orcamentos|fornecedores|contratos)\//.test(location.hash)) history.replaceState(null, "", "#/hoje");
   navegar();
 }
 
