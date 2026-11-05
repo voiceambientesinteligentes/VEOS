@@ -12,6 +12,7 @@ import { vigiarCaixa } from "../_shared/caixa_vigia.ts";
 import { vigiarCadencias } from "../_shared/comercial_vigia.ts";
 import { vigiarSaude } from "../_shared/saude_vigia.ts";
 import { vigiarAgenda } from "../_shared/agenda_vigia.ts";
+import { avisarAlertasPorPush } from "../_shared/push.ts";
 
 const INTERVALO_MS = 10 * 60 * 1000;
 
@@ -32,7 +33,8 @@ Deno.serve(async (req) => {
       const cad = await vigiarCadencias().catch((e) => { console.error("cadencias do comercial", e); return null; });
       const ag = await vigiarAgenda().catch((e) => { console.error("agenda por pessoa", e); return null; });
       const sd = await vigiarSaude().catch((e) => { console.error("vigia da saude", e); return null; });
-      varredura = { novos: r.novos, resolvidos: r.resolvidos, ativos: r.ativos, fluxo: f, biblioteca: bib, caixa: cx, cadencias: cad, saude: sd, agenda: ag };
+      const pu = await avisarAlertasPorPush().catch((e) => { console.error("aviso por push", e); return null; });
+      varredura = { push: pu, novos: r.novos, resolvidos: r.resolvidos, ativos: r.ativos, fluxo: f, biblioteca: bib, caixa: cx, cadencias: cad, saude: sd, agenda: ag };
     } else {
       varredura = "recente (pulada)";
     }

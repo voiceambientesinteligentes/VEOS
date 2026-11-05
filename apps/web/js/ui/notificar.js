@@ -31,15 +31,50 @@ export function iniciarAvisos() {
   timer = setInterval(() => conferir(false), 5 * 60 * 1000);
 }
 
+// ---- aviso com o navegador FECHADO (Web Push): inscreve este aparelho; o servidor avisa alertas ALTO/CRITICO novos
+export const pushSuportado = () => "serviceWorker" in navigator && "PushManager" in window && typeof Notification !== "undefined";
+const base64ParaBytes = (b64) => { const p = "=".repeat((4 - (b64.length % 4)) % 4); const s = atob((b64 + p).replace(/-/g, "+").replace(/_/g, "/")); return Uint8Array.from(s, (c) => c.charCodeAt(0)); };
+
+/** Inscreve este aparelho. Devolve true se ficou inscrito; false se o servidor ainda nao tem chaves de push. */
+export async function inscreverPush() {
+  if (!pushSuportado()) return false;
+  const { chave } = await api.pushChave();
+  if (!chave) return false;
+  const reg = await navigator.serviceWorker.ready;
+  let sub = await reg.pushManager.getSubscription();
+  if (!sub) sub = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: base64ParaBytes(chave) });
+  const j = sub.toJSON();
+  await api.pushInscrever({ endpoint: j.endpoint, keys: j.keys });
+  return true;
+}
+
+export async function cancelarPush() {
+  if (!pushSuportado()) return;
+  try {
+    const reg = await navigator.serviceWorker.ready;
+    const sub = await reg.pushManager.getSubscription();
+    if (!sub) return;
+    await api.pushCancelar({ endpoint: sub.endpoint }).catch(() => {});
+    await sub.unsubscribe();
+  } catch { /* sem service worker */ }
+}
+
+export async function pushInscrito() {
+  if (!pushSuportado()) return false;
+  try { return Boolean(await (await navigator.serviceWorker.ready).pushManager.getSubscription()); } catch { return false; }
+}
+
 export async function ligarAvisos() {
   if (!suportado()) throw new Error("Este navegador não tem avisos.");
   const p = await Notification.requestPermission();
   if (p !== "granted") throw new Error("Permissão negada no navegador.");
   gravar(LIGADO, true);
   iniciarAvisos();
+  await inscreverPush().catch(() => false); // se falhar, continuam os avisos com o VEOS aberto
 }
 
 export function desligarAvisos() {
+  cancelarPush();
   gravar(LIGADO, false);
   clearInterval(timer);
   timer = null;

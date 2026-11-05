@@ -7,7 +7,7 @@ import { formatDateTime } from "../../domain/format.js";
 import { clear, errorNotice, field, h, method, panel, stamp, table } from "../dom.js";
 import { setorPorId } from "../componentes.js";
 import { cargosDoSetor } from "../../domain/agenda.js";
-import { desligarAvisos, ligado, ligarAvisos, suportado } from "../notificar.js";
+import { desligarAvisos, ligado, ligarAvisos, pushInscrito, pushSuportado, suportado } from "../notificar.js";
 
 const SITE = "https://voiceambientesinteligentes.github.io/VEOS/";
 const ACOES = { mcp_acesso: "Acesso do Claude Code criado", convidado: "Convidado", papel: "Papel alterado", desativado: "Desativado", reativado: "Reativado", mfa_exigido: "MFA exigido", cargo: "Cargo definido", mfa_dispensado: "MFA dispensado" };
@@ -230,8 +230,17 @@ function painelAvisos() {
       else { await ligarAvisos(); b.textContent = "Desligar avisos"; }
     } catch (e) { saida.append(errorNotice(e.message)); }
   });
-  return panel({ title: "Avisos no navegador", subtitle: "Com o VEOS aberto, avisa alertas altos e críticos novos dos seus setores (confere a cada 5 minutos). Com a aba fechada, não há aviso." },
-    h("div", { class: "row" }, b, ligado() ? stamp("Ligados", "ok") : stamp(suportado() ? "Desligados" : "Navegador sem suporte", "neutral")), saida);
+  const teste = h("button", { class: "btn btn-ghost", type: "button", hidden: !pushSuportado() || !ligado() }, "Enviar aviso de teste");
+  teste.addEventListener("click", async () => {
+    clear(saida);
+    try {
+      if (!(await pushInscrito())) return saida.append(errorNotice("Este aparelho ainda não está inscrito para avisos com o VEOS fechado. Desligue e ligue os avisos de novo."));
+      const r = await api.pushTestar();
+      saida.append(h("p", { class: "notice notice-ok" }, `Aviso enviado a ${r.aparelhos} aparelho(s). Feche o VEOS e confira se ele chega.`));
+    } catch (e) { saida.append(errorNotice(e.message)); }
+  });
+  return panel({ title: "Avisos no navegador", subtitle: "Avisa alertas altos e críticos novos dos seus setores. Com o VEOS aberto, confere a cada 5 minutos; com o navegador fechado, o servidor avisa em até 10 minutos (precisa permitir notificações e usar um navegador com suporte, como Chrome, Edge ou Firefox; no iPhone, só depois de instalar o VEOS na tela inicial)." },
+    h("div", { class: "row" }, b, teste, ligado() ? stamp("Ligados", "ok") : stamp(suportado() ? "Desligados" : "Navegador sem suporte", "neutral")), saida);
 }
 
 /** Pedido do codigo no login quando a direcao exige MFA (sessao ainda sem codigo). */

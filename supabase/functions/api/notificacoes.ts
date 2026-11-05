@@ -6,6 +6,7 @@
 // O VEOS nao envia nada: "enviada" e a confirmacao de quem enviou pelo e-mail/WhatsApp.
 import { HttpError, lerCorpo, type Membro, servico } from "../_shared/banco.ts";
 import { acessiveis, podeVer } from "./setores.ts";
+import { chavePublica, enviarPush } from "../_shared/push.ts";
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
 const CHAVE_RE = /^[A-Za-z0-9-]{16,64}$/;
@@ -22,6 +23,29 @@ export async function rotearNotificacoes(req: Request, partes: string[], eu: Mem
   // direcao ve tudo; os demais, as mensagens dos setores que acessam e as que criaram
   const visivel = eu.papel === "direcao" ? "" : `&or=(setor_id.in.(${setores.join(",")}),criado_por.eq.${eu.user_id})`;
 
+  // ---- aviso com o navegador fechado (Web Push)
+  if (raiz === "push" && id === "chave" && !post) return { chave: chavePublica() };
+  if (raiz === "push" && id === "inscrever" && post) {
+    const endpoint = txt(corpo.endpoint, 1000), keys = (corpo.keys ?? {}) as Record<string, unknown>;
+    const p256dh = txt(keys.p256dh, 200), auth = txt(keys.auth, 100);
+    if (!endpoint || !endpoint.startsWith("https://") || !p256dh || !auth) throw new HttpError(400, "inscrição de aviso inválida");
+    await servico("/rest/v1/push_inscricoes?on_conflict=endpoint", { method: "POST", headers: { Prefer: "resolution=merge-duplicates" },
+      body: JSON.stringify({ user_id: eu.user_id, endpoint, p256dh, auth, agente: (req.headers.get("User-Agent") ?? "").slice(0, 200) || null, falhas: 0 }) });
+    return { ok: true };
+  }
+  if (raiz === "push" && id === "cancelar" && post) {
+    const endpoint = txt(corpo.endpoint, 1000);
+    if (!endpoint) throw new HttpError(400, "informe o aparelho");
+    await servico(`/rest/v1/push_inscricoes?user_id=eq.${eu.user_id}&endpoint=eq.${encodeURIComponent(endpoint)}`, { method: "DELETE" });
+    return { ok: true };
+  }
+  if (raiz === "push" && id === "testar" && post) {
+    const minhas = await servico(`/rest/v1/push_inscricoes?user_id=eq.${eu.user_id}&select=id,user_id,endpoint,p256dh,auth,falhas`);
+    if (!minhas.length) throw new HttpError(400, "este aparelho não está inscrito nos avisos");
+    const r: string[] = [];
+    for (const i of minhas) r.push(await enviarPush(i, { titulo: "VEOS · teste", corpo: "Se você viu este aviso com o VEOS fechado, está funcionando.", href: "#/hoje", tag: "teste" }));
+    return { aparelhos: minhas.length, resultados: r };
+  }
   if (raiz === "resumo" && !post) {
     return { resumos: await Promise.all(setores.map((s) => rpc("resumo_setor", { p_setor: s }))) };
   }

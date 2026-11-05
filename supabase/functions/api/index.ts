@@ -102,7 +102,7 @@ async function rotear(req: Request, rota: string) {
     if (req.method === "POST" && !CHAVE_RE.test(req.headers.get("Idempotency-Key") ?? "")) throw new HttpError(400, "Idempotency-Key obrigatorio");
     return await rotearCaixa(req, partes, eu, corpo);
   }
-  if (partes[0] === "mensagens" || partes[0] === "resumo") return await rotearNotificacoes(req, partes, eu);
+  if (partes[0] === "mensagens" || partes[0] === "resumo" || partes[0] === "push") return await rotearNotificacoes(req, partes, eu);
   if (partes[0] === "projetos") return await rotearFinanceiro(req, partes, eu);
   if (["radar", "setor", "registros", "tarefas", "alertas"].includes(partes[0])) return await rotearSetores(req, partes, eu);
   if (req.method === "GET" && rota === "me") return eu;

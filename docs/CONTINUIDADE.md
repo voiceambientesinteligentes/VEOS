@@ -13,7 +13,8 @@ Atualize este arquivo ao fim de cada sessão: última ação, resultado e próxi
 **Próximo passo**
 - Histórico do CRM do Zoho (P1-7): botão "Levar ao funil do VEOS" em cada lead/negócio do Zoho CRM. Fernando decide quais valem a pena levar.
 - Contratos de suporte (P1-13) com cobranças mensais na previsão de caixa; Fernando cadastra os contratos reais (valor, dia, início).
-- Próximo: P1-8 (aguarda OK), P1-9, 10, 12, 14, 17 de PROXIMA_SESSAO. Fernando: P0-3 (SMTP), revogar chave exposta, login real, MCP.
+- MCP ampliado (24 ferramentas), Web Push (VAPID nos segredos), indicadores de Marketing/Pós-venda, histórico por registro. Fernando: ligar os avisos no aparelho e tocar em "Enviar aviso de teste"; configurar o MCP.
+- Próximo: P1-8 (aguarda OK), P2-15/16 (só quando o Fernando pedir/depender de conta Meta) de PROXIMA_SESSAO. Fernando: P0-3 (SMTP), revogar chave exposta, login real, MCP.
 
 ## 04/11/2026 (sessão seguinte) — P0 itens 1 e 2
 
