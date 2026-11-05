@@ -73,10 +73,10 @@ Setores vivos (9) com registros, regras vivas e Radar · Estrutura da empresa (o
 13. **FEITO em 05/11 (sem conciliação automática com o extrato)** — Receita recorrente dos contratos de suporte (contrato → parcelas mensais → caixa e indicadores) (CFO-13, CXO-05).
 
 ### P2 — acabamento e independência do Zoho
-14. **Vínculos de produto a revisar** (37 "a_revisar" entre o catálogo do VEOS e os itens do Zoho): tela de revisão rápida; hoje a retomada de orçamentos antigos reconhece poucos itens do catálogo.
+14. **JÁ EXISTE a tela (Catálogo → Revisar duplicados); falta a decisão humana dos 37** — Vínculos de produto a revisar (37 "a_revisar" entre o catálogo do VEOS e os itens do Zoho): tela de revisão rápida; hoje a retomada de orçamentos antigos reconhece poucos itens do catálogo.
 15. **Mesclar o catálogo com os itens do Zoho** e o roteiro de desligamento do Zoho por módulo (BIB-0077, COO-04, CIO-05) — só quando o Fernando pedir.
 16. **Publicação automática no Instagram** pela API oficial da Meta (agendar os posts do calendário) — depende da conta comercial ligada a uma Página do Facebook e de quem aprova (CMO-03/CMO-10).
-17. **Histórico visível por registro** nas telas dos setores (SEC-05) e procedimentos que faltam nos manuais (funil no CSO, obra nova no COO, Wi-Fi lento no CIO).
+17. **FEITO em 05/11** — Histórico visível por registro nas telas dos setores (SEC-05) e procedimentos que faltam nos manuais (funil no CSO, obra nova no COO, Wi-Fi lento no CIO).
 18. **FEITO em 05/11 (GET /cfo/orcamentos?resumo=1 para o montador e os preços)** — Desempenho: Formulário e telas do CFO carregam `GET /cfo/orcamentos` (~3 s, 220 KB); criar um resumo leve só com o faturamento de 12 meses para o montador de orçamento e o formulário.
 19. **FEITO em 05/11 (ia.css removido; textos TESTE do usuário real conferidos)** — Limpeza: estilos antigos da tela IA (`apps/web/css/ia.css`, classes `.ia-*` não usadas), tela "Comando por voz" antiga e textos que ainda falam em "TESTE" para o usuário real.
 
@@ -91,5 +91,6 @@ Setores vivos (9) com registros, regras vivas e Radar · Estrutura da empresa (o
 - O classificador de segurança bloqueia algumas ações automáticas (ex.: apagar com caminho de "Program Files" no mesmo comando); separe os comandos.
 - A Supabase CLI interativa trava aqui; se precisar logar de novo, use `npx supabase login --token <PAT de escopo completo>`.
 - Edge headless é o navegador dos testes de tela; o Playwright usa o Edge instalado (`channel: "msedge"`).
+
 
 

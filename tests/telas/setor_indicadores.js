@@ -10,11 +10,20 @@ const REG = {
   marketing: [{ id: "1", tipo: "campanha", estado: "encerrada", titulo: "C", dados: { data_fim: mais(-10), leads_gerados: 20, oportunidades_geradas: 4, investimento_realizado: 2000 }, atualizado_em: mais(-10) }],
   posvenda: [{ id: "2", tipo: "pesquisa_satisfacao", estado: "respondida", titulo: "P", dados: { nota_nps: 10, data_resposta: mais(-5) }, atualizado_em: mais(-5) }, { id: "3", tipo: "pesquisa_satisfacao", estado: "respondida", titulo: "Q", dados: { nota_nps: 2, data_resposta: mais(-6) }, atualizado_em: mais(-6) }],
   vendas: [],
+  historico: [{ id: "11111111-1111-1111-1111-111111111111", tipo: "lead", estado: "em_contato", titulo: "Lead TESTE", responsavel: "sdr", prazo: null, valor: null, dados: { nome_contato: "Lead TESTE" }, criado_em: mais(-3), atualizado_em: mais(-1) }],
 };
-api.setor = async () => ({ registros: REG[caso], alertas: [], tarefas: [], historico: [] });
+api.registroHistorico = async () => ({ registro: "Lead TESTE", historico: [{ acao: "alterado", de_estado: "novo", para_estado: "em_contato", mudancas: { estado: "em_contato" }, usuario: "Ana TESTE", em: new Date().toISOString() }, { acao: "criado", de_estado: null, para_estado: "novo", mudancas: {}, usuario: "Ana TESTE", em: new Date(Date.now() - 86_400_000).toISOString() }] });
+api.setor = async () => ({ registros: REG[caso === "historico" ? "historico" : caso], alertas: [], tarefas: [], historico: [] });
 api.contratosSuporte = async () => ({ contratos: [], cobrancas: [], indicadores: { mrr: 2400, contratos_ativos: 2 } });
 
 rodar(async (v) => {
+  if (caso === "historico") {
+    await telaSetor(v, "vendas", new AbortController().signal, "registros");
+    [...v.querySelectorAll("button")].find((b) => b.textContent === "Abrir").click();
+    await new Promise((r) => setTimeout(r, 60));
+    for (const x of ["Histórico do registro", "Ana TESTE · estado: novo → em_contato", "criado como \"novo\""]) if (!v.textContent.includes(x)) throw new Error(`faltou: ${x}`);
+    return;
+  }
   await telaSetor(v, caso, new AbortController().signal, "painel");
   await new Promise((r) => setTimeout(r, 40));
   const t = v.textContent;

@@ -516,6 +516,30 @@ export default {
     "Sem afirmar '100%'"
    ],
    "quando_escalar": "Aprovação do roteiro é do fundador."
+  },
+  {
+   "pedido": "O Wi-Fi da casa do cliente está lento ou cai. Como diagnostico?",
+   "perguntas_antes": [
+    "Desde quando, em que cômodos e em quais aparelhos (celular, TV, câmeras, automação)?",
+    "Mudou algo recente: roteador, provedor, obra, aparelhos novos?",
+    "Temos o as-built da rede e o acesso remoto autorizado pelo cliente?"
+   ],
+   "passos": [
+    "Separar se é lentidão da internet (provedor) ou da rede interna: testar com cabo direto no roteador principal",
+    "Conferir no as-built a posição dos pontos de acesso, o canal e a largura de cada um e se há sobreposição com vizinhos",
+    "Verificar alimentação (PoE/nobreak), cabeamento e firmware dos pontos de acesso e do roteador",
+    "Checar se muitos aparelhos IoT estão na mesma rede da família e se a segmentação (VLAN IoT/câmeras/convidados) está como o padrão da VOICE",
+    "Corrigir uma coisa por vez (canal, potência, posição, firmware) com plano de reversão, e medir antes e depois",
+    "Monitorar 48–72 h, atualizar o as-built e avisar o cliente"
+   ],
+   "entregavel": "Causa registrada com evidência (medição antes e depois), correção aplicada, as-built atualizado e retorno ao cliente.",
+   "criterios_de_qualidade": [
+    "Causa baseada em medição, não em tentativa",
+    "Uma mudança por vez e com reversão possível",
+    "As-built atualizado"
+   ],
+   "quando_escalar": "Se a rede carrega fechadura, alarme ou câmeras (segurança física e dados pessoais), se exigir trocar equipamento fora da garantia ou se o problema se repetir em várias obras (revisar o padrão de rede).",
+   "ferramentas_veos": []
   }
  ],
  "indicadores": [

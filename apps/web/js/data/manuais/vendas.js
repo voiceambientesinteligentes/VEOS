@@ -561,6 +561,35 @@ export default {
     "Usa material gratuito (HubSpot Academy, cursos abertos) quando possível."
    ],
    "quando_escalar": "Curso pago, consultoria externa ou viagem: direção."
+  },
+  {
+   "pedido": "Como está o funil hoje? O que precisa de atenção primeiro?",
+   "perguntas_antes": [
+    "Qual período olhar (hoje, semana ou mês) e só oportunidades abertas ou também leads novos?",
+    "Existe meta oficial para o período? Se não, é lacuna e preciso registrar.",
+    "Os registros estão atualizados (próximo passo e data em cada oportunidade)?"
+   ],
+   "passos": [
+    "Consultar o funil no VEOS (ferramenta funil_comercial) e separar leads, oportunidades por etapa e valor em aberto",
+    "Listar o que está parado: lead novo sem resposta (regra COM_LEAD_SEM_RESPOSTA) e oportunidade sem atualização (COM_OPORTUNIDADE_PARADA)",
+    "Conferir se cada oportunidade aberta tem próximo passo, data do próximo passo e decisor identificado",
+    "Ordenar a atenção: primeiro lead sem resposta, depois negociações perto de fechar, depois as paradas",
+    "Apontar a etapa onde mais oportunidades travam usando só números do VEOS; sem histórico suficiente para taxa de conversão, escrever LACUNA",
+    "Fechar com no máximo 3 ações, cada uma com responsável e data"
+   ],
+   "entregavel": "Resumo do funil (leads, oportunidades por etapa, valor em aberto), lista do que está parado, gargalo apontado ou LACUNA, e 3 ações com responsável e data.",
+   "criterios_de_qualidade": [
+    "Todo número vem do VEOS e traz a fonte; o que não está registrado aparece como LACUNA",
+    "Separa fato registrado de estimativa",
+    "Nenhuma taxa de conversão ou meta inventada"
+   ],
+   "quando_escalar": "Se houver lead de arquiteto parceiro sem resposta há mais de um dia ou nenhuma oportunidade em negociação, avisar a direção no mesmo dia.",
+   "ferramentas_veos": [
+    "funil_comercial",
+    "base_comercial",
+    "canais_e_cadencias",
+    "metas_comerciais"
+   ]
   }
  ],
  "indicadores": [

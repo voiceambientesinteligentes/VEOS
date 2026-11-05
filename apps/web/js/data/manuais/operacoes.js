@@ -510,6 +510,30 @@ export default {
     "Custo de troca considerado"
    ],
    "quando_escalar": "Troca de fornecedor estratégico ou de produto homologado (envolver Tecnologia e direção)."
+  },
+  {
+   "pedido": "Vou abrir uma obra nova: o que registro no VEOS e confiro na primeira semana?",
+   "perguntas_antes": [
+    "O pedido já foi gerado a partir do orçamento aceito e a entrada está registrada?",
+    "Há itens de prazo longo ou importados que ainda não têm compra aberta?",
+    "Quem é o responsável da obra e quem acumula enquanto o cargo não tem pessoa?"
+   ],
+   "passos": [
+    "Conferir no VEOS (Operação → Pedidos) o pedido da obra: itens, parcelas, valor e o estoque reservado",
+    "Ver as faltas de estoque do pedido e abrir as compras necessárias, começando pelos itens de prazo longo",
+    "Conferir o caixa do pedido (recebido x compromissos) antes de comprar: exposição acima de 10% do contrato exige autorização da direção",
+    "Registrar o responsável, o cronograma por fases e as restrições conhecidas (acesso, obra civil, prazo do arquiteto)",
+    "Marcar o kickoff com cliente e arquiteto e registrar a data",
+    "Na semana 1, revisar o que ficou pendente: compras sem previsão de entrega, restrição sem dono, parcela de entrada não recebida"
+   ],
+   "entregavel": "Obra aberta no VEOS com pedido conferido, compras iniciadas, responsável, cronograma por fases, restrições e data de kickoff registrados.",
+   "criterios_de_qualidade": [
+    "Itens de prazo longo identificados no primeiro dia",
+    "Nenhuma compra emitida sem olhar o caixa do pedido",
+    "Toda restrição tem dono e data"
+   ],
+   "quando_escalar": "Entrada não recebida, exposição de caixa acima de 10% do contrato ou prazo do cliente incompatível com o prazo de importação: avisar a direção e o Financeiro antes de comprometer a equipe.",
+   "ferramentas_veos": []
   }
  ],
  "indicadores": [

@@ -100,6 +100,7 @@ export const api = {
   fluxoProjetos: () => request("GET", "fluxo/projetos"),
   comprasLista: (estado = "") => request("GET", `fluxo/compras${estado ? `?estado=${encodeURIComponent(estado)}` : ""}`),
   comprasFaltas: () => request("GET", "fluxo/compras/faltas"),
+  registroHistorico: (id) => request("GET", `registros/${encodeURIComponent(id)}/historico`),
   contratosSuporte: () => request("GET", "fluxo/contratos-suporte"),
   contratoSuporte: (id) => request("GET", `fluxo/contratos-suporte/${encodeURIComponent(id)}`),
   contratoSuporteSalvar: (dados) => request("POST", "fluxo/contratos-suporte", dados, { "Idempotency-Key": crypto.randomUUID() }),

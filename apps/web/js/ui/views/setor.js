@@ -7,6 +7,7 @@ import { cartaoAlerta, descreverSentinela, formularioRegistro, linhaTarefa, nome
 import { clear, errorNotice, h, panel, stamp, table, testTag } from "../dom.js";
 import { painelEquipeSetor } from "./estrutura.js";
 import { calcularIndicadoresSetor } from "../../domain/indicadores_setor.js";
+import { linhaHistorico } from "../../domain/historico.js";
 import { carregarManual, painelManual } from "./manual.js";
 
 const ABAS = [["painel", "Painel"], ["registros", "Registros"], ["processos", "Processos"], ["equipe", "Equipe"], ["rotinas", "Rotinas"], ["regras", "Regras vivas"], ["diretor", "Diretor"], ["manual", "Manual"], ["modelos", "Modelos"]];
@@ -84,6 +85,16 @@ export async function telaSetor(root, id, signal, aba = "painel") {
     );
   }
 
+  // Historico de um registro: quem mudou, o que e quando (append-only no banco)
+  function painelHistorico(r) {
+    const area = h("div", { "aria-live": "polite" }, h("p", { class: "muted" }, "Carregando o histórico…"));
+    api.registroHistorico(r.id).then((d) => {
+      if (signal.aborted) return;
+      clear(area).append(d.historico.length ? h("ul", { class: "list-plain stack-s" }, d.historico.map((x) => h("li", { class: "field-hint" }, linhaHistorico(x)))) : h("p", { class: "result-empty" }, "Sem histórico."));
+    }).catch((e) => clear(area).append(errorNotice(e.message)));
+    return panel({ title: "Histórico do registro", subtitle: "Toda criação e mudança fica registrada e não pode ser apagada." }, area);
+  }
+
   // Indicadores: definicao + valor calculado sozinho (Marketing e Pos-venda) ou LACUNA com o motivo
   function painelIndicadores() {
     const hoje = new Date(Date.now() - 3 * 3600_000).toISOString().slice(0, 10);
@@ -138,6 +149,7 @@ export async function telaSetor(root, id, signal, aba = "painel") {
         panel({ title: editar ? `Editar: ${editar.titulo}` : `Novo registro: ${t.nome}` },
           formularioRegistro(setor, t, editar, aoSalvar),
           editar ? h("button", { class: "btn btn-ghost", type: "button", onclick: () => lista() }, "Cancelar edição") : null),
+        editar ? painelHistorico(editar) : null,
       );
     }
     corpo.append(panel({ title: "Registros do setor", subtitle: "Cada registro é vigiado pelas regras vivas. Toda mudança fica no histórico." }, escolha), area);

@@ -81,6 +81,18 @@ export async function rotearSetores(req: Request, partes: string[], eu: Membro) 
       return { setor: s.id, registros, tarefas: await separarTeste(eu, tarefas), alertas: await separarTeste(eu, alertas) };
     }
 
+    // historico de um registro: quem mudou o que e quando (so de registros que a pessoa pode ver)
+    if (raiz === "registros" && req.method === "GET" && id && sub === "historico") {
+      if (!UUID_RE.test(id)) throw new HttpError(404, "registro inexistente");
+      const [r] = await servico(`/rest/v1/registros?id=eq.${id}${await filtroAutor(eu)}&select=id,setor_id,titulo`);
+      if (!r || !podeVer(eu, r.setor_id)) throw new HttpError(404, "registro inexistente");
+      const [hist, membros] = await Promise.all([
+        servico(`/rest/v1/registros_historico?registro_id=eq.${id}&select=acao,de_estado,para_estado,mudancas,usuario,em&order=id.desc&limit=100`),
+        servico("/rest/v1/membros?select=user_id,nome"),
+      ]);
+      const nome = new Map(membros.map((m: { user_id: string; nome: string }) => [m.user_id, m.nome]));
+      return { registro: r.titulo, historico: hist.map((x: { usuario: string | null }) => ({ ...x, usuario: x.usuario ? nome.get(x.usuario) ?? "—" : "sistema" })) };
+    }
     if (raiz === "registros" && req.method === "POST") {
       const b = (await lerCorpo(req)) as Record<string, unknown>;
       const s = setorDe(eu, b.setor);
