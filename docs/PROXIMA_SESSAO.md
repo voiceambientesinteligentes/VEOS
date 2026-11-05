@@ -59,11 +59,11 @@ Setores vivos (9) com registros, regras vivas e Radar · Estrutura da empresa (o
 1. **FEITO em 04/11 (aguarda confirmação ao longo dos dias) — Erro 502 intermitente na tela Calendário do Instagram** (`#/conteudo`): apareceu na 1ª tentativa do `navegador.mjs` duas vezes em 04/11 (passa ao repetir). Provável carga de `GET /produtos` com URLs assinadas das fotos; investigar o log da função `api` e, se for isso, pedir só os produtos com foto e em menos quantidade.
 2. **FEITO em 04/11 (retry coberto por teste de domínio; não observado ao vivo) — Qualidade das respostas da IA** (modelo gratuito pequeno): às vezes responde sem consultar dados, se contradiz ou cita coisas que não existem. Já existe aviso e conferência; falta: quando a pergunta for de dados (vendas, funil, caixa, clientes) e o modelo não chamar nenhuma ferramenta, **refazer automaticamente uma vez exigindo a ferramenta**; testar com `uso_ia.mjs` e perguntas de exemplo.
 3. **E-mail de login (Supabase Auth)**: conferir no painel o limite do envio padrão antes de convidar a equipe; se for baixo, preparar a configuração de SMTP próprio (gratuito, ex.: conta de e-mail da empresa) — a configuração final depende do Fernando passar o acesso.
-4. **Testes online que criam pedido real** (`e2e_operacao`, `uso_orcamento`) estão fora do CI de propósito; decidir se entram no CI com limpeza total ou ficam manuais (hoje: pedido TESTE cancelado e série T).
+4. **FEITO em 05/11 (decidido: manuais)** — Testes online que criam pedido real (`e2e_operacao`, `uso_orcamento`) estão fora do CI de propósito; decidir se entram no CI com limpeza total ou ficam manuais (hoje: pedido TESTE cancelado e série T).
 
 ### P1 — completar a estrutura
-5. **Fornecedores próprios** (cadastro, ligado a compras e contas a pagar) — fecha a parte "fornecedores" do CSO-06.
-6. **Agenda por pessoa**: as atividades diárias/semanais de cada cargo (Estrutura) virando tarefas no Radar para quem ocupa o cargo; base para "o que eu faço hoje" por pessoa (CSO-05/SEC-04).
+5. **FEITO em 05/11** — Fornecedores próprios (cadastro, ligado a compras e contas a pagar) — fecha a parte "fornecedores" do CSO-06.
+6. **FEITO em 05/11** — Agenda por pessoa: as atividades diárias/semanais de cada cargo (Estrutura) virando tarefas no Radar para quem ocupa o cargo; base para "o que eu faço hoje" por pessoa (CSO-05/SEC-04).
 7. **Importar o histórico do CRM do Zoho** (leads, negócios, atividades) para o funil próprio sem perder origem (CSO-05).
 8. **Importação dos escritórios de arquitetura pelos dados abertos do CNPJ** (CNAE 7111-1/00 e 7410-2/02, região de SC) por um job mensal gratuito no GitHub Actions, entrando como alvos na Prospecção (CSO-17). **Aguarda o OK do Fernando** (regra de prospecção BIB-0107).
 9. **Aviso com o navegador fechado** (Web Push com chaves VAPID nos segredos do Supabase; gratuito) — hoje os avisos só aparecem com o VEOS aberto (CIO-08).

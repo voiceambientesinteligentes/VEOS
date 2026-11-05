@@ -56,7 +56,7 @@ export async function rotearSetores(req: Request, partes: string[], eu: Membro) 
       const lista = acessiveis(eu).join(",");
       const [alertas, tarefas, ultima] = await Promise.all([
         servico(`/rest/v1/alertas?estado=eq.ativo&setor_id=in.(${lista})&select=id,chave,setor_id,sentinela,severidade,titulo,mensagem,fonte,registro_id,rascunhos,notificar,criado_em,atualizado_em&order=atualizado_em.desc&limit=500`),
-        servico(`/rest/v1/tarefas?estado=eq.aberta&setor_id=in.(${lista})&select=id,setor_id,titulo,papel,prazo,origem,registro_id,criado_em&order=prazo.asc.nullslast&limit=500`),
+        servico(`/rest/v1/tarefas?estado=eq.aberta&setor_id=in.(${lista})&select=id,setor_id,titulo,papel,prazo,origem,responsavel,registro_id,criado_em&order=prazo.asc.nullslast&limit=500`),
         servico("/rest/v1/varreduras?select=origem,alertas_ativos,novos,resolvidos,ms,em&order=em.desc&limit=1"),
       ]);
       return { alertas: await separarTeste(eu, alertas), tarefas: await separarTeste(eu, tarefas), ultima_varredura: ultima[0] ?? null, setores: acessiveis(eu) };
@@ -75,7 +75,7 @@ export async function rotearSetores(req: Request, partes: string[], eu: Membro) 
       const autor = await filtroAutor(eu);
       const [registros, tarefas, alertas] = await Promise.all([
         servico(`/rest/v1/registros?setor_id=eq.${s.id}&ambiente=eq.TESTE${autor}&select=id,tipo,titulo,estado,responsavel,prazo,valor::text,dados,criado_em,atualizado_em&order=atualizado_em.desc&limit=500`),
-        servico(`/rest/v1/tarefas?setor_id=eq.${s.id}&estado=eq.aberta&select=id,titulo,papel,prazo,origem,registro_id,criado_em&order=prazo.asc.nullslast&limit=300`),
+        servico(`/rest/v1/tarefas?setor_id=eq.${s.id}&estado=eq.aberta&select=id,titulo,papel,prazo,origem,responsavel,registro_id,criado_em&order=prazo.asc.nullslast&limit=300`),
         servico(`/rest/v1/alertas?setor_id=eq.${s.id}&estado=eq.ativo&select=id,sentinela,severidade,titulo,mensagem,fonte,registro_id,rascunhos,notificar,atualizado_em&order=atualizado_em.desc&limit=300`),
       ]);
       return { setor: s.id, registros, tarefas: await separarTeste(eu, tarefas), alertas: await separarTeste(eu, alertas) };

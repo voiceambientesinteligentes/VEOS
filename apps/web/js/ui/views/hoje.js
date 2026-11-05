@@ -18,11 +18,11 @@ const hojeISO = () => new Date(Date.now() - new Date().getTimezoneOffset() * 600
 const tentar = async (fn) => { try { return await fn(); } catch { return null; } };
 
 /** Prioridades do dia: alertas (mais graves primeiro) e tarefas vencidas ou de hoje. Sem DOM. */
-export function prioridades(radar, hoje = hojeISO(), limite = 7) {
+export function prioridades(radar, hoje = hojeISO(), limite = 7, euId = null) {
   const alertas = (radar?.alertas ?? []).filter((a) => a.severidade !== "INFO")
     .map((a) => ({ tipo: "alerta", id: a.id, titulo: a.titulo, detalhe: a.mensagem, setor: a.setor_id, peso: SEV[a.severidade] ?? 3, sev: a.severidade, href: `#/setor/${a.setor_id}` }));
   const tarefas = (radar?.tarefas ?? []).filter((t) => !t.prazo || t.prazo <= hoje)
-    .map((t) => ({ tipo: "tarefa", id: t.id, titulo: t.titulo, detalhe: t.prazo && t.prazo < hoje ? "Atrasada" : "Para hoje", setor: t.setor_id, peso: t.prazo && t.prazo < hoje ? 1.5 : 2.5, href: `#/setor/${t.setor_id}` }));
+    .map((t) => ({ tipo: "tarefa", id: t.id, titulo: t.titulo, detalhe: t.responsavel && t.responsavel === euId ? "Minha agenda" : t.prazo && t.prazo < hoje ? "Atrasada" : "Para hoje", setor: t.setor_id, peso: t.responsavel && t.responsavel === euId ? 1 : t.prazo && t.prazo < hoje ? 1.5 : 2.5, href: `#/setor/${t.setor_id}` }));
   const todas = [...alertas, ...tarefas].sort((a, b) => a.peso - b.peso);
   return { itens: todas.slice(0, limite), total: todas.length };
 }
@@ -68,7 +68,7 @@ export async function telaHoje(root, eu = {}, signal = new AbortController().sig
   clear(lista);
   if (!radar) lista.append(errorNotice("Não deu para ler o Radar agora."));
   else {
-    const { itens, total } = prioridades(radar);
+    const { itens, total } = prioridades(radar, undefined, undefined, eu.user_id);
     if (!itens.length) lista.append(h("div", { class: "hj-vazio" }, h("strong", null, "Tudo em dia."), h("span", null, "Nenhum alerta importante nem tarefa vencida.")));
     for (const i of itens) {
       const acao = i.tipo === "tarefa"

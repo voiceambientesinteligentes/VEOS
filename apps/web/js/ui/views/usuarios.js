@@ -6,10 +6,11 @@ import * as auth from "../../auth.js";
 import { formatDateTime } from "../../domain/format.js";
 import { clear, errorNotice, field, h, method, panel, stamp, table } from "../dom.js";
 import { setorPorId } from "../componentes.js";
+import { cargosDoSetor } from "../../domain/agenda.js";
 import { desligarAvisos, ligado, ligarAvisos, suportado } from "../notificar.js";
 
 const SITE = "https://voiceambientesinteligentes.github.io/VEOS/";
-const ACOES = { mcp_acesso: "Acesso do Claude Code criado", convidado: "Convidado", papel: "Papel alterado", desativado: "Desativado", reativado: "Reativado", mfa_exigido: "MFA exigido", mfa_dispensado: "MFA dispensado" };
+const ACOES = { mcp_acesso: "Acesso do Claude Code criado", convidado: "Convidado", papel: "Papel alterado", desativado: "Desativado", reativado: "Reativado", mfa_exigido: "MFA exigido", cargo: "Cargo definido", mfa_dispensado: "MFA dispensado" };
 export const nomeSetor = (papel) => (setorPorId[papel] ? `${setorPorId[papel].sigla} · ${setorPorId[papel].nome}` : papel);
 
 function seletorPapel(id, papeis, atual) {
@@ -66,6 +67,11 @@ export async function telaUsuarios(root) {
       const sel = seletorPapel(`papel-${m.user_id}`, d.papeis, m.papel);
       const salvar = h("button", { class: "btn btn-ghost", type: "button" }, "Mudar setor");
       salvar.addEventListener("click", () => sel.value !== m.papel && agir(m, { acao: "papel", papel: sel.value, motivo: motivo(`Motivo da mudança de ${nomeSetor(m.papel)} para ${nomeSetor(sel.value)} (opcional):`) ?? "" }, saidaM));
+      const cargos = cargosDoSetor(setorPorId[m.papel]);
+      const selCargo = h("select", { class: "select", id: `cargo-${m.user_id}` }, h("option", { value: "" }, "— nenhum (sem agenda) —"),
+        cargos.map((c) => h("option", { value: c.id, selected: c.id === m.cargo }, c.nome)));
+      const salvarCargo = h("button", { class: "btn btn-ghost", type: "button" }, "Definir cargo");
+      salvarCargo.addEventListener("click", () => selCargo.value !== (m.cargo ?? "") && agir(m, { acao: "cargo", cargo: selCargo.value || null }, saidaM));
       const eu = m.user_id === d.eu;
       const ativo = h("button", { class: "btn btn-ghost", type: "button", disabled: eu }, m.ativo ? "Desativar" : "Reativar");
       ativo.addEventListener("click", () => {
@@ -91,6 +97,7 @@ export async function telaUsuarios(root) {
           m.mfa ? stamp(m.exige_mfa ? "MFA exigido" : "MFA cadastrado", "ok") : stamp(m.exige_mfa ? "MFA exigido sem cadastro" : "Sem MFA", m.papel === "direcao" ? "warn" : "neutral")),
         h("p", { class: "field-hint" }, `${m.email ?? "—"} · último acesso: ${m.ultimo_acesso ? formatDateTime(m.ultimo_acesso) : "nunca entrou"}`),
         h("div", { class: "row" }, field(sel.id, "Setor (papel)", sel), salvar, ativo, mfa),
+        h("div", { class: "row" }, field(selCargo.id, "Cargo na Estrutura (gera a agenda da pessoa)", selCargo, "As atividades diárias, semanais e mensais do cargo viram tarefas dela no Hoje. Proposta até a estrutura ser aprovada."), salvarCargo),
         saidaM);
     });
     const alternar = h("label", { class: "row" }, h("input", { type: "checkbox", checked: mostrarTeste }), " Mostrar usuários TESTE");

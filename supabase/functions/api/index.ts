@@ -74,7 +74,7 @@ async function membro(req: Request): Promise<Membro> {
   if (!r.ok) throw new HttpError(401, "sessao invalida ou expirada");
   const user = await r.json();
   if (!user?.id) throw new HttpError(401, "sessao invalida");
-  const rows = await servico(`/rest/v1/membros?user_id=eq.${encodeURIComponent(user.id)}&ativo=is.true&select=user_id,nome,papel,exige_mfa`);
+  const rows = await servico(`/rest/v1/membros?user_id=eq.${encodeURIComponent(user.id)}&ativo=is.true&select=user_id,nome,papel,cargo,exige_mfa`);
   if (!rows?.length) throw new HttpError(403, "usuario sem acesso ao VEOS");
   // MFA exigido pela direcao: a sessao precisa ter passado pelo codigo (aal2). O token ja foi
   // validado pelo Auth acima; aqui so se le a claim.

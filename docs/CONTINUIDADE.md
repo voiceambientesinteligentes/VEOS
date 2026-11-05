@@ -2,6 +2,17 @@
 
 Atualize este arquivo ao fim de cada sessão: última ação, resultado e próximo passo.
 
+## 05/11/2026 — sistema vivo, fornecedores
+
+**Feito**
+- Descoberto e corrigido: a varredura das regras vivas não rodava a cada 10 min (só 1x/dia). Agora pg_cron. Novo vigia de saúde do próprio VEOS (IA, perguntas paradas, Zoho) com alertas para o CIO.
+- Fornecedores próprios completos (P1-5), ligados a compras e contas a pagar. Detalhe e testes em ESTADO_ATUAL (05/11).
+- P0-4 decidido: testes que criam pedido ficam manuais.
+- Agenda por pessoa (P1-6): cargo por pessoa em Usuarios; tarefas diarias/semanais/mensais do cargo no Hoje. Para ligar: Fernando define o cargo de cada pessoa (so entao gera tarefa).
+
+**Próximo passo**
+- P1-7 importar histórico do CRM do Zoho, depois os demais itens de PROXIMA_SESSAO. Fernando: P0-3 (SMTP), revogar chave exposta, login real, MCP.
+
 ## 04/11/2026 (sessão seguinte) — P0 itens 1 e 2
 
 **Feito**

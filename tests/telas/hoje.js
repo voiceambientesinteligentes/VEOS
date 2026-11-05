@@ -37,4 +37,7 @@ rodar(async (v) => {
   await new Promise((r) => setTimeout(r, 20));
   if (!feitas.length || !v.querySelector(".hj-feito")) throw new Error("marcar feita");
   if (prioridades({ alertas: [], tarefas: [] }).total !== 0) throw new Error("dominio");
+  // agenda por pessoa: a tarefa da minha agenda vem antes das demais
+  const pr = prioridades({ alertas: [], tarefas: [{ id: "a", titulo: "Atrasada", prazo: "2026-11-01", setor_id: "vendas" }, { id: "b", titulo: "Hoje: responder leads", prazo: "2026-11-05", setor_id: "vendas", responsavel: "eu1", origem: "agenda" }, { id: "c", titulo: "De outra pessoa", prazo: "2026-11-05", setor_id: "vendas", responsavel: "outro" }] }, "2026-11-05", 7, "eu1");
+  if (pr.itens[0].id !== "b" || pr.itens[0].detalhe !== "Minha agenda" || pr.itens.find((x) => x.id === "c").detalhe !== "Para hoje") throw new Error(`minha agenda primeiro: ${JSON.stringify(pr.itens.map((x) => [x.id, x.detalhe]))}`);
 });

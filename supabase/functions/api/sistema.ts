@@ -7,6 +7,9 @@
 //   GET  /sistema/exportar/:conjunto   linhas planas para CSV (pedidos, itens, parcelas, NF, estoque, Biblioteca)
 // As regras ficam no banco (sistema_saude, membro_gerir); aqui: identidade, Auth admin e validacao.
 import { HttpError, lerCorpo, type Membro, registrarAcesso, servico, SERVICE, URL_BASE } from "../_shared/banco.ts";
+import { CATALOGO } from "../_shared/setores/catalogo.ts";
+import { cargosDoSetor } from "../_shared/dominio/agenda.js";
+import { vigiarAgenda } from "../_shared/agenda_vigia.ts";
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
 const CHAVE_RE = /^[A-Za-z0-9-]{16,64}$/;
@@ -95,7 +98,7 @@ export async function rotearSistema(req: Request, partes: string[], eu: Membro) 
   }
   if (a === "membros" && !b && !post) {
     const [membros, contas, autoridades, historico] = await Promise.all([
-      servico("/rest/v1/membros?select=user_id,nome,papel,email,ativo,exige_mfa,criado_em,atualizado_em&order=ativo.desc,nome"),
+      servico("/rest/v1/membros?select=user_id,nome,papel,cargo,email,ativo,exige_mfa,criado_em,atualizado_em&order=ativo.desc,nome"),
       usuariosAuth(),
       servico("/rest/v1/governanca_autoridades?select=user_id,autoridade,desde"),
       servico("/rest/v1/membros_historico?select=user_id,acao,de,para,motivo,por,em&order=id.desc&limit=60"),
@@ -127,6 +130,20 @@ export async function rotearSistema(req: Request, partes: string[], eu: Membro) 
   }
   if (a === "membros" && b && UUID_RE.test(b) && post) {
     const acao = String(corpo.acao ?? "");
+    if (acao === "cargo") {
+      const cargo = corpo.cargo ? String(corpo.cargo) : null;
+      if (cargo) {
+        const [sid, cid] = cargo.includes(":") ? cargo.split(":") : [null, cargo];
+        const [m] = await servico(`/rest/v1/membros?user_id=eq.${b}&select=papel`);
+        if (!m) throw new HttpError(404, "membro inexistente");
+        const setor = (CATALOGO as unknown as { id: string }[]).find((s) => s.id === (sid ?? m.papel));
+        if (!setor || !cargosDoSetor(setor).some((c: { id: string }) => c.id === cid)) throw new HttpError(400, "cargo inexistente nesse setor");
+      }
+      await rpc("membro_cargo_definir", { p: { por: eu.user_id, user_id: b, cargo, motivo: txt(corpo.motivo, 500) } });
+      // a pessoa ja recebe as tarefas de hoje (sem esperar a varredura de 10 minutos)
+      const agenda = cargo ? await vigiarAgenda().catch(() => null) : null;
+      return { ok: true, agenda };
+    }
     if (!["papel", "desativar", "reativar", "exigir_mfa", "dispensar_mfa"].includes(acao)) throw new HttpError(400, "ação inválida");
     if (acao === "papel" && !PAPEIS.includes(String(corpo.papel))) throw new HttpError(400, "papel inválido");
     let temMfa = false;
