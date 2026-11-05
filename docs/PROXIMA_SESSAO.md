@@ -69,7 +69,7 @@ Setores vivos (9) com registros, regras vivas e Radar · Estrutura da empresa (o
 9. **Aviso com o navegador fechado** (Web Push com chaves VAPID nos segredos do Supabase; gratuito) — hoje os avisos só aparecem com o VEOS aberto (CIO-08).
 10. **MCP do VEOS ampliado** ("tudo que eu pedir no Claude ele cria no VEOS"): ferramentas de criação pela API com as permissões do usuário — cliente, orçamento, pedido em rascunho, conta a pagar, tarefa —, sempre com rascunho + confirmação humana para o que for irreversível (CIO-06). Configurar o MCP nesta máquina depende do Fernando gerar o código (Minha conta → Acesso do Claude Code).
 11. **FEITO em 05/11** — Avisos do assistente: incluir no chat flutuante as respostas dos diretores dadas em "Perguntar aos diretores" e as tarefas vencidas do dia (hoje entram só os alertas ALTO/CRÍTICO).
-12. **Indicadores calculados sozinhos** (marketing, pós-venda, satisfação e retrabalho) com fonte e LACUNA quando faltar dado (CMO-06, CXO-06).
+12. **FEITO em 05/11 (Marketing e Pós-venda; LACUNAs declaradas)** — Indicadores calculados sozinhos (marketing, pós-venda, satisfação e retrabalho) com fonte e LACUNA quando faltar dado (CMO-06, CXO-06).
 13. **FEITO em 05/11 (sem conciliação automática com o extrato)** — Receita recorrente dos contratos de suporte (contrato → parcelas mensais → caixa e indicadores) (CFO-13, CXO-05).
 
 ### P2 — acabamento e independência do Zoho

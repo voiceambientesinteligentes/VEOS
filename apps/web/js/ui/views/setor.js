@@ -6,6 +6,7 @@ import { formatBRL, formatDate } from "../../domain/format.js";
 import { cartaoAlerta, descreverSentinela, formularioRegistro, linhaTarefa, nomePapel, setorPorId, SEV_ROTULO, SEV_TOM } from "../componentes.js";
 import { clear, errorNotice, h, panel, stamp, table, testTag } from "../dom.js";
 import { painelEquipeSetor } from "./estrutura.js";
+import { calcularIndicadoresSetor } from "../../domain/indicadores_setor.js";
 import { carregarManual, painelManual } from "./manual.js";
 
 const ABAS = [["painel", "Painel"], ["registros", "Registros"], ["processos", "Processos"], ["equipe", "Equipe"], ["rotinas", "Rotinas"], ["regras", "Regras vivas"], ["diretor", "Diretor"], ["manual", "Manual"], ["modelos", "Modelos"]];
@@ -79,10 +80,28 @@ export async function telaSetor(root, id, signal, aba = "painel") {
           : h("p", { class: "result-empty" }, "Nenhuma tarefa aberta.")),
       panel({ title: "Números do setor" },
         table({ caption: "Registros por tipo", head: ["Tipo", "Total", "Em aberto", "Por estado"], rows: porTipo, align: ["", "r", "r", ""] })),
-      panel({ title: "Indicadores", subtitle: "Definições e metas. Marcadas como Proposta até a direção aprovar." },
-        table({ caption: "Indicadores", head: ["Indicador", "Fórmula", "Meta", "Frequência", "Origem"],
-          rows: (setor.indicadores || []).map((i) => [i.nome, i.formula, i.meta, i.frequencia, statusTag(i.status)]) })),
+      painelIndicadores(),
     );
+  }
+
+  // Indicadores: definicao + valor calculado sozinho (Marketing e Pos-venda) ou LACUNA com o motivo
+  function painelIndicadores() {
+    const hoje = new Date(Date.now() - 3 * 3600_000).toISOString().slice(0, 10);
+    const calculo = calcularIndicadoresSetor(id, dados.registros, { hoje });
+    const celulas = new Map();
+    const montar = (calc) => (setor.indicadores || []).map((i) => {
+      const c = calc[i.id];
+      const valor = !c ? h("span", { class: "field-hint" }, "calculado quando houver dado") : c.lacuna ? h("span", { class: "field-hint" }, "LACUNA: ", c.lacuna) : h("span", null, h("strong", null, c.texto), h("br"), h("small", { class: "field-hint" }, c.fonte));
+      celulas.set(i.id, valor);
+      return [i.nome, i.formula, valor, i.meta, i.frequencia, statusTag(i.status)];
+    });
+    const area = h("div");
+    const desenhar = (calc) => clear(area).append(table({ caption: "Indicadores", head: ["Indicador", "Fórmula", "Valor atual", "Meta", "Frequência", "Origem"], rows: montar(calc) }));
+    desenhar(calculo);
+    if (id === "posvenda") {
+      api.contratosSuporte().then((c) => { if (!signal.aborted) desenhar(calcularIndicadoresSetor(id, dados.registros, { hoje, mrr: c.indicadores.mrr, contratosAtivos: c.indicadores.contratos_ativos })); }).catch(() => {});
+    }
+    return panel({ title: "Indicadores", subtitle: "Valor calculado sozinho com os registros do setor (últimos 90 dias); sem dado fica LACUNA, nunca zero inventado. Metas: Proposta até a direção aprovar." }, area);
   }
 
   // ------------------------------------------------ Registros
