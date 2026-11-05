@@ -53,6 +53,19 @@ try {
   const prec = (await rpc("tools/call", { name: "veos_consultar_precedentes", arguments: { termos: "desconto", setor: "vendas" } })).result;
   assert.ok(!prec.isError); assert.ok(JSON.parse(prec.content[0].text).consulta_id); ok("consulta de precedentes pelo MCP fica registrada");
 
+  // ferramentas de criacao: valem as mesmas permissoes e regras da tela
+  const sufixo = Date.now().toString(36);
+  const cli = (await rpc("tools/call", { name: "veos_criar_cliente", arguments: { nome: `Cliente TESTE MCP ${sufixo}`, telefone: "(47) 90000-0001", origem: "outro" } })).result;
+  assert.ok(!cli.isError, cli.content[0].text); const cliente = JSON.parse(cli.content[0].text); assert.match(cliente.codigo, /^CLI-T[0-9]{5}$/); ok(`veos_criar_cliente cadastra (${cliente.codigo}, serie de teste)`);
+  const orc = (await rpc("tools/call", { name: "veos_criar_orcamento_rascunho", arguments: { cliente_id: cliente.id, cliente_nome: `Cliente TESTE MCP ${sufixo}`, valor_total: "500.00", itens: [{ tipo: "servico", nome: "Visita técnica TESTE", quantidade: "1", preco_unit: "500.00" }] } })).result;
+  assert.ok(!orc.isError, orc.content[0].text); const orcamento = JSON.parse(orc.content[0].text); assert.match(orcamento.numero, /^ORV-T[0-9]{5}$/); ok(`veos_criar_orcamento_rascunho cria o rascunho (${orcamento.numero})`);
+  const ficha = (await rpc("tools/call", { name: "veos_clientes", arguments: { busca: sufixo } })).result;
+  assert.ok(JSON.parse(ficha.content[0].text).clientes.some((x) => x.id === cliente.id)); ok("veos_clientes acha o cliente criado");
+  const conta = (await rpc("tools/call", { name: "veos_criar_conta_a_pagar", arguments: { descricao: "TESTE", fornecedor: "TESTE", categoria: "frete", vencimento: "2027-01-10", valor: "10.00" } })).result;
+  assert.equal(conta.isError, true); assert.match(conta.content[0].text, /perfil/); ok("permissoes valem na criacao: vendas nao lanca conta a pagar");
+  const vazio = (await rpc("tools/call", { name: "veos_criar_cliente", arguments: { nome: "Sem contato" } })).result;
+  assert.equal(vazio.isError, true); ok("regras de validacao valem no MCP (cliente sem telefone nem e-mail recusado)");
+
   const nav2 = await fetch(`${URL_BASE}/auth/v1/token?grant_type=refresh_token`, { method: "POST", headers: { apikey: ANON, "Content-Type": "application/json" }, body: JSON.stringify({ refresh_token: nav.refresh_token }) });
   assert.equal(nav2.status, 200); ok("a sessao do navegador continua valida depois do uso do MCP");
 } finally {

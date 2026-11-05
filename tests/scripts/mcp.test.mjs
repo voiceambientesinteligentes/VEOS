@@ -37,3 +37,21 @@ test("manual do diretor: setor invalido recusado; sem manual devolve o perfil", 
   const d = JSON.parse(m.result.content[0].text);
   assert.ok(d.diretor.nome);
 });
+
+test("ferramentas de criação: só cadastram e fazem rascunho, passam pela API e exigem os campos obrigatórios", async () => {
+  const chamadas = [];
+  const chamar = async (m, r, c) => { chamadas.push([m, r, c]); return { id: "x" }; };
+  const call = (name, args) => responder({ jsonrpc: "2.0", id: 1, method: "tools/call", params: { name, arguments: args } }, chamar);
+  const nomes = FERRAMENTAS.map((f) => f.name);
+  for (const n of ["veos_criar_cliente", "veos_criar_orcamento_rascunho", "veos_criar_conta_a_pagar", "veos_criar_fornecedor", "veos_criar_contrato_suporte", "veos_clientes", "veos_fornecedores"]) assert.ok(nomes.includes(n), n);
+  // nenhuma ferramenta paga, envia ou aceita
+  assert.ok(!nomes.some((n) => /pagar_conta|enviar|aceitar|aprovar|confirmar_pedido|decisao/.test(n)), nomes.join(","));
+  assert.equal((await call("veos_criar_cliente", {})).result.isError, true);
+  await call("veos_criar_cliente", { nome: "Cliente TESTE", telefone: "47999998888" });
+  await call("veos_criar_conta_a_pagar", { descricao: "Frete", fornecedor: "Transp", categoria: "frete", vencimento: "2026-12-10", valor: "350.00" });
+  await call("veos_criar_orcamento_rascunho", { cliente_nome: "Cliente TESTE", valor_total: "100.00", itens: [{ tipo: "servico", nome: "Visita", quantidade: "1", preco_unit: "100.00" }] });
+  assert.deepEqual(chamadas.map((c) => [c[0], c[1]]), [["POST", "comercial/clientes"], ["POST", "fluxo/contas-pagar"], ["POST", "comercial/orcamentos"]]);
+  assert.equal(chamadas[2][2].itens[0].tipo, "servico");
+  await call("veos_clientes", { busca: "Silva & Filhos" });
+  assert.equal(chamadas[3][1], "comercial/clientes?busca=Silva%20%26%20Filhos");
+});
