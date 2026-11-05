@@ -140,6 +140,7 @@ export const api = {
   cfoFormulario: () => request("GET", "cfo/formulario"),
   cfoSalvarSecao: (secao, dados) => request("POST", "cfo/formulario", { secao, dados }, { "Idempotency-Key": crypto.randomUUID() }),
   cfoOrcamentos: () => request("GET", "cfo/orcamentos"),
+  cfoFaturamento: () => request("GET", "cfo/orcamentos?resumo=1"),
   cfoProdutos: () => request("GET", "cfo/produtos"),
   cfoCambio: (desde = "") => request("GET", `cfo/cambio${desde ? `?desde=${encodeURIComponent(desde)}` : ""}`),
   cfoPainel: () => request("GET", "cfo/painel"),

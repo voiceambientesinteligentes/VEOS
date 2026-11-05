@@ -20,7 +20,8 @@ const ITENS = [{ ordem: 1, secao: "Sala", tipo: "produto", nome: "Interruptor in
 const FORM = { respostas: { impostos: { dados: { aliquota_produto_pct: "6", aliquota_servico_pct: "6" } } } };
 const salvos = [];
 Object.assign(api, {
-  cfoFormulario: async () => FORM, cfoOrcamentos: async () => ({ rbt12: { valor: 300000 }, orcamentos: [] }), cfoProdutos: async () => ({ produtos: [] }), cfoCambio: async () => ({ serie: [] }),
+  cfoFormulario: async () => FORM, cfoOrcamentos: async () => ({ rbt12: { valor: 300000 }, orcamentos: [] }),
+  cfoFaturamento: async () => ({ rbt12: { valor: 300000 } }), cfoProdutos: async () => ({ produtos: [] }), cfoCambio: async () => ({ serie: [] }),
   produtos: async () => ({ total: PROD.length, produtos: PROD }),
   clientes: async () => ({ clientes: caso === "clientes-vazio" ? [] : [CLI] }),
   cliente: async () => ({ cliente: CLI, orcamentos: [ORC], pedidos: [], oportunidades: [], historico: [{ acao: "criado", detalhe: {}, em: "2026-11-04T10:00:00Z" }] }),

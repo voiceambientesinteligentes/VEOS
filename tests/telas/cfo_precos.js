@@ -5,6 +5,7 @@ import { rodar } from "./_kit.js";
 
 api.cfoFormulario = async () => ({ respostas: structuredClone(RESPOSTAS) });
 api.cfoOrcamentos = async () => ORCAMENTOS;
+api.cfoFaturamento = async () => ORCAMENTOS;
 api.cfoProdutos = async () => structuredClone(PRODUTOS);
 api.cfoCambio = async () => CAMBIO;
 rodar(async (v) => {

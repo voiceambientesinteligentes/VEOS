@@ -185,7 +185,7 @@ function painelLacunas(p) {
 
 // ================================================================ precos dos produtos
 export async function telaPrecosCfo(root) {
-  const [{ respostas }, { produtos }, orc] = await Promise.all([api.cfoFormulario(), api.cfoProdutos(), api.cfoOrcamentos().catch(() => ({ rbt12: null }))]);
+  const [{ respostas }, { produtos }, orc] = await Promise.all([api.cfoFormulario(), api.cfoProdutos(), api.cfoFaturamento().catch(() => ({ rbt12: null }))]);
   const p = parametros(respostas);
   // dolar desde a compra mais antiga do catalogo (max. 2 anos) para atualizar o custo pela variacao
   const ultimaCompra = (x) => (x.compras ?? []).map((c) => c.data).filter(Boolean).sort().pop() ?? null;

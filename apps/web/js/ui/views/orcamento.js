@@ -31,7 +31,7 @@ const situacao = (e) => stamp(...(SITUACOES[e] ?? [e, "neutral"]));
 async function contextoPreco() {
   const ctx = { p: null, imp: null, v: 0, rotulo: "LACUNA", texto: null, custoHora: null, cfo: null, validadeDias: 7, entradaPct: 40, canais: [], tempos: [], metrosPorPonto: 25 };
   try {
-    const [{ respostas }, orc] = await Promise.all([api.cfoFormulario(), api.cfoOrcamentos().catch(() => ({ rbt12: null }))]);
+    const [{ respostas }, orc] = await Promise.all([api.cfoFormulario(), api.cfoFaturamento().catch(() => ({ rbt12: null }))]);
     const p = parametros(respostas);
     const dp = diagnosticoParams(p, impostosSimulados(orc.rbt12) ?? impostosSimulados({ valor: 0 }));
     Object.assign(ctx, { p, imp: { produto: dp.params.tProduto, servico: dp.params.tServico }, v: p.v ?? 0, rotulo: dp.rotulo, texto: dp.texto, custoHora: p.hora?.custoHora ?? null,

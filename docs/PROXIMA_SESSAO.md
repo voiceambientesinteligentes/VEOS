@@ -68,7 +68,7 @@ Setores vivos (9) com registros, regras vivas e Radar · Estrutura da empresa (o
 8. **Importação dos escritórios de arquitetura pelos dados abertos do CNPJ** (CNAE 7111-1/00 e 7410-2/02, região de SC) por um job mensal gratuito no GitHub Actions, entrando como alvos na Prospecção (CSO-17). **Aguarda o OK do Fernando** (regra de prospecção BIB-0107).
 9. **Aviso com o navegador fechado** (Web Push com chaves VAPID nos segredos do Supabase; gratuito) — hoje os avisos só aparecem com o VEOS aberto (CIO-08).
 10. **MCP do VEOS ampliado** ("tudo que eu pedir no Claude ele cria no VEOS"): ferramentas de criação pela API com as permissões do usuário — cliente, orçamento, pedido em rascunho, conta a pagar, tarefa —, sempre com rascunho + confirmação humana para o que for irreversível (CIO-06). Configurar o MCP nesta máquina depende do Fernando gerar o código (Minha conta → Acesso do Claude Code).
-11. **Avisos do assistente**: incluir no chat flutuante as respostas dos diretores dadas em "Perguntar aos diretores" e as tarefas vencidas do dia (hoje entram só os alertas ALTO/CRÍTICO).
+11. **FEITO em 05/11** — Avisos do assistente: incluir no chat flutuante as respostas dos diretores dadas em "Perguntar aos diretores" e as tarefas vencidas do dia (hoje entram só os alertas ALTO/CRÍTICO).
 12. **Indicadores calculados sozinhos** (marketing, pós-venda, satisfação e retrabalho) com fonte e LACUNA quando faltar dado (CMO-06, CXO-06).
 13. **Receita recorrente dos contratos de suporte** (contrato → parcelas mensais → caixa e indicadores) (CFO-13, CXO-05).
 
@@ -77,8 +77,8 @@ Setores vivos (9) com registros, regras vivas e Radar · Estrutura da empresa (o
 15. **Mesclar o catálogo com os itens do Zoho** e o roteiro de desligamento do Zoho por módulo (BIB-0077, COO-04, CIO-05) — só quando o Fernando pedir.
 16. **Publicação automática no Instagram** pela API oficial da Meta (agendar os posts do calendário) — depende da conta comercial ligada a uma Página do Facebook e de quem aprova (CMO-03/CMO-10).
 17. **Histórico visível por registro** nas telas dos setores (SEC-05) e procedimentos que faltam nos manuais (funil no CSO, obra nova no COO, Wi-Fi lento no CIO).
-18. **Desempenho**: Formulário e telas do CFO carregam `GET /cfo/orcamentos` (~3 s, 220 KB); criar um resumo leve só com o faturamento de 12 meses para o montador de orçamento e o formulário.
-19. **Limpeza**: estilos antigos da tela IA (`apps/web/css/ia.css`, classes `.ia-*` não usadas), tela "Comando por voz" antiga e textos que ainda falam em "TESTE" para o usuário real.
+18. **FEITO em 05/11 (GET /cfo/orcamentos?resumo=1 para o montador e os preços)** — Desempenho: Formulário e telas do CFO carregam `GET /cfo/orcamentos` (~3 s, 220 KB); criar um resumo leve só com o faturamento de 12 meses para o montador de orçamento e o formulário.
+19. **FEITO em 05/11 (ia.css removido; textos TESTE do usuário real conferidos)** — Limpeza: estilos antigos da tela IA (`apps/web/css/ia.css`, classes `.ia-*` não usadas), tela "Comando por voz" antiga e textos que ainda falam em "TESTE" para o usuário real.
 
 ## Depende do Fernando para o PROGRAMA funcionar por completo (não é operação da empresa)
 - **Revogar a chave da Anthropic exposta no site antigo da VOICE** e trocar a senha da área interna (BIB-0104, CIO-13). Urgente.
@@ -91,4 +91,5 @@ Setores vivos (9) com registros, regras vivas e Radar · Estrutura da empresa (o
 - O classificador de segurança bloqueia algumas ações automáticas (ex.: apagar com caminho de "Program Files" no mesmo comando); separe os comandos.
 - A Supabase CLI interativa trava aqui; se precisar logar de novo, use `npx supabase login --token <PAT de escopo completo>`.
 - Edge headless é o navegador dos testes de tela; o Playwright usa o Edge instalado (`channel: "msedge"`).
+
 

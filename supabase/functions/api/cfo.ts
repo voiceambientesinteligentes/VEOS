@@ -66,6 +66,10 @@ export async function rotearCfo(req: Request, partes: string[], eu: Membro) {
     const [r] = await servico("/rest/v1/formulario_respostas", { method: "POST", headers: { Prefer: "return=representation" }, body: JSON.stringify({ formulario: "cfo", secao: corpo.secao, dados, autor: eu.user_id }) });
     return { id: r.id, em: r.em };
   }
+  if (a === "orcamentos" && !post && new URL(req.url).searchParams.get("resumo") === "1") {
+    // leve: so o faturamento de 12 meses (montador de orcamento e telas que so precisam das aliquotas)
+    return { rbt12: await rbt12(), fonte: "Espelho do Zoho Books no VEOS (faturamento dos últimos 12 meses)" };
+  }
   if (a === "orcamentos" && !post) {
     const [estimativas, itens, faturamento] = await Promise.all([
       servico("/rest/v1/zoho_registros?produto=eq.books&modulo=eq.estimates&excluido=is.false&select=dados&limit=5000"),
