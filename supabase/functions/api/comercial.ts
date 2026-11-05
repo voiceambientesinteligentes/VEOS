@@ -30,6 +30,7 @@ const limparBusca = (v: unknown) => String(v ?? "").replace(/[%*,()."]/g, " ").t
 
 /** O usuario so enxerga clientes/orcamentos do proprio "mundo" (real ou robo de teste). */
 async function visivel(eu: Membro, criadoPor: string) {
+  if (criadoPor === eu.user_id) return true; // o autor sempre enxerga o que criou (cache de robos pode estar velho)
   const ids = await idsTeste();
   return ids.includes(criadoPor) === ehTeste(eu);
 }

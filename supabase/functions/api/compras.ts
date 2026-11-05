@@ -40,7 +40,7 @@ const dataOuNulo = (v: unknown, nome: string) => {
 const FORN_LISTA = "id,codigo,nome,documento,categoria,contato_nome,telefone,email,cidade,uf,prazo_pagamento_dias,prazo_entrega_dias,condicao,zoho_vendor_id,estado,criado_em";
 const FORN_COLS = `${FORN_LISTA},observacao,criado_por,atualizado_em`;
 async function fornecedorMesmoMundo(eu: Membro, criadoPor: string) {
-  return (await idsTeste()).includes(criadoPor) === ehTeste(eu);
+  return criadoPor === eu.user_id || (await idsTeste()).includes(criadoPor) === ehTeste(eu); // o autor sempre enxerga o que criou
 }
 async function fornecedorVisivel(eu: Membro, id: string) {
   if (!UUID_RE.test(id)) throw new HttpError(404, "fornecedor inexistente");

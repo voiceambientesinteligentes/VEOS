@@ -22,7 +22,8 @@ const hojeSP = () => new Date(Date.now() - 3 * 3600_000).toISOString().slice(0, 
 async function contratoVisivel(eu: Membro, id: string) {
   if (!UUID_RE.test(id)) throw new HttpError(404, "contrato inexistente");
   const [c] = await servico(`/rest/v1/contratos_suporte?id=eq.${id}&select=${COLS}`);
-  if (!c || (await idsTeste()).includes(c.criado_por) !== ehTeste(eu)) throw new HttpError(404, "contrato inexistente");
+  // o proprio autor sempre enxerga o que criou (o cache de robos de teste pode estar velho num usuario recem-criado)
+  if (!c || (c.criado_por !== eu.user_id && (await idsTeste()).includes(c.criado_por) !== ehTeste(eu))) throw new HttpError(404, "contrato inexistente");
   return c;
 }
 

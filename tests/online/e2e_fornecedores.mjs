@@ -36,10 +36,17 @@ const sufixo = Date.now().toString(36);
 
 let contaId = null;
 
-const CNPJ = "12323599000183";
+// CNPJ valido e diferente a cada execucao (o documento e unico no banco; execucoes paralelas nao podem colidir)
+function cnpjAleatorio() {
+  const d = Array.from({ length: 12 }, () => Math.floor(Math.random() * 10));
+  const dv = (base) => { const pesos = base.length === 12 ? [5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2] : [6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2]; const r = base.reduce((a, n, i) => a + n * pesos[i], 0) % 11; return r < 2 ? 0 : 11 - r; };
+  d.push(dv(d)); d.push(dv(d));
+  return d.join("");
+}
+const CNPJ = cnpjAleatorio();
 
 try {
-  const f = exige(await api("POST", "fluxo/fornecedores", { nome: `Fornecedor TESTE ${sufixo}`, documento: "12.323.599/0001-83", categoria: "importacao", telefone: "(47) 3333-4444", prazo_pagamento_dias: "28", cidade: "Itajaí", uf: "sc" }), "criar");
+  const f = exige(await api("POST", "fluxo/fornecedores", { nome: `Fornecedor TESTE ${sufixo}`, documento: CNPJ, categoria: "importacao", telefone: "(47) 3333-4444", prazo_pagamento_dias: "28", cidade: "Itajaí", uf: "sc" }), "criar");
   assert.match(f.codigo, /^FOR-T\d{5}$/); ok(`fornecedor criado (${f.codigo}, serie de teste)`);
   const dup = await api("POST", "fluxo/fornecedores", { nome: "Outro", documento: CNPJ });
   assert.equal(dup.status, 400); assert.match(JSON.stringify(dup.dados), /já existe/); ok("CNPJ repetido recusado");
