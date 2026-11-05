@@ -1,4 +1,4 @@
-# Próxima sessão — ponto de partida (atualizado em 04/11/2026, fim do dia)
+# Próxima sessão — ponto de partida (atualizado em 05/11/2026, fim do dia)
 
 Este arquivo trata só do **PROGRAMA** (o VEOS: telas, servidor, banco, IA, integrações).
 O que é operação da empresa (decidir metas, RT, alíquotas, preencher dados reais, ligar para clientes)
@@ -88,6 +88,9 @@ Setores vivos (9) com registros, regras vivas e Radar · Estrutura da empresa (o
 - OK para o item 8 (CNPJ), acesso para o SMTP (item 3), e, quando quiser, domínio próprio (CNAME + ORIGENS da `api` + Auth).
 
 ## Limites do ambiente
+- Um `npm install --no-save <pacote>` remove o Playwright instalado antes: reinstale com `$env:PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD="1"; npm install --no-save --no-package-lock playwright@1.55.0` (a 1.65 estava quebrada no registro em 05/11).
+- Heredocs grandes no Bash às vezes falham aqui: escreva arquivos com a ferramenta Write e edições com Edit/scripts pequenos.
+- Cuidado com `$$` em `String.replace` (vira `$`): use função como substituição.
 - O classificador de segurança bloqueia algumas ações automáticas (ex.: apagar com caminho de "Program Files" no mesmo comando); separe os comandos.
 - A Supabase CLI interativa trava aqui; se precisar logar de novo, use `npx supabase login --token <PAT de escopo completo>`.
 - Edge headless é o navegador dos testes de tela; o Playwright usa o Edge instalado (`channel: "msedge"`).

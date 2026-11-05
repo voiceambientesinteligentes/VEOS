@@ -2,6 +2,10 @@
 
 Atualize este arquivo ao fim de cada sessão: última ação, resultado e próximo passo.
 
+## 05/11/2026 (fim do dia) — backlog do programa executado
+
+**Resumo**: P0 (502, IA refaz resposta de dados, CI decidido), P1-5 a 13 (fornecedores, agenda por pessoa, histórico do CRM por registro, Web Push, MCP ampliado, avisos do assistente, indicadores, contratos de suporte), P2-14/17/18/19. Ficaram: P0-3 (SMTP: precisa do Fernando), P1-8 (CNPJ: aguarda OK dele), P2-15 (desligar o Zoho: só quando pedir), P2-16 (Instagram/Meta: precisa de conta). Testes: 192 de domínio + 155 Python + 20 JS, telas 212/212, banco (fornecedores 13, agenda 7, contratos 14), online (fornecedores 10, agenda 7, contratos 12, push 7, mcp 11), site publicado conferido. **Não verificado**: chegada do aviso num navegador real; uso real (login do Fernando) de tudo isto.
+
 ## 05/11/2026 — sistema vivo, fornecedores
 
 **Feito**
