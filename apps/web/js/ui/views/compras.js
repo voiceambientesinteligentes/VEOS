@@ -87,7 +87,7 @@ export async function telaNovaCompra(root) {
   const salvar = h("button", { class: "btn btn-primary", type: "submit" }, "Registrar compra");
   const form = h("form", { class: "stack", novalidate: true },
     panel({ title: "Fornecedor e entrega" }, lista,
-      h("div", { class: "form-grid" }, field(fornecedor.id, "Fornecedor *", fornecedor, "Lista do Zoho (fornecedores); pode digitar outro."), field(previsao.id, "Previsão de entrega", previsao), field(obs.id, "Observação", obs))),
+      h("div", { class: "form-grid" }, field(fornecedor.id, "Fornecedor *", fornecedor, "Cadastro próprio ou nomes do Zoho (importados ao registrar); pode digitar outro."), field(previsao.id, "Previsão de entrega", previsao), field(obs.id, "Observação", obs))),
     panel({ title: "Itens", subtitle: doPedido.length ? "Faltas dos pedidos confirmados. Ajuste quantidade e custo (o custo sugerido vem do preço de compra no Zoho)." : "" },
       doPedido.length
         ? h("div", { class: "table-wrap" }, h("table", { class: "table" }, h("thead", null, h("tr", null, ["Comprar", "Produto", "Quantidade", "Custo unit. (R$)"].map((x) => h("th", { scope: "col" }, x)))), corpoItens))
@@ -116,7 +116,10 @@ export async function telaNovaCompra(root) {
     salvar.disabled = true;
     try {
       const pedidos = [...new Set(linhas.filter((x) => x.usar.checked).map((x) => x.f.pedido_id))];
-      const r = await api.comprasCriar({ fornecedor_nome: fornecedor.value.trim(), fornecedor_zoho_id: fornecedores.find((f) => f.nome === fornecedor.value.trim())?.zoho_id ?? null,
+      const escolhido = fornecedores.find((f) => f.nome === fornecedor.value.trim());
+      let fornecedorId = escolhido?.id ?? null;
+      if (!fornecedorId && escolhido?.zoho_id) { try { fornecedorId = (await api.fornecedorDoZoho(escolhido.zoho_id)).id; } catch { fornecedorId = null; } }
+      const r = await api.comprasCriar({ fornecedor_nome: fornecedor.value.trim(), fornecedor_id: fornecedorId, fornecedor_zoho_id: escolhido?.zoho_id ?? null,
         pedido_id: pedidos.length === 1 ? pedidos[0] : null, previsao_entrega: previsao.value || null, observacao: obs.value, itens, parcelas });
       location.hash = `#/compras/${r.id}`;
     } catch (err) {
@@ -186,6 +189,8 @@ export async function telaContasPagar(root) {
   const conteudo = h("div", { class: "stack" });
   root.append(conteudo);
   let estado = "aberta";
+  let proprios = [];
+  try { proprios = (await api.fornecedores()).fornecedores; } catch { proprios = []; }
   const desenhar = async (msg) => {
     const { contas } = await api.contasPagar(estado);
     const saida = h("div", { role: "status" });
@@ -225,12 +230,12 @@ export async function telaContasPagar(root) {
         k.estado === "aberta" && k.vencimento < hoje() ? stamp("Vencida", "risk") : k.estado === "paga" ? `paga em ${formatDate(k.pago_em)}` : k.estado === "cancelada" ? (k.motivo_cancelamento ?? "cancelada") : "",
         acoes];
     };
-    const desc = inp({ id: "cp-desc" }), forn = inp({ id: "cp-forn" }), venc = h("input", { class: "input", id: "cp-venc", type: "date" }), valor = inp({ id: "cp-valor", inputmode: "decimal", class: "input num" });
+    const desc = inp({ id: "cp-desc" }), forn = inp({ id: "cp-forn", list: "cp-fornecedores" }), venc = h("input", { class: "input", id: "cp-venc", type: "date" }), valor = inp({ id: "cp-valor", inputmode: "decimal", class: "input num" });
     const cat = h("select", { class: "select", id: "cp-cat" }, Object.entries(CATEGORIAS).filter(([k]) => k !== "compra").map(([k, v]) => h("option", { value: k }, v)));
     const erro = h("div", { role: "alert" });
     const criar = h("button", { class: "btn btn-primary", type: "submit" }, "Lançar conta");
     const form = h("form", { class: "stack-s", novalidate: true },
-      h("div", { class: "form-grid" }, field(desc.id, "Descrição *", desc), field(forn.id, "Fornecedor / favorecido *", forn), field(cat.id, "Categoria", cat), field(venc.id, "Vencimento *", venc), field(valor.id, "Valor (R$) *", valor)),
+      h("div", { class: "form-grid" }, field(desc.id, "Descrição *", desc), h("datalist", { id: "cp-fornecedores" }, proprios.map((f) => h("option", { value: f.nome }))), field(forn.id, "Fornecedor / favorecido *", forn, "Escolha do cadastro de Fornecedores ou digite outro."), field(cat.id, "Categoria", cat), field(venc.id, "Vencimento *", venc), field(valor.id, "Valor (R$) *", valor)),
       h("div", { class: "row" }, criar), erro);
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
@@ -239,7 +244,7 @@ export async function telaContasPagar(root) {
       if (!desc.value.trim() || !forn.value.trim() || !venc.value || !v) return erro.append(errorNotice("Preencha descrição, fornecedor, vencimento e valor."));
       criar.disabled = true;
       try {
-        await api.contaPagarCriar({ descricao: desc.value, fornecedor: forn.value, categoria: cat.value, vencimento: venc.value, valor: v });
+        await api.contaPagarCriar({ descricao: desc.value, fornecedor: forn.value, fornecedor_id: proprios.find((f) => f.nome === forn.value.trim())?.id ?? null, categoria: cat.value, vencimento: venc.value, valor: v });
         await desenhar("Conta lançada.");
       } catch (err) { erro.append(errorNotice(err.message)); criar.disabled = false; }
     });

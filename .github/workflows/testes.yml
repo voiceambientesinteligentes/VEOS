@@ -70,6 +70,7 @@ jobs:
           node tests/online/e2e_mcp.mjs
           node tests/online/e2e_ia.mjs
           node tests/online/e2e_caixa.mjs
+          node tests/online/e2e_fornecedores.mjs
       - name: Instalar navegador
         if: steps.seg.outputs.ok == 'true'
         run: npm i --no-save --no-audit --no-fund playwright@1.55.0 && npx playwright install --with-deps chromium

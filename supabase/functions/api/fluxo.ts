@@ -134,7 +134,7 @@ export async function rotearFluxo(req: Request, partes: string[], eu: Membro) {
   const corpo = post ? ((await lerCorpo(req)) ?? {}) : {};
   const chave = req.headers.get("Idempotency-Key") ?? "";
   if (post && !CHAVE_RE.test(chave)) throw new HttpError(400, "Idempotency-Key obrigatorio (16-64 caracteres)");
-  if (a === "compras" || a === "contas-pagar" || a === "caixa") return await rotearCompras(req, partes, eu, corpo, chave, vigiar);
+  if (a === "compras" || a === "contas-pagar" || a === "caixa" || a === "fornecedores") return await rotearCompras(req, partes, eu, corpo, chave, vigiar);
 
   // ---------------------------------------------------------------- leitura
   if (!post && a === "resumo") {

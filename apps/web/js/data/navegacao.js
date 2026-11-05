@@ -16,7 +16,7 @@ export const SECOES = [
     ["#/conteudo", "Instagram"], ["#/setor/vendas", "Funil"], ["#/comercial", "Plano comercial"], ["#/negociacao", "Negociação ao vivo"], ["#/propostas", "Propostas do Zoho"],
   ] },
   { id: "operacao", rotulo: "Operação", icone: "operacao", itens: [
-    ["#/pedidos", "Pedidos"], ["#/compras", "Compras"], ["#/estoque", "Estoque"], ["#/produtos", "Catálogo"], ["#/recebimentos", "Recebimentos"],
+    ["#/pedidos", "Pedidos"], ["#/compras", "Compras"], ["#/fornecedores", "Fornecedores"], ["#/estoque", "Estoque"], ["#/produtos", "Catálogo"], ["#/recebimentos", "Recebimentos"],
     ["#/contas-pagar", "Contas a pagar", FIN], ["#/projetos", "Projetos e caixa"],
   ] },
   { id: "financeiro", rotulo: "Financeiro", icone: "financeiro", papeis: FIN, itens: [
@@ -45,6 +45,7 @@ export const NOVOS = [
   ["#/orcamentos/novo", "Orçamento", "Cliente, ambientes, produtos e mão de obra", VENDER],
   ["#/clientes?novo=1", "Cliente", "Cadastro com contato e obra", VENDER],
   ["#/compras/nova", "Compra", "Itens, fornecedor e parcelas", ["direcao", "financas", "operacoes"]],
+  ["#/fornecedores?novo=1", "Fornecedor", "Cadastro com prazos e condições", ["direcao", "financas", "operacoes"]],
   ["#/diretores", "Pergunta a um diretor", "Resposta da IA na voz do diretor", null],
 ];
 
