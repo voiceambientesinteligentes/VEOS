@@ -6,6 +6,9 @@ import { formatBRL, formatDate, formatDateTime } from "../../domain/format.js";
 import { clear, errorNotice, h, panel, stamp } from "../dom.js";
 import { formularioZoho, podeEditar } from "./zoho_edicao.js";
 import { fichaZoho } from "./zoho_ficha.js";
+import { CATALOGO } from "../../data/catalogo.js";
+import { formularioRegistro } from "../componentes.js";
+import { jaImportado, leadDoCrm, negocioDoCrm } from "../../domain/crm_import.js";
 
 export const PRODUTOS = {
   books: { nome: "Books", sub: "Clientes, itens, orçamentos, vendas, compras e financeiro" },
@@ -221,12 +224,29 @@ async function fichaRegistro(area, produto, modulo, id, [nome]) {
     area.append(h("p", null, h("a", { href: `#/zoho/${produto}/${modulo}/${encodeURIComponent(id)}` }, `‹ voltar à ficha`)));
     formularioZoho(area, { produto, modulo, id, registro: r, nomeModulo: nome, aoSalvar: () => location.reload() }).catch((e) => area.append(errorNotice(e.message)));
   });
+  // Leads e negocios do CRM antigo: levar ao funil do VEOS (sem perder a origem; a pessoa completa o que o Zoho nao tem)
+  const levar = produto === "crm" && ["Leads", "Deals"].includes(modulo) && !r.excluido ? h("button", { class: "btn btn-ghost", type: "button" }, "Levar ao funil do VEOS") : null;
+  const areaFunil = h("div", { class: "stack" });
+  levar?.addEventListener("click", async () => {
+    clear(areaFunil);
+    try {
+      const vendas = CATALOGO.find((s) => s.id === "vendas");
+      const tipo = vendas.registros.find((x) => x.tipo === (modulo === "Leads" ? "lead" : "oportunidade"));
+      const { registros } = await api.setor("vendas");
+      const ja = jaImportado(registros, modulo, r.zoho_id);
+      if (ja) return areaFunil.append(h("p", { class: "notice", role: "status" }, "Este registro do Zoho já foi levado ao funil: ", h("a", { href: "#/setor/vendas/registros" }, ja.titulo), "."));
+      const pre = modulo === "Leads" ? leadDoCrm({ ...r.dados, id: r.zoho_id }) : negocioDoCrm({ ...r.dados, id: r.zoho_id });
+      areaFunil.append(panel({ title: modulo === "Leads" ? "Levar este lead ao funil" : "Levar este negócio ao funil", subtitle: "Preenchido só com o que o Zoho tem; complete os campos obrigatórios em branco. A origem e o id do Zoho ficam escritos no registro. Nada é enviado ao contato." },
+        formularioRegistro(vendas, tipo, null, () => { location.hash = "#/setor/vendas/registros"; }, pre)));
+    } catch (e) { areaFunil.append(errorNotice(e.message)); }
+  });
   area.append(
     h("p", null, h("a", { href: `#/zoho/${produto}/${modulo}` }, `‹ ${nome}`)),
     panel({ title: r.nome ?? id, subtitle: `Zoho ${PRODUTOS[produto].nome} · ${nome} · id ${r.zoho_id}`,
       actions: h("div", { class: "row" }, r.excluido ? stamp("Excluído no Zoho", "risk") : null, incompleto ? stamp("Ficha resumida: completa na próxima sincronização", "warn") : stamp("Ficha completa", "live"), editar,
-        produto === "books" && modulo === "estimates" ? h("a", { class: "btn btn-ghost", href: `#/propostas/${r.zoho_id}` }, "Proposta em PDF") : null) },
+        produto === "books" && modulo === "estimates" ? h("a", { class: "btn btn-ghost", href: `#/propostas/${r.zoho_id}` }, "Proposta em PDF") : null, levar) },
       h("p", { class: "field-hint" }, `Alterado no Zoho: ${r.modificado_em ? formatDateTime(r.modificado_em) : "—"} · copiado para o VEOS: ${formatDateTime(r.sincronizado_em)}`),
       h("div", { class: "stack" }, fichaZoho(produto, modulo, r.dados, rotulo).filter(Boolean)),
-      h("details", { class: "zoho-bloco zoho-tecnico" }, h("summary", null, `Todos os campos do Zoho (técnico · ${Object.keys(r.dados).length})`), ficha(r.dados, 1))));
+      h("details", { class: "zoho-bloco zoho-tecnico" }, h("summary", null, `Todos os campos do Zoho (técnico · ${Object.keys(r.dados).length})`), ficha(r.dados, 1))),
+    areaFunil);
 }

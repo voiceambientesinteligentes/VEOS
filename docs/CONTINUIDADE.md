@@ -11,7 +11,8 @@ Atualize este arquivo ao fim de cada sessão: última ação, resultado e próxi
 - Agenda por pessoa (P1-6): cargo por pessoa em Usuarios; tarefas diarias/semanais/mensais do cargo no Hoje. Para ligar: Fernando define o cargo de cada pessoa (so entao gera tarefa).
 
 **Próximo passo**
-- P1-7 importar histórico do CRM do Zoho, depois os demais itens de PROXIMA_SESSAO. Fernando: P0-3 (SMTP), revogar chave exposta, login real, MCP.
+- Histórico do CRM do Zoho (P1-7): botão "Levar ao funil do VEOS" em cada lead/negócio do Zoho CRM. Fernando decide quais valem a pena levar.
+- Próximo: P1-8 (aguarda OK), P1-9 em diante de PROXIMA_SESSAO. Fernando: P0-3 (SMTP), revogar chave exposta, login real, MCP.
 
 ## 04/11/2026 (sessão seguinte) — P0 itens 1 e 2
 
