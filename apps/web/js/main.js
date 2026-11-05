@@ -34,7 +34,7 @@ import { telaPendencias } from "./ui/views/pendencias.js";
 import { telaEstrutura } from "./ui/views/estrutura.js";
 import { telaCliente, telaClientes } from "./ui/views/clientes.js";
 import { telaFornecedor, telaFornecedores } from "./ui/views/fornecedores.js";
-import { telaContrato, telaContratos } from "./ui/views/contratos.js";
+import { telaContrato as telaContratoSuporte, telaContratos } from "./ui/views/contratos.js";
 import { telaNovoOrcamento, telaOrcamentoFicha, telaOrcamentos } from "./ui/views/orcamento.js";
 import { telaContatoRapido, telaConteudo, telaProspeccao } from "./ui/views/captacao.js";
 import { telaOperar } from "./ui/views/operar.js";
@@ -272,13 +272,13 @@ async function navegar() {
   const compraRota = /^#\/compras\/([0-9a-f-]{36})$/.exec(rotaBase());
   const pendRota = /^#\/pendencias\/([a-z]+)$/.exec(rotaBase());
   const estrRota = /^#\/estrutura\/([a-z]+)$/.exec(rotaBase());
-  const contratoRota = /^#\/contratos\/([0-9a-f-]{36})$/.exec(rotaBase());
+  const suporteRota = /^#\/contratos\/([0-9a-f-]{36})$/.exec(rotaBase());
   const fornRota =/^#\/fornecedores\/([0-9a-f-]{36})$/.exec(rotaBase());
   const clienteRota = /^#\/clientes\/([0-9a-f-]{36})$/.exec(rotaBase());
   const orcRota = /^#\/orcamentos\/([0-9a-f-]{36})$/.exec(rotaBase());
-  if (contratoRota) {
+  if (suporteRota) {
     rota = "#/contratos";
-    def = { fn: (root) => telaContrato(root, contratoRota[1]), titulo: ["Contrato de suporte", "Cobranças mensais, situação e histórico"] };
+    def = { fn: (root) => telaContratoSuporte(root, suporteRota[1]), titulo: ["Contrato de suporte", "Cobranças mensais, situação e histórico"] };
   } else if (fornRota) {
     rota = "#/fornecedores";
     def = { fn: (root) => telaFornecedor(root, fornRota[1]), titulo: ["Fornecedor", "Dados, compras, contas a pagar e histórico"] };
