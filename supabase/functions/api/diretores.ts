@@ -31,7 +31,7 @@ export async function rotearDiretores(req: Request, partes: string[], eu: Membro
     const setor = /^[a-z]{3,12}$/.test(q.get("setor") ?? "") ? `&setor_id=eq.${q.get("setor")}` : "";
     const visivel = eu.papel === "direcao" ? "" : `&or=(autor.eq.${eu.user_id},setor_id.in.(${acessiveis(eu).join(",")}))`;
     const [perguntas, membros] = await Promise.all([
-      servico(`/rest/v1/perguntas_diretores?select=*,respostas:respostas_diretores(id,resposta,procedimento,fontes,motor,em),execucoes:ia_execucoes(provedor,modelo,ok,passos,ms,erro,em)${est}${setor}${visivel}${await filtroAutor(eu, "autor")}&order=criada_em.desc&limit=200`),
+      servico(`/rest/v1/perguntas_diretores?select=*,respostas:respostas_diretores(id,resposta,procedimento,fontes,motor,em),execucoes:ia_execucoes(provedor,modelo,ok,passos,ms,erro,em)${est}${setor}${visivel}${await filtroAutor(eu, "autor")}&order=criada_em.desc&limit=${Math.max(1, Math.min(200, Number(q.get("limite")) || 200))}`),
       servico("/rest/v1/membros?select=user_id,nome"),
     ]);
     const nome = new Map(membros.map((m: { user_id: string; nome: string }) => [m.user_id, m.nome]));

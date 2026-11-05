@@ -10,6 +10,7 @@ import { api } from "../data/api.js";
 import { CATALOGO } from "../data/catalogo.js";
 import { interpretar } from "../domain/comandos.js";
 import { blocosDaResposta } from "../domain/conversa.js";
+import { avisosNovos } from "../domain/avisos.js";
 import { clear, h } from "./dom.js";
 import { icone } from "./icones.js";
 
@@ -119,6 +120,8 @@ export async function enviar(texto) {
       else throw e;
     }
     conversas[setor] = res.conversa_id ?? res.id;
+    // a resposta desta pergunta aparece aqui mesmo: nao repetir como aviso depois
+    gravar(K.vistos, [...ler(K.vistos, []), `p:${res.id}`].slice(-500));
     gravar(K.conversas, conversas);
     if (res.ia !== "analisando") {
       adicionar({ de: "veos", texto: "Sem motor de IA ligado no servidor agora: a pergunta ficou na fila do Claude Code e a resposta aparece em Perguntar aos diretores.", href: "#/diretores" });
@@ -143,16 +146,15 @@ export async function enviar(texto) {
 let timerAvisos = null;
 async function conferirAvisos(primeira) {
   try {
-    const { alertas } = await api.radar();
+    const [{ alertas, tarefas }, resp] = await Promise.all([api.radar(), api.perguntasDiretores({ estado: "respondida", limite: 15 }).catch(() => ({ perguntas: [] }))]);
     const vistos = new Set(ler(K.vistos, []));
-    const graves = alertas.filter((a) => ["CRITICO", "ALTO"].includes(a.severidade));
-    const novos = graves.filter((a) => !vistos.has(a.chave ?? a.id));
-    for (const a of graves) vistos.add(a.chave ?? a.id);
+    const hoje = new Date(Date.now() - 3 * 3600_000).toISOString().slice(0, 10);
+    const todos = avisosNovos({ alertas, tarefas, perguntas: resp.perguntas, hoje, euId: eu?.user_id ?? null });
+    const novos = todos.filter((a) => !vistos.has(a.chave));
+    for (const a of todos) vistos.add(a.chave);
     gravar(K.vistos, [...vistos].slice(-500));
     if (primeira && msgs.length) return; // primeira abertura com historico: so marca
-    for (const a of novos.slice(0, primeira ? 3 : 5)) {
-      adicionar({ de: "aviso", setor: a.setor_id, texto: `${a.severidade === "CRITICO" ? "Crítico" : "Alerta"} · ${SIGLA[a.setor_id] ?? a.setor_id}: ${a.titulo}`, href: `#/setor/${a.setor_id}` }, true);
-    }
+    for (const a of novos.slice(0, primeira ? 3 : 5)) adicionar({ de: "aviso", setor: a.setor_id, texto: a.texto, href: a.href }, true);
   } catch { /* sem rede: proximo ciclo */ }
 }
 
