@@ -23,12 +23,12 @@
   --bg-3: #171819;
   --bg-4: #1e1f21;
 
-  /* destaque do G4 (tema escuro) no lugar do dourado */
-  --gold: #d1bea4;
-  --gold-2: #e2d4bf;
-  --gold-ink: #17130d;
-  --gold-dim: rgba(209, 190, 164, 0.12);
-  --gold-line: rgba(209, 190, 164, 0.35);
+  /* dourado vivo (quase neon, mas confortavel): mais saturado que o do G4 */
+  --gold: #f2c53d;
+  --gold-2: #ffd85e;
+  --gold-ink: #1a1405;
+  --gold-dim: rgba(242, 197, 61, 0.13);
+  --gold-line: rgba(242, 197, 61, 0.40);
 
   /* estados do G4 */
   --ok: oklch(68% 0.14 155);

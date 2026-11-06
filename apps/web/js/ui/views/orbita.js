@@ -214,9 +214,9 @@ export function renderOrbita(root, { setores, diretores, atividade = {}, signal 
 
   function desenharOrbitas() {
     ctx.lineWidth = 1;
-    elipse(R, RY, "rgba(201,165,76,0.28)", []);
+    elipse(R, RY, "rgba(242, 197, 61,0.28)", []);
     elipse(R * 0.62, RY * 0.62, "rgba(110,200,212,0.16)", [2, 6]);
-    elipse(R * 1.22, RY * 1.22, "rgba(201,165,76,0.08)", [1, 9]);
+    elipse(R * 1.22, RY * 1.22, "rgba(242, 197, 61,0.08)", [1, 9]);
   }
 
   function desenharFluxos(agora) {
@@ -226,7 +226,7 @@ export function renderOrbita(root, { setores, diretores, atividade = {}, signal 
     // nucleo -> ativo (nasce na borda do nucleo, sem cruzar o nome VEOS)
     const d = Math.hypot(a.x - W / 2, a.y - H / 2) || 1;
     const borda = 54 * esc + 8;
-    linhaLuz(W / 2 + ((a.x - W / 2) / d) * borda, H / 2 + ((a.y - H / 2) / d) * borda, a.x, a.y, `rgba(227,198,125,${0.35 + 0.35 * pulso})`, 1.6);
+    linhaLuz(W / 2 + ((a.x - W / 2) / d) * borda, H / 2 + ((a.y - H / 2) / d) * borda, a.x, a.y, `rgba(255, 216, 94,${0.35 + 0.35 * pulso})`, 1.6);
     for (const r of relacionados(ativo)) {
       const b = pos[r];
       if (!b) continue;
@@ -293,7 +293,7 @@ export function renderOrbita(root, { setores, diretores, atividade = {}, signal 
         if (d2 > LIGACAO * LIGACAO) continue;
         const f = (1 - Math.sqrt(d2) / LIGACAO) * Math.min(a.brilho, b.brilho) * 0.55;
         const ciano = a.dono === ativo && b.dono === ativo && ativo;
-        ctx.strokeStyle = ciano ? `rgba(110,200,212,${f})` : `rgba(201,165,76,${f * 0.8})`;
+        ctx.strokeStyle = ciano ? `rgba(110,200,212,${f})` : `rgba(242, 197, 61,${f * 0.8})`;
         ctx.beginPath();
         ctx.moveTo(a.x, a.y);
         ctx.lineTo(b.x, b.y);
@@ -302,7 +302,7 @@ export function renderOrbita(root, { setores, diretores, atividade = {}, signal 
     }
     for (const c of celulas) {
       const on = ativo && c.dono === ativo;
-      ctx.fillStyle = on ? `rgba(110,200,212,${c.brilho})` : c.dono === null ? `rgba(227,198,125,${c.brilho})` : `rgba(201,165,76,${c.brilho})`;
+      ctx.fillStyle = on ? `rgba(110,200,212,${c.brilho})` : c.dono === null ? `rgba(255, 216, 94,${c.brilho})` : `rgba(242, 197, 61,${c.brilho})`;
       ctx.beginPath();
       ctx.arc(c.x, c.y, c.tam * (on ? 1.4 : 1), 0, TAU);
       ctx.fill();
@@ -313,8 +313,8 @@ export function renderOrbita(root, { setores, diretores, atividade = {}, signal 
     const cx = W / 2, cy = H / 2;
     const p = movimento ? 0.5 + 0.5 * Math.sin(agora * 0.0016) : 0.5;
     const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, 92);
-    g.addColorStop(0, `rgba(227,198,125,${0.32 + 0.12 * p})`);
-    g.addColorStop(0.45, "rgba(201,165,76,0.10)");
+    g.addColorStop(0, `rgba(255, 216, 94,${0.32 + 0.12 * p})`);
+    g.addColorStop(0.45, "rgba(242, 197, 61,0.10)");
     g.addColorStop(1, "rgba(10,11,13,0)");
     ctx.fillStyle = g;
     ctx.beginPath();

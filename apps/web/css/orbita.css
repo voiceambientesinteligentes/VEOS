@@ -18,10 +18,10 @@
     overflow: hidden;
     border: 1px solid var(--line);
     background:
-      radial-gradient(ellipse 60% 55% at 50% 50%, rgba(201, 165, 76, 0.07), transparent 70%),
+      radial-gradient(ellipse 60% 55% at 50% 50%, rgba(242, 197, 61, 0.07), transparent 70%),
       radial-gradient(ellipse 90% 80% at 50% 120%, rgba(110, 200, 212, 0.06), transparent 60%),
       linear-gradient(180deg, #07080a, var(--bg-0) 60%, #06070a);
-    box-shadow: 0 0 0 1px rgba(201, 165, 76, 0.06) inset, 0 40px 80px -40px rgba(0, 0, 0, 0.9);
+    box-shadow: 0 0 0 1px rgba(242, 197, 61, 0.06) inset, 0 40px 80px -40px rgba(0, 0, 0, 0.9);
     cursor: default;
     isolation: isolate;
   }
@@ -47,8 +47,8 @@
     place-content: center;
     text-align: center;
     z-index: 25;
-    background: radial-gradient(circle at 35% 30%, rgba(227, 198, 125, 0.22), rgba(10, 11, 13, 0.92) 62%);
-    box-shadow: 0 0 40px -6px rgba(201, 165, 76, 0.55), 0 0 0 1px rgba(227, 198, 125, 0.35) inset;
+    background: radial-gradient(circle at 35% 30%, rgba(255, 216, 94, 0.22), rgba(10, 11, 13, 0.92) 62%);
+    box-shadow: 0 0 40px -6px rgba(242, 197, 61, 0.55), 0 0 0 1px rgba(255, 216, 94, 0.35) inset;
     pointer-events: none;
   }
   .orbita-nucleo::before { /* anel conico girando */
@@ -106,7 +106,7 @@
     background: radial-gradient(circle at 30% 25%, rgba(255, 255, 255, 0.08), rgba(15, 17, 20, 0.78) 60%);
     border: 1px solid var(--gold-line);
     backdrop-filter: blur(6px);
-    box-shadow: 0 0 22px -8px rgba(201, 165, 76, 0.6);
+    box-shadow: 0 0 22px -8px rgba(242, 197, 61, 0.6);
     transition: border-color var(--dur-2) var(--ease), box-shadow var(--dur-2) var(--ease), color var(--dur-2) var(--ease);
   }
   .orbita-no-nome {
@@ -119,10 +119,10 @@
   .orbita-no:hover .orbita-no-ponto,
   .orbita-no:focus-visible .orbita-no-ponto {
     border-color: var(--gold-2);
-    box-shadow: 0 0 30px -4px rgba(227, 198, 125, 0.75);
+    box-shadow: 0 0 30px -4px rgba(255, 216, 94, 0.75);
   }
   .orbita-no:focus-visible { outline: none; }
-  .orbita-no:focus-visible .orbita-no-ponto { box-shadow: var(--focus-ring), 0 0 30px -4px rgba(227, 198, 125, 0.75); }
+  .orbita-no:focus-visible .orbita-no-ponto { box-shadow: var(--focus-ring), 0 0 30px -4px rgba(255, 216, 94, 0.75); }
   .orbita-no.is-ativo .orbita-no-ponto {
     color: var(--bg-0);
     background: radial-gradient(circle at 30% 25%, #fff, var(--cyan) 70%);
@@ -137,7 +137,7 @@
   .orbita-no.tem-aviso:not(.is-ativo) .orbita-no-nome { color: var(--gold-2); font-weight: 600; }
   .orbita-avisos { display: grid; gap: var(--s2); }
   .orbita-avisos-lista { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--s2); }
-  .orbita-aviso { display: grid; gap: 2px; padding: var(--s2) var(--s3); border-left: 2px solid var(--gold-line); background: rgba(201, 165, 76, 0.07); border-radius: 4px; }
+  .orbita-aviso { display: grid; gap: 2px; padding: var(--s2) var(--s3); border-left: 2px solid var(--gold-line); background: rgba(242, 197, 61, 0.07); border-radius: 4px; }
   .orbita-aviso.is-grave { border-left-color: #e0735f; background: rgba(224, 115, 95, 0.09); }
   .orbita-aviso strong { font-size: var(--fs-sm); color: var(--text-0); font-weight: 600; }
   .orbita-aviso small, .orbita-aviso-mais { color: var(--text-2, var(--text-1)); font-size: var(--fs-xs); }
@@ -198,11 +198,11 @@
 
   @keyframes orbita-giro { to { rotate: 360deg; } }
   @keyframes orbita-pulso { 50% { box-shadow: 0 0 0 5px var(--cyan-dim), 0 0 30px -4px rgba(110, 200, 212, 0.8); } }
-  @keyframes orbita-aviso { 50% { box-shadow: 0 0 0 7px rgba(227, 198, 125, 0.22), 0 0 36px -2px rgba(227, 198, 125, 0.95); background: radial-gradient(circle at 30% 25%, rgba(227, 198, 125, 0.45), rgba(15, 17, 20, 0.78) 65%); } }
+  @keyframes orbita-aviso { 50% { box-shadow: 0 0 0 7px rgba(255, 216, 94, 0.22), 0 0 36px -2px rgba(255, 216, 94, 0.95); background: radial-gradient(circle at 30% 25%, rgba(255, 216, 94, 0.45), rgba(15, 17, 20, 0.78) 65%); } }
   @keyframes orbita-entrada { from { opacity: 0; translate: 0 8px; } }
 
   @media (prefers-reduced-motion: reduce) {
     .orbita-nucleo::before, .orbita-no.is-relacionado .orbita-no-ponto, .orbita-cartao { animation: none; }
-    .orbita-no.tem-aviso:not(.is-ativo) .orbita-no-ponto { animation: none; box-shadow: 0 0 0 5px rgba(227, 198, 125, 0.3), 0 0 30px -2px rgba(227, 198, 125, 0.9); }
+    .orbita-no.tem-aviso:not(.is-ativo) .orbita-no-ponto { animation: none; box-shadow: 0 0 0 5px rgba(255, 216, 94, 0.3), 0 0 30px -2px rgba(255, 216, 94, 0.9); }
   }
 }
