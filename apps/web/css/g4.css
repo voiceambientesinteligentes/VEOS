@@ -1,0 +1,114 @@
+/* VISUAL NO PADRAO DO G4 OS (06/11/2026, pedido do Fernando): fontes, cores, cantos, tamanhos e o desenho do painel
+   do aplicativo G4 OS que ele usa no computador, mantendo o FUNDO PRETO do VEOS. Valores lidos do proprio aplicativo
+   instalado (variaveis de tema); as fontes sao livres (Manrope, Geist, Geist Mono - licenca OFL) e ficam no proprio
+   site (CSP so aceita fontes do site). So aparencia: nenhuma tela ou funcao muda.
+   Para voltar ao visual anterior: tirar a linha do g4.css do index.html. */
+
+@font-face { font-family: "Manrope"; font-style: normal; font-weight: 200 800; font-display: swap; src: url("../fonts/manrope-latin.woff2") format("woff2-variations"), url("../fonts/manrope-latin.woff2") format("woff2"); }
+@font-face { font-family: "Geist"; font-style: normal; font-weight: 100 900; font-display: swap; src: url("../fonts/geist-latin.woff2") format("woff2-variations"), url("../fonts/geist-latin.woff2") format("woff2"); }
+@font-face { font-family: "Geist Mono"; font-style: normal; font-weight: 100 900; font-display: swap; src: url("../fonts/geist-mono-latin.woff2") format("woff2-variations"), url("../fonts/geist-mono-latin.woff2") format("woff2"); }
+
+:root {
+  /* texto e linhas do G4 (tema escuro): branco quente e linhas de 10% sobre o fundo */
+  --text-0: #e8e6e4;
+  --text-1: #c4c2c0;
+  --text-2: #939291;
+  --line: rgba(232, 230, 228, 0.10);
+  --line-2: rgba(232, 230, 228, 0.16);
+
+  /* superficies: fundo preto do VEOS; camadas so um pouco mais claras (como os "tints" do G4) */
+  --bg-0: #0a0b0d;
+  --bg-1: #0a0b0d;
+  --bg-2: #101113;
+  --bg-3: #171819;
+  --bg-4: #1e1f21;
+
+  /* destaque do G4 (tema escuro) no lugar do dourado */
+  --gold: #d1bea4;
+  --gold-2: #e2d4bf;
+  --gold-ink: #17130d;
+  --gold-dim: rgba(209, 190, 164, 0.12);
+  --gold-line: rgba(209, 190, 164, 0.35);
+
+  /* estados do G4 */
+  --ok: oklch(68% 0.14 155);
+  --warn: oklch(76% 0.13 65);
+  --risk: #c45a4a;
+
+  /* cantos: controle 8, cartao 12, composer 14, janela 16 */
+  --radius-s: 8px;
+  --radius: 12px;
+  --radius-l: 16px;
+
+  /* letras */
+  --font: "Manrope", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-display: "Geist", "Manrope", system-ui, -apple-system, sans-serif;
+  --mono: "Geist Mono", "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --fs-xs: 0.75rem;
+  --fs-s: 0.8125rem;
+  --fs-m: 0.875rem;
+  --fs-l: 1.125rem;
+  --fs-xl: 1.5rem;
+
+  --topbar-h: 52px;
+  --focus-ring: 0 0 0 2px var(--bg-0), 0 0 0 4px rgba(232, 230, 228, 0.28);
+}
+
+/* ---------------- Texto */
+body { font-family: var(--font); letter-spacing: 0; }
+.content { font-size: 0.9rem; line-height: 1.55; }
+h1, h2, h3, .topbar-title strong, .panel-head h2, .hj-card-topo h2 { font-family: var(--font-display); letter-spacing: -0.025em; }
+.hj-topo h1 { font-size: clamp(1.5rem, 1.3rem + 0.8vw, 1.75rem); letter-spacing: -0.025em; }
+.panel-head h2, .hj-card-topo h2 { font-size: 1.125rem; font-weight: 600; }
+.panel-head p, .field-hint, .content small { color: var(--text-2); }
+.table th { font-weight: 500; font-size: 0.75rem; letter-spacing: 0.02em; }
+code, pre, .num, .mono { font-family: var(--mono); }
+
+/* ---------------- Menu lateral: plano, mesma cor do fundo, so uma linha fina */
+.sidebar { background: var(--bg-0); border-right: 1px solid var(--line); }
+.brand-name { font-family: var(--font-display); letter-spacing: 0.24em; font-weight: 600; }
+.nav-area { font-size: 0.875rem; border-radius: 8px; padding: 8px 12px; color: var(--text-1); }
+.nav-area:hover { background: rgba(232, 230, 228, 0.045); color: var(--text-0); }
+.nav-area[aria-current="page"] { background: rgba(232, 230, 228, 0.075); color: var(--text-0); }
+.nav-area[aria-current="page"] .ico { color: var(--gold); }
+.nav-area[aria-current="page"]::before { background: var(--gold); }
+.novo-botao { border-radius: 8px; font-size: 0.875rem; padding: 8px 14px; }
+.novo-menu { background: var(--bg-3); border-color: var(--line-2); border-radius: 12px; }
+.novo-item { border-radius: 8px; }
+.sidebar-foot { border-top-color: var(--line); }
+
+/* ---------------- Area principal: painel solto com cantos de 12px, como no G4 */
+.app { background: var(--bg-0); }
+@media (min-width: 961px) {
+  .main { margin: 4px 4px 4px 0; border-radius: 12px; box-shadow: 0 0 0 1px var(--line); background: var(--bg-0); min-height: calc(100vh - 8px); }
+  .topbar { border-radius: 12px 12px 0 0; }
+}
+.topbar, .subnav { background: rgba(10, 11, 13, 0.9); border-bottom-color: var(--line); }
+.topbar .btn { min-height: 28px; font-size: 0.78rem; }
+.subnav-aba { font-size: 0.8125rem; }
+.subnav-aba[aria-current="page"] { border-bottom-color: var(--text-0); }
+
+/* ---------------- Paineis e cartoes: planos, linha fina, cantos de 12px */
+.panel, .hj-card, .hj-atalho, .op-grupo { background: rgba(232, 230, 228, 0.025); border: 1px solid var(--line); border-radius: 12px; }
+.panel .panel { background: rgba(232, 230, 228, 0.03); border-radius: 8px; }
+.hj-atalho:hover { background: rgba(232, 230, 228, 0.05); border-color: var(--line-2); }
+.hj-num { background: rgba(232, 230, 228, 0.03); border-radius: 8px; }
+.hj-num:hover { background: rgba(232, 230, 228, 0.06); }
+.hj-atalho-mais { border-radius: 8px; }
+.notice { border-radius: 8px; }
+.op-barra { background: rgba(232, 230, 228, 0.08); }
+
+/* ---------------- Botoes e campos: 8px, 13.5px, foco discreto */
+.btn { border-radius: 8px; font-size: 0.84rem; font-weight: 500; border-color: var(--line-2); background: transparent; }
+.btn:hover:not(:disabled) { background: rgba(232, 230, 228, 0.06); border-color: var(--line-2); }
+.btn-primary { background: var(--gold); border-color: var(--gold); color: var(--gold-ink); }
+.btn-primary:hover:not(:disabled) { background: var(--gold-2); border-color: var(--gold-2); }
+.btn-ghost { border-color: transparent; }
+input, select, textarea { border-radius: 8px; border-color: rgba(232, 230, 228, 0.12); font-family: var(--font); }
+input:focus, select:focus, textarea:focus { outline: none; border-color: rgba(232, 230, 228, 0.35); box-shadow: 0 0 0 3px rgba(232, 230, 228, 0.08); }
+
+/* ---------------- Celular */
+@media (max-width: 960px) {
+  .barra-celular { background: rgba(10, 11, 13, 0.96); border-top-color: var(--line); }
+  .bc-item[aria-current="page"] { color: var(--gold); }
+}
