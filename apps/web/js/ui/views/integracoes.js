@@ -18,11 +18,90 @@ const USOS = [
   ["Próximos passos", "alertas de fatura vencida, orçamento sem resposta, negócio parado e projeto parado."],
 ];
 
+const COMANDO_ENTREVISTA = "Vamos fazer a entrevista guiada da VOICE no VEOS. Use o conector VEOS Entrevista: chame iniciar_entrevista, faça uma pergunta por vez em português simples, grave cada resposta e, no fim, gere o arquivo de respostas para eu baixar.";
+
+function baixar(nome, conteudo, tipo) {
+  const url = URL.createObjectURL(new Blob([conteudo], { type: `${tipo};charset=utf-8` }));
+  const a = h("a", { href: url, download: nome });
+  document.body.append(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 2000);
+}
+
+function copiavel(texto, rotulo = "Copiar") {
+  const b = h("button", { class: "btn btn-ghost", type: "button" }, rotulo);
+  b.addEventListener("click", async () => { try { await navigator.clipboard.writeText(texto); b.textContent = "Copiado"; } catch { b.textContent = "Selecione e copie"; } });
+  return b;
+}
+
+// Entrevista guiada da empresa: link do MCP para o ChatGPT conduzir as perguntas; o arquivo final volta para o Claude Code.
+function painelEntrevista(eu) {
+  const direcao = eu?.papel === "direcao";
+  const corpo = h("div", { class: "stack" });
+  const saida = h("div", { role: "status" });
+  const caixa = panel({ title: "Entrevista guiada da empresa (ChatGPT)", subtitle: "Você conecta este link no ChatGPT, aperta iniciar e responde o que puder. No fim sai um arquivo com as respostas: você envia ao Claude Code para preencher o VEOS." }, corpo, saida);
+
+  async function desenhar() {
+    clear(corpo);
+    let est;
+    try { est = await api.entrevista(); } catch (e) { corpo.append(errorNotice(e.message)); return; }
+    const p = est.progresso, l = est.link;
+    const criar = h("button", { class: `btn ${l ? "btn-ghost" : "btn-primary"}`, type: "button", disabled: !direcao }, l ? "Criar link novo (cancela o atual)" : "Criar link do MCP");
+    criar.addEventListener("click", async () => {
+      if (l && !confirm("Criar um link novo? O link atual para de funcionar.")) return;
+      criar.disabled = true;
+      clear(saida);
+      try {
+        const r = await api.entrevistaLink();
+        await desenhar();
+        saida.append(
+          h("p", { class: "notice notice-warn" }, r.aviso),
+          h("p", null, h("strong", null, "1. Link do MCP"), " (cole no ChatGPT):"),
+          h("pre", { class: "rascunho-corpo mfa-chave" }, r.url),
+          h("div", { class: "row" }, copiavel(r.url, "Copiar link")),
+          h("p", null, h("strong", null, "2. No ChatGPT"), ": Configurações → Conectores (ou Aplicativos) → Avançado → ative o Modo desenvolvedor → Criar. Nome: VEOS Entrevista. URL do servidor MCP: o link acima. Autenticação: nenhuma. Os nomes dos menus mudam de tempos em tempos e conectores próprios dependem do seu plano do ChatGPT."),
+          h("p", null, h("strong", null, "3. Comando para iniciar"), " (cole numa conversa nova com o conector ligado):"),
+          h("pre", { class: "rascunho-corpo" }, COMANDO_ENTREVISTA),
+          h("div", { class: "row" }, copiavel(COMANDO_ENTREVISTA, "Copiar comando")));
+      } catch (e) { saida.append(errorNotice(e.message)); criar.disabled = !direcao; }
+    });
+    const revogar = h("button", { class: "btn btn-ghost", type: "button", disabled: !direcao || !l }, "Revogar link");
+    revogar.addEventListener("click", async () => {
+      if (!confirm("Revogar o link? O ChatGPT deixa de conseguir gravar respostas.")) return;
+      try { await api.entrevistaRevogar(); clear(saida); await desenhar(); } catch (e) { saida.append(errorNotice(e.message)); }
+    });
+    const arquivo = async (tipo) => {
+      try {
+        const a = await api.entrevistaArquivo();
+        const dia = new Date().toISOString().slice(0, 10);
+        if (tipo === "md") baixar(`entrevista-voice-${dia}.md`, a.markdown, "text/markdown");
+        else baixar(`entrevista-voice-${dia}.json`, JSON.stringify(a.json, null, 2), "application/json");
+      } catch (e) { clear(saida); saida.append(errorNotice(e.message)); }
+    };
+    const md = h("button", { class: "btn btn-ghost", type: "button", disabled: !direcao || !p.respondidas }, "Baixar respostas (.md)");
+    const js = h("button", { class: "btn btn-ghost", type: "button", disabled: !direcao || !p.respondidas }, "Baixar respostas (.json)");
+    md.addEventListener("click", () => arquivo("md"));
+    js.addEventListener("click", () => arquivo("json"));
+    corpo.append(
+      h("div", { class: "row" },
+        l ? stamp("Link ativo", "ok") : stamp("Sem link ativo", "neutral"),
+        stamp(`${p.respondidas} de ${p.total} perguntas (${p.porcentagem}%)`, p.respondidas ? "live" : "neutral"),
+        p.nao_sei ? stamp(`${p.nao_sei} "não sei"`, "warn") : null),
+      l ? h("p", { class: "field-hint" }, `Vale até ${formatDateTime(l.expira_em)} · ${l.usos} chamada(s)${l.ultimo_uso ? ` · último uso ${formatDateTime(l.ultimo_uso)}` : " · ainda não usado"}.`) : h("p", null, direcao ? "Crie o link, conecte no ChatGPT e comece. Você pode parar e continuar depois: as respostas ficam salvas." : "Só a direção cria o link da entrevista."),
+      h("div", { class: "row" }, criar, revogar, md, js),
+      method("Segurança", "O link só permite ao ChatGPT ler as perguntas e gravar as respostas da entrevista; ele não enxerga nenhum outro dado do VEOS. Só o código do link fica guardado (não dá para recuperá-lo), vale 21 dias e você revoga quando quiser. Não responda senhas, chaves nem número de cartão: o servidor recusa respostas que parecem conter isso.",
+        "Lembre-se de que o que você escreve no ChatGPT também fica com a OpenAI. Responda só o que a empresa aceita compartilhar."));
+  }
+  desenhar();
+  return caixa;
+}
+
 export async function telaIntegracoes(root, eu) {
   const retorno = new URLSearchParams(location.hash.split("?")[1] ?? "").get("zoho");
   if (retorno) history.replaceState(null, "", "#/integracoes");
   const conteudo = h("div", { class: "stack" });
-  root.append(conteudo);
+  root.append(conteudo, painelEntrevista(eu));
 
   async function desenhar(aviso) {
     const st = await api.zohoStatus();

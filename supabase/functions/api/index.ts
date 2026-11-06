@@ -27,6 +27,7 @@ import { rotearBiblioteca } from "./biblioteca.ts";
 import { rotearSistema } from "./sistema.ts";
 import { rotearNotificacoes } from "./notificacoes.ts";
 import { rotearConta } from "./conta.ts";
+import { rotearEntrevista } from "./entrevista.ts";
 import { rotearProdutos } from "./produtos.ts";
 import { rotearDiretores } from "./diretores.ts";
 import { rotearCfo } from "./cfo.ts";
@@ -92,6 +93,7 @@ async function rotear(req: Request, rota: string) {
   if (partes[0] === "biblioteca") return await rotearBiblioteca(req, partes, eu);
   if (partes[0] === "sistema") return await rotearSistema(req, partes, eu);
   if (partes[0] === "conta") return await rotearConta(req, partes, eu);
+  if (partes[0] === "entrevista") return await rotearEntrevista(req, partes, eu);
   if (partes[0] === "produtos") return await rotearProdutos(req, partes, eu);
   if (partes[0] === "diretores") return await rotearDiretores(req, partes, eu);
   if (partes[0] === "cfo") return await rotearCfo(req, partes, eu);
