@@ -8,7 +8,7 @@ import { NOVOS } from "../../data/navegacao.js";
 import { formatBRL } from "../../domain/format.js";
 import { clear, errorNotice, h } from "../dom.js";
 import { renderIA } from "./ia.js";
-import { renderOrbita } from "./orbita.js";
+import { atividadeDoRadar, renderOrbita } from "./orbita.js";
 
 const brl = (v) => formatBRL(String(Number(v ?? 0).toFixed(2)));
 const SEV = { CRITICO: 0, ALTO: 1, MEDIO: 2, INFO: 3 };
@@ -57,11 +57,7 @@ export async function telaHoje(root, eu = {}, signal = new AbortController().sig
   const [radar, orcs, peds, cad] = await Promise.all([tentar(() => api.radar()), tentar(() => api.comercialOrcamentos()), tentar(() => api.fluxoPedidos()), tentar(() => api.setores())]);
   // orbita: os setores com os alertas e tarefas do Radar (mesma regra da tela Orbita)
   if (cad && !signal.aborted) {
-    const atividade = Object.fromEntries(cad.setores.map((s) => [s.id, {
-      alertas: (radar?.alertas ?? []).filter((a) => a.setor_id === s.id).length,
-      tarefas: (radar?.tarefas ?? []).filter((x) => x.setor_id === s.id).length,
-      acessivel: (radar?.setores ?? []).includes(s.id),
-    }]));
+    const atividade = atividadeDoRadar(cad.setores, radar);
     renderOrbita(orbitaBox, { setores: cad.setores, diretores: cad.diretores, atividade, signal });
   } else clear(orbitaBox).append(h("p", { class: "muted" }, "Órbita indisponível agora."));
   // prioridades

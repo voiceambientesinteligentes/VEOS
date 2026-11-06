@@ -7,7 +7,7 @@ import { clear, errorNotice, field, h, panel, stamp, table, testTag } from "./ui
 import { enableMotion } from "./ui/motion.js";
 import { setupDrawer } from "./ui/shell.js";
 import { renderVigia } from "./ui/views/cfo_vigia.js";
-import { renderOrbita } from "./ui/views/orbita.js";
+import { atividadeDoRadar, renderOrbita } from "./ui/views/orbita.js";
 import { renderIA } from "./ui/views/ia.js";
 import { telaProjeto, telaProjetos } from "./ui/views/projetos.js";
 import { telaSetor } from "./ui/views/setor.js";
@@ -73,11 +73,7 @@ let atual = null;
 // ---------------------------------------------------------------- telas
 async function telaOrbita(root, signal) {
   const [{ setores, diretores }, radar] = await Promise.all([api.setores(), api.radar()]);
-  const atividade = Object.fromEntries(setores.map((s) => [s.id, {
-    alertas: radar.alertas.filter((a) => a.setor_id === s.id).length,
-    tarefas: radar.tarefas.filter((t) => t.setor_id === s.id).length,
-    acessivel: radar.setores.includes(s.id),
-  }]));
+  const atividade = atividadeDoRadar(setores, radar);
   renderOrbita(root, { setores, diretores, atividade, signal });
 }
 

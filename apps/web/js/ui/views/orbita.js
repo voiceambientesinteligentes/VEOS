@@ -4,6 +4,9 @@
 // Canvas para as celulas; botoes reais para os setores (teclado e leitor de tela).
 // Posicoes via CSSOM (el.style), compativel com a CSP sem estilo embutido.
 import { clear, h } from "../dom.js";
+import { atividadeDoRadar } from "../../domain/orbita_avisos.js";
+
+export { atividadeDoRadar };
 
 // Fluxos entre setores (quem entrega trabalho a quem). Direcao e Secretaria
 // coordenam todos.
@@ -26,16 +29,16 @@ const LIGACAO = 46;
 const TAU = Math.PI * 2;
 
 const reduzido = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
 export function renderOrbita(root, { setores, diretores, atividade = {}, signal }) {
   const porId = Object.fromEntries(setores.map((s) => [s.id, s]));
   const diretorDe = Object.fromEntries(diretores.map((d) => [d.setor_id, d]));
   const lista = ORDEM.filter((id) => porId[id]).concat(setores.map((s) => s.id).filter((id) => !ORDEM.includes(id)));
   const status = (id) => {
     const a = atividade[id];
-    if (!a || !a.acessivel) return { rotulo: "Acesso restrito", tom: "neutral", energia: 4, texto: "Dados sensíveis do setor" };
+    if (!a || !a.acessivel) return { pendencias: [], rotulo: "Acesso restrito", tom: "neutral", energia: 4, texto: "Dados sensíveis do setor" };
     const tom = a.alertas ? "warn" : "live";
-    return { rotulo: a.alertas ? "Pede atenção" : "Vigiando", tom, energia: Math.min(100, 12 + a.alertas * 9 + a.tarefas * 3), texto: `${a.alertas} alertas · ${a.tarefas} tarefas` };
+    return {
+      pendencias: a.pendencias ?? [], rotulo: a.alertas ? "Pede atenção" : "Vigiando", tom, energia: Math.min(100, 12 + a.alertas * 9 + a.tarefas * 3), texto: `${a.alertas} alertas · ${a.tarefas} tarefas` };
   };
 
   // ------------------------------------------------ estrutura
@@ -43,7 +46,8 @@ export function renderOrbita(root, { setores, diretores, atividade = {}, signal 
   const nucleo = h("div", { class: "orbita-nucleo", "aria-hidden": "true" }, h("span", { class: "orbita-nucleo-nome" }, "VEOS"), h("span", { class: "orbita-nucleo-sub" }, "VOICE 360"));
   const nos = lista.map((id) => {
     const s = porId[id];
-    const b = h("button", { class: "orbita-no", type: "button", "aria-pressed": "false", "aria-label": `${s.sigla} — ${s.nome}` },
+    const pend = status(id).pendencias.length;
+    const b = h("button", { class: `orbita-no${pend ? " tem-aviso" : ""}`, type: "button", "aria-pressed": "false", "aria-label": `${s.sigla} — ${s.nome}${pend ? ` — ${pend} ${pend === 1 ? "aviso" : "avisos"} pendentes` : ""}` },
       h("span", { class: "orbita-no-ponto" }, s.sigla),
       h("span", { class: "orbita-no-nome" }, s.nome));
     b.addEventListener("click", (e) => {
@@ -136,6 +140,12 @@ export function renderOrbita(root, { setores, diretores, atividade = {}, signal 
       h("h2", { class: "orbita-cartao-titulo" }, s.nome),
       h("p", { class: "orbita-cartao-diretor" }, d ? d.nome : "Diretor a definir"),
       h("p", { class: "orbita-cartao-texto" }, s.descricao),
+      st.pendencias.length ? h("div", { class: "orbita-avisos" },
+        h("span", { class: "orbita-conexoes-rotulo" }, `O que precisa ser feito · responsável: ${d ? d.nome : "a definir"}`),
+        h("ul", { class: "orbita-avisos-lista" }, st.pendencias.slice(0, 5).map((p) =>
+          h("li", { class: `orbita-aviso${p.sev === "CRITICO" || p.sev === "ALTO" ? " is-grave" : ""}` },
+            h("strong", null, p.titulo), p.detalhe ? h("small", null, p.detalhe) : null))),
+        st.pendencias.length > 5 ? h("small", { class: "orbita-aviso-mais" }, `e mais ${st.pendencias.length - 5} no setor`) : null) : null,
       h("div", { class: "orbita-energia" },
         h("div", { class: "orbita-energia-rotulo" }, h("span", null, "Atividade"), h("span", { class: "num" }, st.texto)),
         h("div", { class: "orbita-energia-trilho" }, barra)),
