@@ -2,6 +2,11 @@
 
 Atualize este arquivo ao fim de cada sessão: última ação, resultado e próximo passo.
 
+## 09/11/2026 — Fim de sessão (estado e pendências)
+- Dourado ficou vivo (quase neon): `--gold #f2c53d`, `--gold-2 #ffd85e` em `g4.css` (substitui o `#d1bea4` citado abaixo). Publicado; se o navegador mostrar o tom antigo: Ctrl+F5/janela anônima; se persistir, subir a versão do cache em `apps/web/sw.js` (`veos-v1`).
+- Regra do Fernando: **não rodar testes ao editar**; só quando ele pedir, cobrindo tudo acumulado. NÃO testado ainda: piscar da Órbita, entrevista ponta a ponta no ChatGPT (conector com "Sem autenticação"), visual G4 no menu/painel, todas as telas.
+- Falha no GitHub Actions "testes" do commit 644c682 (16:56 de 06/11) e a do 58e7b88 (online, "API (usuarios TESTE)") não investigadas; verificar quando ele pedir "testa".
+
 ## 06/11/2026 — Visual no padrão do G4 OS (só aparência)
 - Pedido do Fernando: replicar o design do aplicativo G4 OS (instalado no computador dele) mantendo o fundo preto do VEOS. Valores lidos das variáveis de tema do app instalado (somente leitura, nada copiado além de números/nomes de fontes).
 - `apps/web/css/g4.css` (carregado depois do `tema.css`): fontes **Manrope** (texto), **Geist** (títulos) e **Geist Mono** (números/código), hospedadas em `apps/web/fonts/` (licença OFL; a CSP só aceita fontes do próprio site); texto `#e8e6e4`, linhas a 10%, destaque `#d1bea4` no lugar do dourado, estados do G4, cantos 8/12/16 px, corpo 14,4 px (o G4 usa 13,5; mantido maior pela leitura), menu lateral plano, painel principal solto com cantos de 12 px, cartões planos com linha fina.
