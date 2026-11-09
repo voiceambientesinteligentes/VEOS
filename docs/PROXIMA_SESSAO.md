@@ -1,4 +1,4 @@
-# Próxima sessão — ponto de partida (atualizado em 05/11/2026, fim do dia)
+# Próxima sessão — ponto de partida (atualizado em 09/11/2026)
 
 Este arquivo trata só do **PROGRAMA** (o VEOS: telas, servidor, banco, IA, integrações).
 O que é operação da empresa (decidir metas, RT, alíquotas, preencher dados reais, ligar para clientes)
@@ -53,6 +53,9 @@ sozinho no GitHub Pages a cada push na main). Banco e servidor: Supabase, projet
 ## O que já existe (resumo de 04/11)
 Setores vivos (9) com registros, regras vivas e Radar · Estrutura da empresa (organograma, agenda de cada cargo, atividade → ferramenta) · Operação comercial do zero (clientes, montador de orçamento com preço pela Política V1, PDF, enviado/aceito/recusado, pedido gerado do orçamento, retomada dos orçamentos antigos do Zoho, contato rápido, prospecção, calendário do Instagram, Começar a operar) · Pedidos → estoque → parcelas → NF → recebimento, compras e contas a pagar · Financeiro do CFO (caixa por extrato OFX, 13 semanas, DRE, indicadores, preço dos produtos, formulário com valores estimados marcados) · Biblioteca e governança · Zoho espelhado e editável · Diretores com IA em formato de conversa (continuação no mesmo fio, conferência de valores e percentuais) · IA VEOS por voz/texto ligada aos diretores e chat flutuante com avisos · Novo design (menu por áreas, Hoje, celular) · Usuários, MFA, LGPD, backup, exportação, MCP `veos` (24 ferramentas), PWA.
 
+## Estado em 09/11 (tarde)
+Tudo do backlog abaixo que não depende do Fernando está feito e testado (ver CONTINUIDADE de 09/11). Restam só: P0-3 (SMTP, acesso dele), P1-8 (CNPJ, aguarda o OK), P2-14 (decidir os 37 vínculos), P2-15 (desligar o Zoho, só se ele pedir), P2-16 (Instagram/Meta, conta). NÃO lembrar o Fernando de revogar/trocar chaves (resolvido).
+
 ## O que falta no PROGRAMA (backlog técnico, em ordem)
 
 ### P0 — corrigir/garantir antes de crescer
@@ -81,10 +84,8 @@ Setores vivos (9) com registros, regras vivas e Radar · Estrutura da empresa (o
 19. **FEITO em 05/11 (ia.css removido; textos TESTE do usuário real conferidos)** — Limpeza: estilos antigos da tela IA (`apps/web/css/ia.css`, classes `.ia-*` não usadas), tela "Comando por voz" antiga e textos que ainda falam em "TESTE" para o usuário real.
 
 ## Depende do Fernando para o PROGRAMA funcionar por completo (não é operação da empresa)
-- **Revogar a chave da Anthropic exposta no site antigo da VOICE** e trocar a senha da área interna (BIB-0104, CIO-13). Urgente.
 - **Entrar com o login real uma vez**: MFA da direção, Validação guiada e um orçamento de verdade (os testes usaram robôs).
 - **Reiniciar o VS Code e configurar o MCP `veos`** (Minha conta → Acesso do Claude Code → `node scripts/mcp/veos-mcp.mjs --configurar <código>`).
-- **Trocar as chaves de IA** que apareceram em conversas (Gemini, Mistral, OpenRouter, Groq) direto nos segredos do Supabase.
 - OK para o item 8 (CNPJ), acesso para o SMTP (item 3), e, quando quiser, domínio próprio (CNAME + ORIGENS da `api` + Auth).
 
 ## Limites do ambiente

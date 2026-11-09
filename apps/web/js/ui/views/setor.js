@@ -109,6 +109,9 @@ export async function telaSetor(root, id, signal, aba = "painel") {
     const area = h("div");
     const desenhar = (calc) => clear(area).append(table({ caption: "Indicadores", head: ["Indicador", "Fórmula", "Valor atual", "Meta", "Frequência", "Origem"], rows: montar(calc) }));
     desenhar(calculo);
+    if (id === "marketing") {
+      api.setor("vendas").then((v) => { if (!signal.aborted) desenhar(calcularIndicadoresSetor(id, dados.registros, { hoje, vendas: v.registros })); }).catch(() => {});
+    }
     if (id === "posvenda") {
       api.contratosSuporte().then((c) => { if (!signal.aborted) desenhar(calcularIndicadoresSetor(id, dados.registros, { hoje, mrr: c.indicadores.mrr, contratosAtivos: c.indicadores.contratos_ativos })); }).catch(() => {});
     }

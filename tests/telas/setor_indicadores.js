@@ -29,7 +29,7 @@ rodar(async (v) => {
   const t = v.textContent;
   const exigir = (...xs) => { for (const x of xs) if (!t.includes(x)) throw new Error(`faltou: ${x}`); };
   exigir("Valor atual", "Indicadores");
-  if (caso === "marketing") exigir("20 lead(s) em 90 dias", "20% (4 de 20)", "R$ 100,00 por lead", "LACUNA: exige ligar a origem");
-  if (caso === "posvenda") exigir("NPS 0 (1 promotor(es), 1 detrator(es), 2 resposta(s))", "amostra pequena", "R$ 2.400,00 por mês (2 contrato(s) ativo(s))", "LACUNA: o chamado guarda só a data");
+  if (caso === "marketing") exigir("20 lead(s) em 90 dias", "20% (4 de 20)", "R$ 100,00 por lead", "LACUNA: nenhum evento ou campanha com escrit");
+  if (caso === "posvenda") exigir("NPS 0 (1 promotor(es), 1 detrator(es), 2 resposta(s))", "amostra pequena", "R$ 2.400,00 por mês (2 contrato(s) ativo(s))", "LACUNA: nenhum chamado fechado nos últimos 90 dias");
   if (caso === "vendas") exigir("calculado quando houver dado");
 });

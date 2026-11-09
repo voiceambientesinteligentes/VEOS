@@ -3250,6 +3250,12 @@ export const CATALOGO = [
       "obrigatorio": true
      },
      {
+      "id": "campanha_origem",
+      "rotulo": "Campanha, evento ou conteúdo de Marketing de origem (se houve)",
+      "tipo": "texto",
+      "obrigatorio": false
+     },
+     {
       "id": "parceiro_indicador",
       "rotulo": "Parceiro indicador",
       "tipo": "texto",
@@ -3352,6 +3358,12 @@ export const CATALOGO = [
      {
       "id": "parceiro_indicador",
       "rotulo": "Arquiteto / parceiro envolvido",
+      "tipo": "texto",
+      "obrigatorio": false
+     },
+     {
+      "id": "campanha_origem",
+      "rotulo": "Campanha, evento ou conteúdo de Marketing de origem (se houve)",
       "tipo": "texto",
       "obrigatorio": false
      },
@@ -4841,6 +4853,12 @@ export const CATALOGO = [
       "obrigatorio": false
      },
      {
+      "id": "escritorios_alcancados",
+      "rotulo": "Escritórios que retornaram (visita ao showroom ou resposta ao material técnico)",
+      "tipo": "numero",
+      "obrigatorio": false
+     },
+     {
       "id": "aprendizados",
       "rotulo": "Aprendizados",
       "tipo": "texto_longo",
@@ -5092,6 +5110,12 @@ export const CATALOGO = [
      {
       "id": "presentes",
       "rotulo": "Presentes",
+      "tipo": "numero",
+      "obrigatorio": false
+     },
+     {
+      "id": "escritorios_presentes",
+      "rotulo": "Escritórios de arquitetura/design presentes (distintos)",
       "tipo": "numero",
       "obrigatorio": false
      },
@@ -9122,6 +9146,12 @@ export const CATALOGO = [
       "obrigatorio": false
      },
      {
+      "id": "horas_primeira_resposta",
+      "rotulo": "Horas até a primeira resposta (desde a abertura)",
+      "tipo": "numero",
+      "obrigatorio": false
+     },
+     {
       "id": "causa_raiz",
       "rotulo": "Causa raiz",
       "tipo": "opcao",
@@ -9142,6 +9172,28 @@ export const CATALOGO = [
       "id": "solucao",
       "rotulo": "Solução aplicada",
       "tipo": "texto_longo",
+      "obrigatorio": false
+     },
+     {
+      "id": "data_resolucao",
+      "rotulo": "Data em que foi resolvido",
+      "tipo": "data",
+      "obrigatorio": false
+     },
+     {
+      "id": "atendimento",
+      "rotulo": "Como foi resolvido",
+      "tipo": "opcao",
+      "opcoes": [
+       "remoto",
+       "com_visita"
+      ],
+      "obrigatorio": false
+     },
+     {
+      "id": "custo_atendimento",
+      "rotulo": "Custo real do atendimento (peças, deslocamento, horas)",
+      "tipo": "dinheiro",
       "obrigatorio": false
      },
      {
@@ -9238,6 +9290,18 @@ export const CATALOGO = [
       "id": "data_oferta_continuidade",
       "rotulo": "Data da oferta de continuidade/renovação",
       "tipo": "data",
+      "obrigatorio": false
+     },
+     {
+      "id": "resultado_continuidade",
+      "rotulo": "Resultado da oferta de continuidade",
+      "tipo": "opcao",
+      "opcoes": [
+       "renovou",
+       "converteu_em_contrato",
+       "nao_renovou",
+       "em_negociacao"
+      ],
       "obrigatorio": false
      }
     ]

@@ -3,6 +3,11 @@
 Base: Plano Mestre V1 (30/09/2026), P01–P15. Status: NÃO INICIADA · EM EXECUÇÃO · BLOQUEADA ·
 EM VALIDAÇÃO · CONCLUÍDA. Sem percentual global.
 
+> **Aviso (09/11/2026):** a tabela abaixo é o plano original de 30/09 e **não reflete o estado atual**. Desde então o VEOS foi
+> construído online (Supabase + GitHub Pages) sem seguir a ordem P04→P15: setores vivos, API, MCP, IA dos diretores, financeiro,
+> operação comercial etc. O estado real, com evidência de teste, está em `ESTADO_ATUAL.md`; o que falta está em `PROXIMA_SESSAO.md`.
+> Os status abaixo ficam como foram escritos para não afirmar "concluída" sem a evidência da etapa original (ex.: P14 exige ordem via MCP com o PC desligado, demonstração ainda não registrada).
+
 | Etapa | Entrega verificável | Depende de | Status |
 |---|---|---|---|
 | P01 Arquitetura e decisões | `docs/` deste repositório | — | CONCLUÍDA (30/09) |

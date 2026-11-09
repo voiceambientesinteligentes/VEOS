@@ -34,6 +34,25 @@ export function manualDiretor({ setor, pedido }) {
 const obj = (props, req = []) => ({ type: "object", properties: props, required: req, additionalProperties: false });
 const str = (description, extra = {}) => ({ type: "string", description, ...extra });
 
+// Texto devolvido ao Claude: no maximo 60 mil caracteres e SEMPRE JSON valido. Se passar, corta as maiores listas
+// (nao o texto no meio) e avisa em "truncado" quantos itens existem e quantos foram mostrados.
+const LIMITE_TEXTO = 60000;
+export function textoMcp(dados) {
+  let s = JSON.stringify(dados, null, 1);
+  if (s.length <= LIMITE_TEXTO || dados === null || typeof dados !== "object") return s.slice(0, LIMITE_TEXTO);
+  const copia = JSON.parse(s);
+  const truncado = {};
+  for (let volta = 0; volta < 40 && s.length > LIMITE_TEXTO; volta++) {
+    const listas = Object.entries(copia).filter(([, v]) => Array.isArray(v) && v.length > 1).sort((a, b) => JSON.stringify(b[1]).length - JSON.stringify(a[1]).length);
+    if (!listas.length) break;
+    const [k, v] = listas[0];
+    truncado[k] = { total: truncado[k]?.total ?? v.length, mostrados: Math.ceil(v.length / 2) };
+    copia[k] = v.slice(0, truncado[k].mostrados);
+    s = JSON.stringify({ ...copia, truncado }, null, 1);
+  }
+  return s.length <= LIMITE_TEXTO ? s : s.slice(0, LIMITE_TEXTO);
+}
+
 export const FERRAMENTAS = [
   { name: "veos_manual_diretor", description: "Manual de atuação do diretor de um setor (profissional sênior: competências, métodos, procedimentos passo a passo, indicadores, erros a evitar, fontes). Use ANTES de agir como diretor: com 'pedido', devolve os procedimentos mais próximos do que foi pedido.",
     inputSchema: obj({ setor: str("setor", { enum: SETORES }), pedido: str("o que o fundador pediu (opcional)") }, ["setor"]), local: manualDiretor },
@@ -110,10 +129,10 @@ export async function responder(msg, chamar) {
       const faltando = (f.inputSchema.required ?? []).filter((k) => args[k] === undefined || args[k] === "");
       if (faltando.length) return ok({ content: [{ type: "text", text: `Faltou: ${faltando.join(", ")}` }], isError: true });
       try {
-        if (f.local) return ok({ content: [{ type: "text", text: JSON.stringify(f.local(args), null, 1).slice(0, 60000) }] });
+        if (f.local) return ok({ content: [{ type: "text", text: textoMcp(f.local(args)) }] });
         const [metodo, rota, corpo] = f.rota(args);
         const dados = await chamar(metodo, rota, corpo);
-        return ok({ content: [{ type: "text", text: JSON.stringify(dados, null, 1).slice(0, 60000) }] });
+        return ok({ content: [{ type: "text", text: textoMcp(dados) }] });
       } catch (e) {
         return ok({ content: [{ type: "text", text: `Erro do VEOS: ${e.message}` }], isError: true });
       }

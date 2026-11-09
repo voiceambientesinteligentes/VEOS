@@ -518,6 +518,12 @@
           "obrigatorio": true
         },
         {
+          "id": "campanha_origem",
+          "rotulo": "Campanha, evento ou conteúdo de Marketing de origem (se houve)",
+          "tipo": "texto",
+          "obrigatorio": false
+        },
+        {
           "id": "parceiro_indicador",
           "rotulo": "Parceiro indicador",
           "tipo": "texto",
@@ -620,6 +626,12 @@
         {
           "id": "parceiro_indicador",
           "rotulo": "Arquiteto / parceiro envolvido",
+          "tipo": "texto",
+          "obrigatorio": false
+        },
+        {
+          "id": "campanha_origem",
+          "rotulo": "Campanha, evento ou conteúdo de Marketing de origem (se houve)",
           "tipo": "texto",
           "obrigatorio": false
         },

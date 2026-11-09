@@ -2,6 +2,14 @@
 
 Atualize este arquivo ao fim de cada sessão: última ação, resultado e próximo passo.
 
+## 09/11/2026 (tarde) — pendências do programa fechadas
+- Fernando pediu "tudo que não depende de mim, 100%" (isto vale como pedido de testar o acumulado).
+- **Indicadores**: novos campos nos catálogos (chamado: horas até a 1ª resposta, data resolvida, remoto/com visita, custo do atendimento; contrato de suporte: resultado da oferta de continuidade; evento/campanha: escritórios presentes/alcançados; lead e oportunidade: campanha de origem). Agora calculados: SLA de solução, tempo de 1ª resposta, resolução remota, custo de garantia (valor; o % sobre a receita do projeto segue LACUNA por falta do vínculo chamado→projeto), taxa de renovação, receita influenciada (oportunidades ganhas com origem de Marketing) e escritórios engajados (soma por evento/campanha). Sem dado continua LACUNA. Os registros antigos não têm os campos: os indicadores só ficam preenchidos conforme a equipe passa a registrar.
+- **Bugs achados nos testes e corrigidos**: (1) `/sistema/saude` dava 502: o histórico do pg_cron nunca era limpo (44 mil linhas, 74 MB); migration `20261109100000_limpeza_cron.sql` apaga o que passa de 3 dias e agenda limpeza diária; (2) MCP cortava respostas grandes no meio do JSON; agora corta as maiores listas e avisa em `truncado`.
+- **Entrevista guiada**: servidor testado de ponta a ponta (`tests/online/e2e_entrevista.mjs`, 14 verificações, entra no CI; usa link de teste próprio e apaga o que grava). Falta só conectar no ChatGPT de verdade.
+- Cache do site subido para `veos-v2` (dourado novo). Pendências do site: chaves marcadas como feitas.
+- As 2 falhas do CI eram o `e2e_sistema` (502 por lentidão do pg_cron) e, depois, o MCP; ambos corrigidos.
+
 ## 09/11/2026 — Fim de sessão (estado e pendências)
 - Dourado ficou vivo (quase neon): `--gold #f2c53d`, `--gold-2 #ffd85e` em `g4.css` (substitui o `#d1bea4` citado abaixo). Publicado; se o navegador mostrar o tom antigo: Ctrl+F5/janela anônima; se persistir, subir a versão do cache em `apps/web/sw.js` (`veos-v1`).
 - Regra do Fernando: **não rodar testes ao editar**; só quando ele pedir, cobrindo tudo acumulado. NÃO testado ainda: piscar da Órbita, entrevista ponta a ponta no ChatGPT (conector com "Sem autenticação"), visual G4 no menu/painel, todas as telas.

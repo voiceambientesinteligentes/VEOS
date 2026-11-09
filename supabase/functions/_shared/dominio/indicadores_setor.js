@@ -14,7 +14,7 @@ const lacuna = (motivo) => ({ lacuna: motivo });
 const ok = (valor, texto, fonte) => ({ valor, texto, fonte });
 const noPeriodo = (data, hoje) => Boolean(data) && dias(hoje, String(data).slice(0, 10)) >= 0 && dias(hoje, String(data).slice(0, 10)) <= JANELA;
 
-function marketing(regs, hoje) {
+function marketing(regs, hoje, vendas = null) {
   const tipo = (t) => regs.filter((r) => r.tipo === t);
   const camp = tipo("campanha").filter((r) => noPeriodo(r.dados?.data_fim ?? r.dados?.data_inicio, hoje) && r.estado !== "cancelada");
   const ev = tipo("evento").filter((r) => noPeriodo(r.dados?.data_evento, hoje) && r.estado !== "cancelado");
@@ -37,8 +37,16 @@ function marketing(regs, hoje) {
   r.cases_publicados = ok(cases.length, `${cases.length} case(s) publicado(s) em 90 dias`, "Registros de Marketing (cases)");
   const pub = tipo("conteudo").filter((x) => x.estado === "publicado" && noPeriodo(x.dados?.data_publicacao ?? x.atualizado_em, hoje));
   r.publicacoes_semana = ok(Math.round((pub.length / (JANELA / 7)) * 10) / 10, `${pub.length} publicação(ões) em 90 dias (≈ ${(pub.length / (JANELA / 7)).toFixed(1)} por semana)`, "Registros de Marketing (conteúdos publicados)");
-  r.receita_influenciada = lacuna("exige ligar a origem de cada venda ganha à campanha/evento (o lead ainda não guarda a campanha)");
-  r.arquitetos_engajados = lacuna("exige registrar a participação de cada escritório em eventos e visitas ao showroom");
+  if (!vendas) r.receita_influenciada = lacuna("sem acesso às oportunidades do Comercial");
+  else {
+    const ganhas = vendas.filter((x) => x.tipo === "oportunidade" && x.dados?.data_ganho && noPeriodo(x.dados.data_ganho, hoje) && num(x.dados?.valor_estimado) > 0);
+    const total = ganhas.reduce((s, x) => s + num(x.dados.valor_estimado), 0);
+    const infl = ganhas.filter((x) => String(x.dados?.campanha_origem ?? "").trim()).reduce((s, x) => s + num(x.dados.valor_estimado), 0);
+    r.receita_influenciada = total > 0 ? ok(pct(infl, total), `${pct(infl, total)}% (${brl(infl)} de ${brl(total)} vendidos em 90 dias com origem em Marketing)`, "Oportunidades ganhas do Comercial (campo \"origem de Marketing\", últimos 90 dias)") : lacuna("nenhuma oportunidade ganha com valor nos últimos 90 dias (e a origem de Marketing só conta se for preenchida na oportunidade)");
+  }
+  const evP = ev.filter((x) => num(x.dados?.escritorios_presentes) !== null), cpR = camp.filter((x) => num(x.dados?.escritorios_alcancados) !== null);
+  const esc = evP.reduce((s, x) => s + num(x.dados.escritorios_presentes), 0) + cpR.reduce((s, x) => s + num(x.dados.escritorios_alcancados), 0);
+  r.arquitetos_engajados = evP.length || cpR.length ? ok(esc, `${esc} escritório(s) em 90 dias (soma por evento/campanha; o mesmo escritório em dois eventos conta duas vezes)`, F) : lacuna("nenhum evento ou campanha com escritórios presentes/alcançados registrados nos últimos 90 dias");
   return r;
 }
 
@@ -56,14 +64,24 @@ function posvenda(regs, hoje, ctx) {
   if (fechados.length) {
     const reinc = fechados.filter((x) => x.dados?.reincidente === "sim").length;
     r.chamados_reincidentes = ok(pct(reinc, fechados.length), `${pct(reinc, fechados.length)}% (${reinc} de ${fechados.length} chamados fechados)`, `${F} · chamados`);
-    const comPrazo = fechados.filter((x) => x.dados?.data_limite_solucao);
-    r.cumprimento_sla = lacuna(comPrazo.length ? "o chamado ainda não guarda a data em que foi resolvido (só a do prazo): falta o campo para comparar" : "chamados fechados sem prazo de solução registrado");
+    const aval = fechados.filter((x) => x.dados?.data_limite_solucao && x.dados?.data_resolucao);
+    const dentro = aval.filter((x) => String(x.dados.data_resolucao).slice(0, 10) <= String(x.dados.data_limite_solucao).slice(0, 10)).length;
+    r.cumprimento_sla = aval.length ? ok(pct(dentro, aval.length), `${pct(dentro, aval.length)}% (${dentro} de ${aval.length} chamados com prazo e data de resolução)`, `${F} · chamados`) : lacuna("nenhum chamado fechado com prazo de solução e data em que foi resolvido preenchidos");
+    const hs = fechados.map((x) => num(x.dados?.horas_primeira_resposta)).filter((v) => v !== null && v >= 0);
+    r.tempo_primeira_resposta = hs.length ? ok(Math.round((hs.reduce((a, b) => a + b, 0) / hs.length) * 10) / 10, `${(hs.reduce((a, b) => a + b, 0) / hs.length).toFixed(1)} h em média (${hs.length} chamado(s))`, `${F} · chamados`) : lacuna("nenhum chamado fechado com as horas até a primeira resposta preenchidas");
+    const at = fechados.filter((x) => ["remoto", "com_visita"].includes(x.dados?.atendimento));
+    const rem = at.filter((x) => x.dados.atendimento === "remoto").length;
+    r.resolucao_remota = at.length ? ok(pct(rem, at.length), `${pct(rem, at.length)}% (${rem} de ${at.length} chamados resolvidos sem visita)`, `${F} · chamados`) : lacuna("nenhum chamado fechado com \"como foi resolvido\" preenchido");
+    const cg = fechados.filter((x) => num(x.dados?.custo_atendimento) !== null && ["garantia_instalacao", "garantia_fabricante"].includes(x.dados?.cobertura));
+    const custoG = cg.reduce((s, x) => s + num(x.dados.custo_atendimento), 0);
+    r.custo_garantia = cg.length ? ok(Math.round(custoG * 100) / 100, `${brl(custoG)} em ${cg.length} chamado(s) de garantia em 90 dias (o percentual sobre a receita do projeto exige ligar o chamado ao projeto: LACUNA)`, `${F} · chamados em garantia`) : lacuna("nenhum chamado de garantia fechado com o custo do atendimento preenchido");
   } else {
     r.chamados_reincidentes = lacuna("nenhum chamado fechado nos últimos 90 dias");
     r.cumprimento_sla = lacuna("nenhum chamado fechado nos últimos 90 dias");
+    r.tempo_primeira_resposta = lacuna("nenhum chamado fechado nos últimos 90 dias");
+    r.resolucao_remota = lacuna("nenhum chamado fechado nos últimos 90 dias");
+    r.custo_garantia = lacuna("nenhum chamado fechado nos últimos 90 dias");
   }
-  r.tempo_primeira_resposta = lacuna("o chamado guarda só a data da primeira resposta, sem a hora: não dá para medir em horas");
-  r.resolucao_remota = lacuna("o chamado ainda não registra se houve visita");
   const rep = tipo("pesquisa_satisfacao").filter((x) => x.dados?.data_repasse_comercial && noPeriodo(x.dados.data_repasse_comercial, hoje));
   const com = tipo("pesquisa_satisfacao").filter((x) => ["indicacao", "ampliacao", "ambas"].includes(x.dados?.indicacao_ou_ampliacao));
   r.indicacoes_repassadas = com.length || rep.length ? ok(rep.length, `${rep.length} repassada(s) ao Comercial em 90 dias (${com.length} pesquisa(s) com indicação ou ampliação)`, `${F} · pesquisas`) : lacuna("nenhuma pesquisa com indicação ou ampliação registrada");
@@ -71,13 +89,14 @@ function posvenda(regs, hoje, ctx) {
   const prazo = vis.filter((x) => x.dados?.data_realizada && x.dados?.data_prevista);
   r.preventivas_no_prazo = prazo.length ? ok(pct(prazo.filter((x) => x.dados.data_realizada <= x.dados.data_prevista).length, vis.length), `${pct(prazo.filter((x) => x.dados.data_realizada <= x.dados.data_prevista).length, vis.length)}% (${prazo.filter((x) => x.dados.data_realizada <= x.dados.data_prevista).length} de ${vis.length} visita(s) previstas)`, `${F} · visitas`) : lacuna("nenhuma visita de manutenção realizada com data prevista e data realizada");
   r.receita_recorrente = ctx.mrr != null ? ok(ctx.mrr, `${brl(ctx.mrr)} por mês (${ctx.contratosAtivos ?? 0} contrato(s) ativo(s))`, "Contratos de suporte do VEOS (Financeiro → Contratos de suporte)") : lacuna("sem acesso à tela de contratos de suporte");
-  r.taxa_renovacao = lacuna("exige registrar o resultado da oferta de continuidade de cada contrato (renovou ou não)");
-  r.custo_garantia = lacuna("exige o custo real de garantia/assistência por projeto, que ainda não é registrado");
+  const ofertas = tipo("contrato_suporte").filter((x) => x.dados?.data_oferta_continuidade && noPeriodo(x.dados.data_oferta_continuidade, hoje) && ["renovou", "converteu_em_contrato", "nao_renovou"].includes(x.dados?.resultado_continuidade));
+  const ren = ofertas.filter((x) => x.dados.resultado_continuidade !== "nao_renovou").length;
+  r.taxa_renovacao = ofertas.length ? ok(pct(ren, ofertas.length), `${pct(ren, ofertas.length)}% (${ren} de ${ofertas.length} ofertas de continuidade com resultado)`, `${F} · contratos de suporte`) : lacuna("nenhuma oferta de continuidade com resultado registrado nos últimos 90 dias");
   return r;
 }
 
-export function calcularIndicadoresSetor(setorId, registros = [], { hoje, mrr = null, contratosAtivos = null } = {}) {
-  if (setorId === "marketing") return marketing(registros, hoje);
+export function calcularIndicadoresSetor(setorId, registros = [], { hoje, mrr = null, contratosAtivos = null, vendas = null } = {}) {
+  if (setorId === "marketing") return marketing(registros, hoje, vendas);
   if (setorId === "posvenda") return posvenda(registros, hoje, { mrr, contratosAtivos });
   return {};
 }

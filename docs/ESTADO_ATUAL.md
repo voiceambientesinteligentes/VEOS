@@ -1,5 +1,11 @@
 # Estado atual — 05/11/2026 (ver também 24/10, 03/11 e 04/11 abaixo)
 
+## 09/11/2026 (tarde) — indicadores sem LACUNA estrutural, entrevista testada, limpeza do pg_cron
+- Pós-venda e Marketing: os indicadores que eram LACUNA por falta de campo agora têm o campo e o cálculo (SLA de solução, tempo de 1ª resposta em horas, resolução remota, custo de garantia, renovação, receita influenciada, escritórios engajados). Os registros antigos não têm os campos novos, então cada indicador só mostra valor depois que a equipe preencher; sem dado segue LACUNA com o motivo. Limite: custo de garantia em % da receita do projeto segue LACUNA (chamado ainda não aponta o projeto); escritórios engajados soma por evento/campanha (não deduplica o mesmo escritório). Testes: domínio (indicadores_setor 6), telas setor_indicadores 8/8.
+- Entrevista guiada: MCP testado no servidor de ponta a ponta (online 14/14). NÃO testado: conexão real no ChatGPT.
+- Corrigido: `/sistema/saude` com 502 (histórico do pg_cron sem limpeza, 74 MB) e MCP que cortava JSON no meio.
+- Verificado em 09/11: `npm test` (155 Python, 20 JS, domínio), online api/financeiro/setores/sistema/mcp/ia/caixa/fornecedores/agenda/contratos/push/entrevista, telas.
+
 ## 06/11/2026 — Visual no padrão do G4 OS (só aparência)
 - Pedido do Fernando: replicar o design do aplicativo G4 OS (instalado no computador dele) mantendo o fundo preto do VEOS. Valores lidos das variáveis de tema do app instalado (somente leitura, nada copiado além de números/nomes de fontes).
 - `apps/web/css/g4.css` (carregado depois do `tema.css`): fontes **Manrope** (texto), **Geist** (títulos) e **Geist Mono** (números/código), hospedadas em `apps/web/fonts/` (licença OFL; a CSP só aceita fontes do próprio site); texto `#e8e6e4`, linhas a 10%, destaque `#d1bea4` no lugar do dourado, estados do G4, cantos 8/12/16 px, corpo 14,4 px (o G4 usa 13,5; mantido maior pela leitura), menu lateral plano, painel principal solto com cantos de 12 px, cartões planos com linha fina.

@@ -453,6 +453,12 @@
           "obrigatorio": false
         },
         {
+          "id": "escritorios_alcancados",
+          "rotulo": "Escritórios que retornaram (visita ao showroom ou resposta ao material técnico)",
+          "tipo": "numero",
+          "obrigatorio": false
+        },
+        {
           "id": "aprendizados",
           "rotulo": "Aprendizados",
           "tipo": "texto_longo",
@@ -704,6 +710,12 @@
         {
           "id": "presentes",
           "rotulo": "Presentes",
+          "tipo": "numero",
+          "obrigatorio": false
+        },
+        {
+          "id": "escritorios_presentes",
+          "rotulo": "Escritórios de arquitetura/design presentes (distintos)",
           "tipo": "numero",
           "obrigatorio": false
         },
