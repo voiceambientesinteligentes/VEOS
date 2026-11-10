@@ -86,7 +86,8 @@ export function metaDaPagina(html) {
 /** Lista {titulo, url, trecho} da pagina de resultados html.duckduckgo.com (anuncios fora). */
 export function lerResultadosDuckDuckGo(html) {
   const out = [];
-  const blocos = String(html ?? "").split(/<div[^>]+class="[^"]*\bresult\b/i).slice(1);
+  // corta no PRIMEIRO "result" da classe (nao guloso): o resto da classe (ex.: "result--ad") fica para o filtro de anuncio
+  const blocos = String(html ?? "").split(/<div[^>]+?class="[^"]*?\bresult\b/i).slice(1);
   for (const b of blocos) {
     if (/^[^>]*result--ad\b/i.test(b) || /class="[^"]*badge--ad/i.test(b)) continue;
     const a = b.match(/<a[^>]+class="[^"]*\bresult__a\b[^"]*"[^>]*href="([^"]+)"[^>]*>([\s\S]*?)<\/a>/i) ?? b.match(/<a[^>]+href="([^"]+)"[^>]*class="[^"]*\bresult__a\b[^"]*"[^>]*>([\s\S]*?)<\/a>/i);

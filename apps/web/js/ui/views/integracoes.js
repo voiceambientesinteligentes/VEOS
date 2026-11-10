@@ -169,7 +169,7 @@ function painelGmail(eu) {
       catch (e) { saida.append(errorNotice(e.message)); conectar.disabled = !direcao; conectar.textContent = "Conectar"; }
     });
     corpo.append(h("ol", { class: "stack-s" }, PASSOS_PONTE.map((p) => h("li", null, p))),
-      h("div", { class: "row" }, gerar, h("a", { class: "btn btn-ghost", href: "https://script.google.com/home/projects/create", target: "_blank", rel: "noopener noreferrer" }, "Abrir o Apps Script")),
+      h("div", { class: "row" }, gerar, h("a", { class: "btn btn-ghost", href: "https://script.new", target: "_blank", rel: "noopener noreferrer" }, "Abrir um projeto novo no Apps Script")),
       area,
       h("div", { class: "row" }, url, conectar),
       direcao ? null : h("p", { class: "field-hint" }, "Só a direção conecta o Gmail."));
