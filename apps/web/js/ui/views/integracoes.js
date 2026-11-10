@@ -2,6 +2,7 @@
 // o login acontece no proprio Zoho e os tokens ficam so no servidor.
 import { api } from "../../data/api.js";
 import { formatDateTime } from "../../domain/format.js";
+import { codigoDaPonte, PASSOS_PONTE, urlDaPonteValida } from "../../domain/ponte_google.js";
 import { clear, errorNotice, h, method, panel, stamp, table } from "../dom.js";
 
 const RETORNO = {
@@ -36,7 +37,7 @@ function copiavel(texto, rotulo = "Copiar") {
 }
 
 // MCP REMOTO DEFINITIVO: link para o ChatGPT ou o Claude consultarem e pedirem coisas ao VEOS como o dono.
-const COMANDO_MCP = "Use o conector VEOS. Comece chamando veos_resumo_do_dia e veos_radar e me diga, em português simples, o que precisa da minha atenção hoje. Antes de recomendar algo relevante, consulte veos_consultar_precedentes. Para criar algo (cliente, orçamento em rascunho, conta a pagar, tarefa), procure antes para não duplicar e me mostre o que vai criar. Você nunca paga, envia mensagem, aceita orçamento nem gera pedido: isso eu faço na tela.";
+const COMANDO_MCP = "Use o conector VEOS. Comece chamando veos_resumo_do_dia e veos_radar e me diga, em português simples, o que precisa da minha atenção hoje. Daqui em diante, quando eu pedir para FAZER algo em qualquer setor (cadastrar, achar empresas e contatos, preparar e-mails, agendar), execute com as ferramentas do VEOS: procure antes para não duplicar e nunca invente dado. E-mail: prepare com veos_preparar_email, me mostre destinatário, assunto e texto, e só envie com veos_enviar_email(confirmado=true) depois que eu disser que pode. Antes de recomendar algo relevante, consulte veos_consultar_precedentes. Pagar, aceitar orçamento e gerar pedido eu faço na tela.";
 function painelMcpRemoto(eu) {
   const direcao = eu?.papel === "direcao";
   const corpo = h("div", { class: "stack" });
@@ -48,7 +49,7 @@ function painelMcpRemoto(eu) {
     let est;
     try { est = await api.mcpRemoto(); } catch (e) { corpo.append(errorNotice(e.message)); return; }
     const escopo = h("select", { class: "input", "aria-label": "O que o link pode fazer", disabled: !direcao },
-      h("option", { value: "completo" }, "Consultar e cadastrar (cliente, rascunho de orçamento, conta a pagar, tarefa, ideia)"),
+      h("option", { value: "completo" }, "Consultar e fazer (cadastros de todos os setores, tarefas, pesquisa, e-mail com a sua confirmação)"),
       h("option", { value: "consulta" }, "Só consultar (nada é criado nem alterado)"));
     const rotulo = h("input", { class: "input", type: "text", maxlength: "60", placeholder: "Nome do link (ex.: ChatGPT do celular)", "aria-label": "Nome do link", disabled: !direcao });
     const dias = h("select", { class: "input", "aria-label": "Validade", disabled: !direcao }, [["30", "Vale 30 dias"], ["7", "Vale 7 dias"], ["90", "Vale 90 dias"]].map(([v, r]) => h("option", { value: v }, r)));
@@ -90,8 +91,115 @@ function painelMcpRemoto(eu) {
       lista,
       h("div", { class: "row" }, escopo, rotulo, dias, criar),
       uso,
-      method("Segurança", "Quem tiver o link age como você no VEOS dentro do escopo escolhido, sem pedir senha nem código MFA: trate como uma senha. Só o código do link fica guardado (não dá para recuperá-lo), ele expira e você revoga quando quiser. Cada chamada fica registrada acima. Mesmo no escopo completo, o conector não paga, não envia mensagem a ninguém, não aceita orçamento, não gera pedido e não altera política, meta, alçada nem imposto: isso continua sendo seu, pela tela.",
+      method("Segurança", "Quem tiver o link age como você no VEOS dentro do escopo escolhido, sem pedir senha nem código MFA: trate como uma senha. Só o código do link fica guardado (não dá para recuperá-lo), ele expira e você revoga quando quiser. Cada chamada fica registrada acima. No escopo completo o conector cadastra em todos os setores, pesquisa na web e envia e-mail pelo Gmail da VOICE SÓ com a sua confirmação explícita (ele mostra o texto e espera o seu OK); não paga, não aceita orçamento, não gera pedido e não altera política, meta, alçada nem imposto.",
         "O que você escreve no ChatGPT ou no Claude, e o que o VEOS devolve a eles (clientes, valores, caixa), também fica com a OpenAI ou a Anthropic nessas conversas. Use só em contas suas e revogue o link se trocar de aparelho.")].filter(Boolean));
+  }
+  desenhar();
+  return caixa;
+}
+
+// E-MAIL E AGENDA (Gmail da VOICE): ponte gratuita no Google Apps Script. Com ela o VEOS ENVIA os e-mails que a
+// pessoa confirma, acompanha as respostas e le/cria compromissos na agenda.
+function painelGmail(eu) {
+  const direcao = eu?.papel === "direcao";
+  const corpo = h("div", { class: "stack" });
+  const saida = h("div", { role: "status" });
+  const caixa = panel({ title: "E-mail e agenda — Gmail da VOICE", subtitle: "Liga o VEOS ao Gmail e à Agenda do Google da empresa. A IA prepara os e-mails e você confirma; o envio sai do próprio Gmail (aparece em Enviados) e o VEOS avisa quando alguém responde. Grátis, sem cartão." }, corpo, saida);
+
+  async function desenhar(aviso) {
+    clear(corpo);
+    let st;
+    try { st = await api.emailSituacao(); } catch (e) { corpo.append(errorNotice(e.message)); return; }
+    if (aviso) corpo.append(h("p", { class: `notice notice-${aviso[1]}`, role: "status" }, aviso[0]));
+    corpo.append(h("div", { class: "row" },
+      st.conectado ? stamp("Conectado", "ok") : stamp("Não conectado", "neutral"),
+      st.conectado && st.conta ? h("strong", null, st.conta) : null,
+      st.conectado ? stamp(`${st.enviados_hoje} de ${st.limite_dia} e-mails hoje`, "live") : null,
+      st.conectado ? stamp(`prospecção: ${st.prospeccao_hoje} de ${st.limite_prospeccao}`, "neutral") : null,
+      st.conectado && st.detalhe ? stamp("Último teste com problema", "warn") : null));
+    if (st.conectado && st.detalhe) corpo.append(h("p", { class: "notice notice-warn" }, st.detalhe));
+
+    if (st.conectado) {
+      const testar = h("button", { class: "btn btn-ghost", type: "button", disabled: !direcao }, "Testar a conexão");
+      testar.addEventListener("click", async () => {
+        testar.disabled = true; clear(saida);
+        try { const r = await api.emailTestar(); saida.append(h("p", { class: "notice notice-ok" }, `Funcionando: ${r.conta}. O Google ainda aceita ${r.cota_email ?? "?"} destinatário(s) hoje.`)); }
+        catch (e) { saida.append(errorNotice(e.message)); } finally { testar.disabled = !direcao; }
+      });
+      const desligar = h("button", { class: "btn btn-ghost", type: "button", disabled: !direcao }, "Desconectar");
+      desligar.addEventListener("click", async () => {
+        if (!confirm("Desconectar o Gmail? O VEOS deixa de enviar e de ver as respostas até conectar de novo.")) return;
+        try { await api.emailDesconectar(); clear(saida); await desenhar(["Gmail desconectado. Para desligar de vez, arquive a implantação no Apps Script.", "warn"]); } catch (e) { saida.append(errorNotice(e.message)); }
+      });
+      const refazer = h("button", { class: "btn btn-ghost", type: "button", disabled: !direcao }, "Trocar a ponte (código novo)");
+      refazer.addEventListener("click", () => passos(true));
+      corpo.append(h("div", { class: "row" }, testar, refazer, desligar),
+        h("p", { class: "field-hint" }, `Conectado em ${formatDateTime(st.conectado_em)}. As respostas são conferidas a cada 20 minutos: viram a tarefa “Responder …” no Hoje e no chat da IA; quem responder “SAIR” vai para a lista de bloqueio.`));
+    } else {
+      passos(false);
+    }
+    corpo.append(method("Segurança e limites",
+      "A ponte é um pequeno programa seu no Google Apps Script (script.google.com). Ela só obedece a quem tiver o código secreto, que fica cifrado no servidor do VEOS e aparece uma única vez, na hora de gerar.",
+      "O VEOS nunca envia sozinho: cada e-mail sai depois de uma confirmação sua (botão Enviar, “confirmo” no chat ou o OK no ChatGPT/Claude). Até 80 e-mails por dia (prospecção até 30, 1:1, com a linha de “sair”); o Gmail gratuito aceita cerca de 100 destinatários por dia.",
+      "Para ler respostas e a agenda, o Google pede permissão de Gmail e Agenda para a SUA ponte; o VEOS só lê as conversas dos e-mails que enviou e o que você pedir (direção). Quando você pede à IA para resumir e-mails, o texto vai para o motor de IA."));
+  }
+
+  function passos(trocando) {
+    const area = h("div", { class: "stack-s" });
+    const gerar = h("button", { class: "btn btn-primary", type: "button", disabled: !direcao }, trocando ? "Gerar código novo da ponte" : "Gerar o código da ponte");
+    const url = h("input", { class: "input", type: "url", placeholder: "https://script.google.com/macros/s/…/exec", "aria-label": "URL do app da Web", disabled: !direcao });
+    const conectar = h("button", { class: "btn btn-primary", type: "button", disabled: !direcao }, "Conectar");
+    gerar.addEventListener("click", async () => {
+      if (trocando && !confirm("Gerar um código novo? A ponte atual continua funcionando até você colar a nova e conectar.")) return;
+      gerar.disabled = true; clear(saida);
+      try {
+        const { segredo, aviso } = await api.emailPrepararPonte();
+        const codigo = codigoDaPonte(segredo);
+        clear(area).append(
+          h("p", { class: "notice notice-warn" }, aviso),
+          h("pre", { class: "rascunho-corpo mfa-chave codigo-ponte" }, codigo),
+          h("div", { class: "row" }, copiavel(codigo, "Copiar o código"), (() => { const b = h("button", { class: "btn btn-ghost", type: "button" }, "Baixar (.gs)"); b.addEventListener("click", () => baixar("ponte-veos.gs", codigo, "text/plain")); return b; })()));
+      } catch (e) { saida.append(errorNotice(e.message)); } finally { gerar.disabled = !direcao; }
+    });
+    conectar.addEventListener("click", async () => {
+      clear(saida);
+      if (!urlDaPonteValida(url.value)) { saida.append(errorNotice("Cole o URL do app da Web: começa com https://script.google.com/macros/s/ e termina em /exec.")); return; }
+      conectar.disabled = true; conectar.textContent = "Testando…";
+      try { const r = await api.emailConectar(url.value.trim()); await desenhar([`Gmail conectado: ${r.conta}. O VEOS já pode enviar o que você confirmar.`, "ok"]); }
+      catch (e) { saida.append(errorNotice(e.message)); conectar.disabled = !direcao; conectar.textContent = "Conectar"; }
+    });
+    corpo.append(h("ol", { class: "stack-s" }, PASSOS_PONTE.map((p) => h("li", null, p))),
+      h("div", { class: "row" }, gerar, h("a", { class: "btn btn-ghost", href: "https://script.google.com/home/projects/create", target: "_blank", rel: "noopener noreferrer" }, "Abrir o Apps Script")),
+      area,
+      h("div", { class: "row" }, url, conectar),
+      direcao ? null : h("p", { class: "field-hint" }, "Só a direção conecta o Gmail."));
+  }
+  desenhar();
+  return caixa;
+}
+
+// PESQUISA NA WEB: o VEOS usa o DuckDuckGo sem chave; uma chave gratuita (Tavily/Brave/Serper) deixa mais estavel.
+function painelPesquisa(eu) {
+  const direcao = eu?.papel === "direcao";
+  const corpo = h("div", { class: "stack" });
+  const saida = h("div", { role: "status" });
+  const caixa = panel({ title: "Pesquisa na web (para a IA achar empresas e contatos)", subtitle: "A IA pesquisa na web e lê os sites das empresas para achar arquitetos, fornecedores e concorrentes com o contato público. Funciona sem chave; com uma chave gratuita fica mais estável." }, corpo, saida);
+  async function desenhar() {
+    clear(corpo);
+    let st;
+    try { st = await api.pesquisaSituacao(); } catch (e) { corpo.append(errorNotice(e.message)); return; }
+    corpo.append(h("ul", { class: "list-plain stack-s" }, st.provedores.map((p) => h("li", { class: "row" }, stamp(p.ativo ? "Ligado" : "Sem chave", p.ativo ? "ok" : "neutral"), h("strong", null, p.nome), h("span", { class: "field-hint" }, p.nota)))));
+    if (!direcao) return;
+    const prov = h("select", { class: "select", "aria-label": "Provedor" }, h("option", { value: "tavily" }, "Tavily (recomendado)"), h("option", { value: "brave" }, "Brave Search"), h("option", { value: "serper" }, "Serper"));
+    const chave = h("input", { class: "input", type: "password", autocomplete: "off", placeholder: "cole a chave (vazio = remover)", "aria-label": "Chave" });
+    const salvar = h("button", { class: "btn btn-ghost", type: "button" }, "Guardar chave");
+    salvar.addEventListener("click", async () => {
+      clear(saida); salvar.disabled = true;
+      try { await api.pesquisaChave(prov.value, chave.value.trim()); chave.value = ""; await desenhar(); saida.append(h("p", { class: "notice notice-ok" }, "Guardado (cifrado no servidor).")); }
+      catch (e) { saida.append(errorNotice(e.message)); } finally { salvar.disabled = false; }
+    });
+    corpo.append(h("div", { class: "row" }, prov, chave, salvar),
+      h("p", { class: "field-hint" }, "Tavily: crie a conta grátis em app.tavily.com (sem cartão), copie a API key e cole aqui. Só dados públicos de empresas são buscados; Instagram, LinkedIn e Google não são lidos (só o link)."));
   }
   desenhar();
   return caixa;
@@ -163,7 +271,7 @@ export async function telaIntegracoes(root, eu) {
   const retorno = new URLSearchParams(location.hash.split("?")[1] ?? "").get("zoho");
   if (retorno) history.replaceState(null, "", "#/integracoes");
   const conteudo = h("div", { class: "stack" });
-  root.append(conteudo, painelMcpRemoto(eu), painelEntrevista(eu));
+  root.append(painelGmail(eu), painelPesquisa(eu), conteudo, painelMcpRemoto(eu), painelEntrevista(eu));
 
   async function desenhar(aviso) {
     const st = await api.zohoStatus();

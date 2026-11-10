@@ -37,6 +37,7 @@ Formato: data · decisão · quem · origem. Propostas ficam separadas até o Fe
 | 06/10/2026 | **Controle de pedidos começa em 06/10/2026**; orçamentos antigos do Zoho não viram pedido e servem de **base de preços** (Diagnóstico → Base de preços). Biblioteca **BIB-0095**. | resposta no Claude Code em 06/10 |
 | 06/10/2026 | **RT de 10% em todos os pedidos; comissão/indicação de 5% quando houver; pagas na assinatura** (contas a pagar automáticas quando a entrada é recebida). Resolve P-9. Biblioteca **BIB-0096**. | resposta no Claude Code em 06/10 |
 | 06/10/2026 | Chave do Gemini (nível gratuito) cadastrada pelo Fernando nos segredos do Supabase: motor de IA ligado. O registro formal da BIB-0091 continua em consulta. | ação do Fernando em 06/10 |
+| 10/11/2026 | **A IA do VEOS executa o que o dono pedir, em todos os setores, inclusive ENVIAR e-mail** ("se eu pedir via MCP ou IA do programa achar um arquiteto, pegar e-mail, gerar um e-mail e enviar, ele tem que ser capaz"). Envio sempre com **confirmação explícita de uma pessoa** (botão Enviar, "confirmo" no chat ou `confirmado=true` no MCP depois de mostrar o texto), pelo **Gmail da VOICE** (ponte gratuita no Google Apps Script), com lista de bloqueio, linha de "sair" na prospecção, até 80 e-mails/dia (prospecção até 30, 1:1) e no máximo uma apresentação por endereço a cada 30 dias. Substitui, para e-mail, o "envio sempre humano" do registro técnico de 30/09. Pagar, aceitar orçamento, gerar pedido e decidir política/meta/alçada/imposto continuam na tela. A BIB-0107 (regras de prospecção) segue em consulta; as travas acima já a cumprem. | mensagem de 10/11 |
 
 ## Propostas (aguardando confirmação)
 
@@ -56,6 +57,9 @@ Formato: data · decisão · quem · origem. Propostas ficam separadas até o Fe
 
 | Data | Decisão | Motivo |
 |---|---|---|
+| 10/11/2026 | E-mail pelo **Gmail via ponte no Google Apps Script** (e não SMTP, Resend ou Brevo). | grátis e sem cartão; não precisa de domínio próprio; o e-mail sai do Gmail real (Enviados) e a ponte também lê respostas e a agenda; as funções do Supabase não garantem as portas de SMTP |
+| 10/11/2026 | Pesquisa na web: **Parallel** (MCP de pesquisa gratuito e sem chave para agentes) como padrão; Tavily/Brave/Serper entram se houver chave; DuckDuckGo fica de reserva. | testado em 10/11: o DuckDuckGo pede verificação ao servidor do Supabase; a Parallel respondeu do servidor (8 resultados em ~1 s) |
+| 10/11/2026 | A IA do VEOS usa as **mesmas ferramentas do MCP** (apps/web/js/domain/mcp.js) pelas **mesmas rotas da API**, com o membro que pediu; dados pessoais de clientes não vão ao modelo (o servidor completa endereço e {{primeiro_nome}}). | uma fonte só para MCP e IA; permissões e validações iguais às da tela; minimização com provedores gratuitos |
 | 30/09/2026 | O repositório Git é `VOICE_360/VEOS/`, só com código e docs. O acervo e as evidências ficam fora do Git. | o acervo tem políticas, evidências com hash e dados que não devem ir ao GitHub |
 | 30/09/2026 | Portal **copiado** (não movido) de `VOICE360-V2/scratch/VEOS-LOCAL/portal` para `VEOS/apps/portal`. A origem continua intacta como histórico. | preservar evidências e caminhos; a cópia foi validada com os mesmos testes |
 | 30/09/2026 | Vigia implementado como módulo novo que reutiliza `cfo_controls` sem alterá-lo. | não duplicar regras já testadas |

@@ -17,6 +17,11 @@ export function avisosNovos({ alertas = [], tarefas = [], perguntas = [], vistos
     lista.push({ chave: a.chave ?? a.id, tipo: "alerta", texto: `${a.severidade === "CRITICO" ? "Crítico" : "Alerta"} · ${sigla(a.setor_id)}: ${a.titulo}`, href: `#/setor/${a.setor_id}` });
   }
   for (const t of tarefas) {
+    // resposta de e-mail enviado pelo VEOS (vigia das respostas): aviso proprio, mesmo sem ser "minha"
+    if (t.origem === "email:resposta" || t.origem === "email:saida") {
+      if (!euId || !t.responsavel || t.responsavel === euId) lista.push({ chave: `t:${t.id}:email`, tipo: "email", texto: t.origem === "email:saida" ? resumo(t.titulo) : `Chegou resposta · ${resumo(t.titulo.replace(/^Responder\s+/, ""))}`, href: "#/mensagens" });
+      continue;
+    }
     if (!t.prazo) continue;
     const minha = euId && t.responsavel === euId;
     if (t.prazo < hoje) lista.push({ chave: `t:${t.id}:atrasada`, tipo: "tarefa", texto: `Tarefa atrasada · ${sigla(t.setor_id)}: ${resumo(t.titulo)}`, href: `#/setor/${t.setor_id}` });

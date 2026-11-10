@@ -5,20 +5,37 @@
 import { assinar, caixaDeEntrada, definirVoz, desenharMensagens, enviar, escolherVoz, estado, ligarVoz, limparConversa, quandoFalar, vozesDisponiveis, vozLigada } from "../assistente.js";
 import { h } from "../dom.js";
 import { montarOnda } from "../onda.js";
+import { CAPACIDADES } from "../../domain/capacidades.js";
 
 const SUGESTOES = [
-  ["Qual canal de captação eu trabalho primeiro este mês?", "Vendas"],
-  ["Quanto devo cobrar pela hora de mão de obra?", "Finanças"],
-  ["Monte uma campanha de Instagram para arquitetos", "Marketing"],
-  ["Abrir o radar", "Tela"],
+  ["Ache 3 escritórios de arquitetura em Balneário Camboriú, pegue os e-mails e prepare nossa apresentação", "Fazer · Comercial"],
+  ["Como está a empresa hoje? O que precisa da minha atenção?", "Perguntar · Direção"],
+  ["Abra um chamado: cliente João, Wi-Fi lento, prioridade alta", "Fazer · Pós-venda"],
+  ["Quanto devo cobrar pela hora de mão de obra?", "Perguntar · Finanças"],
 ];
+
+/** "O que posso pedir": rotinas de cada setor; tocar num exemplo coloca o texto na caixa para a pessoa ajustar. */
+function painelCapacidades(campo) {
+  let atual = CAPACIDADES[2]?.setor ?? CAPACIDADES[0].setor; // abre no Comercial
+  const abas = h("div", { class: "ia2-cap-abas", role: "tablist", "aria-label": "Setor" });
+  const lista = h("div", { class: "ia2-cap-lista" });
+  const desenhar = () => {
+    abas.replaceChildren(...CAPACIDADES.map((c) => h("button", { class: "ia2-cap-aba", type: "button", role: "tab", "aria-pressed": String(c.setor === atual), onclick: () => { atual = c.setor; desenhar(); } }, `${c.sigla} · ${c.nome}`)));
+    const c = CAPACIDADES.find((x) => x.setor === atual);
+    lista.replaceChildren(...c.itens.map((i) => h("button", { class: "ia2-cap-item", type: "button", title: "Colocar na caixa para ajustar e enviar",
+      onclick: () => { campo.value = i.pedido; campo.dispatchEvent(new Event("input")); campo.focus(); } },
+      h("span", null, i.pedido), h("small", null, i.faz, i.precisa === "gmail" ? h("span", { class: "ia2-cap-gmail" }, " · usa o Gmail conectado") : i.precisa === "tela" ? " · a última etapa é sua, na tela" : null))));
+  };
+  desenhar();
+  return h("div", { class: "ia2-capacidades" }, h("small", null, "O que posso pedir (eu faço, você confirma o que sai para fora)"), abas, lista);
+}
 
 export function renderIA(root, signal, eu = {}, { embutida = false } = {}) {
   const nome = String(eu.nome ?? "").split(" ")[0];
   const canvas = h("canvas", { class: "ia2-onda", "aria-hidden": "true" });
   const orbe = h("div", { class: "ia2-orbe" }, canvas);
   const lista = h("div", { class: "ia2-lista", "aria-live": "polite" });
-  const { form, campo } = caixaDeEntrada({ grande: true, placeholder: "Pergunte a um diretor ou peça uma tela… (Enter envia)", aoOuvir: (v) => energia(v ? 0.7 : 0.12) });
+  const { form, campo } = caixaDeEntrada({ grande: true, placeholder: "Peça para fazer, pergunte ou abra uma tela… (Enter envia)", aoOuvir: (v) => energia(v ? 0.7 : 0.12) });
   const sugestoes = h("div", { class: "ia2-sugestoes" }, SUGESTOES.map(([t, tag]) => {
     const b = h("button", { class: "ia2-sugestao", type: "button" }, h("small", null, tag), h("span", null, t));
     b.addEventListener("click", () => enviar(t));
@@ -41,7 +58,8 @@ export function renderIA(root, signal, eu = {}, { embutida = false } = {}) {
   const vazio = h("div", { class: "ia2-vazio" },
     h("h1", { class: "ia2-saudacao" }, h("span", { class: "ia2-estrela", "aria-hidden": "true" }, "✦"), ` Como posso ajudar${nome ? `, ${nome}` : ""}?`),
     form, sugestoes,
-    h("p", { class: "ia2-nota" }, "Os diretores respondem com a IA do servidor, pelo manual de cada um e com os dados do VEOS. É opinião, não decisão."));
+    embutida ? null : painelCapacidades(campo),
+    h("p", { class: "ia2-nota" }, "Peça para FAZER (“ache…”, “cadastre…”, “mande…”, “agende…”) e o diretor do setor executa no VEOS; e-mail só sai depois que você confirma. Pergunte para ter a opinião do diretor com os dados do VEOS (opinião, não decisão)."));
   const rodape = h("div", { class: "ia2-rodape" });
   const coluna = h("div", { class: "ia2-coluna" }, lista, rodape);
   root.append(h("section", { class: `ia2${embutida ? " ia2-embutida" : ""}`, "aria-label": "IA VEOS" },

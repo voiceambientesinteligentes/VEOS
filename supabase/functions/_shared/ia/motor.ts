@@ -11,8 +11,15 @@
 import { servico } from "../banco.ts";
 import { apenasGratuitos, type Provedor, responderComFallback } from "./provedores.ts";
 import { conferirValores, limparMarkdown, montarSistema, numerosDe, rodapeConferencia, termosDaPergunta } from "./texto.ts";
-import { levantamentoPrevio, perguntaDeDados, REFAZER_COM_FERRAMENTA } from "./texto.ts";
+import { levantamentoPrevio, perguntaDeDados, REFAZER_COM_FERRAMENTA, REFAZER_EXECUTANDO } from "./texto.ts";
 import { type Contexto, diretorDoSetor, executarFerramenta, ferramentasDoSetor, procedimentosDoSetor } from "./ferramentas.ts";
+import { ehAcao, executarAcao, ferramentasDeAcao, membroDoPedido } from "./acoes_ia.ts";
+import { pedidoDeAcao } from "../dominio/comandos.js";
+
+// No modo execucao o diretor recebe as ferramentas de acao + so os dados mais uteis (modelo pequeno se perde com muitas).
+const DADOS_NA_EXECUCAO = new Set(["consultar_precedentes", "painel_executivo", "pedidos_e_recebiveis", "caixa_e_contas", "previsao_de_caixa", "funil_comercial", "base_comercial", "buscar_orcamentos", "analisar_orcamento", "preco_pela_politica", "metas_comerciais", "canais_e_cadencias"]);
+// acoes que contam como "executou" (as de leitura da web sozinhas nao contam)
+const ACOES_DE_FATO = /^(criar_|atualizar_|concluir_|preparar_|encontrar_contatos|registrar_ideia)/;
 
 const lista = (v: string | undefined, padrao: string) => (v || padrao).split(",").map((x) => x.trim()).filter(Boolean);
 
@@ -61,6 +68,31 @@ export function situacaoMotores() {
 
 const hojeBR = () => new Date().toLocaleDateString("pt-BR", { timeZone: "America/Sao_Paulo", day: "2-digit", month: "2-digit", year: "numeric" });
 
+/** Fontes das acoes (paginas lidas, pesquisa, cadastros) para aparecerem embaixo da resposta. */
+function fonteDaAcao(ctx: Contexto, nome: string, args: any, out: any) {
+  if (!out || out.erro) return;
+  if (nome === "pesquisar_web") ctx.fontes.set(`web:${args?.consulta}`, { titulo: `Pesquisa na web (${out.provedor ?? "web"}): ${String(args?.consulta ?? "").slice(0, 120)}`, natureza: "pesquisa web", url: null });
+  else if (nome === "ler_pagina" && out.url) ctx.fontes.set(out.url, { titulo: String(out.titulo || out.url).slice(0, 200), natureza: "página web", url: out.url });
+  else if (nome === "encontrar_contatos") for (const e of (out.encontrados ?? []).slice(0, 8)) ctx.fontes.set(e.fonte ?? e.site, { titulo: `${e.nome} (site da empresa)`.slice(0, 200), natureza: "página web", url: e.fonte ?? e.site ?? null });
+  else if (/^criar_|^atualizar_|^preparar_email/.test(nome)) ctx.fontes.set(`acao:${nome}`, { titulo: "Ações feitas no VEOS nesta resposta (histórico de cada registro)", natureza: "ação", url: null });
+}
+
+/** Resumo automatico do que foi feito (quando o modelo nao escreveu o final). */
+function resumoDasAcoes(coletados: { nome: string; args: unknown; texto: string }[]) {
+  const linhas: string[] = [];
+  for (const x of coletados) {
+    if (!ACOES_DE_FATO.test(x.nome)) continue;
+    let o: any = {};
+    try { o = JSON.parse(x.texto); } catch { /* texto cortado */ }
+    const a: any = x.args ?? {};
+    if (o?.erro) linhas.push(`• ${x.nome.replace(/_/g, " ")}: não feito (${String(o.erro).slice(0, 140)})`);
+    else if (x.nome === "preparar_email") linhas.push(`• E-mail preparado para ${o.para ?? a.para ?? "destinatário a definir"}: ${o.assunto ?? a.assunto ?? ""}`);
+    else if (x.nome === "encontrar_contatos") linhas.push(`• Pesquisa de contatos "${a.busca ?? ""}": ${(o.encontrados ?? []).length} empresa(s) com e-mail`);
+    else linhas.push(`• ${x.nome.replace(/_/g, " ")}: feito${o?.codigo ? ` (${o.codigo})` : o?.id ? ` (id ${String(o.id).slice(0, 8)})` : ""}`);
+  }
+  return `RESUMO\nO motor de IA não terminou de escrever a resposta, mas estas ações foram feitas no VEOS:\n\nFEITO\n${linhas.join("\n") || "• nada"}\n\nPARA CONFIRMAR\n• Os e-mails preparados aparecem abaixo com o botão Enviar (e na Caixa de saída).`;
+}
+
 /** Processa uma pergunta pendente. Nunca lanca: falha volta a pergunta para a fila com o motivo. */
 export async function responderPergunta(perguntaId: string) {
   const provs = provedores();
@@ -90,7 +122,6 @@ export async function responderPergunta(perguntaId: string) {
     const resumoPrec = (precedentes.considerados ?? []).slice(0, 15).map((c: any) => `- ${c.codigo} (${c.tipo}, ${c.estado}${c.vale_como_regra ? ", VALE como regra" : ""}): ${c.titulo}`).join("\n") || "- nenhum precedente encontrado com esses termos";
 
     const gratuito = provs.some((p) => p.gratuito);
-    const sistema = montarSistema({ diretor: dir.diretor, setorNome: dir.setorNome, hoje: hojeBR(), quem: `${autor?.nome ?? "membro"} (papel: ${ctx.papel})`, gratuito, procedimentos: procedimentosDoSetor(ctx.setor) });
     // conversa: as trocas anteriores (ate 6, da mais antiga a mais recente) entram antes da pergunta nova
     let historico = "";
     try {
@@ -105,17 +136,28 @@ export async function responderPergunta(perguntaId: string) {
     } catch (e) {
       console.error("historico da conversa", e);
     }
-    const pergunta = `${historico ? `CONVERSA ATÉ AQUI (continue a mesma conversa: responda à mensagem nova considerando o que já foi dito; não repita o que já explicou; se a mensagem for curta, como "e isso?" ou "detalhe o item 2", ela se refere ao que veio antes):\n${historico}\n\n` : ""}${historico ? "MENSAGEM NOVA" : "PERGUNTA"} (feita no VEOS em ${new Date(reservada.criada_em).toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo" })}${reservada.contexto ? `; referência: ${reservada.contexto}` : ""}):\n${reservada.pergunta}\n\nPRECEDENTES JÁ CONSULTADOS (termos: ${termos}):\n${resumoPrec}\n\nLEMBRE: número (percentual, valor, quantidade) só se vier de uma ferramenta chamada nesta resposta ou do histórico acima; para falar de vendas, funil, clientes ou caixa, CHAME a ferramenta antes. Sem dado, escreva LACUNA.`;
+    // MODO EXECUCAO: a mensagem pede para FAZER ("ache", "cadastre", "mande"...), ou continua uma execucao com um "pode fazer"
+    const curta = reservada.pergunta.trim().split(/\s+/).length <= 10;
+    const execucao = pedidoDeAcao(reservada.pergunta) || (curta && /\b(FEITO|PARA CONFIRMAR)\b/.test(historico.slice(-2500)) && /\b(sim|pode|faça|faca|isso|ok|segue|continue|manda|cadastra|prepara)\b/i.test(reservada.pergunta));
+    const membro = await membroDoPedido(reservada.autor).catch(() => null);
+    const sistema = montarSistema({ diretor: dir.diretor, setorNome: dir.setorNome, hoje: hojeBR(), quem: `${autor?.nome ?? "membro"} (papel: ${ctx.papel})`, gratuito, procedimentos: procedimentosDoSetor(ctx.setor), execucao });
+    const pergunta = `${historico ? `CONVERSA ATÉ AQUI (continue a mesma conversa: responda à mensagem nova considerando o que já foi dito; não repita o que já explicou; se a mensagem for curta, como "e isso?" ou "detalhe o item 2", ela se refere ao que veio antes):\n${historico}\n\n` : ""}${historico ? "MENSAGEM NOVA" : execucao ? "PEDIDO" : "PERGUNTA"} (feita no VEOS em ${new Date(reservada.criada_em).toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo" })}${reservada.contexto ? `; referência: ${reservada.contexto}` : ""}):\n${reservada.pergunta}\n\nPRECEDENTES JÁ CONSULTADOS (termos: ${termos}):\n${resumoPrec}\n\n${execucao
+      ? "LEMBRE: EXECUTE o pedido com as ferramentas de ação (procure antes de criar; e-mail = preparar_email, a pessoa confirma o envio). Nada de inventar contato ou número. No fim: FEITO / PARA CONFIRMAR / LACUNAS."
+      : "LEMBRE: número (percentual, valor, quantidade) só se vier de uma ferramenta chamada nesta resposta ou do histórico acima; para falar de vendas, funil, clientes ou caixa, CHAME a ferramenta antes. Sem dado, escreva LACUNA."}`;
 
     const resultados: unknown[] = [precedentes];
     const coletados: { nome: string; args: unknown; texto: string }[] = [];
-    const ferramentas = ferramentasDoSetor(ctx.setor);
-    // tempo da funcao no plano gratuito: 150 s no total (ferramentas ate ~80 s; resposta final ate ~125 s)
+    const doSetor = ferramentasDoSetor(ctx.setor);
+    const previstas = levantamentoPrevio(reservada.pergunta, doSetor.map((f) => f.nome), execucao ? 2 : 3);
+    const dados = execucao ? doSetor.filter((f) => DADOS_NA_EXECUCAO.has(f.nome) || previstas.some((p) => p.nome === f.nome)) : doSetor;
+    const ferramentas = [...dados, ...ferramentasDeAcao(ctx.setor, execucao)];
+    // tempo da funcao no plano gratuito: 150 s no total (ferramentas ate ~80-95 s; resposta final ate ~125 s)
     const rodar = (perg: string, prazo: number, limite: number) => responderComFallback(provs, {
       sistema, pergunta: perg, ferramentas,
-      maxPassos: 8, prazo, limite,
+      maxPassos: execucao ? 10 : 8, prazo, limite,
       executar: async (c) => {
-        const out = await executarFerramenta(c.nome, c.args, ctx);
+        const out = ehAcao(c.nome) ? await executarAcao(c.nome, c.args, { membro, perguntaId }) : await executarFerramenta(c.nome, c.args, ctx);
+        if (ehAcao(c.nome)) fonteDaAcao(ctx, c.nome, c.args, out);
         resultados.push(out);
         coletados.push({ nome: c.nome, args: c.args, texto: JSON.stringify(out).slice(0, 6000) });
         return out;
@@ -129,8 +171,7 @@ export async function responderPergunta(perguntaId: string) {
     // LEVANTAMENTO PREVIO: os dados do assunto ja entram no pedido (o modelo pequeno interpreta em vez de procurar)
     let previo = "";
     try {
-      const nomes = ferramentas.map((f) => f.nome);
-      const alvos = levantamentoPrevio(reservada.pergunta, nomes);
+      const alvos = previstas;
       const feitos = await Promise.all(alvos.map(async (a) => {
         try {
           const out = await Promise.race([executarFerramenta(a.nome, a.args, ctx), new Promise((_, rej) => setTimeout(() => rej(new Error("demorou")), 15_000))]);
@@ -153,16 +194,23 @@ export async function responderPergunta(perguntaId: string) {
       console.error("levantamento previo", e);
     }
     const perguntaComDados = pergunta + previo;
-    let r = await rodar(perguntaComDados, t0 + 80_000, t0 + 125_000);
+    let r = await rodar(perguntaComDados, t0 + (execucao ? 95_000 : 80_000), t0 + 125_000);
     // pergunta de dados respondida sem nenhuma ferramenta: refaz UMA vez exigindo a consulta (se ainda houver tempo)
-    if (r.ok && coletados.length === 0 && perguntaDeDados(reservada.pergunta) && Date.now() - t0 < 50_000) {
+    if (!execucao && r.ok && coletados.length === 0 && perguntaDeDados(reservada.pergunta) && Date.now() - t0 < 50_000) {
       const r2 = await rodar(perguntaComDados + REFAZER_COM_FERRAMENTA, Date.now() + 40_000, t0 + 140_000);
       r.tentativas.push(...r2.tentativas);
       if (r2.ok && coletados.length > 0) r = { ...r2, tentativas: r.tentativas };
     }
+    // execucao em que o modelo so descreveu (nao chamou nenhuma acao): refaz UMA vez mandando executar
+    const executou = () => coletados.some((x) => ehAcao(x.nome) && ACOES_DE_FATO.test(x.nome));
+    if (execucao && r.ok && !executou() && Date.now() - t0 < 60_000) {
+      const r2 = await rodar(perguntaComDados + REFAZER_EXECUTANDO, Date.now() + 50_000, t0 + 140_000);
+      r.tentativas.push(...r2.tentativas);
+      if (r2.ok && executou()) r = { ...r2, tentativas: r.tentativas };
+    }
 
     // CONFERENCIA ATIVA: se a resposta traz 2+ valores sem origem, refaz UMA vez mandando corrigir (se ainda houver tempo)
-    if (r.ok && Date.now() - t0 < 70_000) {
+    if (!execucao && r.ok && Date.now() - t0 < 70_000) {
       const conh0 = numerosDe(resultados);
       numerosDe(reservada.pergunta, conh0);
       const ruins = conferirValores(limparMarkdown(r.resultado.texto), conh0);
@@ -181,19 +229,27 @@ export async function responderPergunta(perguntaId: string) {
         console.error("trilha da IA", e);
       }
     }
+    // execucao que ja fez coisas mas o modelo nao escreveu o fim: responde com o resumo do que foi feito (nao volta para
+    // a fila, para nao repetir as acoes numa nova tentativa)
+    if (!r.ok && execucao && executou()) {
+      r = { ok: true, provedor: { id: "veos", rotulo: "VEOS (resumo automático)", modelos: [], chave: "", gratuito: true }, resultado: { texto: resumoDasAcoes(coletados), modelo: "resumo das ações", passos: [], uso: { entrada: 0, saida: 0 } }, tentativas: r.tentativas } as any;
+    }
     if (!r.ok) {
       const motivo = r.tentativas.map((t) => `${t.provedor}/${t.modelo}: ${t.erro}`).join(" | ").slice(0, 480) || "nenhum provedor respondeu";
       await servico("/rest/v1/rpc/pergunta_ia_liberar", { method: "POST", body: JSON.stringify({ p_id: perguntaId, p_erro: motivo }) });
       return { ok: false, motivo };
     }
 
-    const texto0 = limparMarkdown(r.resultado.texto);
+    // modo execucao: ids longos (uuid) nao ajudam quem le; somem do texto (ficam no historico de cada registro)
+    const texto0 = execucao
+      ? limparMarkdown(r.resultado.texto).replace(/\s*\((?:ID|id|Id)s?:?\s*[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\)/g, "").replace(/\b(?:ID|id|Id):?\s*[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\b,?\s*/g, "")
+      : limparMarkdown(r.resultado.texto);
     const conhecidos = numerosDe(resultados);
     numerosDe(reservada.pergunta, conhecidos);
     numerosDe(historico, conhecidos);
     numerosDe(resumoPrec, conhecidos);
     // respondeu sem consultar nenhum dado do VEOS e citou numeros: aviso no topo (o modelo pequeno as vezes inventa)
-    const semDados = coletados.length === 0 && /\d+(?:,\d+)?\s?%|R\$\s?\d/.test(texto0);
+    const semDados = !execucao && coletados.length === 0 && /\d+(?:,\d+)?\s?%|R\$\s?\d/.test(texto0);
     const aviso = semDados ? "ATENÇÃO (conferência do VEOS): nesta resposta o diretor não consultou nenhum dado do VEOS. Percentuais e valores abaixo NÃO são fatos da VOICE: trate como hipótese e peça \"use os dados do VEOS\" para ele refazer com as ferramentas.\n\n" : "";
     const texto = (aviso + texto0 + rodapeConferencia(conferirValores(texto0, conhecidos))).slice(0, 19_500);
 

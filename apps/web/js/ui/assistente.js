@@ -5,10 +5,13 @@
 //   - Avisos: alertas ALTO/CRITICO novos do Radar entram no chat como mensagem do VEOS (selo no botao).
 //   - Voz: fala a resposta com a voz masculina pt-BR mais natural do navegador, grave, tom de
 //     assistente formal (estilo "Jarvis"; a voz do filme e do ator e nao pode ser copiada).
+//   - Pedido para FAZER ("ache 3 arquitetos e mande nossa apresentacao", "abra um chamado", "cadastre o lead"): o
+//     diretor executa com as ferramentas do VEOS (cadastra, cria tarefa, pesquisa, prepara e-mails). Os e-mails
+//     preparados aparecem como cartoes com "Enviar": quem envia e a pessoa (clique ou "confirmo"/"pode enviar").
 // Estado guardado no aparelho (localStorage): mensagens recentes, conversas por diretor e preferencias.
 import { api } from "../data/api.js";
 import { CATALOGO } from "../data/catalogo.js";
-import { interpretar } from "../domain/comandos.js";
+import { confirmacaoDeEnvio, interpretar } from "../domain/comandos.js";
 import { blocosDaResposta } from "../domain/conversa.js";
 import { avisosNovos } from "../domain/avisos.js";
 import { clear, h } from "./dom.js";
@@ -94,11 +97,79 @@ async function aguardarResposta(id, setor) {
   return { ok: false, erro: "o diretor ainda está pensando; a resposta vai aparecer em Perguntar aos diretores", id };
 }
 
+// ---------------------------------------------------------------- e-mails preparados pela IA (cartoes com "Enviar")
+let situacaoEmail = null; // { conectado, conta, ... } (cache de 5 min)
+async function gmailLigado(forcar = false) {
+  if (!forcar && situacaoEmail && Date.now() - situacaoEmail.em < 5 * 60_000) return situacaoEmail.v;
+  try { situacaoEmail = { em: Date.now(), v: await api.emailSituacao() }; } catch { situacaoEmail = { em: Date.now(), v: { conectado: false } }; }
+  return situacaoEmail.v;
+}
+const pendentes = (m) => (m?.itens ?? []).filter((i) => i.estado === "rascunho" && i.para);
+function ultimaComPendentes() {
+  for (let i = msgs.length - 1; i >= 0; i--) if (msgs[i].de === "acoes" && pendentes(msgs[i]).length) return msgs[i];
+  return null;
+}
+function mudarItem(msgId, itemId, mudanca) {
+  const m = msgs.find((x) => x.id === msgId);
+  const it = m?.itens?.find((x) => x.id === itemId);
+  if (it) Object.assign(it, mudanca);
+  avisar();
+}
+export async function enviarItem(msgId, itemId, confirmacao = "tela") {
+  const m = msgs.find((x) => x.id === msgId);
+  const it = m?.itens?.find((x) => x.id === itemId);
+  if (!it || it.estado !== "rascunho") return false;
+  mudarItem(msgId, itemId, { estado: "enviando", erro: null });
+  try {
+    await api.mensagemEnviar(itemId, confirmacao);
+    mudarItem(msgId, itemId, { estado: "enviada", em: new Date().toISOString() });
+    return true;
+  } catch (e) {
+    mudarItem(msgId, itemId, { estado: /já está enviada/.test(e.message) ? "enviada" : "rascunho", erro: e.message });
+    return false;
+  }
+}
+export async function enviarTodos(msgId, confirmacao = "lote") {
+  const m = msgs.find((x) => x.id === msgId);
+  let ok = 0, falha = 0;
+  for (const it of pendentes(m)) (await enviarItem(msgId, it.id, confirmacao)) ? ok++ : falha++;
+  return { ok, falha };
+}
+export async function descartarItem(msgId, itemId) {
+  try {
+    await api.mensagemMarcar(itemId, "descartada", { motivo: "descartado no chat da IA" });
+    mudarItem(msgId, itemId, { estado: "descartada" });
+  } catch (e) { mudarItem(msgId, itemId, { erro: e.message }); }
+}
+/** Rascunhos de e-mail que a IA preparou nesta pergunta (origem ia:<id>). */
+async function rascunhosDaPergunta(perguntaId) {
+  try {
+    const { mensagens } = await api.mensagens("rascunho", { origem: `ia:${perguntaId}` });
+    return mensagens.filter((x) => x.canal === "email").map((x) => ({ id: x.id, para: x.destinatario ?? "", assunto: x.assunto ?? "", corpo: x.corpo ?? "", tipo: x.tipo ?? "avulsa", estado: "rascunho" }));
+  } catch { return []; }
+}
+
 /** Envia o que a pessoa falou/digitou. Devolve quando a resposta chega (ou falha). */
 export async function enviar(texto) {
   const t = String(texto ?? "").trim();
   if (!t || pensando) return;
   adicionar({ de: "eu", texto: t });
+  // "confirmo" / "pode enviar" com e-mails preparados na tela: envia todos (a confirmacao e da pessoa)
+  const comPendentes = confirmacaoDeEnvio(t) ? ultimaComPendentes() : null;
+  if (comPendentes) {
+    const st = await gmailLigado(true);
+    if (!st.conectado) { adicionar({ de: "veos", texto: "O Gmail da VOICE ainda não está conectado ao VEOS. Conecte em Integrações (uns 5 minutos) ou abra cada e-mail no seu programa de e-mail pelo botão do cartão.", href: "#/integracoes" }); return; }
+    const n = pendentes(comPendentes).length;
+    pensando = { setor: comPendentes.setor ?? "direcao", desde: Date.now(), envio: true };
+    avisar();
+    try {
+      const r = await enviarTodos(comPendentes.id, "voz");
+      const fala = r.falha ? `Enviei ${r.ok} de ${n} e-mails pelo Gmail. ${r.falha} não saiu: veja o motivo no cartão.` : `Pronto${tratamento() ? `, ${tratamento()}` : ""}. Enviei ${r.ok} e-mail${r.ok === 1 ? "" : "s"} pelo Gmail da VOICE. Aviso quando alguém responder.`;
+      adicionar({ de: "veos", texto: fala });
+      falar(fala);
+    } finally { pensando = null; avisar(); }
+    return;
+  }
   const r = interpretar(t);
   if (r.rota) {
     const fala = `Certo${tratamento() ? `, ${tratamento()}` : ""}. ${r.fala}`;
@@ -109,7 +180,7 @@ export async function enviar(texto) {
   }
   const setor = r.diretor ? SETOR_DA_SIGLA[r.diretor.sigla] ?? "direcao" : "direcao";
   const conversas = ler(K.conversas, {});
-  pensando = { setor, desde: Date.now() };
+  pensando = { setor, desde: Date.now(), acao: Boolean(r.acao) };
   avisar();
   try {
     let res;
@@ -130,7 +201,13 @@ export async function enviar(texto) {
     const fim = await aguardarResposta(res.id, setor);
     if (fim.ok) {
       adicionar({ de: "diretor", setor, texto: fim.resposta.resposta, motor: fim.resposta.motor, conversa: conversas[setor] });
-      falar(trechoParaFalar(fim.resposta.resposta));
+      // e-mails que o diretor preparou nesta resposta: cartoes com "Enviar" (a pessoa confirma)
+      const itens = await rascunhosDaPergunta(res.id);
+      if (itens.length) {
+        const st = await gmailLigado(true);
+        adicionar({ de: "acoes", setor, pergunta: res.id, itens, gmail: Boolean(st.conectado) });
+        falar(`${trechoParaFalar(fim.resposta.resposta)} Preparei ${itens.length} e-mail${itens.length === 1 ? "" : "s"}. ${st.conectado ? "Diga confirmo para enviar, ou toque em Enviar." : "Para eu enviar pelo Gmail, conecte o Gmail em Integrações."}`);
+      } else falar(trechoParaFalar(fim.resposta.resposta));
     } else {
       adicionar({ de: "veos", texto: `Não consegui a resposta do ${SIGLA[setor]} agora: ${fim.erro}.`, href: `#/diretores?conversa=${conversas[setor]}` });
     }
@@ -169,11 +246,40 @@ function textoFormatado(texto) {
     return h("p", null, b.texto);
   }));
 }
+const mailto = (i) => `mailto:${encodeURIComponent(i.para ?? "")}?subject=${encodeURIComponent(i.assunto ?? "")}&body=${encodeURIComponent(i.corpo ?? "")}`;
+function cartoesDeEmail(m) {
+  const vivos = (m.itens ?? []).filter((i) => i.estado !== "descartada");
+  const abertos = pendentes(m);
+  const todos = abertos.length > 1 && m.gmail ? h("button", { class: "btn btn-primary btn-mini", type: "button", onclick: async (e) => { e.currentTarget.disabled = true; const r = await enviarTodos(m.id, "lote"); if (r.falha) adicionar({ de: "veos", texto: `${r.ok} enviado(s); ${r.falha} com problema (veja o cartão).` }); } }, `Enviar os ${abertos.length} pelo Gmail`) : null;
+  return h("div", { class: "as-acoes-lista" },
+    h("div", { class: "as-acoes-topo" }, h("strong", null, `${vivos.length} e-mail${vivos.length === 1 ? "" : "s"} preparado${vivos.length === 1 ? "" : "s"}`),
+      h("small", null, m.gmail ? "Confira e envie. Diga “confirmo” para enviar todos." : "Gmail não conectado: abra no seu e-mail ou conecte em Integrações."), todos),
+    vivos.map((i) => {
+      const corpo = h("pre", { class: "as-email-corpo", hidden: true }, i.corpo);
+      const ver = h("button", { class: "btn btn-ghost btn-mini", type: "button", onclick: () => { corpo.hidden = !corpo.hidden; ver.textContent = corpo.hidden ? "Ver texto" : "Esconder"; } }, "Ver texto");
+      const estadoTxt = i.estado === "enviada" ? "Enviado ✓" : i.estado === "enviando" ? "Enviando…" : null;
+      const acoes = i.estado === "rascunho"
+        ? [m.gmail && i.para ? h("button", { class: "btn btn-primary btn-mini", type: "button", onclick: () => enviarItem(m.id, i.id, "tela") }, "Enviar") : null,
+          !m.gmail && i.para ? h("a", { class: "btn btn-ghost btn-mini", href: mailto(i) }, "Abrir no e-mail") : null,
+          !i.para ? h("a", { class: "btn btn-ghost btn-mini", href: "#/mensagens" }, "Falta o destinatário: completar") : null,
+          ver, h("button", { class: "btn btn-ghost btn-mini", type: "button", onclick: () => descartarItem(m.id, i.id) }, "Descartar")]
+        : [ver];
+      return h("div", { class: `as-email${i.estado === "enviada" ? " as-email-ok" : ""}` },
+        h("div", { class: "as-email-cab" }, h("span", null, h("small", null, "Para "), h("strong", null, i.para || "—")), estadoTxt ? h("span", { class: "as-email-estado" }, estadoTxt) : null),
+        h("div", { class: "as-email-assunto" }, i.assunto || "(sem assunto)"),
+        h("p", { class: "as-email-trecho" }, String(i.corpo ?? "").replace(/\s+/g, " ").slice(0, 180) + (String(i.corpo ?? "").length > 180 ? "…" : "")),
+        corpo, i.erro ? h("p", { class: "cv-aviso" }, i.erro) : null,
+        h("div", { class: "row as-email-botoes" }, acoes));
+    }),
+    h("a", { class: "as-link", href: "#/mensagens" }, "Abrir a Caixa de saída"));
+}
+
 export function desenharMensagens(alvo, { compacto = false } = {}) {
   const st = estado();
   clear(alvo);
   for (const m of st.msgs) {
     if (m.de === "eu") { alvo.append(h("div", { class: "as-msg as-eu" }, h("div", { class: "as-balao" }, m.texto))); continue; }
+    if (m.de === "acoes") { alvo.append(h("div", { class: "as-msg as-ia as-msg-acoes" }, h("span", { class: "as-avatar", "aria-hidden": "true" }, "✉"), h("div", { class: "as-corpo" }, cartoesDeEmail(m)))); continue; }
     if (m.de === "aviso") { alvo.append(h("div", { class: "as-msg as-aviso" }, h("span", { class: "as-avatar as-avatar-aviso", "aria-hidden": "true" }, "!"), h("div", { class: "as-corpo" }, h("p", null, m.texto), m.href ? h("a", { href: m.href, class: "as-link" }, "Abrir") : null))); continue; }
     const sigla = m.de === "diretor" ? SIGLA[m.setor] : null;
     alvo.append(h("div", { class: `as-msg as-ia${m.de === "diretor" ? "" : " as-veos"}` },
@@ -184,7 +290,8 @@ export function desenharMensagens(alvo, { compacto = false } = {}) {
         m.de === "diretor" && m.conversa ? h("a", { href: `#/diretores?conversa=${m.conversa}`, class: "as-link" }, "Continuar com fontes e histórico") : m.href ? h("a", { href: m.href, class: "as-link" }, "Abrir") : null)));
   }
   if (st.pensando) alvo.append(h("div", { class: "as-msg as-ia" }, h("span", { class: "as-avatar", "aria-hidden": "true" }, SIGLA[st.pensando.setor] ?? "✦"),
-    h("div", { class: "as-corpo as-pensando" }, h("span", { class: "cv-pontos", "aria-hidden": "true" }, h("i"), h("i"), h("i")), h("small", null, `${NOME[st.pensando.setor] ?? "O diretor"} está analisando com os dados do VEOS…`))));
+    h("div", { class: "as-corpo as-pensando" }, h("span", { class: "cv-pontos", "aria-hidden": "true" }, h("i"), h("i"), h("i")),
+      h("small", null, st.pensando.envio ? "Enviando pelo Gmail da VOICE…" : st.pensando.acao ? `${NOME[st.pensando.setor] ?? "O diretor"} está executando o pedido (pesquisa, cadastros, e-mails)… pode levar até 1 minuto.` : `${NOME[st.pensando.setor] ?? "O diretor"} está analisando com os dados do VEOS…`))));
   alvo.scrollTop = alvo.scrollHeight;
 }
 
@@ -232,12 +339,12 @@ export function pararAssistente() { clearInterval(timerAvisos); if (raizFlutuant
 
 function montarFlutuante() {
   const lista = h("div", { class: "as-lista", "aria-live": "polite" });
-  const { form, campo } = caixaDeEntrada({ placeholder: "Pergunte ou peça uma tela…" });
+  const { form, campo } = caixaDeEntrada({ placeholder: "Peça, pergunte ou abra uma tela…" });
   const fechar = h("button", { class: "as-botao", type: "button", "aria-label": "Fechar o chat" }, icone("fechar"));
   const vozBtn = h("button", { class: "as-botao", type: "button", "aria-label": "Voz", title: "Ligar/desligar a voz" }, icone("som"));
   const painel = h("section", { class: "as-painel", role: "dialog", "aria-label": "Assistente VEOS" },
     h("header", { class: "as-topo" }, h("span", { class: "as-avatar", "aria-hidden": "true" }, "✦"),
-      h("div", { class: "as-topo-texto" }, h("strong", null, "VEOS"), h("small", null, "Avisos e perguntas aos diretores")),
+      h("div", { class: "as-topo-texto" }, h("strong", null, "VEOS"), h("small", null, "Peça, pergunte e confirme os envios")),
       h("a", { class: "as-botao", href: "#/ia", "aria-label": "Abrir em tela cheia", title: "Tela cheia" }, icone("expandir")), vozBtn, fechar),
     lista, h("footer", { class: "as-rodape" }, form));
   const selo = h("span", { class: "as-selo", hidden: true });

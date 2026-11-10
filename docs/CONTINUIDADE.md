@@ -2,6 +2,16 @@
 
 Atualize este arquivo ao fim de cada sessão: última ação, resultado e próximo passo.
 
+## 10/11/2026 (noite) — IA que executa (todos os setores) + envio pelo Gmail com confirmação
+- **Pedido do Fernando:** a IA (no VEOS e pelo MCP) tem que FAZER o que ele pede em qualquer setor, por exemplo "achar um arquiteto, pegar o e-mail, gerar um e-mail e enviar"; pensar a empresa inteira; pode se basear em outros apps (G4 OS) e no GitHub.
+- **Referências usadas:** G4 OS instalado (conectores Gmail/Agenda/Drive, automações "agendamentos" e "vigia de respostas", regra "apresentar → confirmar → agir" e `confirmed: true`); pesquisa de projetos de "empresa com agentes" no GitHub (Paperclip, SynthOrg, Open Executive) e de APIs de pesquisa gratuitas (Parallel, Tavily).
+- **Feito:** ver ESTADO_ATUAL (topo). Resumo: modo execução no motor (mesmas ferramentas do MCP, mesmas rotas da API); pesquisa na web pela Parallel; contatos de empresas a partir do site; preparar e enviar e-mail pelo Gmail da VOICE (ponte Apps Script) com travas; vigia das respostas; telas (cartões com Enviar no chat, "O que posso pedir", Caixa de saída, Integrações); MCP +16 ferramentas; catálogo de rotinas dos 9 setores (`domain/capacidades.js`); correção das rotas com filtro no MCP remoto; rascunhos de robôs fora da visão real; SW `veos-v3`.
+- **Publicado:** migration `20261110120000_ia_executa.sql`; segredo `VEOS_CIFRA`; funções `api`, `mcp`, `saude`, `ia-fila`; site (push na main).
+- **Testes rodados (rápidos, para validar o que é novo):** `e2e_ia_executa` 18/18 e `uso_ia_executa` 2/2 no servidor real (IA gratuita achou 4 escritórios e preparou os e-mails; nada enviado). **Escritos e não rodados:** `tests/web/web_contatos.test.mjs` (novo), `tests/web/comandos.test.mjs`, `tests/web/mcp.test.mjs`, `tests/scripts/mcp.test.mjs` (atualizados para a nova regra de envio). Rodar tudo quando o Fernando pedir "testa".
+- **Lista do que mudou desde o último teste completo:** tudo acima + o que já estava pendente (ver 09/11).
+- **Próximo passo (Fernando):** conectar o Gmail (Integrações, ~5 min; pendência CIO-15) e fazer a primeira prospecção pela IA (CSO-19). Opcional: chave grátis do Tavily (CIO-16).
+- **Próximo passo (programa):** ver PROXIMA_SESSAO, bloco "IA que executa — próximos".
+
 ## 10/11/2026 (noite) — IA dos diretores: levantamento prévio e conferência ativa
 - **Levantamento prévio** (`levantamentoPrevio` em `_shared/ia/texto.ts`, usado em `motor.ts`): pelo assunto da pergunta (caixa, fluxo, fechamento, indicadores, pedidos/recebíveis, funil/leads, metas, orçamentos/margem, vendas/faturamento, clientes) o servidor roda até 3 ferramentas de dados ANTES do modelo e injeta o resultado no pedido ("DADOS DO VEOS JÁ LEVANTADOS"). O modelo gratuito pequeno deixa de "esquecer" de consultar e responde mais rápido (≈11 s, antes ≈19 s). Só roda ferramentas que o setor/papel pode usar; falha ou erro de permissão é ignorado.
 - **Conferência ativa**: se a resposta traz 2 ou mais valores/percentuais sem origem, o motor refaz UMA vez mandando corrigir (LACUNA no lugar de inventar) e fica com a melhor das duas.

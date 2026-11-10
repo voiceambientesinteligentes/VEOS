@@ -6,7 +6,7 @@
 import { existsSync, readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { criarMcp, manualDiretorCom, textoMcp } from "../../apps/web/js/domain/mcp.js";
+import { criarMcp, manualDiretorCom, SETORES, textoMcp } from "../../apps/web/js/domain/mcp.js";
 
 const RAIZ = join(dirname(fileURLToPath(import.meta.url)), "../..");
 const lerJson = (f) => JSON.parse(readFileSync(join(RAIZ, f), "utf8"));
@@ -14,6 +14,7 @@ const lerJson = (f) => JSON.parse(readFileSync(join(RAIZ, f), "utf8"));
 /** Manual de atuacao do diretor (local, sem rede), lendo os arquivos do repositorio. */
 export const manualDiretor = (args) => manualDiretorCom(args, (id) => lerJson(`setores/${id}.json`), (id) => (existsSync(join(RAIZ, `setores/manuais/${id}.json`)) ? lerJson(`setores/manuais/${id}.json`) : null));
 
-// MCP local (Claude Code): le os manuais dos arquivos. O MCP remoto do site usa os manuais embutidos (supabase/functions/mcp).
-const { FERRAMENTAS, responder } = criarMcp({ manualDiretor });
+// MCP local (Claude Code): le os manuais e o catalogo dos arquivos. O MCP remoto do site usa os embutidos (supabase/functions/mcp).
+const catalogo = SETORES.map((id) => lerJson(`setores/${id}.json`));
+const { FERRAMENTAS, responder } = criarMcp({ manualDiretor, catalogo });
 export { FERRAMENTAS, responder, textoMcp };

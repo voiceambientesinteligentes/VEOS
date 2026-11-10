@@ -62,10 +62,11 @@ function chamarApi(dono: Membro, linkId: string, ferramenta: string, marca: { re
     const url = `https://interno.invalid/functions/v1/api/${rota}`;
     const bruto = corpo === undefined ? undefined : JSON.stringify(corpo);
     const chave = (await sha256(`${linkId}|${metodo}|${rota}|${bruto ?? ""}|${Math.floor(Date.now() / 300_000)}`)).slice(0, 40); // mesma chamada em 5 min nao duplica
-    const req = new Request(url, { method: metodo, headers: { "Content-Type": "application/json", ...(metodo === "POST" ? { "Idempotency-Key": chave } : {}) }, body: bruto });
+    const req = new Request(url, { method: metodo, headers: { "Content-Type": "application/json", "X-VEOS-Origem": "mcp", ...(metodo === "POST" ? { "Idempotency-Key": chave } : {}) }, body: bruto });
     let status = 200, detalhe: string | null = null;
     try {
-      return await rotearComMembro(req, rota.replace(/\/$/, ""), dono);
+      // o roteador recebe so o caminho (os filtros ?a=b chegam pela URL da requisicao)
+      return await rotearComMembro(req, rota.split("?")[0].replace(/\/$/, ""), dono);
     } catch (e) {
       if (e instanceof HttpError) { status = e.status; detalhe = e.message; throw new Error(e.message); }
       if (e instanceof RegraError) { status = 400; detalhe = e.message; throw new Error(e.message); }
@@ -106,7 +107,7 @@ Deno.serve(async (req) => {
     const m = e instanceof HttpError ? e.message : "indisponível";
     return resp(e instanceof HttpError ? 403 : 503, { jsonrpc: "2.0", id: null, error: { code: -32000, message: m } });
   }
-  const { responder } = criarMcp({ manualDiretor, nome: "veos", escopo: link.escopo });
+  const { responder } = criarMcp({ manualDiretor, nome: "veos", escopo: link.escopo, catalogo: CATALOGO as unknown as unknown[] });
   const lote = Array.isArray(msg) ? msg : [msg];
   const respostas = [];
   for (const m of lote as { method?: string; params?: { name?: string } }[]) {

@@ -107,3 +107,26 @@ depende da medição de CPU no P05.
 Com o PC desligado, qualquer resposta gerada por IA exige uma API paga por uso (ex.: API da
 Anthropic). A assinatura pessoal do Claude não serve para execução autônoma no servidor. O
 vigia funciona sem IA. As respostas "na voz do diretor" dependem de orçamento aprovado.
+(Atualização: desde 05/10 o motor usa provedores com nível gratuito — Gemini, Mistral, OpenRouter :free, Groq — ver ESTADO_ATUAL.)
+
+## IA que executa (10/11/2026)
+
+```
+pessoa (chat, IA VEOS, voz)  ──►  interpretar (comandos.js): tela | pergunta | PEDIDO PARA FAZER
+                                      │                          │
+                                      ▼                          ▼
+                    motor do diretor (ia/motor.ts)   modo execução: ferramentas do MCP (domain/mcp.js)
+                                      │                          executadas pelas rotas da API (api/roteador.ts)
+                                      │                          com o MEMBRO que pediu (ia/acoes_ia.ts)
+                                      ▼
+  registros de qualquer setor · tarefas · clientes · orçamento (rascunho) · conta a pagar · fornecedores
+  pesquisa na web e contatos de empresas (_shared/web.ts: Tavily/Brave/Serper se houver chave → Parallel → DuckDuckGo)
+  e-mail: PREPARA (rascunho) ──► cartão "Enviar" no chat / Caixa de saída / MCP confirmado=true ──► POST /mensagens/:id/enviar
+                                                                        └─► ponte Gmail (Apps Script) ─► Gmail da VOICE
+  vigia das respostas (email_vigia.ts, a cada 10 min) ─► tarefa "Responder…" · "SAIR" = lista de bloqueio
+```
+- Uma fonte de ferramentas para o MCP (ChatGPT/Claude) e para a IA do VEOS; permissões e validações = as da tela.
+- A IA nunca envia nem paga: o envio de e-mail exige uma pessoa (clique, "confirmo" ou `confirmado=true` no MCP).
+- Minimização: contato pessoal de cliente não vai ao modelo (o servidor completa endereço e {{primeiro_nome}}).
+- Segredos das integrações (ponte, chaves de pesquisa) cifrados no banco com `VEOS_CIFRA` (AES-GCM).
+- Catálogo do que dá para pedir por setor: `apps/web/js/domain/capacidades.js` (tela IA VEOS → "O que posso pedir").

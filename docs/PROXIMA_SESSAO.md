@@ -1,4 +1,4 @@
-# Próxima sessão — ponto de partida (atualizado em 09/11/2026)
+# Próxima sessão — ponto de partida (atualizado em 10/11/2026, noite)
 
 Este arquivo trata só do **PROGRAMA** (o VEOS: telas, servidor, banco, IA, integrações).
 O que é operação da empresa (decidir metas, RT, alíquotas, preencher dados reais, ligar para clientes)
@@ -15,6 +15,8 @@ política, meta, alçada ou regime tributário: isso é decisão do Fernando.
 
 Repositório: C:\Users\ferna\VEOS (GitHub voiceambientesinteligentes/VEOS, público; o site publica
 sozinho no GitHub Pages a cada push na main). Banco e servidor: Supabase, projeto vkrwxvnfstvriibjwuvw.
+Desde 10/11 a IA do VEOS EXECUTA pedidos (e-mail sai pelo Gmail só com a confirmação do Fernando):
+não envie e-mail real em testes (robôs só simulam; destinatário de teste sempre @veos-teste.invalid).
 
 1. Leia, nesta ordem: docs/PROXIMA_SESSAO.md (este), docs/ESTADO_ATUAL.md (as seções do topo são as
    mais recentes), docs/CONTINUIDADE.md, docs/DECISOES.md e docs/SETORES_ESQUEMA.md.
@@ -39,6 +41,8 @@ sozinho no GitHub Pages a cada push na main). Banco e servidor: Supabase, projet
 - Banco: `npx -y supabase@2.118.0 db push --linked --yes` (migrations) e `npx -y supabase@2.118.0 db query --linked -f tests/banco/<arquivo>.sql`. Ensaiar migration antes: junte migration + teste num arquivo com `begin; ... rollback;` e rode o db query.
 - Funções: `npx -y supabase@2.118.0 functions deploy <api|saude|ia-fila|zoho|zoho-sync|vigia> --use-api --project-ref vkrwxvnfstvriibjwuvw`.
 - Testes online contra o sistema real (robôs `@veos-teste.invalid`, ficam inativos no fim): `node scripts/online.mjs tests/online/<e2e_api|e2e_financeiro|e2e_setores|e2e_sistema|e2e_mcp|e2e_ia|e2e_caixa|e2e_operacao>.mjs`.
+- IA que executa: `e2e_ia_executa.mjs` (pesquisa, contatos, rascunho + parceiro, envio simulado, travas; não gasta IA; manual por enquanto) e `uso_ia_executa.mjs ["pedido"] [setor]` (pedido real à IA; gasta cota gratuita; descarta os rascunhos no fim).
+- Carregar os módulos do servidor sem o Deno (pega import errado/sintaxe): o Node não aceita "parameter properties" de `zoho_sync.ts`; use o Bun que vem no G4 OS (`%LOCALAPPDATA%\Programs\G4 OS\resources\vendor\bun\bun.exe`) com `globalThis.Deno = { env: { get: () => "" }, serve: () => {} }`.
 - No navegador (precisa do Playwright, que não fica instalado): `$env:PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD="1"; npm install --no-save --no-package-lock playwright` e então `navegador.mjs` (77 telas do site publicado), `uso_orcamento.mjs` (montador de ponta a ponta), `uso_ia.mjs` (IA real) e `fotos.mjs "#/rota"` (fotos para revisar o visual; `VEOS_FOTOS`, `VEOS_FOTO_INTEIRA=1`, `VEOS_SITE` para o publicado).
 - Comandos com muitas aspas: escreva um script na pasta de rascunho e execute. `Remove-Item` no mesmo comando que cita "C:\Program Files" é bloqueado: apague em comando separado.
 
@@ -52,6 +56,22 @@ sozinho no GitHub Pages a cada push na main). Banco e servidor: Supabase, projet
 
 ## O que já existe (resumo de 04/11)
 Setores vivos (9) com registros, regras vivas e Radar · Estrutura da empresa (organograma, agenda de cada cargo, atividade → ferramenta) · Operação comercial do zero (clientes, montador de orçamento com preço pela Política V1, PDF, enviado/aceito/recusado, pedido gerado do orçamento, retomada dos orçamentos antigos do Zoho, contato rápido, prospecção, calendário do Instagram, Começar a operar) · Pedidos → estoque → parcelas → NF → recebimento, compras e contas a pagar · Financeiro do CFO (caixa por extrato OFX, 13 semanas, DRE, indicadores, preço dos produtos, formulário com valores estimados marcados) · Biblioteca e governança · Zoho espelhado e editável · Diretores com IA em formato de conversa (continuação no mesmo fio, conferência de valores e percentuais) · IA VEOS por voz/texto ligada aos diretores e chat flutuante com avisos · Novo design (menu por áreas, Hoje, celular) · Usuários, MFA, LGPD, backup, exportação, MCP `veos` (24 ferramentas), PWA.
+
+## Estado em 10/11 (noite) — IA que executa
+A IA do VEOS (chat, IA VEOS e MCP do ChatGPT/Claude) agora EXECUTA pedidos em todos os setores: pesquisa na web
+(Parallel, grátis), acha empresas e o contato público, cadastra em qualquer setor, cria tarefas, prepara e-mails e
+ENVIA pelo Gmail da VOICE depois da confirmação do Fernando (decisão de 10/11). Ver ESTADO_ATUAL (topo).
+**Falta o Fernando:** conectar o Gmail (Integrações → E-mail e agenda; pendência CIO-15) e fazer a primeira prospecção (CSO-19).
+**Sem teste completo desde 09/11** (só os testes rápidos do que é novo: e2e_ia_executa 18/18, uso_ia_executa 2/2).
+
+### IA que executa — próximos (programa)
+1. Testar com o Gmail conectado: envio real, vigia das respostas (tarefa "Responder"), "SAIR" bloqueando, agenda.
+2. Anexos no e-mail (caderno técnico em PDF guardado no Storage; a ponte anexa) — hoje a IA oferece mandar depois.
+3. Convite de agenda pela IA do chat com confirmação (cartão "Enviar convite", como o de e-mail).
+4. Rotinas agendadas da IA (estilo "Agendamentos" do G4 OS): ex. "toda segunda 8h, o CSO prepara 5 apresentações" e "todo dia 18h, resumo por e-mail" — sempre com confirmação do envio.
+5. Resposta de e-mail pela IA na mesma conversa ("responda o arquiteto que respondeu hoje") — a ferramenta já existe (responder_a); falta um teste real.
+6. CNPJ dos escritórios (P1-8) como segunda fonte de contatos, além da web.
+7. WhatsApp pela API oficial da Meta (precisa de conta comercial e aprovação de modelos) — hoje só abre o app.
 
 ## Estado em 09/11 (tarde)
 Tudo do backlog abaixo que não depende do Fernando está feito e testado (ver CONTINUIDADE de 09/11). Restam só: P0-3 (SMTP, acesso dele), P1-8 (CNPJ, aguarda o OK), P2-14 (decidir os 37 vínculos), P2-15 (desligar o Zoho, só se ele pedir), P2-16 (Instagram/Meta, conta). NÃO lembrar o Fernando de revogar/trocar chaves (resolvido).

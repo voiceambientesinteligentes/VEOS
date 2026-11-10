@@ -18,6 +18,7 @@ import { rotearPlano } from "./plano.ts";
 import { rotearCaixa } from "./caixa.ts";
 import { rotearComercial } from "./comercial.ts";
 import { rotearMcpRemoto } from "./mcp_remoto.ts";
+import { rotearAcoes } from "./acoes.ts";
 
 const CHAVE_RE = /^[A-Za-z0-9-]{16,64}$/;
 
@@ -35,6 +36,7 @@ export async function rotearComMembro(req: Request, rota: string, eu: Membro) {
   if (partes[0] === "cfo") return await rotearCfo(req, partes, eu);
   if (partes[0] === "plano") return await rotearPlano(req, partes, eu);
   if (partes[0] === "comercial") return await rotearComercial(req, partes, eu);
+  if (partes[0] === "pesquisa" || partes[0] === "email" || partes[0] === "agenda") return await rotearAcoes(req, partes, eu);
   if (partes[0] === "caixa") {
     const corpo = req.method === "POST" ? ((await lerCorpo(req)) ?? {}) : {};
     if (req.method === "POST" && !CHAVE_RE.test(req.headers.get("Idempotency-Key") ?? "")) throw new HttpError(400, "Idempotency-Key obrigatorio");

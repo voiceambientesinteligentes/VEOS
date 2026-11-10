@@ -44,8 +44,9 @@ test("ferramentas de criação: só cadastram e fazem rascunho, passam pela API 
   const call = (name, args) => responder({ jsonrpc: "2.0", id: 1, method: "tools/call", params: { name, arguments: args } }, chamar);
   const nomes = FERRAMENTAS.map((f) => f.name);
   for (const n of ["veos_criar_cliente", "veos_criar_orcamento_rascunho", "veos_criar_conta_a_pagar", "veos_criar_fornecedor", "veos_criar_contrato_suporte", "veos_clientes", "veos_fornecedores"]) assert.ok(nomes.includes(n), n);
-  // nenhuma ferramenta paga, envia ou aceita
-  assert.ok(!nomes.some((n) => /pagar_conta|enviar|aceitar|aprovar|confirmar_pedido|decisao/.test(n)), nomes.join(","));
+  // nenhuma ferramenta paga, aceita, aprova ou decide; a unica que envia e o e-mail, e so com confirmado=true (decisao de 10/11/2026)
+  assert.ok(!nomes.some((n) => /pagar_conta|aceitar|aprovar|confirmar_pedido|decisao/.test(n)), nomes.join(","));
+  assert.deepEqual(nomes.filter((n) => /enviar/.test(n)), ["veos_enviar_email"]);
   assert.equal((await call("veos_criar_cliente", {})).result.isError, true);
   await call("veos_criar_cliente", { nome: "Cliente TESTE", telefone: "47999998888" });
   await call("veos_criar_conta_a_pagar", { descricao: "Frete", fornecedor: "Transp", categoria: "frete", vencimento: "2026-12-10", valor: "350.00" });
@@ -54,4 +55,37 @@ test("ferramentas de criação: só cadastram e fazem rascunho, passam pela API 
   assert.equal(chamadas[2][2].itens[0].tipo, "servico");
   await call("veos_clientes", { busca: "Silva & Filhos" });
   assert.equal(chamadas[3][1], "comercial/clientes?busca=Silva%20%26%20Filhos");
+});
+
+test("IA que executa: registros de qualquer setor, pesquisa, contatos e e-mail com confirmação explícita", async () => {
+  const chamadas = [];
+  const chamar = async (m, r, c) => { chamadas.push([m, r, c]); return { id: "x" }; };
+  const call = (name, args) => responder({ jsonrpc: "2.0", id: 1, method: "tools/call", params: { name, arguments: args } }, chamar);
+  // tipos de registro vem do catalogo (local, sem API)
+  const tipos = JSON.parse((await call("veos_tipos_de_registro", { setor: "posvenda" })).result.content[0].text);
+  assert.ok(tipos.setores[0].tipos.some((t) => t.tipo === "chamado" && t.campos.some((c) => c.id === "prioridade" && c.opcoes?.length)));
+  assert.equal(chamadas.length, 0);
+  await call("veos_criar_registro", { setor: "posvenda", tipo: "chamado", titulo: "Wi-Fi lento", dados: { cliente_nome: "João" } });
+  assert.deepEqual(chamadas.at(-1), ["POST", "registros", { setor: "posvenda", tipo: "chamado", titulo: "Wi-Fi lento", dados: { cliente_nome: "João" } }]);
+  await call("veos_registros", { setor: "vendas", tipo: "parceiro", busca: "studio" });
+  assert.equal(chamadas.at(-1)[1], "setor/vendas?tipo=parceiro&busca=studio&limite=30");
+  await call("veos_pesquisar_web", { consulta: "arquitetura Itajaí" });
+  assert.equal(chamadas.at(-1)[1], "pesquisa/web?q=arquitetura+Itaja%C3%AD");
+  await call("veos_encontrar_contatos", { busca: "escritório de arquitetura em Itajaí", quantidade: "3" });
+  assert.deepEqual(chamadas.at(-1), ["POST", "pesquisa/contatos", { busca: "escritório de arquitetura em Itajaí", quantidade: 3 }]);
+  await call("veos_preparar_email", { para: "contato@studio.com.br", assunto: "Café técnico", corpo: "Olá", tipo: "prospeccao", alvo: { nome: "Studio" } });
+  assert.equal(chamadas.at(-1)[1], "mensagens");
+  assert.equal(chamadas.at(-1)[2].canal, "email");
+  assert.equal(chamadas.at(-1)[2].origem, "mcp:veos");
+  // enviar: sem confirmado=true NAO chega a API
+  const n = chamadas.length;
+  const sem = await call("veos_enviar_email", { mensagem_id: "0b5e8f1a-1111-4222-8333-444455556666", confirmado: false });
+  assert.equal(sem.result.isError, true);
+  assert.match(sem.result.content[0].text, /não confirmado/);
+  assert.equal(chamadas.length, n);
+  await call("veos_enviar_email", { mensagem_id: "0b5e8f1a-1111-4222-8333-444455556666", confirmado: true });
+  assert.deepEqual(chamadas.at(-1), ["POST", "mensagens/0b5e8f1a-1111-4222-8333-444455556666/enviar", { confirmacao: "mcp" }]);
+  // agenda: convidados so com confirmado (o servidor recusa sem); a ferramenta repassa o flag
+  await call("veos_criar_evento", { titulo: "Café técnico", inicio: "2026-11-12T15:00", convidados: ["a@b.com"] });
+  assert.equal(chamadas.at(-1)[2].confirmado, false);
 });

@@ -346,3 +346,30 @@
 .ia2-avisos > small { color: var(--text-2); font-size: var(--fs-xs); letter-spacing: 0.08em; text-transform: uppercase; }
 .ia2-aviso { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border: 1px solid var(--line); border-radius: 12px; color: var(--text-0); text-decoration: none; font-size: 0.9rem; }
 .ia2-aviso:hover { border-color: rgba(224, 132, 118, 0.5); background: var(--bg-2); }
+
+/* ---- IA que executa: e-mails preparados no chat (cartoes com "Enviar") e "O que posso pedir" (10/11/2026) */
+.as-msg-acoes .as-avatar { font-size: 0.8rem; }
+.as-acoes-lista { display: grid; gap: 8px; }
+.as-acoes-topo { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; }
+.as-acoes-topo small { color: var(--text-2); font-size: var(--fs-xs); flex: 1 1 200px; }
+.as-email { display: grid; gap: 4px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 12px; background: var(--bg-2); min-width: 0; }
+.as-email-ok { border-color: rgba(120, 200, 150, 0.45); }
+.as-email-cab { display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap; font-size: 0.86rem; overflow-wrap: anywhere; }
+.as-email-cab small { color: var(--text-2); }
+.as-email-estado { color: var(--ok, #78c896); font-size: var(--fs-xs); letter-spacing: 0.04em; }
+.as-email-assunto { font-weight: 600; font-size: 0.9rem; overflow-wrap: anywhere; }
+.as-email-trecho { margin: 0; color: var(--text-1); font-size: 0.84rem; line-height: 1.45; overflow-wrap: anywhere; }
+.as-email-corpo { margin: 4px 0 0; padding: 8px 10px; border-radius: 8px; background: var(--bg-1); white-space: pre-wrap; overflow-wrap: anywhere; font-family: inherit; font-size: 0.84rem; line-height: 1.5; max-height: 320px; overflow-y: auto; }
+.as-email-botoes { gap: 6px; flex-wrap: wrap; }
+.ia2-capacidades { display: grid; gap: 8px; width: 100%; }
+.ia2-capacidades > small { color: var(--text-2); font-size: var(--fs-xs); letter-spacing: 0.08em; text-transform: uppercase; }
+.ia2-cap-abas { display: flex; flex-wrap: wrap; gap: 6px; }
+.ia2-cap-aba { padding: 4px 10px; border: 1px solid var(--line); border-radius: 999px; background: transparent; color: var(--text-1); font: inherit; font-size: 0.8rem; cursor: pointer; }
+.ia2-cap-aba[aria-pressed="true"] { border-color: var(--gold-line); background: var(--gold-dim); color: var(--text-0); }
+.ia2-cap-lista { display: grid; gap: 6px; }
+.ia2-cap-item { display: grid; gap: 2px; padding: 9px 12px; border: 1px solid var(--line); border-radius: 12px; background: transparent; color: var(--text-0); text-align: left; font: inherit; cursor: pointer; }
+.ia2-cap-item:hover { border-color: var(--gold-line); background: var(--bg-2); }
+.ia2-cap-item span { font-size: 0.88rem; }
+.ia2-cap-item small { color: var(--text-2); font-size: var(--fs-xs); line-height: 1.4; }
+.ia2-cap-gmail { color: var(--warn); }
+.codigo-ponte { max-height: 260px; overflow: auto; white-space: pre; font-size: 0.78rem; }

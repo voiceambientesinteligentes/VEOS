@@ -73,12 +73,23 @@ export async function rotearSetores(req: Request, partes: string[], eu: Membro) 
     if (raiz === "setor" && req.method === "GET" && id) {
       const s = setorDe(eu, id);
       const autor = await filtroAutor(eu);
-      const [registros, tarefas, alertas] = await Promise.all([
-        servico(`/rest/v1/registros?setor_id=eq.${s.id}&ambiente=eq.TESTE${autor}&select=id,tipo,titulo,estado,responsavel,prazo,valor::text,dados,criado_em,atualizado_em&order=atualizado_em.desc&limit=500`),
+      // filtros opcionais (usados pela IA e pelo MCP): ?tipo=&estado=&busca=&limite=
+      const q = new URL(req.url).searchParams;
+      const tipoF = s.registros.some((t) => t.tipo === q.get("tipo")) ? `&tipo=eq.${q.get("tipo")}` : "";
+      const estadoF = /^[a-z_]{2,40}$/.test(q.get("estado") ?? "") ? `&estado=eq.${q.get("estado")}` : "";
+      const sem = (t: unknown) => String(t ?? "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
+      const termo = sem(q.get("busca")).trim().slice(0, 80);
+      const limite = Math.max(1, Math.min(500, Number(q.get("limite")) || 500));
+      const [todos, tarefas, alertas] = await Promise.all([
+        servico(`/rest/v1/registros?setor_id=eq.${s.id}&ambiente=eq.TESTE${autor}${tipoF}${estadoF}&select=id,tipo,titulo,estado,responsavel,prazo,valor::text,dados,criado_em,atualizado_em&order=atualizado_em.desc&limit=500`),
         servico(`/rest/v1/tarefas?setor_id=eq.${s.id}&estado=eq.aberta&select=id,titulo,papel,prazo,origem,responsavel,registro_id,criado_em&order=prazo.asc.nullslast&limit=300`),
         servico(`/rest/v1/alertas?setor_id=eq.${s.id}&estado=eq.ativo&select=id,sentinela,severidade,titulo,mensagem,fonte,registro_id,rascunhos,notificar,atualizado_em&order=atualizado_em.desc&limit=300`),
       ]);
-      return { setor: s.id, registros, tarefas: await separarTeste(eu, tarefas), alertas: await separarTeste(eu, alertas) };
+      const registros = (termo ? todos.filter((r: Record<string, unknown>) => sem(`${r.titulo} ${JSON.stringify(r.dados ?? {})}`).includes(termo)) : todos).slice(0, limite);
+      // pedido com limite (IA/MCP): tarefas e alertas resumidos
+      const curto = q.has("limite");
+      const [t, a] = await Promise.all([separarTeste(eu, tarefas), separarTeste(eu, alertas)]);
+      return { setor: s.id, registros, total_registros: registros.length, tarefas: curto ? t.slice(0, 15) : t, alertas: curto ? a.slice(0, 10).map((x: Record<string, unknown>) => ({ id: x.id, severidade: x.severidade, titulo: x.titulo, registro_id: x.registro_id })) : a };
     }
 
     // historico de um registro: quem mudou o que e quando (so de registros que a pessoa pode ver)
