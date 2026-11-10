@@ -418,3 +418,6 @@ enabled = true
 # Entrevista guiada (MCP remoto para o ChatGPT): a autenticacao e o segredo na URL, nao o JWT do Supabase.
 [functions.entrevista]
 verify_jwt = false
+
+[functions.mcp]
+verify_jwt = false

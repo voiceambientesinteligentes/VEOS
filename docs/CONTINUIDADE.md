@@ -2,6 +2,14 @@
 
 Atualize este arquivo ao fim de cada sessão: última ação, resultado e próximo passo.
 
+## 10/11/2026 — MCP remoto definitivo (ChatGPT e Claude como o dono)
+- **O que é:** função `mcp` (`supabase/functions/mcp`, `--no-verify-jwt`), URL `.../functions/v1/mcp/<segredo>`. Link secreto (só o hash fica em `mcp_links`), com escopo **consulta** (só leitura) ou **completo** (leitura + cadastros/rascunhos), validade 7/30/90 dias, revogável, limite de 120 chamadas/min, e **toda chamada registrada** em `mcp_chamadas` (inclusive as recusadas). Age como o dono que o criou: usa o mesmo roteador da API (`api/roteador.ts`) com o membro dele; se o dono sair da direção ou for desativado, o link para junto. Não passa por MFA (limite assumido: o link vale como senha).
+- **Ferramentas:** as 24 do MCP local + `veos_ler` (leitura livre de qualquer tela de dados: cfo, caixa, comercial, plano, fluxo, biblioteca, produtos, projetos, diretores, zoho, setor/<id>, radar, painel, saúde, mensagens; recusa conta, usuários, entrevista e o próprio MCP). Definições compartilhadas em `apps/web/js/domain/mcp.js` (o MCP local do Claude Code usa o mesmo módulo). Nunca paga, envia, aceita orçamento, gera pedido nem mexe em política/meta/alçada/imposto.
+- **Tela:** Integrações → "MCP do VEOS — ChatGPT e Claude como o dono" (criar com escopo/nome/validade, passo a passo ChatGPT e Claude, comando inicial, lista com revogar, últimas chamadas). API: `GET/POST /mcp-remoto`, `/mcp-remoto/link`, `/mcp-remoto/revogar` (só direção).
+- **Link do Fernando** criado em 10/11 (completo, 90 dias, rótulo "ChatGPT e Claude do Fernando"): o segredo foi entregue só na conversa, nunca gravado em arquivo. Para trocar: revogar em Integrações e criar outro.
+- Testes: domínio `tests/web/mcp.test.mjs` (3), telas `integracoes.html` 4/4, online `e2e_mcp_remoto.mjs` 22/22 (entra no CI), `e2e_mcp` 11/11. **Não testado:** conexão real no ChatGPT/Claude.
+- Mais forte no futuro (opcional): OAuth do Supabase para entrar com login+MFA em vez de link secreto.
+
 ## 09/11/2026 (tarde) — pendências do programa fechadas
 - Fernando pediu "tudo que não depende de mim, 100%" (isto vale como pedido de testar o acumulado).
 - **Indicadores**: novos campos nos catálogos (chamado: horas até a 1ª resposta, data resolvida, remoto/com visita, custo do atendimento; contrato de suporte: resultado da oferta de continuidade; evento/campanha: escritórios presentes/alcançados; lead e oportunidade: campanha de origem). Agora calculados: SLA de solução, tempo de 1ª resposta, resolução remota, custo de garantia (valor; o % sobre a receita do projeto segue LACUNA por falta do vínculo chamado→projeto), taxa de renovação, receita influenciada (oportunidades ganhas com origem de Marketing) e escritórios engajados (soma por evento/campanha). Sem dado continua LACUNA. Os registros antigos não têm os campos: os indicadores só ficam preenchidos conforme a equipe passa a registrar.
