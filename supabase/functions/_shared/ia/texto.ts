@@ -116,3 +116,26 @@ export function perguntaDeDados(pergunta: string) {
 
 /** Instrucao extra para refazer a resposta quando o modelo nao consultou nenhuma ferramenta. */
 export const REFAZER_COM_FERRAMENTA = "\n\nIMPORTANTE (segunda tentativa): na resposta anterior você NÃO consultou nenhuma ferramenta do VEOS. Esta pergunta é sobre dados da VOICE. CHAME agora pelo menos uma ferramenta de dados antes de responder e use só os números que ela devolver; se a ferramenta não trouxer o dado, escreva LACUNA.";
+
+/**
+ * LEVANTAMENTO PREVIO: quais ferramentas de dados rodar ANTES do modelo, pelo assunto da pergunta. O modelo gratuito
+ * pequeno as vezes nao chama ferramenta, ou chama a errada; assim os fatos ja chegam no pedido e ele so interpreta.
+ * Devolve no maximo `max` ferramentas, em ordem de relevancia, so as que o setor tem (disponiveis).
+ */
+export function levantamentoPrevio(pergunta: string, disponiveis: string[], max = 3): { nome: string; args: Record<string, unknown> }[] {
+  const t = pergunta.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
+  const tem = (re: RegExp) => re.test(t);
+  const alvo: string[] = [];
+  const quer = (nome: string) => { if (disponiveis.includes(nome) && !alvo.includes(nome)) alvo.push(nome); };
+  if (tem(/\b(fluxo|semanas|projecao|reserva de caixa|quanto de caixa|folego)\b/)) quer("fluxo_13_semanas");
+  if (tem(/\b(caixa|saldo|dinheiro em conta|contas a pagar|conta a pagar|despesas?|extrato|entrou|saiu)\b/)) { quer("caixa_e_contas"); quer("previsao_de_caixa"); }
+  if (tem(/\b(fechamento|dre|lucro|resultado do mes|resultado mensal)\b/)) quer("fechamento_do_mes");
+  if (tem(/\b(indicadores?|kpis?)\b/)) quer("indicadores_da_politica");
+  if (tem(/\b(pedidos?|recebiveis?|parcelas?|a receber|faturad[oa]s?|inadimpl\w*)\b/)) quer("pedidos_e_recebiveis");
+  if (tem(/\b(funil|leads?|oportunidades?|prospeccao|prospectar|conversao|captar|captacao|novos clientes|pipeline)\b/)) { quer("funil_comercial"); quer("metas_comerciais"); }
+  if (tem(/\b(meta|metas)\b/) && tem(/\b(vendas?|comercial|faturamento)\b/)) quer("metas_comerciais");
+  if (tem(/\b(orcamentos?|desconto|margem|precificacao|preco)\b/)) quer("diagnostico_dos_orcamentos");
+  if (tem(/\b(vendas?|vendi|vendemos|faturamento|faturei|receita|como estamos|como esta a empresa|panorama|resumo da empresa)\b/)) { quer("painel_executivo"); quer("funil_comercial"); }
+  if (tem(/\b(clientes?|base de clientes|carteira)\b/)) quer("base_comercial");
+  return alvo.slice(0, max).map((nome) => ({ nome, args: {} }));
+}

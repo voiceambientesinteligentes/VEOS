@@ -11,7 +11,7 @@
 import { servico } from "../banco.ts";
 import { apenasGratuitos, type Provedor, responderComFallback } from "./provedores.ts";
 import { conferirValores, limparMarkdown, montarSistema, numerosDe, rodapeConferencia, termosDaPergunta } from "./texto.ts";
-import { perguntaDeDados, REFAZER_COM_FERRAMENTA } from "./texto.ts";
+import { levantamentoPrevio, perguntaDeDados, REFAZER_COM_FERRAMENTA } from "./texto.ts";
 import { type Contexto, diretorDoSetor, executarFerramenta, ferramentasDoSetor, procedimentosDoSetor } from "./ferramentas.ts";
 
 const lista = (v: string | undefined, padrao: string) => (v || padrao).split(",").map((x) => x.trim()).filter(Boolean);
@@ -126,12 +126,51 @@ export async function responderPergunta(perguntaId: string) {
         return unicos.map((x) => `- ${x.nome}(${JSON.stringify(x.args)}) → ${x.texto}`).join("\n").slice(0, 24_000);
       },
     });
-    let r = await rodar(pergunta, t0 + 80_000, t0 + 125_000);
+    // LEVANTAMENTO PREVIO: os dados do assunto ja entram no pedido (o modelo pequeno interpreta em vez de procurar)
+    let previo = "";
+    try {
+      const nomes = ferramentas.map((f) => f.nome);
+      const alvos = levantamentoPrevio(reservada.pergunta, nomes);
+      const feitos = await Promise.all(alvos.map(async (a) => {
+        try {
+          const out = await Promise.race([executarFerramenta(a.nome, a.args, ctx), new Promise((_, rej) => setTimeout(() => rej(new Error("demorou")), 15_000))]);
+          return { a, out };
+        } catch (e) {
+          console.error("levantamento previo", a.nome, e);
+          return null;
+        }
+      }));
+      const linhas: string[] = [];
+      for (const f of feitos) {
+        if (!f || (f.out as any)?.erro) continue;
+        resultados.push(f.out);
+        const texto = JSON.stringify(f.out).slice(0, 6000);
+        coletados.push({ nome: f.a.nome, args: f.a.args, texto });
+        linhas.push(`- ${f.a.nome} → ${texto}`);
+      }
+      if (linhas.length) previo = `\n\nDADOS DO VEOS JÁ LEVANTADOS AGORA (resultado real das ferramentas; use-os como base e chame outras ferramentas só para o que faltar; não cite valor que não esteja aqui ou em outra ferramenta):\n${linhas.join("\n")}`;
+    } catch (e) {
+      console.error("levantamento previo", e);
+    }
+    const perguntaComDados = pergunta + previo;
+    let r = await rodar(perguntaComDados, t0 + 80_000, t0 + 125_000);
     // pergunta de dados respondida sem nenhuma ferramenta: refaz UMA vez exigindo a consulta (se ainda houver tempo)
     if (r.ok && coletados.length === 0 && perguntaDeDados(reservada.pergunta) && Date.now() - t0 < 50_000) {
-      const r2 = await rodar(pergunta + REFAZER_COM_FERRAMENTA, Date.now() + 40_000, t0 + 140_000);
+      const r2 = await rodar(perguntaComDados + REFAZER_COM_FERRAMENTA, Date.now() + 40_000, t0 + 140_000);
       r.tentativas.push(...r2.tentativas);
       if (r2.ok && coletados.length > 0) r = { ...r2, tentativas: r.tentativas };
+    }
+
+    // CONFERENCIA ATIVA: se a resposta traz 2+ valores sem origem, refaz UMA vez mandando corrigir (se ainda houver tempo)
+    if (r.ok && Date.now() - t0 < 70_000) {
+      const conh0 = numerosDe(resultados);
+      numerosDe(reservada.pergunta, conh0);
+      const ruins = conferirValores(limparMarkdown(r.resultado.texto), conh0);
+      if (ruins.length >= 2) {
+        const r3 = await rodar(`${perguntaComDados}\n\nCORREÇÃO OBRIGATÓRIA: na resposta anterior estes valores NÃO vieram de nenhuma ferramenta nem dos dados acima: ${ruins.slice(0, 8).join(", ")}. Refaça a resposta usando SOMENTE valores presentes nos dados levantados; onde não houver dado, escreva LACUNA em vez de inventar.`, Date.now() + 40_000, t0 + 140_000);
+        r.tentativas.push(...r3.tentativas);
+        if (r3.ok && conferirValores(limparMarkdown(r3.resultado.texto), numerosDe(resultados, new Set(conh0))).length < ruins.length) r = { ...r3, tentativas: r.tentativas };
+      }
     }
 
     // trilha de cada tentativa (inclusive as que falharam)

@@ -42,3 +42,16 @@ test("pergunta de dados: reconhece vendas, funil e caixa; ignora conversa genér
   for (const p of ["Quanto vendemos em outubro?", "Como está o funil?", "qual o saldo do caixa", "Quantos orçamentos abertos?"]) assert.ok(perguntaDeDados(p), p);
   for (const p of ["Obrigado, ajudou", "Detalhe o primeiro passo", "Como escrever uma boa legenda?"]) assert.ok(!perguntaDeDados(p), p);
 });
+
+test("levantamento previo: escolhe as ferramentas pelo assunto, só as que o setor tem, no máximo 3", async () => {
+  const { levantamentoPrevio } = await import("../../supabase/functions/_shared/ia/texto.ts");
+  const todas = ["caixa_e_contas", "previsao_de_caixa", "fluxo_13_semanas", "fechamento_do_mes", "indicadores_da_politica", "pedidos_e_recebiveis", "funil_comercial", "metas_comerciais", "diagnostico_dos_orcamentos", "painel_executivo", "base_comercial"];
+  const nomes = (p: string, d = todas) => levantamentoPrevio(p, d).map((x) => x.nome);
+  assert.deepEqual(nomes("Como está o nosso caixa e as contas a pagar?"), ["caixa_e_contas", "previsao_de_caixa"]);
+  assert.equal(nomes("Quantas semanas de fôlego temos?")[0], "fluxo_13_semanas");
+  assert.ok(nomes("Como captar novos clientes? Como está o funil?").includes("funil_comercial"));
+  assert.ok(nomes("como foi o faturamento do mês").includes("painel_executivo"));
+  assert.deepEqual(nomes("explique o método SPIN selling"), []);
+  assert.deepEqual(nomes("como está o caixa", ["funil_comercial"]), []); // setor sem a ferramenta
+  assert.ok(levantamentoPrevio("caixa fluxo funil vendas pedidos dre", todas).length <= 3);
+});
