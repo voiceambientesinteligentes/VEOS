@@ -268,6 +268,8 @@ export function preencherModelo(texto, vars = {}) {
 export function limparTextoEmail(t) {
   return String(t ?? "")
     .replace(/\r/g, "")
+    // codigo interno do VEOS entre parenteses nao vai para fora: "(PRD-0125)", "(CLI-00012)"
+    .replace(/[ \t]*\((?:PRD|CLI|ORV|PED|COM|BIB|FOR|CTR)-[0-9A-Z-]{2,20}\)/g, "")
     .replace(/\*\*(.+?)\*\*/g, "$1")
     .replace(/__(.+?)__/g, "$1")
     .replace(/(^|[\s(])\*(\S[^*\n]*?\S|\S)\*(?=[\s).,!?:;]|$)/g, "$1$2")

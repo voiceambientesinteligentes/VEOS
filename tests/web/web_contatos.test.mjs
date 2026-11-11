@@ -63,6 +63,7 @@ test("e-mail: linha de sair, pedido de saida na resposta (sem ler a citacao) e m
 test("e-mail em texto simples: tira Markdown da IA e acusa promessa de anexo", () => {
   assert.equal(limparTextoEmail("Olá,\n\n**Caderno técnico** e *café*.\n# Título\n* item\n\n\n\nFim"), "Olá,\n\nCaderno técnico e café.\nTítulo\n• item\n\nFim");
   assert.equal(limparTextoEmail("Veja [nosso site](https://voice.com.br)."), "Veja nosso site (https://voice.com.br).");
+  assert.equal(limparTextoEmail("O sensor de teto (PRD-0125) mantém a luz acesa."), "O sensor de teto mantém a luz acesa.");
   assert.equal(prometeAnexo("Confira o caderno técnico em anexo."), true);
   assert.equal(prometeAnexo("Posso te enviar nosso caderno técnico depois."), false);
 });
