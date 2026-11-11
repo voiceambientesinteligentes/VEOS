@@ -1,5 +1,9 @@
 # Estado atual — 11/11/2026 (as seções do topo são as mais recentes)
 
+## 11/11/2026 (tarde) — Gmail CONECTADO (ponte v2)
+- Projeto "Ponte VEOS" (código v2 gerado em Integrações) criado no Apps Script de voiceambientesinteligentes@gmail.com, implantado como App da Web (executar como: eu; acesso: qualquer pessoa), permissões de Gmail, Agenda e "enviar como você" autorizadas pelo Claude no Chrome do Fernando (a pedido dele), URL colado e conectado: teste da ponte ok. Com os dois ligados o envio padrão é a Brevo (seletor em Integrações); resposta a conversa do Gmail sai pelo Gmail; o vigia das respostas passa a rodar a cada 10 min.
+- **Ainda não testado:** envio real de um e-mail de negócio (prospecção) pelos dois caminhos, resposta real chegando e virando tarefa, agenda.
+
 ## 11/11/2026 (tarde) — Brevo CONECTADA de verdade
 - Conta grátis da Brevo criada para voiceambientesinteligentes@gmail.com (o Fernando entrou com o Google no Chrome dele e confirmou o celular; o Claude preencheu perfil, endereço da empresa — do Zoho —, plano GRÁTIS e gerou a chave "VEOS" com acesso restrito: e-mails transacionais, conta (leitura e gravação), webhooks e organização (leitura); sem vencimento fixo). Conectada em Integrações: plano grátis, 300 envios, remetente confirmado, **avisos ligados**; teste enviado para o próprio Gmail.
 - Corrigido no caminho: conta sem nenhum webhook responde "Webhook record does not exist" (agora vira lista vazia e o webhook é criado); "null" escrito na tela de Integrações (Brevo e Gmail); manutenção semanal da chave (`manterChaveViva` na varredura da `saude`: a Brevo desativa chave sem uso por 90 dias).

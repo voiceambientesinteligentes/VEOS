@@ -2,6 +2,12 @@
 
 Atualize este arquivo ao fim de cada sessão: última ação, resultado e próximo passo.
 
+## 11/11/2026 (tarde) — Brevo e Gmail CONECTADOS de verdade
+- O Fernando pediu "continue o cadastro" e indicou o Chrome dele já logado. O Claude operou a tela (fotos + mouse/teclado, só em janelas da Brevo/VEOS/Apps Script/Google, com trava no título da janela) e fez: perfil e endereço da empresa na Brevo, plano GRÁTIS, chave "VEOS" restrita e sem vencimento fixo (o Fernando confirmou o celular por SMS), conexão em Integrações com avisos ligados, teste para o próprio Gmail (aviso "entregue" chegou em 8 s); ponte do Gmail v2 criada, implantada, autorizada e conectada.
+- Deslizes no caminho (sem efeito): um clique caiu num favorito (ClipDrop) e a aba voltou; o Edge separado tentou o login do Google por engano (fechado). A senha gerada para a Brevo não serviu (a conta ficou com login do Google) e foi apagada; chave e capturas de tela com segredos foram apagadas da pasta temporária.
+- Corrigido e publicado: webhook da Brevo em conta sem nenhum ("Webhook record does not exist"), "null" na tela de Integrações, manutenção semanal da chave da Brevo.
+- **Próximo passo (Fernando):** a primeira prospecção de verdade (CSO-19). **Programa:** conferir a primeira resposta real virando tarefa; domínio próprio na Brevo quando ele quiser (voiceambientesinteligentes.com já existe, DNS no Google Domains/Squarespace).
+
 ## 11/11/2026 — Brevo (envio com avisos) + Gmail (ponte v2)
 - **Pedido do Fernando:** "vamos usar brevo, acesse, crie uma conta e configure, e também o gmail; faça tudo, você está livre".
 - **O que o Claude NÃO conseguiu fazer:** criar a conta da Brevo e conectar o Gmail. Os dois exigem o login do Google do Fernando (e a Brevo às vezes SMS); não há navegador com a conta dele nesta sessão e senha não deve passar pelo Claude. Ficou tudo pronto para ele: Integrações → "Envio de e-mails — Brevo" (pendência CIO-17) e "E-mail e agenda — Gmail" (CIO-15).
