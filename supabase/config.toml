@@ -421,3 +421,7 @@ verify_jwt = false
 
 [functions.mcp]
 verify_jwt = false
+
+# Avisos da Brevo (entregue, aberto, voltou, spam): a autenticacao e o segredo no caminho, nao o JWT do Supabase.
+[functions.brevo]
+verify_jwt = false

@@ -122,11 +122,16 @@ pessoa (chat, IA VEOS, voz)  ──►  interpretar (comandos.js): tela | pergun
   registros de qualquer setor · tarefas · clientes · orçamento (rascunho) · conta a pagar · fornecedores
   pesquisa na web e contatos de empresas (_shared/web.ts: Tavily/Brave/Serper se houver chave → Parallel → DuckDuckGo)
   e-mail: PREPARA (rascunho) ──► cartão "Enviar" no chat / Caixa de saída / MCP confirmado=true ──► POST /mensagens/:id/enviar
+                                     escolherViaEmail (domain/brevo.js) ─┬─► Brevo API v3 (padrão; _shared/brevo.ts)
                                                                         └─► ponte Gmail (Apps Script) ─► Gmail da VOICE
-  vigia das respostas (email_vigia.ts, a cada 10 min) ─► tarefa "Responder…" · "SAIR" = lista de bloqueio
+  avisos da Brevo (função brevo, webhook) ─► email_eventos + carimbos · voltou/spam/descadastro = lista de bloqueio + tarefa
+  vigia das respostas (email_vigia.ts, a cada 10 min, pela ponte do Gmail; e-mail da Brevo = busca do remetente)
+                                     ─► tarefa "Responder…" · "SAIR" = lista de bloqueio
 ```
 - Uma fonte de ferramentas para o MCP (ChatGPT/Claude) e para a IA do VEOS; permissões e validações = as da tela.
 - A IA nunca envia nem paga: o envio de e-mail exige uma pessoa (clique, "confirmo" ou `confirmado=true` no MCP).
 - Minimização: contato pessoal de cliente não vai ao modelo (o servidor completa endereço e {{primeiro_nome}}).
-- Segredos das integrações (ponte, chaves de pesquisa) cifrados no banco com `VEOS_CIFRA` (AES-GCM).
+- Segredos das integrações (ponte, chave da Brevo, chaves de pesquisa) cifrados no banco com `VEOS_CIFRA` (AES-GCM).
+- Brevo (11/11): envia e avisa (entregue, aberto, clique, voltou, spam, descadastro); não recebe respostas (sem domínio
+  próprio). Gmail: responde na conversa, lê respostas, caixa e agenda. Padrão de envio escolhido em Integrações.
 - Catálogo do que dá para pedir por setor: `apps/web/js/domain/capacidades.js` (tela IA VEOS → "O que posso pedir").

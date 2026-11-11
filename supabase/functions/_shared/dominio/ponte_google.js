@@ -5,8 +5,25 @@
 // entrada) e o VEOS consegue ler as respostas e a agenda. O Fernando cola o codigo em script.google.com e
 // implanta como "App da Web" (executar como: eu; acesso: qualquer pessoa). Sem o SEGREDO, a ponte nao faz nada.
 // Limite do Google para contas gratuitas: cerca de 100 destinatarios por dia.
+// Versao 2 (11/11/2026): o vigia tambem acha a resposta de um e-mail que saiu pela BREVO (a resposta chega no Gmail,
+// numa conversa nova): busca do remetente depois da data do envio.
 
-export const VERSAO_PONTE = 1;
+export const VERSAO_PONTE = 2;
+
+const WEBMAIL = /^(gmail|googlemail|hotmail|outlook|live|msn|yahoo|ymail|bol|uol|terra|ig|icloud|me|globo|globomail|r7|zipmail|protonmail|proton)\.(com|com\.br|me)$/i;
+
+/**
+ * Busca do Gmail para achar a resposta de quem recebeu um e-mail que saiu pela Brevo: do mesmo endereco (webmail)
+ * ou de qualquer pessoa do mesmo dominio da empresa, a partir da vespera do envio.
+ */
+export function buscaDeResposta(email, desde) {
+  const e = String(email ?? "").trim().toLowerCase();
+  if (!/^[^\s@()"]+@[^\s@()"]+\.[a-z]{2,}$/i.test(e)) return null;
+  const dominio = e.split("@")[1];
+  const t = Date.parse(desde);
+  const dia = new Date((Number.isFinite(t) ? t : Date.now()) - 86_400_000).toISOString().slice(0, 10).replace(/-/g, "/");
+  return `from:(${WEBMAIL.test(dominio) ? e : dominio}) after:${dia} -in:sent -in:chats`;
+}
 
 /** Codigo .gs da ponte com o segredo embutido (gerado pelo servidor; aparece uma vez na tela). */
 export function codigoDaPonte(segredo) {
@@ -102,20 +119,43 @@ var ACOES = {
     };
   },
 
-  // para o vigia do VEOS: quais conversas receberam mensagem de OUTRA pessoa depois do envio
+  // para o vigia do VEOS: chegou mensagem de OUTRA pessoa depois do envio? Pela conversa (e-mail que saiu pelo
+  // Gmail: thread_id) ou por uma busca do remetente (e-mail que saiu pela Brevo: a resposta chega numa conversa nova)
   respostas: function (r) {
     var eu = minhaConta();
     return {
       conversas: (r.threads || []).slice(0, 60).map(function (x) {
+        var base = { chave: x.chave || null, thread_id: x.thread_id || null };
         try {
-          var t = GmailApp.getThreadById(x.thread_id);
-          if (!t) return { thread_id: x.thread_id, erro: "não encontrada" };
+          var lista = [];
+          if (x.thread_id) {
+            var t = GmailApp.getThreadById(x.thread_id);
+            if (!t) { base.erro = "não encontrada"; return base; }
+            lista = [t];
+          } else if (x.busca) {
+            lista = GmailApp.search(String(x.busca), 0, 5);
+          } else {
+            base.erro = "sem conversa nem busca";
+            return base;
+          }
           var desde = new Date(x.desde);
-          var novas = t.getMessages().filter(function (m) { return m.getDate() > desde && String(m.getFrom()).toLowerCase().indexOf(eu) < 0; });
-          var u = novas[novas.length - 1];
-          return { thread_id: x.thread_id, respostas: novas.length, ultima_em: u ? u.getDate().toISOString() : null, de: u ? u.getFrom() : null, trecho: u ? u.getPlainBody().slice(0, 600) : null };
+          var novas = [];
+          lista.forEach(function (c) {
+            c.getMessages().forEach(function (m) {
+              if (m.getDate() > desde && String(m.getFrom()).toLowerCase().indexOf(eu) < 0) novas.push({ m: m, c: c });
+            });
+          });
+          novas.sort(function (a, b) { return a.m.getDate().getTime() - b.m.getDate().getTime(); });
+          var u = novas.length ? novas[novas.length - 1] : null;
+          base.respostas = novas.length;
+          base.ultima_em = u ? u.m.getDate().toISOString() : null;
+          base.de = u ? u.m.getFrom() : null;
+          base.trecho = u ? u.m.getPlainBody().slice(0, 600) : null;
+          if (u) base.thread_id = u.c.getId();
+          return base;
         } catch (e) {
-          return { thread_id: x.thread_id, erro: String((e && e.message) || e).slice(0, 120) };
+          base.erro = String((e && e.message) || e).slice(0, 120);
+          return base;
         }
       }),
     };

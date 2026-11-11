@@ -1,4 +1,4 @@
-# Próxima sessão — ponto de partida (atualizado em 10/11/2026, noite)
+# Próxima sessão — ponto de partida (atualizado em 11/11/2026)
 
 Este arquivo trata só do **PROGRAMA** (o VEOS: telas, servidor, banco, IA, integrações).
 O que é operação da empresa (decidir metas, RT, alíquotas, preencher dados reais, ligar para clientes)
@@ -15,8 +15,8 @@ política, meta, alçada ou regime tributário: isso é decisão do Fernando.
 
 Repositório: C:\Users\ferna\VEOS (GitHub voiceambientesinteligentes/VEOS, público; o site publica
 sozinho no GitHub Pages a cada push na main). Banco e servidor: Supabase, projeto vkrwxvnfstvriibjwuvw.
-Desde 10/11 a IA do VEOS EXECUTA pedidos (e-mail sai pelo Gmail só com a confirmação do Fernando):
-não envie e-mail real em testes (robôs só simulam; destinatário de teste sempre @veos-teste.invalid).
+Desde 10/11 a IA do VEOS EXECUTA pedidos (e-mail sai pela Brevo ou pelo Gmail só com a confirmação do
+Fernando): não envie e-mail real em testes (robôs só simulam; destinatário de teste sempre @veos-teste.invalid).
 
 1. Leia, nesta ordem: docs/PROXIMA_SESSAO.md (este), docs/ESTADO_ATUAL.md (as seções do topo são as
    mais recentes), docs/CONTINUIDADE.md, docs/DECISOES.md e docs/SETORES_ESQUEMA.md.
@@ -39,7 +39,7 @@ não envie e-mail real em testes (robôs só simulam; destinatário de teste sem
 - Catálogo e cópia do domínio para o servidor: `node scripts/gerar-catalogo.mjs` (rode sempre que mexer em `setores/*.json` ou `apps/web/js/domain/*.js`; o `npm test` falha com "Desatualizado" se esquecer).
 - Telas com dados simulados (Edge headless, 1366 px e 390 px): `node scripts/testar-telas.mjs [filtro]` (184 telas em 04/11). Cada página lista os casos em `<!-- casos: ... -->`.
 - Banco: `npx -y supabase@2.118.0 db push --linked --yes` (migrations) e `npx -y supabase@2.118.0 db query --linked -f tests/banco/<arquivo>.sql`. Ensaiar migration antes: junte migration + teste num arquivo com `begin; ... rollback;` e rode o db query.
-- Funções: `npx -y supabase@2.118.0 functions deploy <api|saude|ia-fila|zoho|zoho-sync|vigia> --use-api --project-ref vkrwxvnfstvriibjwuvw`.
+- Funções: `npx -y supabase@2.118.0 functions deploy <api|saude|ia-fila|mcp|zoho|zoho-sync|vigia> --use-api --project-ref vkrwxvnfstvriibjwuvw` (as funções `mcp`, `entrevista` e `brevo` vão com `--no-verify-jwt`; `mcp` e `ia-fila` carregam o roteador da `api`: publique as três juntas quando mexer na API).
 - Testes online contra o sistema real (robôs `@veos-teste.invalid`, ficam inativos no fim): `node scripts/online.mjs tests/online/<e2e_api|e2e_financeiro|e2e_setores|e2e_sistema|e2e_mcp|e2e_ia|e2e_caixa|e2e_operacao>.mjs`.
 - IA que executa: `e2e_ia_executa.mjs` (pesquisa, contatos, rascunho + parceiro, envio simulado, travas; não gasta IA; manual por enquanto) e `uso_ia_executa.mjs ["pedido"] [setor]` (pedido real à IA; gasta cota gratuita; descarta os rascunhos no fim).
 - Carregar os módulos do servidor sem o Deno (pega import errado/sintaxe): o Node não aceita "parameter properties" de `zoho_sync.ts`; use o Bun que vem no G4 OS (`%LOCALAPPDATA%\Programs\G4 OS\resources\vendor\bun\bun.exe`) com `globalThis.Deno = { env: { get: () => "" }, serve: () => {} }`.
@@ -56,6 +56,15 @@ não envie e-mail real em testes (robôs só simulam; destinatário de teste sem
 
 ## O que já existe (resumo de 04/11)
 Setores vivos (9) com registros, regras vivas e Radar · Estrutura da empresa (organograma, agenda de cada cargo, atividade → ferramenta) · Operação comercial do zero (clientes, montador de orçamento com preço pela Política V1, PDF, enviado/aceito/recusado, pedido gerado do orçamento, retomada dos orçamentos antigos do Zoho, contato rápido, prospecção, calendário do Instagram, Começar a operar) · Pedidos → estoque → parcelas → NF → recebimento, compras e contas a pagar · Financeiro do CFO (caixa por extrato OFX, 13 semanas, DRE, indicadores, preço dos produtos, formulário com valores estimados marcados) · Biblioteca e governança · Zoho espelhado e editável · Diretores com IA em formato de conversa (continuação no mesmo fio, conferência de valores e percentuais) · IA VEOS por voz/texto ligada aos diretores e chat flutuante com avisos · Novo design (menu por áreas, Hoje, celular) · Usuários, MFA, LGPD, backup, exportação, MCP `veos` (24 ferramentas), PWA.
+
+## Estado em 11/11 — Brevo e Gmail
+O e-mail confirmado pelo Fernando sai pela **Brevo** (padrão quando conectada; plano grátis 300/dia) ou pelo **Gmail**
+(ponte v2). A Brevo avisa entregue/aberto/clique/voltou/spam (função `brevo`); o Gmail acha as respostas (inclusive
+dos e-mails da Brevo). **Falta o Fernando:** criar a conta da Brevo e colar a chave (CIO-17) e conectar o Gmail
+(CIO-15) — o Claude não consegue criar contas com o login dele. **Nada testado com conta Brevo real.**
+Próximos (programa): 1) com a Brevo conectada, conferir um aviso real (o formato veio da documentação) e o teste para o
+próprio e-mail; 2) domínio próprio (CIO-07) para tirar o `@brevosend.com` do remetente (autenticar o domínio pela API
+`/senders/domains`); 3) lista da Brevo para newsletter dos parceiros que aceitaram (LGPD), se o Fernando quiser.
 
 ## Estado em 10/11 (noite) — IA que executa
 A IA do VEOS (chat, IA VEOS e MCP do ChatGPT/Claude) agora EXECUTA pedidos em todos os setores: pesquisa na web

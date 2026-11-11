@@ -3,6 +3,7 @@
 import { api } from "../../data/api.js";
 import { formatDateTime } from "../../domain/format.js";
 import { codigoDaPonte, PASSOS_PONTE, urlDaPonteValida } from "../../domain/ponte_google.js";
+import { chaveBrevoValida, ehChaveSmtpBrevo, LINKS_BREVO, PASSOS_BREVO, ROTULO_EVENTO } from "../../domain/brevo.js";
 import { clear, errorNotice, h, method, panel, stamp, table } from "../dom.js";
 
 const RETORNO = {
@@ -91,20 +92,135 @@ function painelMcpRemoto(eu) {
       lista,
       h("div", { class: "row" }, escopo, rotulo, dias, criar),
       uso,
-      method("Segurança", "Quem tiver o link age como você no VEOS dentro do escopo escolhido, sem pedir senha nem código MFA: trate como uma senha. Só o código do link fica guardado (não dá para recuperá-lo), ele expira e você revoga quando quiser. Cada chamada fica registrada acima. No escopo completo o conector cadastra em todos os setores, pesquisa na web e envia e-mail pelo Gmail da VOICE SÓ com a sua confirmação explícita (ele mostra o texto e espera o seu OK); não paga, não aceita orçamento, não gera pedido e não altera política, meta, alçada nem imposto.",
+      method("Segurança", "Quem tiver o link age como você no VEOS dentro do escopo escolhido, sem pedir senha nem código MFA: trate como uma senha. Só o código do link fica guardado (não dá para recuperá-lo), ele expira e você revoga quando quiser. Cada chamada fica registrada acima. No escopo completo o conector cadastra em todos os setores, pesquisa na web e envia e-mail (pela Brevo ou pelo Gmail da VOICE) SÓ com a sua confirmação explícita (ele mostra o texto e espera o seu OK); não paga, não aceita orçamento, não gera pedido e não altera política, meta, alçada nem imposto.",
         "O que você escreve no ChatGPT ou no Claude, e o que o VEOS devolve a eles (clientes, valores, caixa), também fica com a OpenAI ou a Anthropic nessas conversas. Use só em contas suas e revogue o link se trocar de aparelho.")].filter(Boolean));
   }
   desenhar();
   return caixa;
 }
 
-// E-MAIL E AGENDA (Gmail da VOICE): ponte gratuita no Google Apps Script. Com ela o VEOS ENVIA os e-mails que a
-// pessoa confirma, acompanha as respostas e le/cria compromissos na agenda.
+// ENVIO PELA BREVO (plano gratis, 300 por dia): o VEOS envia por ela o que a pessoa confirma e recebe os avisos de
+// cada e-mail (entregue, aberto, voltou, spam). As respostas chegam no Gmail: com o Gmail conectado o VEOS as ve.
+const novaAba = (href, rotulo) => h("a", { class: "btn btn-ghost", href, target: "_blank", rel: "noopener noreferrer" }, rotulo);
+function painelBrevo(eu) {
+  const direcao = eu?.papel === "direcao";
+  const corpo = h("div", { class: "stack" });
+  const saida = h("div", { role: "status" });
+  const caixa = panel({ title: "Envio de e-mails — Brevo", subtitle: "A Brevo envia os e-mails que você confirma no VEOS (plano grátis: 300 por dia, sem cartão) e avisa se cada um foi entregue, aberto, se voltou ou se foi marcado como spam. As respostas chegam no seu Gmail." }, corpo, saida);
+  const avisar = (texto, tom = "ok") => { clear(saida); saida.append(h("p", { class: `notice notice-${tom}` }, texto)); };
+
+  async function desenhar(msg) {
+    clear(corpo);
+    let st;
+    try { st = await api.emailSituacao(); } catch (e) { corpo.append(errorNotice(e.message)); return; }
+    const b = st.brevo ?? { conectado: false };
+    if (msg) corpo.append(h("p", { class: `notice notice-${msg[1]}`, role: "status" }, msg[0]));
+    corpo.append(h("div", { class: "row" },
+      b.conectado ? stamp(b.pronta ? "Conectada" : "Falta confirmar o remetente", b.pronta ? "ok" : "warn") : stamp("Não conectada", "neutral"),
+      b.conta ? h("strong", null, b.conta) : null,
+      b.conectado && b.plano?.texto ? stamp(b.plano.texto, "neutral") : null,
+      b.pronta ? stamp(`${st.enviados_hoje_brevo ?? 0} de ${st.limite_brevo} hoje`, "live") : null,
+      b.conectado ? stamp(b.avisos ? "avisos ligados" : "avisos desligados", b.avisos ? "live" : "warn") : null));
+    if (b.conectado && b.detalhe) corpo.append(h("p", { class: "notice notice-warn" }, b.detalhe));
+    if (!b.conectado) passos();
+    else {
+      if (b.remetente && !b.remetente.ativo) corpo.append(confirmarCodigo(b.remetente.email));
+      corpo.append(acoesConectada(b));
+    }
+    if (st.conectado && b.pronta) corpo.append(escolhaDoPadrao(st));
+    corpo.append(method("Como funciona",
+      "Nada sai sozinho: cada e-mail sai depois da sua confirmação (botão Enviar, “confirmo” no chat ou o seu OK no ChatGPT/Claude). Até 280 por dia pela Brevo (o plano grátis dá 300); prospecção até 30 por dia somando Brevo e Gmail, 1:1 e com a linha de “sair”.",
+      "Sem domínio próprio, a Brevo troca o remetente @gmail.com por um endereço dela (…@brevosend.com): quem recebe vê o nome VOICE Ambientes Inteligentes e a resposta volta para o seu Gmail. Para prospecção 1:1 o Gmail costuma chegar melhor na caixa de entrada; com domínio próprio (pendência CIO-07) a Brevo passa a usar o endereço da VOICE.",
+      "Endereço que voltou, marcou spam ou se descadastrou entra sozinho na lista de bloqueio, e o VEOS cria a tarefa para você procurar outro contato. A chave fica cifrada no servidor do VEOS e nunca volta para o navegador."));
+  }
+
+  function passos() {
+    const chave = h("input", { class: "input", type: "password", autocomplete: "off", placeholder: "xkeysib-…", "aria-label": "Chave de API da Brevo", disabled: !direcao });
+    const conectar = h("button", { class: "btn btn-primary", type: "button", disabled: !direcao }, "Conectar");
+    conectar.addEventListener("click", async () => {
+      clear(saida);
+      const v = chave.value.trim();
+      if (ehChaveSmtpBrevo(v)) { saida.append(errorNotice("Essa é a chave SMTP (começa com xsmtpsib-). Gere uma chave de API: SMTP e API → aba Chaves de API (começa com xkeysib-).")); return; }
+      if (!chaveBrevoValida(v)) { saida.append(errorNotice("Cole a chave de API inteira (começa com xkeysib-).")); return; }
+      conectar.disabled = true; conectar.textContent = "Conferindo…";
+      try {
+        const r = await api.brevoConectar(v);
+        chave.value = "";
+        await desenhar(r.remetente?.ativo
+          ? [`Brevo conectada: ${r.conta}. ${r.avisos ? "Os avisos (entregue, aberto, voltou, spam) estão ligados." : "Os avisos não ligaram: veja o detalhe acima."}`, "ok"]
+          : [`Brevo conectada: ${r.conta}. Falta confirmar o remetente${r.codigo_enviado ? `: a Brevo mandou um código de 6 números para ${r.remetente?.email ?? "o seu e-mail"}` : ""}.`, "warn"]);
+      } catch (e) { saida.append(errorNotice(e.message)); conectar.disabled = !direcao; conectar.textContent = "Conectar"; }
+    });
+    corpo.append(h("ol", { class: "stack-s" }, PASSOS_BREVO.map((p) => h("li", null, p))),
+      h("div", { class: "row" }, novaAba(LINKS_BREVO.cadastro, "Abrir a Brevo (criar a conta)"), novaAba(LINKS_BREVO.chaves, "Chaves de API"), novaAba(LINKS_BREVO.ips, "IPs autorizados")),
+      h("div", { class: "row" }, chave, conectar),
+      direcao ? null : h("p", { class: "field-hint" }, "Só a direção conecta a Brevo."));
+  }
+
+  function confirmarCodigo(email) {
+    const codigo = h("input", { class: "input", type: "text", inputmode: "numeric", maxlength: "6", autocomplete: "one-time-code", placeholder: "6 números", "aria-label": "Código da Brevo", disabled: !direcao });
+    const ok = h("button", { class: "btn btn-primary", type: "button", disabled: !direcao }, "Confirmar o remetente");
+    ok.addEventListener("click", async () => {
+      clear(saida);
+      const v = codigo.value.replace(/\D/g, "");
+      if (v.length !== 6) { saida.append(errorNotice("O código tem 6 números.")); return; }
+      ok.disabled = true;
+      try {
+        const r = await api.brevoCodigo(v);
+        await desenhar(r.remetente?.ativo ? [`Remetente confirmado: ${r.remetente.email}. A Brevo já pode enviar.`, "ok"] : ["A Brevo ainda não confirmou o remetente. Confira o código.", "warn"]);
+      } catch (e) { saida.append(errorNotice(e.message)); ok.disabled = !direcao; }
+    });
+    return h("div", { class: "stack-s" },
+      h("p", null, `A Brevo mandou um código de 6 números para ${email} (veja também o spam). Digite aqui:`),
+      h("div", { class: "row" }, codigo, ok, novaAba(LINKS_BREVO.remetentes, "Remetentes na Brevo")));
+  }
+
+  function acoesConectada(b) {
+    const atualizar = h("button", { class: "btn btn-ghost", type: "button", disabled: !direcao }, "Atualizar");
+    atualizar.addEventListener("click", async () => {
+      atualizar.disabled = true; clear(saida);
+      try { await api.brevoTestar(false); await desenhar(["Situação atualizada com a Brevo.", "ok"]); } catch (e) { saida.append(errorNotice(e.message)); atualizar.disabled = !direcao; }
+    });
+    const teste = h("button", { class: "btn btn-ghost", type: "button", disabled: !direcao || !b.pronta }, "Mandar um teste para mim");
+    teste.addEventListener("click", async () => {
+      if (!confirm(`Mandar um e-mail de teste pela Brevo para ${b.remetente?.email ?? b.conta}?`)) return;
+      teste.disabled = true; clear(saida);
+      try { const r = await api.brevoTestar(true); await desenhar([`Teste enviado para ${r.enviado_para}. Em alguns minutos aparece aqui o aviso “entregue” que a Brevo manda de volta (clique em Atualizar).`, "ok"]); }
+      catch (e) { saida.append(errorNotice(e.message)); teste.disabled = !direcao || !b.pronta; }
+    });
+    const desligar = h("button", { class: "btn btn-ghost", type: "button", disabled: !direcao }, "Desconectar");
+    desligar.addEventListener("click", async () => {
+      if (!confirm("Desconectar a Brevo? O VEOS deixa de enviar por ela até conectar de novo.")) return;
+      try { const r = await api.brevoDesconectar(); clear(saida); await desenhar([r.aviso, "warn"]); } catch (e) { clear(saida); saida.append(errorNotice(e.message)); }
+    });
+    const ultimo = b.ultimo_aviso ? `Último aviso da Brevo: ${ROTULO_EVENTO[b.ultimo_aviso.evento] ?? b.ultimo_aviso.evento} em ${formatDateTime(b.ultimo_aviso.em)}.` : "Nenhum aviso da Brevo ainda (chega depois do primeiro envio).";
+    return h("div", { class: "stack-s" },
+      h("div", { class: "row" }, atualizar, teste, desligar),
+      h("p", { class: "field-hint" }, `Conectada em ${formatDateTime(b.conectado_em)}${b.remetente?.ativo ? ` · remetente ${b.remetente.email}` : ""}. ${ultimo}`));
+  }
+
+  function escolhaDoPadrao(st) {
+    const sel = h("select", { class: "select", "aria-label": "Por onde o e-mail sai", disabled: !direcao },
+      h("option", { value: "brevo" }, "Brevo (avisos de entregue, aberto, voltou e spam)"),
+      h("option", { value: "gmail" }, "Gmail (sai do seu Gmail e aparece em Enviados)"));
+    sel.value = st.envio?.via ?? "brevo";
+    sel.addEventListener("change", async () => {
+      try { await api.emailPadrao(sel.value); avisar(`Pronto: os e-mails saem ${sel.value === "gmail" ? "pelo Gmail" : "pela Brevo"}. A resposta a uma conversa do Gmail continua saindo pelo Gmail.`); }
+      catch (e) { clear(saida); saida.append(errorNotice(e.message)); }
+    });
+    return h("div", { class: "row" }, h("strong", null, "Com Brevo e Gmail conectados, o e-mail sai por:"), sel);
+  }
+  desenhar();
+  return caixa;
+}
+
+// E-MAIL E AGENDA (Gmail da VOICE): ponte gratuita no Google Apps Script. Com ela o VEOS ve as respostas (tambem dos
+// e-mails que sairam pela Brevo), le a caixa e a agenda e pode ENVIAR pelo proprio Gmail o que a pessoa confirma.
 function painelGmail(eu) {
   const direcao = eu?.papel === "direcao";
   const corpo = h("div", { class: "stack" });
   const saida = h("div", { role: "status" });
-  const caixa = panel({ title: "E-mail e agenda — Gmail da VOICE", subtitle: "Liga o VEOS ao Gmail e à Agenda do Google da empresa. A IA prepara os e-mails e você confirma; o envio sai do próprio Gmail (aparece em Enviados) e o VEOS avisa quando alguém responde. Grátis, sem cartão." }, corpo, saida);
+  const caixa = panel({ title: "E-mail e agenda — Gmail da VOICE", subtitle: "Liga o VEOS ao Gmail e à Agenda do Google da empresa. Com ele o VEOS vê as respostas (também dos e-mails enviados pela Brevo), lê a caixa e a agenda e pode enviar pelo próprio Gmail (aparece em Enviados). Grátis, sem cartão." }, corpo, saida);
 
   async function desenhar(aviso) {
     clear(corpo);
@@ -114,7 +230,7 @@ function painelGmail(eu) {
     corpo.append(h("div", { class: "row" },
       st.conectado ? stamp("Conectado", "ok") : stamp("Não conectado", "neutral"),
       st.conectado && st.conta ? h("strong", null, st.conta) : null,
-      st.conectado ? stamp(`${st.enviados_hoje} de ${st.limite_dia} e-mails hoje`, "live") : null,
+      st.conectado ? stamp(`${st.enviados_hoje_gmail ?? 0} de ${st.limite_gmail ?? 80} e-mails hoje pelo Gmail`, "live") : null,
       st.conectado ? stamp(`prospecção: ${st.prospeccao_hoje} de ${st.limite_prospeccao}`, "neutral") : null,
       st.conectado && st.detalhe ? stamp("Último teste com problema", "warn") : null));
     if (st.conectado && st.detalhe) corpo.append(h("p", { class: "notice notice-warn" }, st.detalhe));
@@ -140,8 +256,9 @@ function painelGmail(eu) {
     }
     corpo.append(method("Segurança e limites",
       "A ponte é um pequeno programa seu no Google Apps Script (script.google.com). Ela só obedece a quem tiver o código secreto, que fica cifrado no servidor do VEOS e aparece uma única vez, na hora de gerar.",
-      "O VEOS nunca envia sozinho: cada e-mail sai depois de uma confirmação sua (botão Enviar, “confirmo” no chat ou o OK no ChatGPT/Claude). Até 80 e-mails por dia (prospecção até 30, 1:1, com a linha de “sair”); o Gmail gratuito aceita cerca de 100 destinatários por dia.",
-      "Para ler respostas e a agenda, o Google pede permissão de Gmail e Agenda para a SUA ponte; o VEOS só lê as conversas dos e-mails que enviou e o que você pedir (direção). Quando você pede à IA para resumir e-mails, o texto vai para o motor de IA."));
+      "O VEOS nunca envia sozinho: cada e-mail sai depois de uma confirmação sua (botão Enviar, “confirmo” no chat ou o OK no ChatGPT/Claude). Até 80 e-mails por dia pelo Gmail (prospecção até 30 somando Gmail e Brevo, 1:1, com a linha de “sair”); o Gmail gratuito aceita cerca de 100 destinatários por dia.",
+      "Para ler respostas e a agenda, o Google pede permissão de Gmail e Agenda para a SUA ponte; o VEOS só lê as respostas dos e-mails que enviou (pelo Gmail ou pela Brevo) e o que você pedir (direção). Quando você pede à IA para resumir e-mails, o texto vai para o motor de IA.",
+      "Já conectou a ponte antes de 11/11/2026? Gere o código novo (versão 2) e cole por cima no Apps Script: é ela que acha as respostas dos e-mails enviados pela Brevo."));
   }
 
   function passos(trocando) {
@@ -271,7 +388,7 @@ export async function telaIntegracoes(root, eu) {
   const retorno = new URLSearchParams(location.hash.split("?")[1] ?? "").get("zoho");
   if (retorno) history.replaceState(null, "", "#/integracoes");
   const conteudo = h("div", { class: "stack" });
-  root.append(painelGmail(eu), painelPesquisa(eu), conteudo, painelMcpRemoto(eu), painelEntrevista(eu));
+  root.append(painelBrevo(eu), painelGmail(eu), painelPesquisa(eu), conteudo, painelMcpRemoto(eu), painelEntrevista(eu));
 
   async function desenhar(aviso) {
     const st = await api.zohoStatus();

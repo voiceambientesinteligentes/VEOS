@@ -83,6 +83,6 @@ test("capacidades: os 9 setores com pedidos de exemplo e o que o VEOS faz", () =
   assert.equal(CAPACIDADES.length, 9);
   for (const c of CAPACIDADES) {
     assert.ok(c.itens.length >= 4, c.setor);
-    for (const i of c.itens) assert.ok(i.pedido.length > 10 && i.faz.length > 10 && (!i.precisa || ["gmail", "tela"].includes(i.precisa)), i.pedido);
+    for (const i of c.itens) assert.ok(i.pedido.length > 10 && i.faz.length > 10 && (!i.precisa || ["gmail", "envio", "tela"].includes(i.precisa)), i.pedido);
   }
 });

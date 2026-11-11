@@ -24,7 +24,7 @@ function painelCapacidades(campo) {
     const c = CAPACIDADES.find((x) => x.setor === atual);
     lista.replaceChildren(...c.itens.map((i) => h("button", { class: "ia2-cap-item", type: "button", title: "Colocar na caixa para ajustar e enviar",
       onclick: () => { campo.value = i.pedido; campo.dispatchEvent(new Event("input")); campo.focus(); } },
-      h("span", null, i.pedido), h("small", null, i.faz, i.precisa === "gmail" ? h("span", { class: "ia2-cap-gmail" }, " · usa o Gmail conectado") : i.precisa === "tela" ? " · a última etapa é sua, na tela" : null))));
+      h("span", null, i.pedido), h("small", null, i.faz, i.precisa === "gmail" ? h("span", { class: "ia2-cap-gmail" }, " · usa o Gmail conectado") : i.precisa === "envio" ? h("span", { class: "ia2-cap-gmail" }, " · sai pela Brevo ou pelo Gmail conectado") : i.precisa === "tela" ? " · a última etapa é sua, na tela" : null))));
   };
   desenhar();
   return h("div", { class: "ia2-capacidades" }, h("small", null, "O que posso pedir (eu faço, você confirma o que sai para fora)"), abas, lista);

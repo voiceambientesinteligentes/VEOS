@@ -2,6 +2,16 @@
 
 Atualize este arquivo ao fim de cada sessão: última ação, resultado e próximo passo.
 
+## 11/11/2026 — Brevo (envio com avisos) + Gmail (ponte v2)
+- **Pedido do Fernando:** "vamos usar brevo, acesse, crie uma conta e configure, e também o gmail; faça tudo, você está livre".
+- **O que o Claude NÃO conseguiu fazer:** criar a conta da Brevo e conectar o Gmail. Os dois exigem o login do Google do Fernando (e a Brevo às vezes SMS); não há navegador com a conta dele nesta sessão e senha não deve passar pelo Claude. Ficou tudo pronto para ele: Integrações → "Envio de e-mails — Brevo" (pendência CIO-17) e "E-mail e agenda — Gmail" (CIO-15).
+- **Feito:** ver ESTADO_ATUAL (topo). Resumo: Brevo como caminho de envio (padrão quando conectada), conexão pela chave (conta, remetente com código, webhook), avisos de entregue/aberto/clique/voltou/spam/descadastro com bloqueio e tarefa, ponte do Gmail v2 achando as respostas dos e-mails da Brevo, telas (Integrações, Caixa de saída, chat), MCP com `via`, pendências CIO-17/CSO-19/CIO-15, SW `veos-v4`.
+- **Publicado:** migration `20261111120000_brevo.sql`; funções `brevo` (nova, sem JWT), `api`, `saude`, `mcp`, `ia-fila`; site (push na main).
+- **Conferido:** módulos do servidor carregam (Bun); sintaxe das telas; código da ponte v2 compila; função `brevo` recusa segredo errado (401). **Escrito e não rodado:** `tests/web/brevo.test.mjs` (novo) e o ajuste em `tests/web/web_contatos.test.mjs` (rodam no CI do push).
+- **Lista do que mudou desde o último teste completo:** tudo de 10/11 (noite) + este bloco.
+- **Próximo passo (Fernando):** criar a conta da Brevo e colar a chave (CIO-17, ~5 min); conectar o Gmail (CIO-15, ~5 min); depois a primeira prospecção (CSO-19).
+- **Próximo passo (programa):** com a Brevo conectada, conferir um aviso real (formato do webhook) e o teste para o próprio e-mail; ver PROXIMA_SESSAO.
+
 ## 10/11/2026 (noite) — IA que executa (todos os setores) + envio pelo Gmail com confirmação
 - **Pedido do Fernando:** a IA (no VEOS e pelo MCP) tem que FAZER o que ele pede em qualquer setor, por exemplo "achar um arquiteto, pegar o e-mail, gerar um e-mail e enviar"; pensar a empresa inteira; pode se basear em outros apps (G4 OS) e no GitHub.
 - **Referências usadas:** G4 OS instalado (conectores Gmail/Agenda/Drive, automações "agendamentos" e "vigia de respostas", regra "apresentar → confirmar → agir" e `confirmed: true`); pesquisa de projetos de "empresa com agentes" no GitHub (Paperclip, SynthOrg, Open Executive) e de APIs de pesquisa gratuitas (Parallel, Tavily).

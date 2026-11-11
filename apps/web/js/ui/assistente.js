@@ -98,12 +98,14 @@ async function aguardarResposta(id, setor) {
 }
 
 // ---------------------------------------------------------------- e-mails preparados pela IA (cartoes com "Enviar")
-let situacaoEmail = null; // { conectado, conta, ... } (cache de 5 min)
-async function gmailLigado(forcar = false) {
+let situacaoEmail = null; // { conectado (Gmail), envio: {via, nome, pelo, conta} | null, ... } (cache de 5 min)
+async function situacaoDoEmail(forcar = false) {
   if (!forcar && situacaoEmail && Date.now() - situacaoEmail.em < 5 * 60_000) return situacaoEmail.v;
-  try { situacaoEmail = { em: Date.now(), v: await api.emailSituacao() }; } catch { situacaoEmail = { em: Date.now(), v: { conectado: false } }; }
+  try { situacaoEmail = { em: Date.now(), v: await api.emailSituacao() }; } catch { situacaoEmail = { em: Date.now(), v: { conectado: false, envio: null } }; }
   return situacaoEmail.v;
 }
+// cartoes antigos (guardados no aparelho) tinham so "gmail: true/false"
+const envioDoCartao = (m) => m?.envio ?? (m?.gmail ? { via: "gmail", nome: "Gmail", pelo: "pelo Gmail" } : null);
 const pendentes = (m) => (m?.itens ?? []).filter((i) => i.estado === "rascunho" && i.para);
 function ultimaComPendentes() {
   for (let i = msgs.length - 1; i >= 0; i--) if (msgs[i].de === "acoes" && pendentes(msgs[i]).length) return msgs[i];
@@ -157,14 +159,14 @@ export async function enviar(texto) {
   // "confirmo" / "pode enviar" com e-mails preparados na tela: envia todos (a confirmacao e da pessoa)
   const comPendentes = confirmacaoDeEnvio(t) ? ultimaComPendentes() : null;
   if (comPendentes) {
-    const st = await gmailLigado(true);
-    if (!st.conectado) { adicionar({ de: "veos", texto: "O Gmail da VOICE ainda não está conectado ao VEOS. Conecte em Integrações (uns 5 minutos) ou abra cada e-mail no seu programa de e-mail pelo botão do cartão.", href: "#/integracoes" }); return; }
+    const st = await situacaoDoEmail(true);
+    if (!st.envio) { adicionar({ de: "veos", texto: "O VEOS ainda não tem por onde enviar e-mail. Conecte a Brevo ou o Gmail em Integrações (uns 5 minutos) ou abra cada e-mail no seu programa de e-mail pelo botão do cartão.", href: "#/integracoes" }); return; }
     const n = pendentes(comPendentes).length;
-    pensando = { setor: comPendentes.setor ?? "direcao", desde: Date.now(), envio: true };
+    pensando = { setor: comPendentes.setor ?? "direcao", desde: Date.now(), envio: true, pelo: st.envio.pelo };
     avisar();
     try {
       const r = await enviarTodos(comPendentes.id, "voz");
-      const fala = r.falha ? `Enviei ${r.ok} de ${n} e-mails pelo Gmail. ${r.falha} não saiu: veja o motivo no cartão.` : `Pronto${tratamento() ? `, ${tratamento()}` : ""}. Enviei ${r.ok} e-mail${r.ok === 1 ? "" : "s"} pelo Gmail da VOICE. Aviso quando alguém responder.`;
+      const fala = r.falha ? `Enviei ${r.ok} de ${n} e-mails ${st.envio.pelo}. ${r.falha} não saiu: veja o motivo no cartão.` : `Pronto${tratamento() ? `, ${tratamento()}` : ""}. Enviei ${r.ok} e-mail${r.ok === 1 ? "" : "s"} ${st.envio.pelo}. ${st.conectado ? "Aviso quando alguém responder." : "As respostas chegam no seu Gmail."}`;
       adicionar({ de: "veos", texto: fala });
       falar(fala);
     } finally { pensando = null; avisar(); }
@@ -204,9 +206,9 @@ export async function enviar(texto) {
       // e-mails que o diretor preparou nesta resposta: cartoes com "Enviar" (a pessoa confirma)
       const itens = await rascunhosDaPergunta(res.id);
       if (itens.length) {
-        const st = await gmailLigado(true);
-        adicionar({ de: "acoes", setor, pergunta: res.id, itens, gmail: Boolean(st.conectado) });
-        falar(`${trechoParaFalar(fim.resposta.resposta)} Preparei ${itens.length} e-mail${itens.length === 1 ? "" : "s"}. ${st.conectado ? "Diga confirmo para enviar, ou toque em Enviar." : "Para eu enviar pelo Gmail, conecte o Gmail em Integrações."}`);
+        const st = await situacaoDoEmail(true);
+        adicionar({ de: "acoes", setor, pergunta: res.id, itens, envio: st.envio ?? null });
+        falar(`${trechoParaFalar(fim.resposta.resposta)} Preparei ${itens.length} e-mail${itens.length === 1 ? "" : "s"}. ${st.envio ? `Diga confirmo para enviar ${st.envio.pelo}, ou toque em Enviar.` : "Para eu enviar, conecte a Brevo ou o Gmail em Integrações."}`);
       } else falar(trechoParaFalar(fim.resposta.resposta));
     } else {
       adicionar({ de: "veos", texto: `Não consegui a resposta do ${SIGLA[setor]} agora: ${fim.erro}.`, href: `#/diretores?conversa=${conversas[setor]}` });
@@ -250,17 +252,18 @@ const mailto = (i) => `mailto:${encodeURIComponent(i.para ?? "")}?subject=${enco
 function cartoesDeEmail(m) {
   const vivos = (m.itens ?? []).filter((i) => i.estado !== "descartada");
   const abertos = pendentes(m);
-  const todos = abertos.length > 1 && m.gmail ? h("button", { class: "btn btn-primary btn-mini", type: "button", onclick: async (e) => { e.currentTarget.disabled = true; const r = await enviarTodos(m.id, "lote"); if (r.falha) adicionar({ de: "veos", texto: `${r.ok} enviado(s); ${r.falha} com problema (veja o cartão).` }); } }, `Enviar os ${abertos.length} pelo Gmail`) : null;
+  const envio = envioDoCartao(m);
+  const todos = abertos.length > 1 && envio ? h("button", { class: "btn btn-primary btn-mini", type: "button", onclick: async (e) => { e.currentTarget.disabled = true; const r = await enviarTodos(m.id, "lote"); if (r.falha) adicionar({ de: "veos", texto: `${r.ok} enviado(s); ${r.falha} com problema (veja o cartão).` }); } }, `Enviar os ${abertos.length} ${envio.pelo}`) : null;
   return h("div", { class: "as-acoes-lista" },
     h("div", { class: "as-acoes-topo" }, h("strong", null, `${vivos.length} e-mail${vivos.length === 1 ? "" : "s"} preparado${vivos.length === 1 ? "" : "s"}`),
-      h("small", null, m.gmail ? "Confira e envie. Diga “confirmo” para enviar todos." : "Gmail não conectado: abra no seu e-mail ou conecte em Integrações."), todos),
+      h("small", null, envio ? `Confira e envie (${envio.pelo}). Diga “confirmo” para enviar todos.` : "E-mail do VEOS não conectado: abra no seu e-mail ou conecte a Brevo ou o Gmail em Integrações."), todos),
     vivos.map((i) => {
       const corpo = h("pre", { class: "as-email-corpo", hidden: true }, i.corpo);
       const ver = h("button", { class: "btn btn-ghost btn-mini", type: "button", onclick: () => { corpo.hidden = !corpo.hidden; ver.textContent = corpo.hidden ? "Ver texto" : "Esconder"; } }, "Ver texto");
       const estadoTxt = i.estado === "enviada" ? "Enviado ✓" : i.estado === "enviando" ? "Enviando…" : null;
       const acoes = i.estado === "rascunho"
-        ? [m.gmail && i.para ? h("button", { class: "btn btn-primary btn-mini", type: "button", onclick: () => enviarItem(m.id, i.id, "tela") }, "Enviar") : null,
-          !m.gmail && i.para ? h("a", { class: "btn btn-ghost btn-mini", href: mailto(i) }, "Abrir no e-mail") : null,
+        ? [envio && i.para ? h("button", { class: "btn btn-primary btn-mini", type: "button", onclick: () => enviarItem(m.id, i.id, "tela") }, "Enviar") : null,
+          !envio && i.para ? h("a", { class: "btn btn-ghost btn-mini", href: mailto(i) }, "Abrir no e-mail") : null,
           !i.para ? h("a", { class: "btn btn-ghost btn-mini", href: "#/mensagens" }, "Falta o destinatário: completar") : null,
           ver, h("button", { class: "btn btn-ghost btn-mini", type: "button", onclick: () => descartarItem(m.id, i.id) }, "Descartar")]
         : [ver];
@@ -291,7 +294,7 @@ export function desenharMensagens(alvo, { compacto = false } = {}) {
   }
   if (st.pensando) alvo.append(h("div", { class: "as-msg as-ia" }, h("span", { class: "as-avatar", "aria-hidden": "true" }, SIGLA[st.pensando.setor] ?? "✦"),
     h("div", { class: "as-corpo as-pensando" }, h("span", { class: "cv-pontos", "aria-hidden": "true" }, h("i"), h("i"), h("i")),
-      h("small", null, st.pensando.envio ? "Enviando pelo Gmail da VOICE…" : st.pensando.acao ? `${NOME[st.pensando.setor] ?? "O diretor"} está executando o pedido (pesquisa, cadastros, e-mails)… pode levar até 1 minuto.` : `${NOME[st.pensando.setor] ?? "O diretor"} está analisando com os dados do VEOS…`))));
+      h("small", null, st.pensando.envio ? `Enviando ${st.pensando.pelo ?? "o e-mail"}…` : st.pensando.acao ? `${NOME[st.pensando.setor] ?? "O diretor"} está executando o pedido (pesquisa, cadastros, e-mails)… pode levar até 1 minuto.` : `${NOME[st.pensando.setor] ?? "O diretor"} está analisando com os dados do VEOS…`))));
   alvo.scrollTop = alvo.scrollHeight;
 }
 

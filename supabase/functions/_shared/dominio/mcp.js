@@ -2,7 +2,8 @@
 // Ferramentas do MCP do VEOS e o tratador JSON-RPC, SEM E/S (usado pelo MCP local do Claude Code, pelo MCP REMOTO
 // do site e pela IA do proprio VEOS no modo execucao). Cada ferramenta chama a MESMA API do site: permissoes e regras
 // do banco valem igual. Escritas criam o que a governanca permite (cadastro e registro de qualquer setor, tarefa,
-// rascunho, ideia/proposta). E-MAIL: desde 10/11/2026 (decisao do Fernando) o VEOS ENVIA pelo Gmail da VOICE, mas so
+// rascunho, ideia/proposta). E-MAIL: desde 10/11/2026 (decisao do Fernando) o VEOS ENVIA (pela Brevo ou pelo Gmail da
+// VOICE, desde 11/11), mas so
 // com confirmacao explicita do dono (veos_enviar_email com confirmado=true, depois de mostrar o texto final). Pagar,
 // aceitar orcamento, gerar pedido e decidir politica/meta/alcada continuam humanos, pela tela.
 import { MODELO_NEGOCIO } from "./empresa.js";
@@ -178,11 +179,12 @@ const FERRAMENTAS_TODAS = [
       cliente_id: str("uuid do cliente (opcional)"), registro_id: str("uuid do registro ligado, ex.: parceiro, lead, chamado (opcional)"), responder_a: str("thread_id do Gmail para responder na mesma conversa (opcional)"),
       alvo: { type: "object", description: "empresa achada na web (prospecção)", properties: { nome: { type: "string", description: "nome do escritório/empresa" }, site: { type: "string", description: "site" }, contato: { type: "string", description: "pessoa (se souber)" }, telefone: { type: "string", description: "telefone (se houver)" }, tipo_parceiro: { type: "string", description: "arquiteto, designer_interiores, construtora, incorporadora, engenheiro ou outro" } } } }, ["assunto", "corpo"]),
     rota: (a) => ["POST", "mensagens", { canal: "email", destinatario: a.para, assunto: a.assunto, corpo: a.corpo, tipo: a.tipo ?? "avulsa", setor_id: a.setor_id ?? "vendas", cliente_id: a.cliente_id, registro_id: a.registro_id, responder_a: a.responder_a, alvo: a.alvo, origem: "mcp:veos" }] },
-  { name: "veos_enviar_email", description: "ENVIA pelo Gmail da VOICE um e-mail já preparado (veos_preparar_email). SÓ chame depois de mostrar ao dono o destinatário, o assunto e o texto final e ele responder claramente que pode enviar; então passe confirmado=true. Lista de bloqueio, limite diário e opção de sair são conferidos pelo VEOS. Sem confirmado=true nada é enviado.",
-    inputSchema: obj({ mensagem_id: str("id do rascunho (devolvido por veos_preparar_email)"), confirmado: { type: "boolean", description: "true SÓ depois do OK explícito do dono para ESTE e-mail" } }, ["mensagem_id", "confirmado"]),
+  { name: "veos_enviar_email", description: "ENVIA um e-mail já preparado (veos_preparar_email) pelo e-mail da VOICE conectado no VEOS: Brevo ou Gmail (o padrão escolhido em Integrações; resposta a uma conversa do Gmail sai pelo Gmail). SÓ chame depois de mostrar ao dono o destinatário, o assunto e o texto final e ele responder claramente que pode enviar; então passe confirmado=true. Lista de bloqueio, limite diário e opção de sair são conferidos pelo VEOS. Sem confirmado=true nada é enviado.",
+    inputSchema: obj({ mensagem_id: str("id do rascunho (devolvido por veos_preparar_email)"), confirmado: { type: "boolean", description: "true SÓ depois do OK explícito do dono para ESTE e-mail" },
+      via: str("opcional: brevo ou gmail (só se o dono pedir um caminho específico)", { enum: ["brevo", "gmail"] }) }, ["mensagem_id", "confirmado"]),
     rota: (a) => {
       if (a.confirmado !== true) throw new Error("envio não confirmado: mostre o e-mail ao dono e chame com confirmado=true só depois do OK dele");
-      return ["POST", `mensagens/${idOk(a.mensagem_id, "mensagem_id")}/enviar`, { confirmacao: "mcp" }];
+      return ["POST", `mensagens/${idOk(a.mensagem_id, "mensagem_id")}/enviar`, { confirmacao: "mcp", ...(a.via === "brevo" || a.via === "gmail" ? { via: a.via } : {}) }];
     } },
   { name: "veos_caixa_de_saida", description: "E-mails e mensagens da caixa de saída do VEOS: para enviar (rascunho), enviados (com a resposta, se houve) ou descartados.",
     inputSchema: obj({ estado: str("rascunho, enviada ou descartada (padrão: rascunho)", { enum: ["rascunho", "enviada", "descartada"] }) }), rota: (a) => ["GET", `mensagens${qs({ estado: a.estado ?? "rascunho" })}`] },
@@ -202,7 +204,7 @@ const FERRAMENTAS = FERRAMENTAS_TODAS.filter((f) => escopo === "completo" || !ES
 const INSTRUCOES = "VEOS da VOICE Ambientes Inteligentes. " + MODELO_NEGOCIO + " Você EXECUTA o que o dono pede em todos os setores: " +
   "cadastre e atualize registros de qualquer setor (veos_tipos_de_registro → veos_registros para não duplicar → veos_criar_registro/veos_atualizar_registro), crie tarefas, clientes, rascunhos de orçamento, contas a pagar, fornecedores e contratos (veos_criar_*); " +
   "pesquise na web (veos_pesquisar_web, veos_ler_pagina) e ache empresas com o contato público (veos_encontrar_contatos); " +
-  "prepare e-mails 1:1 (veos_preparar_email) e ENVIE pelo Gmail da VOICE com veos_enviar_email(confirmado=true) SÓ depois de mostrar destinatário, assunto e texto final e o dono dizer que pode; leia a caixa e as conversas (veos_emails_recebidos, veos_ler_conversa_email) e a agenda (veos_agenda, veos_criar_evento). " +
+  "prepare e-mails 1:1 (veos_preparar_email) e ENVIE pelo e-mail da VOICE (Brevo ou Gmail, o que estiver conectado) com veos_enviar_email(confirmado=true) SÓ depois de mostrar destinatário, assunto e texto final e o dono dizer que pode; leia a caixa e as conversas (veos_emails_recebidos, veos_ler_conversa_email) e a agenda (veos_agenda, veos_criar_evento). " +
   "Exemplo: 'ache 3 escritórios de arquitetura em Itajaí e mande nossa apresentação' = veos_encontrar_contatos → um veos_preparar_email por escritório (tipo=prospeccao, alvo com nome/site) → mostrar → OK do dono → veos_enviar_email. " +
   "Nunca invente e-mail, telefone ou dado. Pagar, aceitar orçamento, gerar pedido e decidir política, meta, alçada ou imposto continuam com o dono na tela: registre como ideia/proposta. " +
   "Para agir como um diretor (CEO, CFO, CMO...), leia antes veos_manual_diretor com o pedido. Antes de recomendar algo relevante, use veos_consultar_precedentes (precedente orienta, não autoriza). Diferencie fato, opinião, inferência e hipótese. " +

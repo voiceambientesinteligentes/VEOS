@@ -1,14 +1,20 @@
-// ACOES DA IA na funcao "api": pesquisa na web, contato publico de empresas, Gmail e Agenda do Google (ponte) e as
-// chaves dos provedores de pesquisa. Usado pela tela, pela IA do VEOS (modo execucao) e pelo MCP (mesmas rotas).
+// ACOES DA IA na funcao "api": pesquisa na web, contato publico de empresas, Gmail e Agenda do Google (ponte), Brevo
+// (envio de e-mail) e as chaves dos provedores de pesquisa. Usado pela tela, pela IA do VEOS (modo execucao) e pelo
+// MCP (mesmas rotas).
 //   GET  /pesquisa/situacao                     provedores de pesquisa ligados
 //   GET  /pesquisa/web?q=&n=                    pesquisa (cache 24 h)                      [todos; 60/h]
 //   GET  /pesquisa/pagina?url=                  le uma pagina publica (texto + contatos)   [todos; 150/h]
 //   POST /pesquisa/contatos {busca, quantidade} empresas com e-mail/telefone do site      [todos; 20/h]
 //   POST /pesquisa/chave {provedor, chave}      guarda (cifrada) a chave de um provedor   [direcao]
-//   GET  /email/situacao                        Gmail ligado? conta, enviados hoje, limites
+//   GET  /email/situacao                        Gmail e Brevo ligados? por onde sai, enviados hoje, limites
 //   POST /email/preparar-ponte                  gera o segredo da ponte (o codigo aparece uma vez) [direcao]
 //   POST /email/conectar {url}                  testa e liga a ponte                      [direcao]
 //   POST /email/testar | /email/desconectar     [direcao]
+//   POST /email/brevo/conectar {chave}          confere a conta e o remetente e liga os avisos (webhook) [direcao]
+//   POST /email/brevo/codigo {codigo}           confirma o remetente com o codigo de 6 digitos da Brevo  [direcao]
+//   POST /email/brevo/testar {enviar?}          atualiza a situacao; enviar=true manda um teste para o proprio e-mail [direcao]
+//   POST /email/brevo/desconectar               apaga o aviso na Brevo e esquece a chave                 [direcao]
+//   POST /email/padrao {via}                    por onde sai quando os dois estao ligados (brevo|gmail)  [direcao]
 //   GET  /email/caixa?busca=&max=               conversas do Gmail                         [direcao]
 //   GET  /email/conversa/:thread                mensagens de uma conversa                  [direcao]
 //   GET  /agenda/eventos?de=&ate=               agenda do Google                           [direcao, secretaria]
@@ -16,16 +22,17 @@
 // deno-lint-ignore-file no-explicit-any
 import { HttpError, lerCorpo, type Membro, servico } from "../_shared/banco.ts";
 import { apagarIntegracao, gravarIntegracao, lerIntegracao, marcarIntegracao, registrarAcao, usosNaHora } from "../_shared/integracoes.ts";
-import { chamarPonte, horaDeBrasilia, inicioDoDiaSP, ponteLigada } from "../_shared/google.ts";
+import { chamarPonte, horaDeBrasilia, ponteLigada } from "../_shared/google.ts";
 import { segredoAleatorio } from "../_shared/cifra.ts";
 import { encontrarContatos, lerPagina, pesquisarWeb, situacaoPesquisa } from "../_shared/web.ts";
 import { emailValido } from "../_shared/dominio/web_contatos.js";
 import { urlDaPonteValida, VERSAO_PONTE } from "../_shared/dominio/ponte_google.js";
+import { chaveBrevoValida, ehChaveSmtpBrevo, escolherViaEmail, VIAS_EMAIL } from "../_shared/dominio/brevo.js";
+import { brevoLigada, confirmarRemetente, conectarBrevo, desligarAvisos, enviarPelaBrevo, NOME_REMETENTE, situacaoBrevo } from "../_shared/brevo.ts";
+import { enviadosHoje, LIMITE_BREVO_DIA, LIMITE_GMAIL_DIA, LIMITE_PROSPECCAO_DIA } from "../_shared/envio_email.ts";
 import { ehTeste, filtroAutor } from "../_shared/teste.ts";
 
 const CHAVE_RE = /^[A-Za-z0-9-]{16,64}$/;
-export const LIMITE_EMAILS_DIA = 80; // o Gmail gratuito aceita ~100 destinatarios/dia pela ponte
-export const LIMITE_PROSPECCAO_DIA = 30; // prospeccao 1:1 (nada de disparo em massa)
 const txt = (v: unknown, max: number) => (typeof v === "string" && v.trim() ? v.trim().slice(0, max) : null);
 const origemDe = (req: Request) => (req.headers.get("X-VEOS-Origem") ?? "tela").slice(0, 60);
 
@@ -33,16 +40,6 @@ async function limitar(eu: Membro, acao: string, max: number) {
   if (await usosNaHora(eu.user_id, acao, max) >= max) throw new HttpError(429, `limite de ${max} por hora para "${acao.replace(/_/g, " ")}"; tente mais tarde`);
 }
 const soDirecao = (eu: Membro) => { if (eu.papel !== "direcao") throw new HttpError(403, "somente a direção"); };
-
-/** Contagem de e-mails enviados pelo VEOS hoje (Brasilia). */
-export async function enviadosHoje() {
-  const desde = encodeURIComponent(inicioDoDiaSP());
-  const [todos, prosp] = await Promise.all([
-    servico(`/rest/v1/mensagens_saida?via=eq.gmail&enviada_em=gte.${desde}&select=id&limit=500`),
-    servico(`/rest/v1/mensagens_saida?via=eq.gmail&tipo=eq.prospeccao&enviada_em=gte.${desde}&select=id&limit=500`),
-  ]);
-  return { todos: todos.length as number, prospeccao: prosp.length as number };
-}
 
 export async function rotearAcoes(req: Request, partes: string[], eu: Membro) {
   const [raiz, a, b] = partes;
@@ -105,10 +102,68 @@ export async function rotearAcoes(req: Request, partes: string[], eu: Membro) {
   // ---------------------------------------------------------------- Gmail da VOICE (ponte)
   if (raiz === "email") {
     if (a === "situacao" && !post) {
-      const [i, pend, hoje] = await Promise.all([lerIntegracao("gmail"), lerIntegracao("gmail_pendente"), enviadosHoje()]);
+      const [i, pend, hoje, brevo, pref] = await Promise.all([lerIntegracao("gmail"), lerIntegracao("gmail_pendente"), enviadosHoje(), situacaoBrevo(), lerIntegracao("email_envio")]);
       const ligado = i?.situacao === "conectado";
+      const padrao = ["gmail", "brevo"].includes(String(pref?.dados?.via)) ? String(pref?.dados?.via) : null;
+      const via = escolherViaEmail({ gmail: ligado, brevo: brevo.pronta, padrao });
       return { conectado: ligado, conta: ligado ? i?.conta : null, conectado_em: ligado ? i?.conectado_em : null, situacao: i?.situacao ?? "desligado", detalhe: i?.detalhe ?? null,
-        aguardando_url: Boolean(pend), enviados_hoje: hoje.todos, prospeccao_hoje: hoje.prospeccao, limite_dia: LIMITE_EMAILS_DIA, limite_prospeccao: LIMITE_PROSPECCAO_DIA, versao_ponte: VERSAO_PONTE };
+        aguardando_url: Boolean(pend), versao_ponte: VERSAO_PONTE,
+        // por onde o VEOS envia agora (null = nada ligado: a pessoa abre no e-mail dela e marca como enviada)
+        envio: via ? { ...VIAS_EMAIL[via as "brevo" | "gmail"], conta: via === "gmail" ? i?.conta ?? null : brevo.remetente?.email ?? brevo.conta ?? null } : null,
+        padrao, brevo,
+        enviados_hoje: hoje.todos, enviados_hoje_gmail: hoje.gmail, enviados_hoje_brevo: hoje.brevo, prospeccao_hoje: hoje.prospeccao,
+        limite_dia: via === "brevo" ? LIMITE_BREVO_DIA : LIMITE_GMAIL_DIA, limite_gmail: LIMITE_GMAIL_DIA, limite_brevo: LIMITE_BREVO_DIA, limite_prospeccao: LIMITE_PROSPECCAO_DIA };
+    }
+    if (a === "padrao" && post) {
+      soDirecao(eu);
+      const via = String(corpo.via ?? "");
+      if (!["gmail", "brevo"].includes(via)) throw new HttpError(400, "via: brevo ou gmail");
+      await gravarIntegracao("email_envio", { via }, { situacao: "conectado", usuario: eu.user_id });
+      await registrarAcao(eu.user_id, "integracao", `e-mail sai por padrão ${VIAS_EMAIL[via as "brevo" | "gmail"].pelo}`, true, origem);
+      return { ok: true, padrao: via };
+    }
+    // ---- Brevo (envio; plano gratis 300/dia; avisos de entregue/aberto/voltou/spam)
+    if (a === "brevo" && post) {
+      soDirecao(eu);
+      if (b === "conectar") {
+        const chave = txt(corpo.chave, 300) ?? "";
+        if (ehChaveSmtpBrevo(chave)) throw new HttpError(400, "essa é a chave SMTP (começa com xsmtpsib-); o VEOS precisa da chave de API: na Brevo, SMTP e API → aba Chaves de API → Gerar uma nova chave de API (começa com xkeysib-)");
+        if (!chaveBrevoValida(chave)) throw new HttpError(400, "cole a chave de API da Brevo inteira (começa com xkeysib-)");
+        const r = await conectarBrevo(chave, eu.user_id);
+        await registrarAcao(eu.user_id, "integracao", `Brevo conectada: ${r.conta}${r.remetente?.ativo ? "" : " (remetente aguardando código)"}`, true, origem);
+        return { ok: true, ...r };
+      }
+      if (b === "codigo") {
+        const codigo = String(corpo.codigo ?? "").replace(/\D/g, "");
+        const r = await confirmarRemetente(codigo, eu.user_id);
+        await registrarAcao(eu.user_id, "integracao", `Brevo: remetente ${r.remetente?.email ?? "?"} ${r.remetente?.ativo ? "confirmado" : "ainda não confirmado"}`, Boolean(r.remetente?.ativo), origem);
+        return { ok: true, ...r };
+      }
+      if (b === "testar") {
+        const atual = await brevoLigada();
+        if (!atual) throw new HttpError(409, "a Brevo não está conectada");
+        const r = await conectarBrevo(atual.chave, eu.user_id, { criarRemetente: false });
+        let enviado_para: string | null = null;
+        if (corpo.enviar === true) {
+          await limitar(eu, "brevo_teste", 5);
+          const b2 = await brevoLigada();
+          const para = b2?.remetente?.email ?? b2?.conta ?? null;
+          if (!b2 || !para) throw new HttpError(409, "sem remetente confirmado na Brevo");
+          if (!ehTeste(eu)) {
+            await enviarPelaBrevo(b2, { id: crypto.randomUUID(), para, assunto: "VEOS: teste de envio pela Brevo", tipo: "interna", responderPara: para, nome: NOME_REMETENTE,
+              texto: `Este é um teste do VEOS.\n\nSe este e-mail chegou, a Brevo está enviando pelo VEOS. Em alguns minutos a tela Integrações mostra o aviso "entregue" que a Brevo manda de volta.\n\nVOICE Ambientes Inteligentes` });
+          }
+          enviado_para = para;
+          await registrarAcao(eu.user_id, "email_enviado", `teste da Brevo para ${para}${ehTeste(eu) ? " (simulado)" : ""}`, true, origem);
+        }
+        return { ok: true, ...r, enviado_para };
+      }
+      if (b === "desconectar") {
+        await desligarAvisos(await brevoLigada().catch(() => null));
+        await apagarIntegracao("brevo");
+        await registrarAcao(eu.user_id, "integracao", "Brevo desconectada", true, origem);
+        return { ok: true, aviso: "O VEOS esqueceu a chave e apagou o aviso (webhook) na Brevo. Para desligar de vez, apague a chave VEOS em SMTP e API → Chaves de API." };
+      }
     }
     if (a === "preparar-ponte" && post) {
       soDirecao(eu);

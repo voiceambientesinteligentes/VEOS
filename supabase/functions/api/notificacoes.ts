@@ -1,14 +1,16 @@
-// NOTIFICACOES na funcao "api": caixa de saida (rascunhos; e-mail ENVIADO pelo Gmail da VOICE com confirmacao) e
-// resumo do dia.
+// NOTIFICACOES na funcao "api": caixa de saida (rascunhos; e-mail ENVIADO pela Brevo ou pelo Gmail da VOICE com
+// confirmacao) e resumo do dia.
 //   GET  /mensagens?estado=rascunho|enviada|descartada&origem=&registro=
 //   POST /mensagens            {canal, destinatario?, assunto?, corpo, setor_id?, origem?, tipo?, registro_id?, cliente_id?,
 //                               responder_a?, alvo?}   -> rascunho (o destino pode vir do cliente/registro; {{nome}} etc.)
-//   POST /mensagens/:id/enviar {confirmacao?}          -> envia o e-mail pelo Gmail (ponte), com as travas abaixo
+//   POST /mensagens/:id/enviar {confirmacao?, via?}    -> envia o e-mail pela Brevo ou pelo Gmail (ponte), com as travas abaixo
 //   POST /mensagens/:id/(enviada|descartada)   {motivo?}  -> confirmacao manual (enviado por fora) ou descarte
 //   GET  /resumo               resumo do dia dos setores que o perfil acessa
 // Travas do envio (decisao do Fernando de 10/11/2026: a IA pode enviar quando ele pedir, sempre com confirmacao):
-// so e-mail; so rascunho; destinatario valido e fora da lista de bloqueio; limite diario (80; prospeccao 30);
-// prospeccao para o mesmo endereco no maximo 1 vez em 30 dias; linha de "sair" na prospeccao; robos de teste so simulam.
+// so e-mail; so rascunho; destinatario valido e fora da lista de bloqueio; limite diario (Gmail 80, Brevo 280;
+// prospeccao 30 somando os dois); prospeccao para o mesmo endereco no maximo 1 vez em 30 dias; linha de "sair" na
+// prospeccao; robos de teste so simulam. Por onde sai (11/11/2026): o padrao escolhido em Integracoes; sem escolha,
+// a Brevo; resposta a uma conversa do Gmail sai pelo Gmail (fica na mesma conversa).
 // deno-lint-ignore-file no-explicit-any
 import { HttpError, lerCorpo, type Membro, servico } from "../_shared/banco.ts";
 import { acessiveis, podeVer } from "./setores.ts";
@@ -18,11 +20,13 @@ import type { Setor } from "../_shared/setores/motor.ts";
 import { tipoDoSetor, validarRegistro } from "../_shared/setores/registros.ts";
 import { varrer } from "../_shared/setores/varredura.ts";
 import { vigiarCadencias } from "../_shared/comercial_vigia.ts";
-import { chamarPonte, ponteLigada } from "../_shared/google.ts";
+import { chamarPonte } from "../_shared/google.ts";
 import { registrarAcao } from "../_shared/integracoes.ts";
 import { comRodapeSaida, dominioDe, emailValido, limparTextoEmail, preencherModelo, primeiroNome, prometeAnexo, telefoneBR } from "../_shared/dominio/web_contatos.js";
+import { escolherViaEmail, VIAS_EMAIL } from "../_shared/dominio/brevo.js";
+import { enviarPelaBrevo, NOME_REMETENTE } from "../_shared/brevo.ts";
+import { caminhosDeEnvio, enviadosHoje, LIMITE_BREVO_DIA, LIMITE_GMAIL_DIA, LIMITE_PROSPECCAO_DIA, limiteDoDia, viaDeEnvio } from "../_shared/envio_email.ts";
 import { ehTeste, filtroAutor } from "../_shared/teste.ts";
-import { enviadosHoje, LIMITE_EMAILS_DIA, LIMITE_PROSPECCAO_DIA } from "./acoes.ts";
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
 const CHAVE_RE = /^[A-Za-z0-9-]{16,64}$/;
@@ -134,8 +138,8 @@ export async function rotearNotificacoes(req: Request, partes: string[], eu: Mem
     if (canal === "email" && !destino && corpo.alvo) throw new HttpError(400, "informe o e-mail da empresa (para) — sem e-mail não dá para prospectar por e-mail");
     if (destino) {
       const contato = canal === "email" ? destino.toLowerCase() : String(destino).replace(/\D/g, "");
-      const [b] = await servico(`/rest/v1/contatos_bloqueio?contato=eq.${encodeURIComponent(contato)}&select=contato`);
-      if (b) throw new HttpError(409, "este contato pediu para não receber mensagens (lista de bloqueio): nada foi preparado");
+      const [b] = await servico(`/rest/v1/contatos_bloqueio?contato=eq.${encodeURIComponent(contato)}&select=contato,motivo`);
+      if (b) throw new HttpError(409, `este contato está na lista de bloqueio${b.motivo ? ` (${String(b.motivo).slice(0, 140)})` : " (pediu para não receber mensagens)"}: nada foi preparado`);
     }
     if (tipo === "prospeccao" && cliente?.aceita_contato === false) throw new HttpError(409, "o cliente não aceita contato comercial (LGPD)");
     // prospeccao de empresa achada na web: cadastra (ou reaproveita) o parceiro prospectado
@@ -172,14 +176,14 @@ export async function rotearNotificacoes(req: Request, partes: string[], eu: Mem
       await servico(`/rest/v1/mensagens_saida?chave=like.CAD:${registro.id}:*&estado=eq.rascunho&canal=eq.email&id=neq.${r.id}`, { method: "PATCH", headers: { Prefer: "return=minimal" },
         body: JSON.stringify({ estado: "descartada", motivo_descarte: "substituído pelo e-mail personalizado preparado pela IA" }) }).catch((e) => console.error("descartar modelo da cadencia", e));
     }
-    const ponte = canal === "email" ? await ponteLigada().catch(() => null) : null;
+    const via = canal === "email" ? await viaDeEnvio(responder).catch(() => null) : null;
     return { ...r, canal, destinatario: destino, assunto, corpo: texto, tipo, registro_id: registro?.id ?? null, cliente_id: cliente?.id ?? null,
       parceiro: parceiro ? { id: parceiro.id, titulo: parceiro.titulo, novo: parceiro.novo } : undefined,
-      envio: canal === "email" ? (ponte ? "pronto para enviar pelo Gmail (precisa da confirmação do dono)" : "Gmail não conectado: abra no e-mail e envie, ou conecte em Integrações") : "WhatsApp: abra no aplicativo e envie",
+      envio: canal === "email" ? (via?.info ? `pronto para enviar ${via.info.pelo} (precisa da confirmação do dono)` : "e-mail do VEOS não conectado: abra no e-mail e envie, ou conecte a Brevo ou o Gmail em Integrações") : "WhatsApp: abra no aplicativo e envie",
       falta_destinatario: !destino || undefined };
   }
 
-  // ---- enviar pelo Gmail (confirmado por uma pessoa: clique, voz ou MCP com confirmado=true)
+  // ---- enviar pela Brevo ou pelo Gmail (confirmado por uma pessoa: clique, voz ou MCP com confirmado=true)
   if (raiz === "mensagens" && post && id && UUID_RE.test(id) && acao === "enviar") {
     const [m] = await servico(`/rest/v1/mensagens_saida?id=eq.${id}${visivel}${await filtroAutor(eu)}&select=*`);
     if (!m) throw new HttpError(404, "mensagem não encontrada");
@@ -188,10 +192,20 @@ export async function rotearNotificacoes(req: Request, partes: string[], eu: Mem
     if (eu.papel !== "direcao" && eu.papel !== m.setor_id && m.criado_por !== eu.user_id) throw new HttpError(403, "só a direção, o setor da mensagem ou quem a preparou envia");
     const para = String(m.destinatario ?? "").trim().toLowerCase();
     if (!emailValido(para)) throw new HttpError(400, "falta um e-mail válido no destinatário: edite na Caixa de saída");
-    const [b] = await servico(`/rest/v1/contatos_bloqueio?contato=eq.${encodeURIComponent(para)}&select=contato`);
-    if (b) throw new HttpError(409, "este contato pediu para não receber mensagens (lista de bloqueio)");
+    const [b] = await servico(`/rest/v1/contatos_bloqueio?contato=eq.${encodeURIComponent(para)}&select=contato,motivo`);
+    if (b) throw new HttpError(409, `este contato está na lista de bloqueio${b.motivo ? ` (${String(b.motivo).slice(0, 140)})` : " (pediu para não receber mensagens)"}`);
+    // por onde sai: o pedido (via), a resposta a uma conversa do Gmail, o padrao de Integracoes; robo de teste so simula
+    const pedido = ["gmail", "brevo"].includes(String(corpo.via ?? "")) ? String(corpo.via) as "gmail" | "brevo" : null;
+    const cam = ehTeste(eu) ? null : await caminhosDeEnvio();
+    const via = !cam ? "simulado" : escolherViaEmail({ gmail: Boolean(cam.ponte), brevo: Boolean(cam.brevo), padrao: cam.padrao, pedido, responderA: m.responder_a });
+    if (!via) {
+      throw new HttpError(409, pedido
+        ? `${VIAS_EMAIL[pedido].nome} não está pronto para enviar (desconectado${pedido === "brevo" ? " ou remetente sem confirmar" : ""}): Ajustes → Integrações`
+        : "o VEOS ainda não tem por onde enviar e-mail: conecte a Brevo ou o Gmail em Ajustes → Integrações (ou abra no seu e-mail, envie e marque como enviada)");
+    }
     const hoje = await enviadosHoje();
-    if (hoje.todos >= LIMITE_EMAILS_DIA) throw new HttpError(429, `limite de ${LIMITE_EMAILS_DIA} e-mails por dia pelo VEOS atingido (o Gmail gratuito aceita cerca de 100); o restante fica para amanhã`);
+    if (via === "gmail" && hoje.gmail >= LIMITE_GMAIL_DIA) throw new HttpError(429, `limite de ${LIMITE_GMAIL_DIA} e-mails por dia pelo Gmail atingido (o Gmail gratuito aceita cerca de 100)${cam?.brevo ? "; mande pela Brevo" : "; o restante fica para amanhã"}`);
+    if (via === "brevo" && hoje.brevo >= LIMITE_BREVO_DIA) throw new HttpError(429, `limite de ${LIMITE_BREVO_DIA} e-mails por dia pela Brevo atingido (plano grátis: 300)${cam?.ponte ? "; mande pelo Gmail" : "; o restante fica para amanhã"}`);
     const prospeccao = m.tipo === "prospeccao";
     if (prospeccao && hoje.prospeccao >= LIMITE_PROSPECCAO_DIA) throw new HttpError(429, `limite de ${LIMITE_PROSPECCAO_DIA} e-mails de prospecção por dia (contato 1:1, nada de disparo em massa)`);
     if (prospeccao) {
@@ -206,26 +220,29 @@ export async function rotearNotificacoes(req: Request, partes: string[], eu: Mem
     if (!reservada.length) throw new HttpError(409, "este e-mail já está sendo enviado");
     const texto = prospeccao ? comRodapeSaida(m.corpo).slice(0, 5000) : m.corpo;
     const confirmacao = ["tela", "voz", "mcp", "lote"].includes(String(corpo.confirmacao)) ? String(corpo.confirmacao) : "tela";
-    let envio: any;
+    let envio: { id: string | null; thread_id: string | null; cota_email: number | null };
     try {
-      envio = ehTeste(eu)
-        ? { id: `simulado-${id.slice(0, 8)}`, thread_id: null, cota_email: null, simulado: true }
-        : await chamarPonte("enviar", { para, assunto: m.assunto ?? "", corpo: texto, thread_id: m.responder_a ?? undefined, nome_remetente: "VOICE Ambientes Inteligentes" });
+      if (via === "simulado" || !cam) envio = { id: `simulado-${id.slice(0, 8)}`, thread_id: null, cota_email: null };
+      else if (via === "brevo") {
+        // a resposta volta para o Gmail da VOICE (a Brevo troca o remetente @gmail por um endereco dela)
+        const r = await enviarPelaBrevo(cam.brevo!, { id, para, assunto: m.assunto ?? "", texto, responderPara: cam.ponte?.conta ?? cam.brevo!.conta ?? null, nome: NOME_REMETENTE, tipo: m.tipo });
+        envio = { id: r.id, thread_id: null, cota_email: null };
+      } else envio = await chamarPonte("enviar", { para, assunto: m.assunto ?? "", corpo: texto, thread_id: m.responder_a ?? undefined, nome_remetente: NOME_REMETENTE }, cam.ponte);
     } catch (e) {
       const msg = (e as Error).message ?? "falha";
       await servico(`/rest/v1/mensagens_saida?id=eq.${id}`, { method: "PATCH", headers: { Prefer: "return=minimal" }, body: JSON.stringify({ enviando_em: null, erro_envio: msg.slice(0, 300) }) }).catch(() => {});
-      await registrarAcao(eu.user_id, "email_enviado", `FALHOU para ${para}: ${msg}`, false, req.headers.get("X-VEOS-Origem") ?? confirmacao);
+      await registrarAcao(eu.user_id, "email_enviado", `FALHOU ${VIAS_EMAIL[via as "brevo" | "gmail"]?.pelo ?? ""} para ${para}: ${msg}`, false, req.headers.get("X-VEOS-Origem") ?? confirmacao);
       throw e;
     }
-    await rpc("mensagem_registrar_envio", { p: { id, usuario: eu.user_id, via: envio.simulado ? "simulado" : "gmail", provedor_id: envio.id, thread_id: envio.thread_id, corpo: texto, confirmacao } });
+    await rpc("mensagem_registrar_envio", { p: { id, usuario: eu.user_id, via, provedor_id: envio.id, thread_id: envio.thread_id, corpo: texto, confirmacao } });
     // o toque da cadencia que este e-mail cumpre vira "feito"
     const chaves = [m.chave, m.registro_id && prospeccao ? `CAD:${m.registro_id}:parceiro_prospeccao:1` : null].filter((c) => typeof c === "string" && c.startsWith("CAD:"));
     if (chaves.length) {
       await servico(`/rest/v1/tarefas?chave=in.(${chaves.map((c) => `"${c}"`).join(",")})&estado=eq.aberta`, { method: "PATCH", headers: { Prefer: "return=minimal" },
         body: JSON.stringify({ estado: "feita", concluida_em: new Date().toISOString(), concluida_por: eu.user_id }) }).catch((e) => console.error("toque da cadencia", e));
     }
-    await registrarAcao(eu.user_id, "email_enviado", `${m.tipo} para ${para}: ${String(m.assunto ?? "").slice(0, 120)}`, true, req.headers.get("X-VEOS-Origem") ?? confirmacao);
-    return { ok: true, id, estado: "enviada", para, via: envio.simulado ? "simulado" : "gmail", cota_restante: envio.cota_email ?? null, enviados_hoje: hoje.todos + 1, limite_dia: LIMITE_EMAILS_DIA };
+    await registrarAcao(eu.user_id, "email_enviado", `${m.tipo} ${VIAS_EMAIL[via as "brevo" | "gmail"]?.pelo ?? "(simulado)"} para ${para}: ${String(m.assunto ?? "").slice(0, 110)}`, true, req.headers.get("X-VEOS-Origem") ?? confirmacao);
+    return { ok: true, id, estado: "enviada", para, via, pelo: VIAS_EMAIL[via as "brevo" | "gmail"]?.pelo ?? null, cota_restante: envio.cota_email ?? null, enviados_hoje: hoje.todos + 1, limite_dia: limiteDoDia(via) };
   }
 
   if (raiz === "mensagens" && post && id && UUID_RE.test(id) && ["enviada", "descartada"].includes(acao)) {

@@ -124,9 +124,14 @@ export const api = {
   mensagens: (estado = "rascunho", filtros = {}) => request("GET", `mensagens?${new URLSearchParams({ estado, ...Object.fromEntries(Object.entries(filtros).filter(([, v]) => v)) })}`),
   mensagemCriar: (dados) => request("POST", "mensagens", dados, { "Idempotency-Key": crypto.randomUUID() }),
   mensagemMarcar: (id, estado, dados = {}) => request("POST", `mensagens/${encodeURIComponent(id)}/${estado}`, dados, { "Idempotency-Key": crypto.randomUUID() }),
-  // envio pelo Gmail da VOICE (confirmado pela pessoa: clique ou voz)
-  mensagemEnviar: (id, confirmacao = "tela") => request("POST", `mensagens/${encodeURIComponent(id)}/enviar`, { confirmacao }, { "Idempotency-Key": crypto.randomUUID() }),
+  // envio pela Brevo ou pelo Gmail da VOICE (confirmado pela pessoa: clique ou voz); via = "brevo" | "gmail" (opcional)
+  mensagemEnviar: (id, confirmacao = "tela", via = null) => request("POST", `mensagens/${encodeURIComponent(id)}/enviar`, { confirmacao, ...(via ? { via } : {}) }, { "Idempotency-Key": crypto.randomUUID() }),
   emailSituacao: () => request("GET", "email/situacao"),
+  emailPadrao: (via) => request("POST", "email/padrao", { via }, { "Idempotency-Key": crypto.randomUUID() }),
+  brevoConectar: (chave) => request("POST", "email/brevo/conectar", { chave }, { "Idempotency-Key": crypto.randomUUID() }),
+  brevoCodigo: (codigo) => request("POST", "email/brevo/codigo", { codigo }, { "Idempotency-Key": crypto.randomUUID() }),
+  brevoTestar: (enviar = false) => request("POST", "email/brevo/testar", { enviar }, { "Idempotency-Key": crypto.randomUUID() }),
+  brevoDesconectar: () => request("POST", "email/brevo/desconectar", {}, { "Idempotency-Key": crypto.randomUUID() }),
   emailPrepararPonte: () => request("POST", "email/preparar-ponte", {}, { "Idempotency-Key": crypto.randomUUID() }),
   emailConectar: (url) => request("POST", "email/conectar", { url }, { "Idempotency-Key": crypto.randomUUID() }),
   emailTestar: () => request("POST", "email/testar", {}, { "Idempotency-Key": crypto.randomUUID() }),
