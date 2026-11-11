@@ -151,10 +151,10 @@ function painelBrevo(eu) {
           : [`Brevo conectada: ${r.conta}. Falta confirmar o remetente${r.codigo_enviado ? `: a Brevo mandou um código de 6 números para ${r.remetente?.email ?? "o seu e-mail"}` : ""}.`, "warn"]);
       } catch (e) { saida.append(errorNotice(e.message)); conectar.disabled = !direcao; conectar.textContent = "Conectar"; }
     });
-    corpo.append(h("ol", { class: "stack-s" }, PASSOS_BREVO.map((p) => h("li", null, p))),
+    corpo.append(...[h("ol", { class: "stack-s" }, PASSOS_BREVO.map((p) => h("li", null, p))),
       h("div", { class: "row" }, novaAba(LINKS_BREVO.cadastro, "Abrir a Brevo (criar a conta)"), novaAba(LINKS_BREVO.chaves, "Chaves de API"), novaAba(LINKS_BREVO.ips, "IPs autorizados")),
       h("div", { class: "row" }, chave, conectar),
-      direcao ? null : h("p", { class: "field-hint" }, "Só a direção conecta a Brevo."));
+      direcao ? null : h("p", { class: "field-hint" }, "Só a direção conecta a Brevo.")].filter(Boolean));
   }
 
   function confirmarCodigo(email) {
@@ -285,11 +285,11 @@ function painelGmail(eu) {
       try { const r = await api.emailConectar(url.value.trim()); await desenhar([`Gmail conectado: ${r.conta}. O VEOS já pode enviar o que você confirmar.`, "ok"]); }
       catch (e) { saida.append(errorNotice(e.message)); conectar.disabled = !direcao; conectar.textContent = "Conectar"; }
     });
-    corpo.append(h("ol", { class: "stack-s" }, PASSOS_PONTE.map((p) => h("li", null, p))),
+    corpo.append(...[h("ol", { class: "stack-s" }, PASSOS_PONTE.map((p) => h("li", null, p))),
       h("div", { class: "row" }, gerar, h("a", { class: "btn btn-ghost", href: "https://script.new", target: "_blank", rel: "noopener noreferrer" }, "Abrir um projeto novo no Apps Script")),
       area,
       h("div", { class: "row" }, url, conectar),
-      direcao ? null : h("p", { class: "field-hint" }, "Só a direção conecta o Gmail."));
+      direcao ? null : h("p", { class: "field-hint" }, "Só a direção conecta o Gmail.")].filter(Boolean));
   }
   desenhar();
   return caixa;

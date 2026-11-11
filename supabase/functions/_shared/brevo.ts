@@ -3,7 +3,7 @@
 // erros, HTML do e-mail, escolha do remetente) em _shared/dominio/brevo.js (copia de apps/web/js/domain/brevo.js).
 // deno-lint-ignore-file no-explicit-any
 import { HttpError, URL_BASE, servico } from "./banco.ts";
-import { gravarIntegracao, lerIntegracao } from "./integracoes.ts";
+import { gravarIntegracao, lerIntegracao, marcarIntegracao } from "./integracoes.ts";
 import { segredoAleatorio } from "./cifra.ts";
 import { EVENTOS_WEBHOOK_BREVO, explicarErroBrevo, htmlDoEmail, normalizarIdBrevo, planoDaBrevo, remetentePadrao } from "./dominio/brevo.js";
 
@@ -75,7 +75,11 @@ export async function enviarPelaBrevo(b: Brevo, e: { id: string; para: string; a
 async function ligarAvisos(chave: string, segredo: string): Promise<{ id: number | null; erro: string | null }> {
   const corpo = { url: urlDoWebhook(segredo), description: "VEOS — avisos dos e-mails (entregue, aberto, voltou, spam)", events: EVENTOS_WEBHOOK_BREVO };
   try {
-    const lista = await chamarBrevo(chave, "GET", "/webhooks?type=transactional");
+    // conta sem nenhum webhook: a Brevo responde "Webhook record does not exist" em vez de lista vazia
+    const lista = await chamarBrevo(chave, "GET", "/webhooks?type=transactional").catch((e: Error) => {
+      if (/does not exist|not found|n[aã]o existe/i.test(e.message)) return { webhooks: [] };
+      throw e;
+    });
     const meu = (lista?.webhooks ?? []).find((w: any) => String(w?.url ?? "").startsWith(BASE_WEBHOOK));
     if (meu?.id) {
       await chamarBrevo(chave, "PUT", `/webhooks/${meu.id}`, corpo);
@@ -121,6 +125,25 @@ export async function confirmarRemetente(codigo: string, usuario: string | null)
   if (!/^\d{6}$/.test(codigo)) throw new HttpError(400, "o código tem 6 números");
   await chamarBrevo(b.chave, "PUT", `/senders/${b.remetente.id}/validate`, { otp: Number(codigo) });
   return await conectarBrevo(b.chave, usuario, { criarRemetente: false });
+}
+
+/**
+ * A Brevo desativa a chave de API depois de 90 dias sem uso. Uma consulta leve por semana (varredura da "saude")
+ * mantem a chave viva e avisa na tela se ela parou de funcionar.
+ */
+export async function manterChaveViva(agora = Date.now()) {
+  const i = await lerIntegracao("brevo", { semCache: true });
+  if (!i || i.situacao !== "conectado" || !i.dados?.chave) return { pulado: "Brevo não conectada" };
+  const ultima = Date.parse(i.atualizado_em ?? "") || 0;
+  if (agora - ultima < 6 * 86_400_000) return { pulado: "consultada há menos de 6 dias" };
+  try {
+    await chamarBrevo(i.dados.chave, "GET", "/account");
+    await marcarIntegracao("brevo", "conectado", /chave de API|recusou a chave|prote[cç][aã]o de IP/i.test(i.detalhe ?? "") ? null : i.detalhe);
+    return { ok: true };
+  } catch (e) {
+    await marcarIntegracao("brevo", "conectado", `teste semanal da Brevo falhou: ${(e as Error).message}`.slice(0, 300));
+    return { erro: (e as Error).message.slice(0, 120) };
+  }
 }
 
 /** Desliga: apaga o aviso (webhook) na conta. Nao derruba se a Brevo nao responder. */
