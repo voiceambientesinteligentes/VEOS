@@ -210,3 +210,30 @@ export async function telaConteudo(root) {
     existentes);
   await desenharExistentes();
 }
+
+// ---------------------------------------------------------------- modelos de e-mail para arquitetos
+// Todos os modelos a vista: preencha 4 campos no topo e copie o que quiser (assunto e texto separados).
+export async function telaModelos(root) {
+  const inp = (id, ph) => h("input", { class: "input", id, type: "text", autocomplete: "off", placeholder: ph });
+  const campos = { remetente: inp("mo-rem", "Seu nome (ex.: Fernando)"), contato: inp("mo-con", "Nome do arquiteto(a)"), projeto: inp("mo-proj", "Projeto do escritório que você viu"), detalhe: inp("mo-det", "O que gostou nele") };
+  const lista = h("div", { class: "stack" });
+  function desenhar() {
+    const v = { remetente: campos.remetente.value, contato: campos.contato.value, projeto_visto: campos.projeto.value, detalhe: campos.detalhe.value, cidade: "Balneário Camboriú" };
+    clear(lista).append(...MODELOS_ARQUITETO.map((m, i) => {
+      const t = modeloPreenchido(m, v);
+      return panel({ title: `${i + 1}. ${m.rotulo}`, subtitle: `Responde à dúvida: ${m.duvida}` },
+        h("p", null, h("strong", null, "Assunto: "), t.assunto),
+        h("pre", { class: "rascunho-corpo" }, t.corpo),
+        h("div", { class: "row" }, copiar(t.assunto, "Copiar assunto"), copiar(t.corpo, "Copiar texto")));
+    }));
+  }
+  for (const el of Object.values(campos)) el.addEventListener("input", desenhar);
+  desenhar();
+  root.append(
+    panel({ title: "Como usar", subtitle: "Para arquitetos. Cada modelo responde a uma dúvida e termina convidando para uma reunião curta (20 min)." },
+      h("ol", { class: "stack-s" }, h("li", null, "Preencha os 4 campos abaixo: os textos se completam sozinhos."), h("li", null, "Escolha o modelo que combina com o escritório e copie o assunto e o texto."), h("li", null, "Cole no seu e-mail e envie 1 a 1. Poucos por dia no início, para o domínio ganhar reputação.")),
+      h("p", { class: "field-hint" }, "Quer registrar o escritório e iniciar o acompanhamento? Use a tela Prospecção. Comissão/RT: não prometer (aguarda o advogado)."),
+      h("a", { class: "btn btn-ghost btn-mini", href: "#/prospeccao" }, "Ir para Prospecção")),
+    panel({ title: "Dados do escritório" }, h("div", { class: "form-grid" }, field("mo-rem", "Seu nome", campos.remetente), field("mo-con", "Arquiteto(a)", campos.contato), field("mo-proj", "Projeto visto", campos.projeto), field("mo-det", "Detalhe que gostou", campos.detalhe))),
+    lista);
+}

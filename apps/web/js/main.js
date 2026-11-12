@@ -36,7 +36,7 @@ import { telaCliente, telaClientes } from "./ui/views/clientes.js";
 import { telaFornecedor, telaFornecedores } from "./ui/views/fornecedores.js";
 import { telaContrato as telaContratoSuporte, telaContratos } from "./ui/views/contratos.js";
 import { telaNovoOrcamento, telaOrcamentoFicha, telaOrcamentos } from "./ui/views/orcamento.js";
-import { telaContatoRapido, telaConteudo, telaProspeccao } from "./ui/views/captacao.js";
+import { telaContatoRapido, telaConteudo, telaModelos, telaProspeccao } from "./ui/views/captacao.js";
 import { telaOperar } from "./ui/views/operar.js";
 import { telaPendentesProdutos, telaProduto, telaProdutos, telaRevisaoProdutos } from "./ui/views/produtos.js";
 import { iniciarAvisos } from "./ui/notificar.js";
@@ -130,6 +130,7 @@ const TELAS = {
   "#/orcamentos/novo": { fn: (root) => telaNovoOrcamento(root, { clienteId: consulta().get("cliente"), zohoId: consulta().get("zoho"), editarId: consulta().get("editar") }), titulo: ["Novo orçamento", "Cliente, ambientes, produtos do catálogo e mão de obra · margem e alçada ao vivo"] },
   "#/contato": { fn: (root) => telaContatoRapido(root), titulo: ["Contato rápido", "Quem chegou vira lead em 30 segundos; a cadência cuida do primeiro contato"] },
   "#/prospeccao": { fn: (root) => telaProspeccao(root), titulo: ["Prospecção", "Arquitetos, designers, construtoras e lojas: onde achar, como abordar e o registro do alvo"] },
+  "#/modelos": { fn: (root) => telaModelos(root), titulo: ["Modelos de e-mail", "Chamadas prontas para arquitetos: cada uma responde a uma dúvida e convida para uma reunião"] },
   "#/conteudo": { fn: (root) => telaConteudo(root), titulo: ["Calendário do Instagram", "Pautas com legenda, roteiro e hashtags; cada post vira conteúdo no Marketing"] },
   "#/radar": { fn: telaRadar, titulo: ["Radar", "Alertas e tarefas de todos os setores"] },
   "#/conselho": { fn: telaConselho, titulo: ["Conselho consultivo", "Os diretores especialistas da VOICE"] },
