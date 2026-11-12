@@ -1,4 +1,4 @@
-# Próxima sessão — ponto de partida (atualizado em 11/11/2026)
+# Próxima sessão — ponto de partida (atualizado em 12/11/2026)
 
 Este arquivo trata só do **PROGRAMA** (o VEOS: telas, servidor, banco, IA, integrações).
 O que é operação da empresa (decidir metas, RT, alíquotas, preencher dados reais, ligar para clientes)
@@ -56,6 +56,15 @@ Fernando): não envie e-mail real em testes (robôs só simulam; destinatário d
 
 ## O que já existe (resumo de 04/11)
 Setores vivos (9) com registros, regras vivas e Radar · Estrutura da empresa (organograma, agenda de cada cargo, atividade → ferramenta) · Operação comercial do zero (clientes, montador de orçamento com preço pela Política V1, PDF, enviado/aceito/recusado, pedido gerado do orçamento, retomada dos orçamentos antigos do Zoho, contato rápido, prospecção, calendário do Instagram, Começar a operar) · Pedidos → estoque → parcelas → NF → recebimento, compras e contas a pagar · Financeiro do CFO (caixa por extrato OFX, 13 semanas, DRE, indicadores, preço dos produtos, formulário com valores estimados marcados) · Biblioteca e governança · Zoho espelhado e editável · Diretores com IA em formato de conversa (continuação no mesmo fio, conferência de valores e percentuais) · IA VEOS por voz/texto ligada aos diretores e chat flutuante com avisos · Novo design (menu por áreas, Hoje, celular) · Usuários, MFA, LGPD, backup, exportação, MCP `veos` (24 ferramentas), PWA.
+
+## Estado em 12/11 — e-mail profissional
+O e-mail sai pela **Brevo como contato@voiceambientesinteligentes.com** (domínio autenticado, DKIM/DMARC ok) com o
+**visual da VOICE** (`domain/email_visual.js`: logotipo, cartão de produto com foto, botão do WhatsApp, assinatura,
+rodapé com sair) e a IA pode pôr até 3 produtos do catálogo com foto (`produtos` no preparar_email,
+`veos_buscar_produtos`, bucket público `vitrine`). Teste real entregue no Hotmail do Fernando em 12/11 (falta ele dizer
+se foi Caixa de entrada ou Lixo). Próximos (programa): 1) HTML também pelo Gmail (ponte v3 com `htmlBody`); 2) prévia
+"ver como o cliente vê" na Caixa de saída; 3) rodar a bateria de testes quando o Fernando pedir (os novos estão
+escritos). Ver ESTADO_ATUAL (12/11).
 
 ## Estado em 11/11 — Brevo e Gmail
 O e-mail confirmado pelo Fernando sai pela **Brevo** (padrão quando conectada; plano grátis 300/dia) ou pelo **Gmail**

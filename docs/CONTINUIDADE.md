@@ -2,6 +2,12 @@
 
 Atualize este arquivo ao fim de cada sessão: última ação, resultado e próximo passo.
 
+## 12/11/2026 — E-mail profissional (visual da VOICE) saindo como contato@
+- Domínio voiceambientesinteligentes.com autenticado na Brevo (registros só adicionados no DNS do Squarespace) e remetente contato@ verificado (DKIM e DMARC ok). O VEOS passou a preferir o remetente de domínio próprio (Integrações → Atualizar, feito no Chrome do Fernando).
+- Visual novo em `domain/email_visual.js` (logotipo, cartão do produto com foto, botão do WhatsApp, assinatura, rodapé com sair) e produto do catálogo no e-mail (`produtos` no preparar_email, `veos_buscar_produtos`, bucket público `vitrine`). Publicado: migração, funções api/ia-fila/saude/mcp/brevo, commits b2bbb9b e 6cc5f9d.
+- Teste real: a IA VEOS preparou e o Claude enviou (pedido do Fernando) um e-mail avulso com o PRD-0125 para salvador.felipe@hotmail.com: entregue em 10 s. Achado no caminho e corrigido: pedido com o verbo depois de ":" caía no modo opinião e a IA dizia "pronto para envio" sem preparar.
+- **Próximo passo (Fernando):** dizer se o e-mail caiu na Caixa de entrada ou no Lixo eletrônico do Hotmail (se caiu no lixo: marcar "Não é lixo eletrônico" e responder o e-mail ajuda a reputação do domínio novo); a primeira prospecção de verdade (CSO-19). **Programa:** HTML também pelo Gmail (ponte v3 com `htmlBody`), prévia "ver como o cliente vê" na Caixa de saída, rodar a bateria de testes quando o Fernando pedir.
+
 ## 11/11/2026 (tarde) — Brevo e Gmail CONECTADOS de verdade
 - O Fernando pediu "continue o cadastro" e indicou o Chrome dele já logado. O Claude operou a tela (fotos + mouse/teclado, só em janelas da Brevo/VEOS/Apps Script/Google, com trava no título da janela) e fez: perfil e endereço da empresa na Brevo, plano GRÁTIS, chave "VEOS" restrita e sem vencimento fixo (o Fernando confirmou o celular por SMS), conexão em Integrações com avisos ligados, teste para o próprio Gmail (aviso "entregue" chegou em 8 s); ponte do Gmail v2 criada, implantada, autorizada e conectada.
 - Deslizes no caminho (sem efeito): um clique caiu num favorito (ClipDrop) e a aba voltou; o Edge separado tentou o login do Google por engano (fechado). A senha gerada para a Brevo não serviu (a conta ficou com login do Google) e foi apagada; chave e capturas de tela com segredos foram apagadas da pasta temporária.
