@@ -44,7 +44,7 @@ rodar(async (v) => {
   if (!v.querySelector(".as-pensando")) throw new Error("analisando…");
   await espera(4500);
   if (!v.textContent.includes("Comece pelos escritórios de arquitetura TESTE") || !v.querySelector(".as-texto ul li")) throw new Error("resposta formatada");
-  if (!v.textContent.includes("IA · opinião")) throw new Error("rótulo de opinião");
+  if (!v.textContent.includes("IA · ação")) throw new Error("rótulo de ação (pedido para fazer)");
   // continuação: mesma conversa do CMO
   await enviar("detalhe a campanha de instagram");
   if (enviados[1]?.conversa_id !== "c1") throw new Error(`continuação na mesma conversa: ${JSON.stringify(enviados[1])}`);
