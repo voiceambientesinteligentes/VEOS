@@ -2,6 +2,9 @@
 
 Atualize este arquivo ao fim de cada sessão: última ação, resultado e próximo passo.
 
+## 12/11/2026 (tarde) — Telas Modelos de e-mail (#/modelos) e Modelos de WhatsApp (#/whatsapp) na area Vender
+- 6 modelos de WhatsApp em `domain/modelos_whatsapp.js` (botao abre wa.me com o texto; quem envia e a pessoa). SW veos-v8. Nao testado no navegador.
+
 ## 12/11/2026 (tarde) — Modelos de chamada para arquitetos
 - Pesquisa na web (so trabalhos academicos e blogs; nao ha pesquisa com arquitetos): duvidas recorrentes = o que prever na planta (infraestrutura), compatibilidade entre sistemas, custo/quanto reservar, mao de obra e suporte, estetica (casas ja sem interruptores). Tratadas como HIPOTESES (PROPOSTA) ate validar nas conversas.
 - 7 modelos em `domain/modelos_arquitetos.js` (assunto + corpo, 1 convite para reuniao de 20 min, sem preco/prazo/comissao), escolhiveis em Captacao > Prospeccao > Escritorios de arquitetura. Pendente: Fernando aprovar o tom; usar pela IA no preparar_email; teste de dominio. SW veos-v6.

@@ -12,7 +12,7 @@ export const SECOES = [
   { id: "orbita", rotulo: "Órbita", icone: "orbita", itens: [["#/orbita", "Órbita dos setores"]] },
   { id: "ia", rotulo: "IA VEOS", icone: "ia", itens: [["#/ia", "IA VEOS"]] },
   { id: "vender", rotulo: "Vender", icone: "vender", papeis: VENDER, itens: [
-    ["#/orcamentos", "Orçamentos"], ["#/clientes", "Clientes"], ["#/contato", "Contato rápido"], ["#/prospeccao", "Prospecção"], ["#/modelos", "Modelos de e-mail"],
+    ["#/orcamentos", "Orçamentos"], ["#/clientes", "Clientes"], ["#/contato", "Contato rápido"], ["#/prospeccao", "Prospecção"], ["#/modelos", "Modelos de e-mail"], ["#/whatsapp", "Modelos de WhatsApp"],
     ["#/conteudo", "Instagram"], ["#/setor/vendas", "Funil"], ["#/comercial", "Plano comercial"], ["#/negociacao", "Negociação ao vivo"], ["#/propostas", "Propostas do Zoho"],
   ] },
   { id: "operacao", rotulo: "Operação", icone: "operacao", itens: [

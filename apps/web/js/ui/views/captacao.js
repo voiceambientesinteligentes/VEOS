@@ -12,6 +12,7 @@ import { FASES_OBRA, ORIGENS, TIPOS_IMOVEL } from "../../domain/clientes.js";
 import { formatDate } from "../../domain/format.js";
 import { gerarCalendario, registroConteudo, ROTINA_INSTAGRAM, rotuloFormato, rotuloPilar, textoPost } from "../../domain/conteudo.js";
 import { MODELOS_ARQUITETO, modeloPreenchido } from "../../domain/modelos_arquitetos.js";
+import { linkWhatsapp, MODELOS_WHATSAPP, whatsPreenchido } from "../../domain/modelos_whatsapp.js";
 import { CUIDADOS, mensagemPara, ondeEncontrar, PUBLICOS, registroParceiro } from "../../domain/prospeccao.js";
 import { clear, errorNotice, field, h, method, panel, stamp, table } from "../dom.js";
 
@@ -233,7 +234,32 @@ export async function telaModelos(root) {
     panel({ title: "Como usar", subtitle: "Para arquitetos. Cada modelo responde a uma dúvida e termina convidando para uma reunião curta (20 min)." },
       h("ol", { class: "stack-s" }, h("li", null, "Preencha os 4 campos abaixo: os textos se completam sozinhos."), h("li", null, "Escolha o modelo que combina com o escritório e copie o assunto e o texto."), h("li", null, "Cole no seu e-mail e envie 1 a 1. Poucos por dia no início, para o domínio ganhar reputação.")),
       h("p", { class: "field-hint" }, "Quer registrar o escritório e iniciar o acompanhamento? Use a tela Prospecção. Comissão/RT: não prometer (aguarda o advogado)."),
-      h("a", { class: "btn btn-ghost btn-mini", href: "#/prospeccao" }, "Ir para Prospecção")),
+      h("a", { class: "btn btn-ghost btn-mini", href: "#/prospeccao" }, "Ir para Prospecção"), " ", h("a", { class: "btn btn-ghost btn-mini", href: "#/whatsapp" }, "Ver modelos de WhatsApp")),
     panel({ title: "Dados do escritório" }, h("div", { class: "form-grid" }, field("mo-rem", "Seu nome", campos.remetente), field("mo-con", "Arquiteto(a)", campos.contato), field("mo-proj", "Projeto visto", campos.projeto), field("mo-det", "Detalhe que gostou", campos.detalhe))),
+    lista);
+}
+
+// ---------------------------------------------------------------- modelos de WhatsApp para arquitetos
+export async function telaModelosWhatsapp(root) {
+  const inp = (id, ph, attrs = {}) => h("input", { class: "input", id, type: "text", autocomplete: "off", placeholder: ph, ...attrs });
+  const campos = { remetente: inp("mw-rem", "Seu nome (ex.: Fernando)"), contato: inp("mw-con", "Nome do arquiteto(a)"), telefone: inp("mw-tel", "(47) 99999-9999", { inputmode: "tel" }), projeto: inp("mw-proj", "Projeto que você viu"), detalhe: inp("mw-det", "O que gostou nele"), assunto: inp("mw-ass", "Assunto do e-mail que você mandou (só para o modelo 'Depois do e-mail')") };
+  const lista = h("div", { class: "stack" });
+  function desenhar() {
+    const v = { remetente: campos.remetente.value, contato: campos.contato.value, projeto_visto: campos.projeto.value, detalhe: campos.detalhe.value, assunto: campos.assunto.value, cidade: "Balneário Camboriú" };
+    clear(lista).append(...MODELOS_WHATSAPP.map((m, i) => {
+      const t = whatsPreenchido(m, v);
+      return panel({ title: `${i + 1}. ${m.rotulo}`, subtitle: m.quando },
+        h("pre", { class: "rascunho-corpo" }, t),
+        h("div", { class: "row" }, copiar(t, "Copiar mensagem"), h("a", { class: "btn btn-primary btn-mini", href: linkWhatsapp(campos.telefone.value, t), target: "_blank", rel: "noopener noreferrer" }, "Abrir no WhatsApp")));
+    }));
+  }
+  for (const el of Object.values(campos)) el.addEventListener("input", desenhar);
+  desenhar();
+  root.append(
+    panel({ title: "Como usar", subtitle: "Mensagens curtas para arquitetos. Quem envia é você: o botão só abre o WhatsApp com o texto pronto." },
+      h("ol", { class: "stack-s" }, h("li", null, "Preencha os campos abaixo (o telefone é opcional: sem ele você escolhe o contato no WhatsApp)."), h("li", null, "Escolha o modelo e toque em \"Abrir no WhatsApp\" ou copie o texto."), h("li", null, "Revise e envie 1 a 1. Quem pedir para não receber mais contato, não escreva de novo.")),
+      h("p", { class: "field-hint" }, "Os modelos de e-mail estão na aba \"Modelos de e-mail\". Comissão/RT: não prometer (aguarda o advogado)."),
+      h("a", { class: "btn btn-ghost btn-mini", href: "#/modelos" }, "Ver modelos de e-mail")),
+    panel({ title: "Dados do escritório" }, h("div", { class: "form-grid" }, field("mw-rem", "Seu nome", campos.remetente), field("mw-con", "Arquiteto(a)", campos.contato), field("mw-tel", "WhatsApp", campos.telefone), field("mw-proj", "Projeto visto", campos.projeto), field("mw-det", "Detalhe que gostou", campos.detalhe), field("mw-ass", "Assunto do e-mail enviado", campos.assunto))),
     lista);
 }

@@ -1,7 +1,7 @@
 // Service worker do VEOS (PWA): so arquivos do proprio site, rede primeiro (sempre a versao
 // publicada mais nova) e cache como reserva para abrir sem internet. Dados da API (Supabase)
 // nunca sao guardados aqui.
-const CACHE = "veos-v7";
+const CACHE = "veos-v8";
 
 self.addEventListener("install", () => self.skipWaiting());
 self.addEventListener("activate", (e) => {
