@@ -9,37 +9,48 @@ fica na aba **Pendências do projeto** do site, não aqui.
 ```
 Você é o Claude Code no projeto VEOS (VOICE Executive Operating System) da VOICE Ambientes
 Inteligentes. O Fernando é o fundador e CEO. Atue como engenheiro de software sênior, de produto e
-UX, com autonomia técnica total (pode editar, testar, publicar, fazer commit e push sem pedir
-confirmação), mas nunca gaste dinheiro, nunca envie nada a clientes ou terceiros e nunca altere
-política, meta, alçada ou regime tributário: isso é decisão do Fernando.
+UX, com autonomia técnica total (pode editar, publicar, fazer commit e push sem pedir confirmação),
+mas nunca gaste dinheiro, nunca envie nada a clientes ou terceiros sem o OK explícito dele e nunca
+altere política, meta, alçada ou regime tributário: isso é decisão do Fernando.
 
 Repositório: C:\Users\ferna\VEOS (GitHub voiceambientesinteligentes/VEOS, público; o site publica
 sozinho no GitHub Pages a cada push na main). Banco e servidor: Supabase, projeto vkrwxvnfstvriibjwuvw.
-Desde 10/11 a IA do VEOS EXECUTA pedidos (e-mail sai pela Brevo ou pelo Gmail só com a confirmação do
-Fernando): não envie e-mail real em testes (robôs só simulam; destinatário de teste sempre @veos-teste.invalid).
+A IA do VEOS EXECUTA pedidos (pedido que começa com o verbo: "Prepare…", "Ache…", "Cadastre…").
+O e-mail sai pela Brevo como contato@voiceambientesinteligentes.com (domínio autenticado), com o visual
+da VOICE (apps/web/js/domain/email_visual.js), só com a confirmação do Fernando; as respostas chegam no
+Gmail da VOICE (ponte v2). Em testes nunca envie e-mail real (robôs só simulam; destinatário de teste
+sempre @veos-teste.invalid).
 
 1. Leia, nesta ordem: docs/PROXIMA_SESSAO.md (este), docs/ESTADO_ATUAL.md (as seções do topo são as
    mais recentes), docs/CONTINUIDADE.md, docs/DECISOES.md e docs/SETORES_ESQUEMA.md.
 2. No PowerShell desta máquina, antes de tudo:
    $env:PATH += ";C:\Program Files\Git\cmd;C:\Program Files\nodejs"
    A CLI do Supabase já está logada: npx -y supabase@2.118.0 ...
-3. Trabalhe pelo backlog "O que falta no programa" abaixo, em ordem (P0 → P1 → P2), um bloco por vez:
-   implementar → testar (npm test; node scripts/testar-telas.mjs; banco com tests/banco/*.sql em
-   transação desfeita; online com node scripts/online.mjs tests/online/<teste>.mjs) → publicar
-   (db push, functions deploy, git push) → conferir no site publicado (tests/online/navegador.mjs) →
-   atualizar docs/ESTADO_ATUAL.md, docs/CONTINUIDADE.md e a aba Pendências.
-4. Antes de recomendar algo de negócio, consulte a Biblioteca do VEOS (precedente orienta, não autoriza).
+3. Comece pelos próximos passos de "Estado em 12/11" e depois o backlog "O que falta no programa"
+   (P0 → P1 → P2), um bloco por vez: implementar → publicar (db push, functions deploy, git push) →
+   conferir no site publicado → atualizar docs/ESTADO_ATUAL.md, docs/CONTINUIDADE.md e a aba Pendências.
+   Testes automáticos (npm test, testar-telas, online) SÓ quando o Fernando pedir ("testa"), cobrindo
+   tudo o que acumulou desde a última rodada; ao editar, no máximo confira que os módulos carregam.
+4. Cadastros e ajustes em sites (Brevo, Google, Squarespace...): use o Chrome dele, já logado (fotos da
+   tela + mouse/teclado com trava no título da janela), nunca um navegador separado; avise antes de usar
+   a tela e apague as fotos no fim. No DNS só acrescente registros, nunca mude os que existem. Nunca
+   escolha a conta Google de outra pessoa: pergunte.
+5. Antes de recomendar algo de negócio, consulte a Biblioteca do VEOS (precedente orienta, não autoriza).
    Nada que não foi aprovado vira regra: marque como PROPOSTA ou LACUNA.
-5. Não declare "100%" ou "pronto" sem teste verificado; diga o que foi testado e o que não foi.
-6. Responda ao Fernando em português do Brasil, simples e direto, sem jargão.
+6. Não declare "100%" ou "pronto" sem verificação; diga o que foi testado e o que não foi.
+7. Escreva ao Fernando SEMPRE em português do Brasil (inclusive as mensagens entre uma ação e outra),
+   simples e direto, sem jargão. Não lembre de revogar/trocar chaves (resolvido). O link secreto do
+   MCP remoto nunca vai para arquivo.
 ```
 
 ## Como rodar (comandos desta máquina)
+- **Regra do Fernando (11/11):** testes só quando ele pedir ("testa"), cobrindo tudo o que acumulou. Ao editar, basta conferir que os módulos do servidor carregam (Bun, abaixo).
+- Prévia de e-mail sem enviar: script com `montarEmail` (`apps/web/js/domain/email_visual.js`) gravando um .html na pasta de rascunho e foto com o Chrome em modo invisível (`chrome --headless=new --user-data-dir=<pasta própria> --screenshot=<arquivo> --window-size=680,1600 file:///...`): não mexe no Chrome do Fernando.
 - Testes de regras e domínio: `npm test` (gera/confere o catálogo e roda 160 testes + 155 Python + 20 JS).
 - Catálogo e cópia do domínio para o servidor: `node scripts/gerar-catalogo.mjs` (rode sempre que mexer em `setores/*.json` ou `apps/web/js/domain/*.js`; o `npm test` falha com "Desatualizado" se esquecer).
 - Telas com dados simulados (Edge headless, 1366 px e 390 px): `node scripts/testar-telas.mjs [filtro]` (184 telas em 04/11). Cada página lista os casos em `<!-- casos: ... -->`.
 - Banco: `npx -y supabase@2.118.0 db push --linked --yes` (migrations) e `npx -y supabase@2.118.0 db query --linked -f tests/banco/<arquivo>.sql`. Ensaiar migration antes: junte migration + teste num arquivo com `begin; ... rollback;` e rode o db query.
-- Funções: `npx -y supabase@2.118.0 functions deploy <api|saude|ia-fila|mcp|zoho|zoho-sync|vigia> --use-api --project-ref vkrwxvnfstvriibjwuvw` (as funções `mcp`, `entrevista` e `brevo` vão com `--no-verify-jwt`; `mcp` e `ia-fila` carregam o roteador da `api`: publique as três juntas quando mexer na API).
+- Funções: `npx -y supabase@2.118.0 functions deploy <api|saude|ia-fila|mcp|zoho|zoho-sync|vigia> --use-api --project-ref vkrwxvnfstvriibjwuvw` (as funções `mcp`, `entrevista` e `brevo` vão com `--no-verify-jwt`; `mcp` e `ia-fila` carregam o roteador da `api`: publique as três juntas quando mexer na API; mexeu em `_shared/brevo.ts` ou em `domain/brevo.js`/`email_visual.js`, publique também `saude` e `brevo`).
 - Testes online contra o sistema real (robôs `@veos-teste.invalid`, ficam inativos no fim): `node scripts/online.mjs tests/online/<e2e_api|e2e_financeiro|e2e_setores|e2e_sistema|e2e_mcp|e2e_ia|e2e_caixa|e2e_operacao>.mjs`.
 - IA que executa: `e2e_ia_executa.mjs` (pesquisa, contatos, rascunho + parceiro, envio simulado, travas; não gasta IA; manual por enquanto) e `uso_ia_executa.mjs ["pedido"] [setor]` (pedido real à IA; gasta cota gratuita; descarta os rascunhos no fim).
 - Carregar os módulos do servidor sem o Deno (pega import errado/sintaxe): o Node não aceita "parameter properties" de `zoho_sync.ts`; use o Bun que vem no G4 OS (`%LOCALAPPDATA%\Programs\G4 OS\resources\vendor\bun\bun.exe`) com `globalThis.Deno = { env: { get: () => "" }, serve: () => {} }`.
@@ -51,29 +62,34 @@ Fernando): não envie e-mail real em testes (robôs só simulam; destinatário d
 - Menu e abas: `apps/web/js/data/navegacao.js` (9 áreas; alimenta também a busca Ctrl+K). Página inicial `#/hoje`.
 - Servidor: Edge Function `api` (`supabase/functions/api/*.ts`), `saude` (vigias a cada 10 min), `ia-fila` (motor de IA a cada 5 min), `zoho-sync` (a cada 2 min). Domínio compartilhado copiado para `supabase/functions/_shared/dominio/`.
 - IA dos diretores: `supabase/functions/_shared/ia/` (motor com fallback gratuito Gemini → Mistral → OpenRouter → Groq; hoje responde a Mistral `ministral-14b`). Contexto da empresa em `apps/web/js/domain/empresa.js` (cliente principal = arquiteto). Assistente do site: `apps/web/js/ui/assistente.js` (chat flutuante + tela IA VEOS).
+- E-mail: caixa de saída e envio em `api/notificacoes.ts`; por onde sai e limites em `_shared/envio_email.ts`; Brevo em `_shared/brevo.ts` (avisos: função `brevo` + `_shared/brevo_eventos.ts`); visual em `domain/email_visual.js` (cabeçalho `apps/web/email/voice-cabecalho.png`); fotos públicas de produto em `_shared/vitrine.ts` (bucket `vitrine`); respostas pelo Gmail em `_shared/email_vigia.ts` (ponte: `domain/ponte_google.js`).
 - Robôs de teste: dados criados por `@veos-teste.invalid` não aparecem para usuários reais (`_shared/teste.ts`); numeração real (CLI/ORV/PED/COM) começa do 1 e teste usa série T.
 - Regra de custo zero da IA: nenhuma conta de IA pode ter cartão; quando a cota gratuita acaba, o provedor recusa e o motor passa ao próximo (detalhes em ESTADO_ATUAL, 07/10).
 
 ## O que já existe (resumo de 04/11)
-Setores vivos (9) com registros, regras vivas e Radar · Estrutura da empresa (organograma, agenda de cada cargo, atividade → ferramenta) · Operação comercial do zero (clientes, montador de orçamento com preço pela Política V1, PDF, enviado/aceito/recusado, pedido gerado do orçamento, retomada dos orçamentos antigos do Zoho, contato rápido, prospecção, calendário do Instagram, Começar a operar) · Pedidos → estoque → parcelas → NF → recebimento, compras e contas a pagar · Financeiro do CFO (caixa por extrato OFX, 13 semanas, DRE, indicadores, preço dos produtos, formulário com valores estimados marcados) · Biblioteca e governança · Zoho espelhado e editável · Diretores com IA em formato de conversa (continuação no mesmo fio, conferência de valores e percentuais) · IA VEOS por voz/texto ligada aos diretores e chat flutuante com avisos · Novo design (menu por áreas, Hoje, celular) · Usuários, MFA, LGPD, backup, exportação, MCP `veos` (24 ferramentas), PWA.
+Setores vivos (9) com registros, regras vivas e Radar · Estrutura da empresa (organograma, agenda de cada cargo, atividade → ferramenta) · Operação comercial do zero (clientes, montador de orçamento com preço pela Política V1, PDF, enviado/aceito/recusado, pedido gerado do orçamento, retomada dos orçamentos antigos do Zoho, contato rápido, prospecção, calendário do Instagram, Começar a operar) · Pedidos → estoque → parcelas → NF → recebimento, compras e contas a pagar · Financeiro do CFO (caixa por extrato OFX, 13 semanas, DRE, indicadores, preço dos produtos, formulário com valores estimados marcados) · Biblioteca e governança · Zoho espelhado e editável · Diretores com IA em formato de conversa (continuação no mesmo fio, conferência de valores e percentuais) · IA VEOS por voz/texto ligada aos diretores e chat flutuante com avisos · Novo design (menu por áreas, Hoje, celular) · Usuários, MFA, LGPD, backup, exportação, MCP `veos`, PWA · IA que executa (10/11) · E-mail pela Brevo como contato@ com o visual da VOICE e avisos de entregue/aberto/voltou/spam, Gmail para respostas, caixa e agenda (11–12/11).
 
-## Estado em 12/11 — e-mail profissional
-O e-mail sai pela **Brevo como contato@voiceambientesinteligentes.com** (domínio autenticado, DKIM/DMARC ok) com o
-**visual da VOICE** (`domain/email_visual.js`: logotipo, cartão de produto com foto, botão do WhatsApp, assinatura,
-rodapé com sair) e a IA pode pôr até 3 produtos do catálogo com foto (`produtos` no preparar_email,
-`veos_buscar_produtos`, bucket público `vitrine`). Teste real entregue no Hotmail do Fernando em 12/11 (falta ele dizer
-se foi Caixa de entrada ou Lixo). Próximos (programa): 1) HTML também pelo Gmail (ponte v3 com `htmlBody`); 2) prévia
-"ver como o cliente vê" na Caixa de saída; 3) rodar a bateria de testes quando o Fernando pedir (os novos estão
-escritos). Ver ESTADO_ATUAL (12/11).
-
-## Estado em 11/11 — Brevo e Gmail
-O e-mail confirmado pelo Fernando sai pela **Brevo** (padrão quando conectada; plano grátis 300/dia) ou pelo **Gmail**
-(ponte v2). A Brevo avisa entregue/aberto/clique/voltou/spam (função `brevo`); o Gmail acha as respostas (inclusive
-dos e-mails da Brevo). **Falta o Fernando:** criar a conta da Brevo e colar a chave (CIO-17) e conectar o Gmail
-(CIO-15) — o Claude não consegue criar contas com o login dele. **Nada testado com conta Brevo real.**
-Próximos (programa): 1) com a Brevo conectada, conferir um aviso real (o formato veio da documentação) e o teste para o
-próprio e-mail; 2) domínio próprio (CIO-07) para tirar o `@brevosend.com` do remetente (autenticar o domínio pela API
-`/senders/domains`); 3) lista da Brevo para newsletter dos parceiros que aceitaram (LGPD), se o Fernando quiser.
+## Estado em 12/11 — e-mail profissional (Brevo e Gmail conectados)
+O e-mail confirmado pelo Fernando sai pela **Brevo como contato@voiceambientesinteligentes.com** (domínio autenticado com
+marca `em`, DKIM/DMARC ok; plano grátis 300/dia; avisos de entregue/aberto/clique/voltou/spam pela função `brevo`, já
+vistos ao vivo) com o **visual da VOICE** (`domain/email_visual.js`: logotipo, cartão de produto com foto, botão do
+WhatsApp, assinatura, rodapé com sair) e até 3 produtos do catálogo com foto (`produtos` no preparar_email,
+`veos_buscar_produtos`, bucket público `vitrine`). O Gmail (ponte v2) acha as respostas, lê a caixa e a agenda e pode
+enviar (só texto). Teste real em 12/11: e-mail avulso com o PRD-0125 entregue no Hotmail do Fernando em 10 s.
+Próximos (programa), nesta ordem:
+1. Saber do Fernando onde o teste caiu (Pendências CIO-19). Se foi no Lixo: olhar os registros do envio na Brevo e
+   decidir com ele (aquecer o domínio devagar, pedir respostas, ou prospectar pelo Gmail/Workspace).
+2. Cartão da resposta da IA mostra "IA · OPINIÃO" mesmo quando ela executou, e o texto veio com asteriscos de
+   Markdown (*"..."*): corrigir o rótulo e a limpeza do texto.
+3. HTML também pelo Gmail: ponte v3 (`htmlBody` no `enviar` de `domain/ponte_google.js`); exige colar o código novo
+   no Apps Script (o Fernando ou o Claude no Chrome dele).
+4. Prévia "ver como o cliente vê" na Caixa de saída e no cartão da IA (a CSP do site não aceita estilo inline: usar
+   imagem gerada ou janela própria).
+5. Respostas para contato@: hoje o Reply-To é o Gmail (o VEOS lê lá). Opção: o contato@ (Workspace) encaminhar para o
+   Gmail, ou a ponte rodar na conta do Workspace.
+6. Ver ao vivo a primeira resposta real virando tarefa "Responder" e o "SAIR" bloqueando.
+7. Bateria de testes completa quando o Fernando pedir (novos testes de 12/11: email_visual, brevo, comandos, mcp).
+8. Lista da Brevo para newsletter dos parceiros que aceitaram (LGPD), se o Fernando quiser.
 
 ## Estado em 10/11 (noite) — IA que executa
 A IA do VEOS (chat, IA VEOS e MCP do ChatGPT/Claude) agora EXECUTA pedidos em todos os setores: pesquisa na web
@@ -83,7 +99,7 @@ ENVIA pelo Gmail da VOICE depois da confirmação do Fernando (decisão de 10/11
 **Sem teste completo desde 09/11** (só os testes rápidos do que é novo: e2e_ia_executa 18/18, uso_ia_executa 2/2).
 
 ### IA que executa — próximos (programa)
-1. Testar com o Gmail conectado: envio real, vigia das respostas (tarefa "Responder"), "SAIR" bloqueando, agenda.
+1. Envio real pela Brevo testado (11 e 12/11). Falta: envio pelo Gmail, resposta real virando tarefa "Responder", "SAIR" bloqueando, agenda.
 2. Anexos no e-mail (caderno técnico em PDF guardado no Storage; a ponte anexa) — hoje a IA oferece mandar depois.
 3. Convite de agenda pela IA do chat com confirmação (cartão "Enviar convite", como o de e-mail).
 4. Rotinas agendadas da IA (estilo "Agendamentos" do G4 OS): ex. "toda segunda 8h, o CSO prepara 5 apresentações" e "todo dia 18h, resumo por e-mail" — sempre com confirmação do envio.
@@ -122,6 +138,7 @@ Tudo do backlog abaixo que não depende do Fernando está feito e testado (ver C
 19. **FEITO em 05/11 (ia.css removido; textos TESTE do usuário real conferidos)** — Limpeza: estilos antigos da tela IA (`apps/web/css/ia.css`, classes `.ia-*` não usadas), tela "Comando por voz" antiga e textos que ainda falam em "TESTE" para o usuário real.
 
 ## Depende do Fernando para o PROGRAMA funcionar por completo (não é operação da empresa)
+- **Dizer onde o e-mail de teste de 12/11 caiu** no Hotmail (Caixa de entrada ou Lixo; CIO-19) e fazer a **primeira prospecção real** (CSO-19). Fotos próprias dos produtos quando puder (CMO-11).
 - **Entrar com o login real uma vez**: MFA da direção, Validação guiada e um orçamento de verdade (os testes usaram robôs).
 - **Reiniciar o VS Code e configurar o MCP `veos`** (Minha conta → Acesso do Claude Code → `node scripts/mcp/veos-mcp.mjs --configurar <código>`).
 - OK para o item 8 (CNPJ), acesso para o SMTP (item 3), e, quando quiser, domínio próprio (CNAME + ORIGENS da `api` + Auth).
