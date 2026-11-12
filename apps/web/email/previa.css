@@ -1,0 +1,4 @@
+html, body { height: 100%; margin: 0; background: #2a2a2a; font-family: Arial, Helvetica, sans-serif; }
+.barra { display: flex; gap: 14px; align-items: baseline; padding: 10px 16px; background: #080808; color: #fff; font-size: 14px; }
+.barra span { color: #aaa; font-size: 12px; }
+#mail { display: block; width: 100%; height: calc(100% - 41px); border: 0; background: #f5f2ee; }

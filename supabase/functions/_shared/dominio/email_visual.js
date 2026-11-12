@@ -141,7 +141,7 @@ ${destaque}</td></tr>
  * E-mail pronto para enviar: {html, texto, previa}. produtos: [{titulo, destaque?, foto?}] (foto ja publica).
  * tipo "interna" (aviso para a propria VOICE) sai sem o botao do WhatsApp.
  */
-export function montarEmail({ texto, assunto = "", tipo = "avulsa", produtos = [] } = {}) {
+export function montarEmail({ texto, assunto = "", tipo = "avulsa", produtos = [], titulo = "", chamada = null } = {}) {
   const M = MARCA_EMAIL;
   const { corpo, fecho, nome, cargo, extras, saida } = separarPartes(texto);
   const itens = (Array.isArray(produtos) ? produtos : [])
@@ -149,13 +149,15 @@ export function montarEmail({ texto, assunto = "", tipo = "avulsa", produtos = [
     .filter((p) => p.titulo)
     .slice(0, 3);
   const comBotao = tipo !== "interna";
-  const wa = linkWhatsApp(itens.length === 1 ? `Olá! Vi no e-mail da VOICE: ${itens[0].titulo}. Quero saber mais.` : "Olá! Recebi o e-mail da VOICE e quero conversar.");
+  const tituloLimpo = String(titulo ?? "").replace(/\s+/g, " ").trim().slice(0, 120);
+  const rotuloBotao = String(chamada?.rotulo ?? "").replace(/\s+/g, " ").trim().slice(0, 40) || "Conversar no WhatsApp";
+  const wa = linkWhatsApp(chamada?.mensagem ? chamada.mensagem : itens.length === 1 ? `Olá! Vi no e-mail da VOICE: ${itens[0].titulo}. Quero saber mais.` : "Olá! Recebi o e-mail da VOICE e quero conversar.");
   const previa = previaDoEmail(corpo);
 
   // ---- versao em texto (mesmo conteudo do HTML)
-  const partes = [corpo];
+  const partes = [tituloLimpo, corpo].filter(Boolean);
   if (itens.length) partes.push(itens.map((p) => `• ${p.titulo}${p.destaque ? ` — ${p.destaque}` : ""}`).join("\n"));
-  if (comBotao) partes.push(`Converse com a gente no WhatsApp: ${linkWhatsApp()}\n(ou é só responder este e-mail)`);
+  if (comBotao) partes.push(`${rotuloBotao}: ${wa}\n(ou é só responder este e-mail)`);
   partes.push([fecho, nome, cargo, M.nome, ...extras, `WhatsApp ${M.whatsapp_rotulo} · ${M.site_rotulo}`].filter(Boolean).join("\n"));
   if (saida) partes.push(`—\n${saida}`);
   const textoFinal = partes.filter(Boolean).join("\n\n");
@@ -166,7 +168,7 @@ export function montarEmail({ texto, assunto = "", tipo = "avulsa", produtos = [
   const botao = comBotao ? `<tr><td align="center" style="padding:14px 36px 6px">
 <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:0 auto"><tr>
 <td align="center" bgcolor="${COR.azul_escuro}" style="background-color:${COR.azul_escuro};border-radius:6px">
-<a href="${esc(wa)}" target="_blank" style="display:inline-block;padding:14px 30px;font-family:${FONTE};font-size:16px;line-height:20px;font-weight:bold;color:#ffffff;text-decoration:none;border-radius:6px">Conversar no WhatsApp</a>
+<a href="${esc(wa)}" target="_blank" style="display:inline-block;padding:14px 30px;font-family:${FONTE};font-size:16px;line-height:20px;font-weight:bold;color:#ffffff;text-decoration:none;border-radius:6px">${esc(rotuloBotao)}</a>
 </td></tr></table>
 <div style="font-family:${FONTE};font-size:13px;line-height:20px;color:${COR.suave};padding-top:10px">ou é só responder este e-mail</div>
 </td></tr>` : "";
@@ -206,7 +208,9 @@ ${esc(M.nome)} &middot; ${esc(M.cidades)}<br>
 </td></tr>
 <tr><td bgcolor="${COR.azul}" height="3" style="background-color:${COR.azul};height:3px;font-size:0;line-height:0">&nbsp;</td></tr>
 <tr><td style="padding:32px 36px 10px;font-family:${FONTE};font-size:16px;line-height:26px;color:${COR.texto}">
-${paragrafos}
+${tituloLimpo ? `<div style="margin:0 0 18px;font-family:${FONTE};font-size:24px;line-height:31px;font-weight:bold;color:${COR.escuro}">${esc(tituloLimpo)}</div>
+<div style="width:48px;height:3px;background-color:${COR.azul};margin:0 0 22px;font-size:0;line-height:0">&nbsp;</div>
+` : ""}${paragrafos}
 </td></tr>
 ${itens.map(cartao).join("\n")}
 ${botao}

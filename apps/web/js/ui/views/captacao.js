@@ -12,6 +12,7 @@ import { FASES_OBRA, ORIGENS, TIPOS_IMOVEL } from "../../domain/clientes.js";
 import { formatDate } from "../../domain/format.js";
 import { gerarCalendario, registroConteudo, ROTINA_INSTAGRAM, rotuloFormato, rotuloPilar, textoPost } from "../../domain/conteudo.js";
 import { MODELOS_ARQUITETO, modeloPreenchido } from "../../domain/modelos_arquitetos.js";
+import { montarEmail } from "../../domain/email_visual.js";
 import { linkWhatsapp, MODELOS_WHATSAPP, whatsPreenchido } from "../../domain/modelos_whatsapp.js";
 import { CUIDADOS, mensagemPara, ondeEncontrar, PUBLICOS, registroParceiro } from "../../domain/prospeccao.js";
 import { clear, errorNotice, field, h, method, panel, stamp, table } from "../dom.js";
@@ -213,6 +214,12 @@ export async function telaConteudo(root) {
 }
 
 // ---------------------------------------------------------------- modelos de e-mail para arquitetos
+const codificarPrevia = (s) => { let bin = ""; new TextEncoder().encode(s).forEach((c) => { bin += String.fromCharCode(c); }); return btoa(bin).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, ""); };
+const botaoAcao = (rotulo, fn) => {
+  const b = h("button", { class: "btn btn-ghost btn-mini", type: "button" }, rotulo);
+  b.addEventListener("click", async () => { try { await fn(); b.textContent = "Feito ✓"; } catch { b.textContent = "Não deu: use Baixar .html"; } setTimeout(() => { b.textContent = rotulo; }, 2500); });
+  return b;
+};
 // Todos os modelos a vista: preencha 4 campos no topo e copie o que quiser (assunto e texto separados).
 export async function telaModelos(root) {
   const inp = (id, ph) => h("input", { class: "input", id, type: "text", autocomplete: "off", placeholder: ph });
@@ -222,17 +229,23 @@ export async function telaModelos(root) {
     const v = { remetente: campos.remetente.value, contato: campos.contato.value, projeto_visto: campos.projeto.value, detalhe: campos.detalhe.value, cidade: "Balneário Camboriú" };
     clear(lista).append(...MODELOS_ARQUITETO.map((m, i) => {
       const t = modeloPreenchido(m, v);
+      const mail = montarEmail({ texto: t.corpo, assunto: t.assunto, titulo: m.titulo, chamada: m.chamada });
       return panel({ title: `${i + 1}. ${m.rotulo}`, subtitle: `Responde à dúvida: ${m.duvida}` },
         h("p", null, h("strong", null, "Assunto: "), t.assunto),
-        h("pre", { class: "rascunho-corpo" }, t.corpo),
-        h("div", { class: "row" }, copiar(t.assunto, "Copiar assunto"), copiar(t.corpo, "Copiar texto")));
+        h("p", { class: "field-hint" }, `Título do e-mail: ${m.titulo} · Botão: ${m.chamada.rotulo}`),
+        h("div", { class: "row" },
+          h("a", { class: "btn btn-primary btn-mini", href: `email/previa.html#${codificarPrevia(mail.html)}`, target: "_blank", rel: "noopener noreferrer" }, "Ver o e-mail bonito"),
+          botaoAcao("Copiar e-mail bonito", async () => { await navigator.clipboard.write([new ClipboardItem({ "text/html": new Blob([mail.html], { type: "text/html" }), "text/plain": new Blob([mail.texto], { type: "text/plain" }) })]); }),
+          botaoAcao("Baixar .html", async () => { const a = h("a", { href: URL.createObjectURL(new Blob([mail.html], { type: "text/html" })), download: `email-${m.id}.html` }); a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 4000); }),
+          copiar(t.assunto, "Copiar assunto"), copiar(mail.texto, "Copiar só o texto")),
+        h("details", null, h("summary", null, "Ver o texto simples"), h("pre", { class: "rascunho-corpo" }, mail.texto)));
     }));
   }
   for (const el of Object.values(campos)) el.addEventListener("input", desenhar);
   desenhar();
   root.append(
     panel({ title: "Como usar", subtitle: "Para arquitetos. Cada modelo responde a uma dúvida e termina convidando para uma reunião curta (20 min)." },
-      h("ol", { class: "stack-s" }, h("li", null, "Preencha os 4 campos abaixo: os textos se completam sozinhos."), h("li", null, "Escolha o modelo que combina com o escritório e copie o assunto e o texto."), h("li", null, "Cole no seu e-mail e envie 1 a 1. Poucos por dia no início, para o domínio ganhar reputação.")),
+      h("ol", { class: "stack-s" }, h("li", null, "Preencha os 4 campos abaixo: os textos se completam sozinhos."), h("li", null, "Clique em \"Ver o e-mail bonito\" para ver como o cliente recebe (logotipo, título, botão, assinatura)."), h("li", null, "Para enviar: \"Copiar e-mail bonito\" e cole no Gmail (mantém o visual), copie o assunto e envie 1 a 1. Poucos por dia no início, para o domínio ganhar reputação.")),
       h("p", { class: "field-hint" }, "Quer registrar o escritório e iniciar o acompanhamento? Use a tela Prospecção. Comissão/RT: não prometer (aguarda o advogado)."),
       h("a", { class: "btn btn-ghost btn-mini", href: "#/prospeccao" }, "Ir para Prospecção"), " ", h("a", { class: "btn btn-ghost btn-mini", href: "#/whatsapp" }, "Ver modelos de WhatsApp")),
     panel({ title: "Dados do escritório" }, h("div", { class: "form-grid" }, field("mo-rem", "Seu nome", campos.remetente), field("mo-con", "Arquiteto(a)", campos.contato), field("mo-proj", "Projeto visto", campos.projeto), field("mo-det", "Detalhe que gostou", campos.detalhe))),

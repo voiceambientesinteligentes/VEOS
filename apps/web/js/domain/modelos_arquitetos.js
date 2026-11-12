@@ -42,3 +42,16 @@ export function modeloPreenchido(modelo, vars = {}) {
   const sub = (t) => String(t).replace(/\{\{(\w+)\}\}/g, (_, k) => (vars[k] && String(vars[k]).trim()) || `[${k.replace(/_/g, " ")}]`);
   return { assunto: sub(modelo.assunto), corpo: sub(modelo.corpo) + AVISO_SAIR };
 }
+
+// Titulo grande e botao do e-mail bonito (montarEmail em domain/email_visual.js). O botao abre o WhatsApp da VOICE
+// com a mensagem pronta: o arquiteto marca a reuniao com um toque.
+const VISUAL = {
+  infraestrutura: { titulo: "O que prever na planta para a automação funcionar", chamada: { rotulo: "Quero o caderno técnico", mensagem: "Olá! Recebi o e-mail da VOICE e quero o caderno técnico de infraestrutura para automação." } },
+  estetica: { titulo: "Parede limpa: automação sem brigar com o projeto", chamada: { rotulo: "Marcar 20 minutos", mensagem: "Olá! Recebi o e-mail da VOICE sobre automação e acabamento e quero marcar 20 minutos." } },
+  compatibilidade: { titulo: "Luz, som, cortina e rede em um só comando", chamada: { rotulo: "Marcar 20 minutos", mensagem: "Olá! Recebi o e-mail da VOICE sobre integração dos sistemas e quero marcar 20 minutos." } },
+  custo: { titulo: "Quanto reservar para automação no orçamento", chamada: { rotulo: "Marcar 20 minutos", mensagem: "Olá! Recebi o e-mail da VOICE sobre quanto reservar para automação e quero marcar 20 minutos." } },
+  obra: { titulo: "Automação sem atrasar a obra e com suporte depois", chamada: { rotulo: "Marcar 20 minutos", mensagem: "Olá! Recebi o e-mail da VOICE sobre obra e suporte e quero marcar 20 minutos." } },
+  cliente_pediu: { titulo: "Seu cliente pediu casa inteligente?", chamada: { rotulo: "Falar com a VOICE", mensagem: "Olá! Recebi o e-mail da VOICE e tenho um cliente pedindo casa inteligente." } },
+  retomada: { titulo: "Caderno técnico de infraestrutura, sem reunião", chamada: { rotulo: "Quero o caderno técnico", mensagem: "Olá! Quero receber o caderno técnico de infraestrutura para automação." } },
+};
+for (const m of MODELOS_ARQUITETO) Object.assign(m, VISUAL[m.id]);
