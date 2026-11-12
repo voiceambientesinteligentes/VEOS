@@ -11,6 +11,7 @@ import { api } from "../../data/api.js";
 import { FASES_OBRA, ORIGENS, TIPOS_IMOVEL } from "../../domain/clientes.js";
 import { formatDate } from "../../domain/format.js";
 import { gerarCalendario, registroConteudo, ROTINA_INSTAGRAM, rotuloFormato, rotuloPilar, textoPost } from "../../domain/conteudo.js";
+import { MODELOS_ARQUITETO, modeloPreenchido } from "../../domain/modelos_arquitetos.js";
 import { CUIDADOS, mensagemPara, ondeEncontrar, PUBLICOS, registroParceiro } from "../../domain/prospeccao.js";
 import { clear, errorNotice, field, h, method, panel, stamp, table } from "../dom.js";
 
@@ -95,8 +96,17 @@ export async function telaProspeccao(root) {
       projeto: h("input", { class: "input", id: "pa-proj", autocomplete: "off", placeholder: "Projeto que você viu (para personalizar)" }), detalhe: h("input", { class: "input", id: "pa-det", autocomplete: "off", placeholder: "O que gostou nele" }) };
     const nivel = h("select", { class: "select", id: "pa-nivel" }, [["A", "A — faz alto padrão com frequência"], ["B", "B — faz alto padrão às vezes"], ["C", "C — potencial a confirmar"]].map(([v, t]) => h("option", { value: v, selected: v === "B" }, t)));
     const msg = h("pre", { class: "rascunho-corpo" });
-    const atualizarMsg = () => { msg.textContent = mensagemPara(p, { ...vars, contato: campos.contato.value, projeto_visto: campos.projeto.value, detalhe: campos.detalhe.value }); };
+    // arquitetos: modelos por duvida, cada um com assunto e um unico convite para reuniao curta
+    const modelo = p.id === "arquitetos" ? h("select", { class: "select", id: "pa-modelo", "aria-label": "Modelo de chamada" }, [h("option", { value: "" }, "Mensagem curta (padrão)"), ...MODELOS_ARQUITETO.map((m) => h("option", { value: m.id }, `${m.rotulo}`))]) : null;
+    const duvida = h("small", { class: "field-hint" });
+    const atualizarMsg = () => {
+      const v = { ...vars, contato: campos.contato.value, projeto_visto: campos.projeto.value, detalhe: campos.detalhe.value };
+      const m = modelo ? MODELOS_ARQUITETO.find((x) => x.id === modelo.value) : null;
+      duvida.textContent = m ? `Responde à dúvida: ${m.duvida}` : "";
+      if (m) { const t = modeloPreenchido(m, v); msg.textContent = `Assunto: ${t.assunto}\n\n${t.corpo}`; } else msg.textContent = mensagemPara(p, v);
+    };
     for (const el of Object.values(campos)) el.addEventListener("input", atualizarMsg);
+    modelo?.addEventListener("change", atualizarMsg);
     atualizarMsg();
     const bMsg = h("button", { class: "btn btn-ghost btn-mini", type: "button" }, "Copiar mensagem");
     bMsg.addEventListener("click", async () => { try { await navigator.clipboard.writeText(msg.textContent); bMsg.textContent = "Copiado ✓"; } catch { bMsg.textContent = "Selecione e copie"; } setTimeout(() => { bMsg.textContent = "Copiar mensagem"; }, 2000); });
@@ -122,7 +132,8 @@ export async function telaProspeccao(root) {
       panel({ title: "2. Registrar o alvo e preparar a mensagem", subtitle: `Oferta: ${p.oferta}` },
         h("div", { class: "form-grid" }, field("pa-esc", "Escritório / empresa *", campos.escritorio), field("pa-contato", "Pessoa de contato *", campos.contato), field("pa-tel", "Telefone / WhatsApp", campos.telefone),
           field("pa-email", "E-mail", campos.email), field("pa-nivel", "Nível", nivel), field("pa-proj", "Projeto visto", campos.projeto), field("pa-det", "Detalhe que gostou", campos.detalhe)),
-        h("div", { class: "stack-s" }, h("div", { class: "row" }, h("strong", null, "Mensagem 1:1 (revise antes de enviar)"), bMsg), msg),
+        modelo ? field("pa-modelo", "Modelo de chamada (cada um responde a uma dúvida de arquiteto e convida para uma reunião curta)", modelo) : null,
+        h("div", { class: "stack-s" }, h("div", { class: "row" }, h("strong", null, "Mensagem 1:1 (revise antes de enviar)"), bMsg), duvida, msg),
         h("div", { class: "row" }, salvar), erro),
       panel({ title: "Cuidados" }, h("ul", { class: "stack-s" }, CUIDADOS.map((c) => h("li", null, c)))));
   }

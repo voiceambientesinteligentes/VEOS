@@ -2,6 +2,10 @@
 
 Atualize este arquivo ao fim de cada sessão: última ação, resultado e próximo passo.
 
+## 12/11/2026 (tarde) — Modelos de chamada para arquitetos
+- Pesquisa na web (so trabalhos academicos e blogs; nao ha pesquisa com arquitetos): duvidas recorrentes = o que prever na planta (infraestrutura), compatibilidade entre sistemas, custo/quanto reservar, mao de obra e suporte, estetica (casas ja sem interruptores). Tratadas como HIPOTESES (PROPOSTA) ate validar nas conversas.
+- 7 modelos em `domain/modelos_arquitetos.js` (assunto + corpo, 1 convite para reuniao de 20 min, sem preco/prazo/comissao), escolhiveis em Captacao > Prospeccao > Escritorios de arquitetura. Pendente: Fernando aprovar o tom; usar pela IA no preparar_email; teste de dominio. SW veos-v6.
+
 ## 12/11/2026 (tarde) — Rótulo "IA · ação" e itálico limpo
 - O selo da resposta mostra "IA · ação" quando o pedido era para executar (`assistente.js`, `diretores.js` via `pedidoDeAcao`); `limparMarkdown` (`_shared/ia/texto.ts`) tira `*texto*`. SW `veos-v5`. Publicado: ia-fila, api, mcp. Não testado ao vivo nem por teste automático (aguarda o "testa").
 
