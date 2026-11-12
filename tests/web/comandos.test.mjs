@@ -37,6 +37,9 @@ test("pedido para FAZER vai ao diretor certo em modo execucao; pedido curto de t
   assert.equal(interpretar("abrir o radar").rota, "#/radar");
   assert.equal(pedidoDeAcao("Qual é a margem do projeto?"), false);
   assert.equal(pedidoDeAcao("VEOS, cadastre o lead Maria"), true);
+  // verbo no comeco de uma frase depois de ":" (achado no teste real de 12/11) vale; pergunta com "devo preparar" nao
+  assert.equal(pedidoDeAcao("Teste do e-mail novo da VOICE: prepare um e-mail avulso para felipe@hotmail.com"), true);
+  assert.equal(pedidoDeAcao("Qual canal eu trabalho primeiro? Devo preparar e-mails para arquitetos?"), false);
 });
 
 test("confirmacao de envio: so palavras de confirmar; 'ok', negacao e pergunta nao enviam", () => {

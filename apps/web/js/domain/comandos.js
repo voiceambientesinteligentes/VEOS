@@ -59,7 +59,13 @@ const ACAO_RE = new RegExp(`(?:^(?:(?:oi|ola|ei)\\s+)?(?:veos\\s+)?|\\b(?:pode|p
 /** O texto pede para executar algo (e nao so uma opiniao)? */
 export function pedidoDeAcao(bruto) {
   const t = normalizar(bruto);
-  return Boolean(t) && (ACAO_RE.test(t) || /\b(e (mande|envie|mandar|enviar|cadastre|crie|agende|marque))\b/.test(t));
+  if (!t) return false;
+  if (ACAO_RE.test(t) || /\b(e (mande|envie|mandar|enviar|cadastre|crie|agende|marque))\b/.test(t)) return true;
+  // verbo no comeco de uma frase depois de ":", ".", "!", "?" ou quebra de linha ("Teste do e-mail: prepare um e-mail...")
+  return String(bruto).split(/[:.!?;\n]+/).slice(1).some((frase) => {
+    const f = normalizar(frase);
+    return Boolean(f) && ACAO_RE.test(f);
+  });
 }
 
 /** Retorna {texto, rota?, fala, diretor?, acao} para um comando falado ou digitado. */
