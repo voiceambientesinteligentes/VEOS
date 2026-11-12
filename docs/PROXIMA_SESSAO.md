@@ -79,8 +79,8 @@ enviar (só texto). Teste real em 12/11: e-mail avulso com o PRD-0125 entregue n
 Próximos (programa), nesta ordem:
 1. Saber do Fernando onde o teste caiu (Pendências CIO-19). Se foi no Lixo: olhar os registros do envio na Brevo e
    decidir com ele (aquecer o domínio devagar, pedir respostas, ou prospectar pelo Gmail/Workspace).
-2. Cartão da resposta da IA mostra "IA · OPINIÃO" mesmo quando ela executou, e o texto veio com asteriscos de
-   Markdown (*"..."*): corrigir o rótulo e a limpeza do texto.
+2. **FEITO em 12/11 (não testado ao vivo)** — rótulo "IA · ação" quando o pedido era para fazer algo (chat/IA VEOS e
+   Perguntar aos diretores) e limpeza do itálico `*...*` em `limparMarkdown`; SW `veos-v5`; funções ia-fila, api e mcp publicadas.
 3. HTML também pelo Gmail: ponte v3 (`htmlBody` no `enviar` de `domain/ponte_google.js`); exige colar o código novo
    no Apps Script (o Fernando ou o Claude no Chrome dele).
 4. Prévia "ver como o cliente vê" na Caixa de saída e no cartão da IA (a CSP do site não aceita estilo inline: usar

@@ -2,6 +2,9 @@
 
 Atualize este arquivo ao fim de cada sessão: última ação, resultado e próximo passo.
 
+## 12/11/2026 (tarde) — Rótulo "IA · ação" e itálico limpo
+- O selo da resposta mostra "IA · ação" quando o pedido era para executar (`assistente.js`, `diretores.js` via `pedidoDeAcao`); `limparMarkdown` (`_shared/ia/texto.ts`) tira `*texto*`. SW `veos-v5`. Publicado: ia-fila, api, mcp. Não testado ao vivo nem por teste automático (aguarda o "testa").
+
 ## 12/11/2026 — E-mail profissional (visual da VOICE) saindo como contato@
 - Domínio voiceambientesinteligentes.com autenticado na Brevo (registros só adicionados no DNS do Squarespace) e remetente contato@ verificado (DKIM e DMARC ok). O VEOS passou a preferir o remetente de domínio próprio (Integrações → Atualizar, feito no Chrome do Fernando).
 - Visual novo em `domain/email_visual.js` (logotipo, cartão do produto com foto, botão do WhatsApp, assinatura, rodapé com sair) e produto do catálogo no e-mail (`produtos` no preparar_email, `veos_buscar_produtos`, bucket público `vitrine`). Publicado: migração, funções api/ia-fila/saude/mcp/brevo, commits b2bbb9b e 6cc5f9d.

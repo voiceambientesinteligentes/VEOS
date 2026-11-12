@@ -6,6 +6,7 @@
 import { api } from "../../data/api.js";
 import { CATALOGO } from "../../data/catalogo.js";
 import { FERRAMENTA } from "../../data/ferramentas_ia.js";
+import { pedidoDeAcao } from "../../domain/comandos.js";
 import { agruparConversas, blocosDaResposta, SUGESTOES } from "../../domain/conversa.js";
 import { formatDateTime } from "../../domain/format.js";
 import { clear, errorNotice, h, method } from "../dom.js";
@@ -137,7 +138,7 @@ export async function telaDiretores(root) {
     }
     return h("div", { class: "cv-msg cv-dele" }, h("span", { class: "cv-sigla cv-avatar" }, s?.sigla ?? "?"),
       h("div", { class: "cv-balao" },
-        h("div", { class: "cv-autor" }, h("strong", null, s?.diretor.nome ?? "Diretor"), h("span", { class: "cv-selo" }, "IA · opinião"), h("small", null, hora(r.em))),
+        h("div", { class: "cv-autor" }, h("strong", null, s?.diretor.nome ?? "Diretor"), h("span", { class: "cv-selo" }, pedidoDeAcao(p.pergunta) ? "IA · ação" : "IA · opinião"), h("small", null, hora(r.em))),
         textoFormatado(r.resposta),
         detalhes.length ? method(`Fontes e como chegou na resposta · ${r.motor}`, ...detalhes) : h("small", { class: "field-hint" }, r.motor)));
   }

@@ -203,7 +203,7 @@ export async function enviar(texto) {
     }
     const fim = await aguardarResposta(res.id, setor);
     if (fim.ok) {
-      adicionar({ de: "diretor", setor, texto: fim.resposta.resposta, motor: fim.resposta.motor, conversa: conversas[setor] });
+      adicionar({ de: "diretor", setor, texto: fim.resposta.resposta, motor: fim.resposta.motor, conversa: conversas[setor], acao: Boolean(r.acao) });
       // e-mails que o diretor preparou nesta resposta: cartoes com "Enviar" (a pessoa confirma)
       const itens = await rascunhosDaPergunta(res.id);
       if (itens.length) {
@@ -290,7 +290,7 @@ export function desenharMensagens(alvo, { compacto = false } = {}) {
     alvo.append(h("div", { class: `as-msg as-ia${m.de === "diretor" ? "" : " as-veos"}` },
       h("span", { class: "as-avatar", "aria-hidden": "true" }, sigla ?? "✦"),
       h("div", { class: "as-corpo" },
-        m.de === "diretor" ? h("div", { class: "as-autor" }, h("strong", null, NOME[m.setor] ?? "Diretor"), h("span", { class: "cv-selo" }, "IA · opinião")) : null,
+        m.de === "diretor" ? h("div", { class: "as-autor" }, h("strong", null, NOME[m.setor] ?? "Diretor"), h("span", { class: "cv-selo" }, m.acao ? "IA · ação" : "IA · opinião")) : null,
         m.de === "diretor" ? textoFormatado(compacto ? m.texto : m.texto) : h("p", null, m.texto),
         m.de === "diretor" && m.conversa ? h("a", { href: `#/diretores?conversa=${m.conversa}`, class: "as-link" }, "Continuar com fontes e histórico") : m.href ? h("a", { href: m.href, class: "as-link" }, "Abrir") : null)));
   }

@@ -79,6 +79,7 @@ export function limparMarkdown(t: string) {
     .replace(/^#{1,6}\s*/gm, "")
     .replace(/\*\*(.+?)\*\*/g, "$1")
     .replace(/__(.+?)__/g, "$1")
+    .replace(/(^|[\s(“"])\*(?=\S)([^*\n]+?)(?<=\S)\*(?=$|[\s.,;:!?)”"])/gm, "$1$2")
     .replace(/`([^`]*)`/g, "$1")
     .replace(/^\s*[-*]\s+/gm, "• ")
     .replace(/\n{3,}/g, "\n\n")
