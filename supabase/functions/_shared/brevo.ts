@@ -5,7 +5,8 @@
 import { HttpError, URL_BASE, servico } from "./banco.ts";
 import { gravarIntegracao, lerIntegracao, marcarIntegracao } from "./integracoes.ts";
 import { segredoAleatorio } from "./cifra.ts";
-import { EVENTOS_WEBHOOK_BREVO, explicarErroBrevo, htmlDoEmail, normalizarIdBrevo, planoDaBrevo, remetentePadrao } from "./dominio/brevo.js";
+import { EVENTOS_WEBHOOK_BREVO, explicarErroBrevo, normalizarIdBrevo, planoDaBrevo, remetentePadrao } from "./dominio/brevo.js";
+import { montarEmail } from "./dominio/email_visual.js";
 
 const API = "https://api.brevo.com/v3";
 export const NOME_REMETENTE = "VOICE Ambientes Inteligentes";
@@ -54,21 +55,26 @@ export async function chamarBrevo(chave: string, metodo: string, rota: string, c
 export const BASE_WEBHOOK = `${URL_BASE}/functions/v1/brevo/`;
 const urlDoWebhook = (segredo: string) => `${BASE_WEBHOOK}${segredo}`;
 
-/** Envia um e-mail 1:1 (texto + HTML simples). Etiqueta veos-<id> e X-Mailin-custom ligam os avisos a mensagem. */
-export async function enviarPelaBrevo(b: Brevo, e: { id: string; para: string; assunto: string; texto: string; responderPara?: string | null; nome?: string; tipo?: string }) {
+/**
+ * Envia um e-mail 1:1 com o visual da VOICE (HTML + texto com o mesmo conteudo; ver dominio/email_visual.js). Quem
+ * chama pode mandar o e-mail ja montado (html + texto, ex.: com cartoes de produto); senao monta aqui so com o texto.
+ * Etiqueta veos-<id> e X-Mailin-custom ligam os avisos (entregue, aberto, voltou) a mensagem.
+ */
+export async function enviarPelaBrevo(b: Brevo, e: { id: string; para: string; assunto: string; texto: string; html?: string; responderPara?: string | null; nome?: string; tipo?: string }) {
   if (!b.remetente?.email || !b.remetente.ativo) throw new HttpError(409, "o remetente da Brevo ainda não foi confirmado: em Integrações → Brevo, digite o código que a Brevo mandou para o seu e-mail");
   const nome = (e.nome ?? NOME_REMETENTE).slice(0, 70);
+  const visual = e.html ? { html: e.html, texto: e.texto } : montarEmail({ texto: e.texto, assunto: e.assunto, tipo: e.tipo ?? "avulsa" });
   const r = await chamarBrevo(b.chave, "POST", "/smtp/email", {
     sender: { email: b.remetente.email, name: nome },
     to: [{ email: e.para }],
     ...(e.responderPara ? { replyTo: { email: e.responderPara, name: nome } } : {}),
     subject: e.assunto || "(sem assunto)",
-    textContent: e.texto,
-    htmlContent: htmlDoEmail(e.texto),
+    textContent: visual.texto,
+    htmlContent: visual.html,
     tags: ["veos", `veos-${e.id}`, ...(e.tipo ? [e.tipo] : [])],
     headers: { "X-Mailin-custom": `veos:${e.id}` },
   }, 45_000);
-  return { id: normalizarIdBrevo(r?.messageId ?? r?.messageIds?.[0]) };
+  return { id: normalizarIdBrevo(r?.messageId ?? r?.messageIds?.[0]), texto: visual.texto };
 }
 
 /** Webhook transacional do VEOS na conta (cria ou atualiza o que ja existe). Devolve o id ou o erro (nao derruba). */

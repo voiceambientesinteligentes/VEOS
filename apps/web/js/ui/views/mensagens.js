@@ -108,7 +108,11 @@ export async function telaMensagens(root) {
           ? h("p", { class: "field-hint" }, gmailOk ? "Sem resposta ainda (o VEOS confere no Gmail e cria a tarefa “Responder” quando chegar)." : "A resposta chega no seu Gmail. Conecte o Gmail em Integrações para o VEOS avisar e criar a tarefa “Responder”.")
           : null,
         m.erro_envio && m.estado === "rascunho" ? h("p", { class: "notice notice-warn" }, `Última tentativa de envio falhou: ${m.erro_envio}`) : null,
-        h("pre", { class: "rascunho-corpo" }, m.corpo), acoes, saida);
+        h("pre", { class: "rascunho-corpo" }, m.corpo),
+        m.canal === "email" && m.estado === "rascunho"
+          ? h("p", { class: "field-hint" }, `Pela Brevo sai com o visual da VOICE: logotipo${Array.isArray(m.produtos) && m.produtos.length ? `, ${m.produtos.length === 1 ? "o produto" : `${m.produtos.length} produtos`} com foto (${m.produtos.map((p) => p.titulo || p.codigo).join(", ")})` : ""}, botão do WhatsApp e assinatura.`)
+          : null,
+        acoes, saida);
     };
     const canal = h("select", { class: "select", id: "ms-canal" }, h("option", { value: "email" }, "E-mail"), h("option", { value: "whatsapp" }, "WhatsApp"));
     const dest = h("input", { class: "input", id: "ms-dest", autocomplete: "off" }), assunto = h("input", { class: "input", id: "ms-assunto", autocomplete: "off" });

@@ -2,7 +2,8 @@
 // confirmacao) e resumo do dia.
 //   GET  /mensagens?estado=rascunho|enviada|descartada&origem=&registro=
 //   POST /mensagens            {canal, destinatario?, assunto?, corpo, setor_id?, origem?, tipo?, registro_id?, cliente_id?,
-//                               responder_a?, alvo?}   -> rascunho (o destino pode vir do cliente/registro; {{nome}} etc.)
+//                               responder_a?, alvo?, produtos?}   -> rascunho (o destino pode vir do cliente/registro;
+//                               {{nome}} etc.; produtos = ate 3 do catalogo [{codigo, titulo?, destaque?}] em cartoes com foto)
 //   POST /mensagens/:id/enviar {confirmacao?, via?}    -> envia o e-mail pela Brevo ou pelo Gmail (ponte), com as travas abaixo
 //   POST /mensagens/:id/(enviada|descartada)   {motivo?}  -> confirmacao manual (enviado por fora) ou descarte
 //   GET  /resumo               resumo do dia dos setores que o perfil acessa
@@ -24,7 +25,9 @@ import { chamarPonte } from "../_shared/google.ts";
 import { registrarAcao } from "../_shared/integracoes.ts";
 import { comRodapeSaida, dominioDe, emailValido, limparTextoEmail, preencherModelo, primeiroNome, prometeAnexo, telefoneBR } from "../_shared/dominio/web_contatos.js";
 import { escolherViaEmail, VIAS_EMAIL } from "../_shared/dominio/brevo.js";
+import { montarEmail } from "../_shared/dominio/email_visual.js";
 import { enviarPelaBrevo, NOME_REMETENTE } from "../_shared/brevo.ts";
+import { conferirProdutosDoEmail, produtosParaEmail } from "../_shared/vitrine.ts";
 import { caminhosDeEnvio, enviadosHoje, LIMITE_BREVO_DIA, LIMITE_GMAIL_DIA, LIMITE_PROSPECCAO_DIA, limiteDoDia, viaDeEnvio } from "../_shared/envio_email.ts";
 import { ehTeste, filtroAutor } from "../_shared/teste.ts";
 
@@ -142,6 +145,8 @@ export async function rotearNotificacoes(req: Request, partes: string[], eu: Mem
       if (b) throw new HttpError(409, `este contato está na lista de bloqueio${b.motivo ? ` (${String(b.motivo).slice(0, 140)})` : " (pediu para não receber mensagens)"}: nada foi preparado`);
     }
     if (tipo === "prospeccao" && cliente?.aceita_contato === false) throw new HttpError(409, "o cliente não aceita contato comercial (LGPD)");
+    // produtos do catalogo em destaque no e-mail (cartao com foto, nome e frase): conferidos antes de cadastrar qualquer coisa
+    const produtos = canal === "email" ? await conferirProdutosDoEmail(corpo.produtos) : [];
     // prospeccao de empresa achada na web: cadastra (ou reaproveita) o parceiro prospectado
     let parceiro: any = null;
     if (canal === "email" && tipo === "prospeccao" && !registro && corpo.alvo && typeof corpo.alvo === "object" && destino) {
@@ -157,7 +162,14 @@ export async function rotearNotificacoes(req: Request, partes: string[], eu: Mem
     // o VEOS ainda nao anexa arquivos: texto que promete anexo e recusado para a IA corrigir (a pessoa pode anexar no Gmail)
     if (canal === "email" && /^(ia|mcp):/.test(origem) && prometeAnexo(texto)) throw new HttpError(400, "o texto fala em anexo, mas o VEOS ainda não anexa arquivos: reescreva oferecendo enviar o material depois (ex.: 'posso te enviar nosso caderno técnico')");
     // e-mail escrito pela IA sem assinatura: assina com o nome de quem pediu (quem vai confirmar o envio)
-    if (canal === "email" && /^(ia|mcp):/.test(origem) && !/VOICE/i.test(texto.slice(-250))) texto = `${texto}\n\n${primeiroNome(eu.nome) || "Equipe"}\nVOICE Ambientes Inteligentes`;
+    // (se a IA ja terminou com o nome, so acrescenta a linha da VOICE: nada de nome repetido)
+    if (canal === "email" && /^(ia|mcp):/.test(origem) && !/VOICE/i.test(texto.slice(-250))) {
+      const quem = primeiroNome(eu.nome) || "Equipe";
+      const ultima = texto.trimEnd().split("\n").pop()!.trim();
+      texto = ultima.length <= 40 && ultima.toLowerCase().startsWith(quem.toLowerCase())
+        ? `${texto.trimEnd()}\nVOICE Ambientes Inteligentes`
+        : `${texto}\n\n${quem}\nVOICE Ambientes Inteligentes`;
+    }
     const assunto = txt(corpo.assunto, 300) ? limparTextoEmail(preencherModelo(String(corpo.assunto), vars)).slice(0, 300) : null;
     const responder = txt(corpo.responder_a, 100);
     if (responder && !/^[A-Za-z0-9_-]{6,100}$/.test(responder)) throw new HttpError(400, "responder_a inválido (thread do Gmail)");
@@ -165,12 +177,15 @@ export async function rotearNotificacoes(req: Request, partes: string[], eu: Mem
     if (destino && /^(ia|mcp):/.test(origem)) {
       const [ja] = await servico(`/rest/v1/mensagens_saida?origem=eq.${encodeURIComponent(origem)}&estado=eq.rascunho&canal=eq.${canal}&destinatario=eq.${encodeURIComponent(destino)}&criado_por=eq.${eu.user_id}${origem.startsWith("mcp:") ? `&criado_em=gt.${encodeURIComponent(new Date(Date.now() - 30 * 60_000).toISOString())}` : ""}&select=id&limit=1`);
       if (ja) {
-        await servico(`/rest/v1/mensagens_saida?id=eq.${ja.id}&estado=eq.rascunho`, { method: "PATCH", headers: { Prefer: "return=minimal" }, body: JSON.stringify({ assunto, corpo: texto, registro_id: registro?.id ?? null, cliente_id: cliente?.id ?? null }) });
-        return { id: ja.id, repetido: true, atualizado: true, canal, destinatario: destino, assunto, corpo: texto, tipo, registro_id: registro?.id ?? null, envio: "rascunho atualizado (já existia um para este destinatário)" };
+        await servico(`/rest/v1/mensagens_saida?id=eq.${ja.id}&estado=eq.rascunho`, { method: "PATCH", headers: { Prefer: "return=minimal" }, body: JSON.stringify({ assunto, corpo: texto, registro_id: registro?.id ?? null, cliente_id: cliente?.id ?? null, produtos: produtos.length ? produtos : null }) });
+        return { id: ja.id, repetido: true, atualizado: true, canal, destinatario: destino, assunto, corpo: texto, tipo, registro_id: registro?.id ?? null, produtos: produtos.length ? produtos : undefined, envio: "rascunho atualizado (já existia um para este destinatário)" };
       }
     }
     const r = await rpc("mensagem_criar", { p: { chave: `${eu.user_id}:${chave}`, usuario: eu.user_id, canal, destinatario: destino, assunto, corpo: texto, setor_id: setor ?? registro?.setor_id ?? null, origem,
       tipo: responder ? "resposta" : tipo, registro_id: registro?.id ?? null, cliente_id: cliente?.id ?? null, responder_a: responder } });
+    if (produtos.length && r?.id) {
+      await servico(`/rest/v1/mensagens_saida?id=eq.${r.id}&estado=eq.rascunho`, { method: "PATCH", headers: { Prefer: "return=minimal" }, body: JSON.stringify({ produtos }) });
+    }
     // o 1o toque da cadencia de parceiro vira ESTE e-mail personalizado (o modelo generico e descartado)
     if (registro?.id && tipo === "prospeccao") {
       await servico(`/rest/v1/mensagens_saida?chave=like.CAD:${registro.id}:*&estado=eq.rascunho&canal=eq.email&id=neq.${r.id}`, { method: "PATCH", headers: { Prefer: "return=minimal" },
@@ -178,6 +193,7 @@ export async function rotearNotificacoes(req: Request, partes: string[], eu: Mem
     }
     const via = canal === "email" ? await viaDeEnvio(responder).catch(() => null) : null;
     return { ...r, canal, destinatario: destino, assunto, corpo: texto, tipo, registro_id: registro?.id ?? null, cliente_id: cliente?.id ?? null,
+      produtos: produtos.length ? produtos : undefined,
       parceiro: parceiro ? { id: parceiro.id, titulo: parceiro.titulo, novo: parceiro.novo } : undefined,
       envio: canal === "email" ? (via?.info ? `pronto para enviar ${via.info.pelo} (precisa da confirmação do dono)` : "e-mail do VEOS não conectado: abra no e-mail e envie, ou conecte a Brevo ou o Gmail em Integrações") : "WhatsApp: abra no aplicativo e envie",
       falta_destinatario: !destino || undefined };
@@ -221,12 +237,17 @@ export async function rotearNotificacoes(req: Request, partes: string[], eu: Mem
     const texto = prospeccao ? comRodapeSaida(m.corpo).slice(0, 5000) : m.corpo;
     const confirmacao = ["tela", "voz", "mcp", "lote"].includes(String(corpo.confirmacao)) ? String(corpo.confirmacao) : "tela";
     let envio: { id: string | null; thread_id: string | null; cota_email: number | null };
+    let corpoEnviado = texto;
     try {
       if (via === "simulado" || !cam) envio = { id: `simulado-${id.slice(0, 8)}`, thread_id: null, cota_email: null };
       else if (via === "brevo") {
-        // a resposta volta para o Gmail da VOICE (a Brevo troca o remetente @gmail por um endereco dela)
-        const r = await enviarPelaBrevo(cam.brevo!, { id, para, assunto: m.assunto ?? "", texto, responderPara: cam.ponte?.conta ?? cam.brevo!.conta ?? null, nome: NOME_REMETENTE, tipo: m.tipo });
+        // visual da VOICE (logotipo, cartoes de produto com foto, botao do WhatsApp, assinatura); sai pelo remetente do
+        // dominio autenticado (contato@) e a resposta volta para o Gmail da VOICE (replyTo), onde o VEOS a le
+        const produtos = await produtosParaEmail(m.produtos).catch((e) => { console.error("vitrine (envio)", e); return []; });
+        const visual = montarEmail({ texto, assunto: m.assunto ?? "", tipo: m.tipo, produtos });
+        const r = await enviarPelaBrevo(cam.brevo!, { id, para, assunto: m.assunto ?? "", texto: visual.texto, html: visual.html, responderPara: cam.ponte?.conta ?? cam.brevo!.conta ?? null, nome: NOME_REMETENTE, tipo: m.tipo });
         envio = { id: r.id, thread_id: null, cota_email: null };
+        corpoEnviado = visual.texto;
       } else envio = await chamarPonte("enviar", { para, assunto: m.assunto ?? "", corpo: texto, thread_id: m.responder_a ?? undefined, nome_remetente: NOME_REMETENTE }, cam.ponte);
     } catch (e) {
       const msg = (e as Error).message ?? "falha";
@@ -234,7 +255,7 @@ export async function rotearNotificacoes(req: Request, partes: string[], eu: Mem
       await registrarAcao(eu.user_id, "email_enviado", `FALHOU ${VIAS_EMAIL[via as "brevo" | "gmail"]?.pelo ?? ""} para ${para}: ${msg}`, false, req.headers.get("X-VEOS-Origem") ?? confirmacao);
       throw e;
     }
-    await rpc("mensagem_registrar_envio", { p: { id, usuario: eu.user_id, via, provedor_id: envio.id, thread_id: envio.thread_id, corpo: texto, confirmacao } });
+    await rpc("mensagem_registrar_envio", { p: { id, usuario: eu.user_id, via, provedor_id: envio.id, thread_id: envio.thread_id, corpo: corpoEnviado.slice(0, 5000), confirmacao } });
     // o toque da cadencia que este e-mail cumpre vira "feito"
     const chaves = [m.chave, m.registro_id && prospeccao ? `CAD:${m.registro_id}:parceiro_prospeccao:1` : null].filter((c) => typeof c === "string" && c.startsWith("CAD:"));
     if (chaves.length) {

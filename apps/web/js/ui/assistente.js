@@ -147,7 +147,8 @@ export async function descartarItem(msgId, itemId) {
 async function rascunhosDaPergunta(perguntaId) {
   try {
     const { mensagens } = await api.mensagens("rascunho", { origem: `ia:${perguntaId}` });
-    return mensagens.filter((x) => x.canal === "email").map((x) => ({ id: x.id, para: x.destinatario ?? "", assunto: x.assunto ?? "", corpo: x.corpo ?? "", tipo: x.tipo ?? "avulsa", estado: "rascunho" }));
+    return mensagens.filter((x) => x.canal === "email").map((x) => ({ id: x.id, para: x.destinatario ?? "", assunto: x.assunto ?? "", corpo: x.corpo ?? "", tipo: x.tipo ?? "avulsa", estado: "rascunho",
+      produtos: Array.isArray(x.produtos) ? x.produtos.map((p) => p.titulo || p.codigo).slice(0, 3) : [] }));
   } catch { return []; }
 }
 
@@ -271,6 +272,7 @@ function cartoesDeEmail(m) {
         h("div", { class: "as-email-cab" }, h("span", null, h("small", null, "Para "), h("strong", null, i.para || "—")), estadoTxt ? h("span", { class: "as-email-estado" }, estadoTxt) : null),
         h("div", { class: "as-email-assunto" }, i.assunto || "(sem assunto)"),
         h("p", { class: "as-email-trecho" }, String(i.corpo ?? "").replace(/\s+/g, " ").slice(0, 180) + (String(i.corpo ?? "").length > 180 ? "…" : "")),
+        i.produtos?.length ? h("p", { class: "as-email-trecho" }, `Com foto no e-mail: ${i.produtos.join(", ")}`) : null,
         corpo, i.erro ? h("p", { class: "cv-aviso" }, i.erro) : null,
         h("div", { class: "row as-email-botoes" }, acoes));
     }),

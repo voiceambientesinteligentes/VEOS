@@ -1,5 +1,6 @@
 // CATALOGO DE PRODUTOS na funcao "api" (catalogo proprio do VEOS; fotos no Storage privado).
 //   GET  /produtos?busca=&situacao=&revisar=1&pagina=   lista com miniatura (URL assinada)
+//   GET  /produtos/vitrine?busca=                        busca leve (codigo, nome, se tem foto) para a IA por produto em e-mail
 //   GET  /produtos/revisao                               duplicados possiveis e agrupamentos a conferir
 //   GET  /produtos/:id                                   ficha completa (fontes, ficha tecnica, compras, vinculos, historico)
 //   POST /produtos/:id                                   {nome?, descricao?, categoria?, unidade?, situacao?, observacao?}
@@ -10,8 +11,10 @@
 // Alcada (proposta BIB, ate decisao do fundador): custo -> direcao, financas e operacoes;
 // preco de venda e decisao de duplicados -> so direcao. Toda mudanca de preco fica no historico.
 import { HttpError, lerCorpo, type Membro, SERVICE, servico, URL_BASE } from "../_shared/banco.ts";
+import { nomeNaVitrine } from "../_shared/dominio/email_visual.js";
 
 const VER = ["direcao", "vendas", "operacoes", "financas"];
+const PALAVRAS_VAZIAS = new Set(["de", "da", "do", "das", "dos", "e", "com", "para", "em", "no", "na", "um", "uma", "o", "a", "os", "as"]);
 const CUSTO = ["direcao", "financas", "operacoes"];
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
 const CHAVE_RE = /^[A-Za-z0-9-]{16,64}$/;
@@ -36,8 +39,27 @@ export async function rotearProdutos(req: Request, partes: string[], eu: Membro)
   const post = req.method === "POST";
   const corpo = post ? ((await lerCorpo(req)) ?? {}) : {};
   if (post && !CHAVE_RE.test(req.headers.get("Idempotency-Key") ?? "")) throw new HttpError(400, "Idempotency-Key obrigatorio");
-  exigir(eu, VER);
   const q = new URL(req.url).searchParams;
+
+  // busca leve para a IA e o MCP citarem ou mostrarem um produto num e-mail (sem custo nem preco)
+  if (!post && a === "vitrine") {
+    exigir(eu, [...VER, "marketing", "posvenda", "secretaria"]);
+    const palavras = (q.get("busca") ?? "").replace(/[%*,().:"'\\]/g, " ").split(/\s+/)
+      .filter((w) => w.length >= 2 && !PALAVRAS_VAZIAS.has(w.toLowerCase())).slice(0, 4);
+    if (!palavras.length) throw new HttpError(400, "diga o que procurar (ex.: sensor de presença, fechadura, projetor)");
+    const cond = palavras.map((w) => {
+      const e = encodeURIComponent(w);
+      return `or(nome.ilike.*${e}*,marca.ilike.*${e}*,modelo.ilike.*${e}*,codigo.ilike.*${e}*,categoria.ilike.*${e}*)`;
+    }).join(",");
+    const lista = await servico(`/rest/v1/produtos?situacao=eq.ativo&and=(${cond})&select=codigo,nome,marca,modelo,categoria,imagem&order=codigo&limit=12`);
+    return {
+      produtos: lista.map((p: { codigo: string; nome: string; marca: string | null; modelo: string | null; categoria: string | null; imagem: string | null }) => ({
+        codigo: p.codigo, nome: p.nome, nome_no_email: nomeNaVitrine(p.nome), marca: p.marca, modelo: p.modelo, categoria: p.categoria, tem_foto: Boolean(p.imagem),
+      })),
+      dica: lista.length ? "para mostrar no e-mail com foto, passe produtos=[{codigo, destaque}] ao preparar o e-mail" : "nada encontrado: tente outra palavra (ex.: a marca ou o tipo do produto)",
+    };
+  }
+  exigir(eu, VER);
 
   if (!post && !a) {
     const busca = (q.get("busca") ?? "").replace(/[%*,()]/g, " ").trim().slice(0, 60);

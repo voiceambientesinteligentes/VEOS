@@ -3,7 +3,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import {
-  BLOQUEIAM, chaveBrevoValida, ehChaveSmtpBrevo, escolherViaEmail, explicarErroBrevo, htmlDoEmail, mensagemDoEventoBrevo,
+  BLOQUEIAM, chaveBrevoValida, ehChaveSmtpBrevo, escolherViaEmail, explicarErroBrevo, mensagemDoEventoBrevo,
   normalizarIdBrevo, planoDaBrevo, quandoDoEventoBrevo, remetentePadrao, tipoDoEventoBrevo,
 } from "../../apps/web/js/domain/brevo.js";
 import { buscaDeResposta, codigoDaPonte, VERSAO_PONTE } from "../../apps/web/js/domain/ponte_google.js";
@@ -52,14 +52,6 @@ test("quando: ts_epoch em ms ou s, ts_event, data da Brevo (Paris) e reserva", (
   assert.equal(quandoDoEventoBrevo({}, agora), new Date(agora).toISOString());
 });
 
-test("HTML do e-mail: escapa, quebra paragrafos e linhas e deixa o link clicavel sem a pontuacao", () => {
-  const h = htmlDoEmail("Olá <João> & cia,\n\nVeja https://voice.com.br/caderno.\nAbraço");
-  assert.ok(h.includes("Olá &lt;João&gt; &amp; cia,"));
-  assert.ok(h.includes('<a href="https://voice.com.br/caderno">https://voice.com.br/caderno</a>.<br>Abraço'));
-  assert.equal((h.match(/<p /g) ?? []).length, 2);
-  assert.ok(!h.includes("<script"));
-});
-
 test("erros da Brevo em portugues: IP, chave, conta em validacao, cota, remetente", () => {
   assert.match(explicarErroBrevo(401, { code: "unauthorized", message: "We have detected you are using an unrecognised IP address 34.1.2.3" }).texto, /IPs autorizados/);
   assert.match(explicarErroBrevo(401, { code: "unauthorized", message: "Key not found" }).texto, /chave de API/);
@@ -71,9 +63,11 @@ test("erros da Brevo em portugues: IP, chave, conta em validacao, cota, remetent
   assert.match(explicarErroBrevo(400, { code: "invalid_parameter", message: "to is missing" }).texto, /^Brevo: to is missing/);
 });
 
-test("remetente: o ativo com o e-mail da conta; senao outro ativo; senao o da conta inativo", () => {
-  const s = [{ id: 1, name: "Outro", email: "x@voice.com", active: true }, { id: 2, name: "VOICE", email: "voice@gmail.com", active: true }];
-  assert.equal(remetentePadrao(s, "VOICE@gmail.com").id, 2);
+test("remetente: o ativo de dominio proprio; senao o ativo da conta; senao outro ativo; senao o da conta inativo", () => {
+  const s = [{ id: 1, name: "Outro", email: "x@gmail.com", active: true }, { id: 2, name: "VOICE", email: "voice@gmail.com", active: true }, { id: 4, name: "VOICE", email: "contato@voice.com.br", active: true }];
+  assert.equal(remetentePadrao(s, "voice@gmail.com").id, 4);
+  assert.equal(remetentePadrao(s.slice(0, 2), "VOICE@gmail.com").id, 2);
+  assert.equal(remetentePadrao([{ ...s[2], active: false }, s[1]], "voice@gmail.com").id, 2);
   assert.equal(remetentePadrao([s[0]], "voice@gmail.com").id, 1);
   assert.deepEqual(remetentePadrao([{ id: 3, name: "V", email: "voice@gmail.com", active: false }], "voice@gmail.com"), { id: 3, nome: "V", email: "voice@gmail.com", ativo: false });
   assert.equal(remetentePadrao([], "voice@gmail.com"), null);

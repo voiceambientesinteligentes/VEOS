@@ -3,9 +3,11 @@
 // Por que a Brevo (decisao do Fernando, 11/11/2026): plano gratis de 300 e-mails por dia sem cartao, API simples e
 // AVISOS de cada e-mail (entregue, aberto, clique, voltou, spam, descadastro) por webhook. O Gmail continua servindo
 // para LER as respostas (elas chegam no Gmail) e a agenda, e pode enviar tambem.
-// Limite conhecido: sem dominio proprio, a Brevo troca o remetente @gmail.com por um endereco dela (...@brevosend.com).
-// O nome "VOICE Ambientes Inteligentes" aparece e as respostas voltam para o Gmail (replyTo). Com dominio proprio
-// autenticado na Brevo (pendencia CIO-07) o remetente passa a ser o da VOICE.
+// Remetente: sem dominio proprio, a Brevo troca o remetente @gmail.com por um endereco dela (...@brevosend.com) e o
+// e-mail cai no lixo eletronico. Desde 12/11/2026 o dominio voiceambientesinteligentes.com esta autenticado na Brevo
+// e o remetente e contato@voiceambientesinteligentes.com (remetentePadrao prefere o dominio proprio). As respostas
+// continuam voltando para o Gmail da VOICE (replyTo), onde o VEOS as le. O visual do e-mail fica em email_visual.js.
+import { ehWebmail } from "./web_contatos.js";
 
 export const LINKS_BREVO = {
   cadastro: "https://onboarding.brevo.com/account/register",
@@ -108,24 +110,6 @@ export function quandoDoEventoBrevo(ev, agora = Date.now()) {
   return new Date(agora).toISOString();
 }
 
-const ESC = { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" };
-const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ESC[c]);
-
-function comLinks(trecho) {
-  return trecho.split(/(https?:\/\/[^\s<>"']+)/g).map((p, i) => {
-    if (i % 2 === 0) return esc(p);
-    const [, url, resto] = /^(.*?)([.,;:!?)\]]*)$/.exec(p);
-    return `<a href="${esc(url)}">${esc(url)}</a>${esc(resto)}`;
-  }).join("");
-}
-
-/** HTML simples do e-mail (o texto continua indo junto): paragrafos, quebras de linha e links clicaveis. */
-export function htmlDoEmail(texto) {
-  const blocos = String(texto ?? "").replace(/\r\n?/g, "\n").trim().split(/\n{2,}/).filter((b) => b.trim());
-  const corpo = blocos.map((b) => `<p style="margin:0 0 14px">${comLinks(b).replace(/\n/g, "<br>")}</p>`).join("");
-  return `<!doctype html><html><body style="margin:0;padding:16px"><div style="font-family:Arial,Helvetica,sans-serif;font-size:14px;line-height:1.55;color:#1f1f1f;max-width:640px">${corpo}</div></body></html>`;
-}
-
 /** Erro da API da Brevo -> {status, texto} em portugues simples (o que fazer). */
 export function explicarErroBrevo(status, corpo) {
   const codigo = String(corpo?.code ?? "").toLowerCase();
@@ -142,11 +126,15 @@ export function explicarErroBrevo(status, corpo) {
   return { status: status >= 500 ? 502 : 400, texto: `Brevo: ${msg || codigo || `erro ${status}`}` };
 }
 
-/** Remetente para enviar: o ativo com o e-mail da conta; senao o primeiro ativo; senao o da conta (inativo). */
+/**
+ * Remetente para enviar: o ativo de DOMINIO PROPRIO (ex.: contato@voiceambientesinteligentes.com, com o dominio
+ * autenticado na Brevo: sai com o endereco e a assinatura DKIM da VOICE, nao @brevosend.com); senao o ativo com o
+ * e-mail da conta; senao o primeiro ativo; senao o da conta (inativo, aguardando o codigo).
+ */
 export function remetentePadrao(senders, emailConta) {
   const lista = (Array.isArray(senders) ? senders : []).map((s) => ({ id: s.id ?? null, nome: String(s.name ?? "").slice(0, 70), email: String(s.email ?? "").toLowerCase(), ativo: s.active === true }));
   const conta = String(emailConta ?? "").toLowerCase();
-  return lista.find((s) => s.ativo && s.email === conta) ?? lista.find((s) => s.ativo) ?? lista.find((s) => s.email === conta) ?? null;
+  return lista.find((s) => s.ativo && s.email && !ehWebmail(s.email)) ?? lista.find((s) => s.ativo && s.email === conta) ?? lista.find((s) => s.ativo) ?? lista.find((s) => s.email === conta) ?? null;
 }
 
 /** Resumo do plano da conta (GET /account). */

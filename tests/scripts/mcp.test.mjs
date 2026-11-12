@@ -77,6 +77,11 @@ test("IA que executa: registros de qualquer setor, pesquisa, contatos e e-mail c
   assert.equal(chamadas.at(-1)[1], "mensagens");
   assert.equal(chamadas.at(-1)[2].canal, "email");
   assert.equal(chamadas.at(-1)[2].origem, "mcp:veos");
+  // produto do catalogo com foto no e-mail: a busca leve e a lista repassada ao rascunho
+  await call("veos_buscar_produtos", { busca: "sensor de presença" });
+  assert.deepEqual(chamadas.at(-1).slice(0, 2), ["GET", "produtos/vitrine?busca=sensor+de+presen%C3%A7a"]);
+  await call("veos_preparar_email", { para: "contato@studio.com.br", assunto: "Novidade", corpo: "Olá", produtos: [{ codigo: "PRD-0121", destaque: "Não apaga a luz" }] });
+  assert.deepEqual(chamadas.at(-1)[2].produtos, [{ codigo: "PRD-0121", destaque: "Não apaga a luz" }]);
   // enviar: sem confirmado=true NAO chega a API
   const n = chamadas.length;
   const sem = await call("veos_enviar_email", { mensagem_id: "0b5e8f1a-1111-4222-8333-444455556666", confirmado: false });

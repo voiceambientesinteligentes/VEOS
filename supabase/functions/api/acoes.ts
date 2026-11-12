@@ -151,7 +151,7 @@ export async function rotearAcoes(req: Request, partes: string[], eu: Membro) {
           if (!b2 || !para) throw new HttpError(409, "sem remetente confirmado na Brevo");
           if (!ehTeste(eu)) {
             await enviarPelaBrevo(b2, { id: crypto.randomUUID(), para, assunto: "VEOS: teste de envio pela Brevo", tipo: "interna", responderPara: para, nome: NOME_REMETENTE,
-              texto: `Este é um teste do VEOS.\n\nSe este e-mail chegou, a Brevo está enviando pelo VEOS. Em alguns minutos a tela Integrações mostra o aviso "entregue" que a Brevo manda de volta.\n\nVOICE Ambientes Inteligentes` });
+              texto: `Este é um teste do VEOS.\n\nSe este e-mail chegou com o logotipo da VOICE no alto, a Brevo está enviando pelo VEOS com o remetente ${b2.remetente?.email ?? para}. Em alguns minutos a tela Integrações mostra o aviso "entregue" que a Brevo manda de volta.\n\nVOICE Ambientes Inteligentes` });
           }
           enviado_para = para;
           await registrarAcao(eu.user_id, "email_enviado", `teste da Brevo para ${para}${ehTeste(eu) ? " (simulado)" : ""}`, true, origem);

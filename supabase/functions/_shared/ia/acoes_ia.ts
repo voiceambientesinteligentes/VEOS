@@ -19,7 +19,7 @@ const POR_NOME = new Map<string, any>(MCP.map((f: any) => [f.name, f]));
 // leitura da web: para todos os diretores, inclusive quando so pedem opiniao
 const LEITURA_SEMPRE = ["veos_pesquisar_web", "veos_ler_pagina"];
 // execucao: o basico de qualquer setor + o que e do setor
-const BASE = ["veos_tipos_de_registro", "veos_registros", "veos_criar_registro", "veos_atualizar_registro", "veos_criar_tarefa", "veos_concluir_tarefa", "veos_preparar_email", "veos_caixa_de_saida", "veos_registrar_ideia_ou_proposta"];
+const BASE = ["veos_tipos_de_registro", "veos_registros", "veos_criar_registro", "veos_atualizar_registro", "veos_criar_tarefa", "veos_concluir_tarefa", "veos_preparar_email", "veos_buscar_produtos", "veos_caixa_de_saida", "veos_registrar_ideia_ou_proposta"];
 const POR_SETOR: Record<string, string[]> = {
   direcao: ["veos_encontrar_contatos", "veos_clientes", "veos_criar_cliente", "veos_criar_orcamento_rascunho", "veos_criar_conta_a_pagar", "veos_fornecedores", "veos_emails_recebidos", "veos_ler_conversa_email", "veos_agenda", "veos_criar_evento"],
   vendas: ["veos_encontrar_contatos", "veos_clientes", "veos_criar_cliente", "veos_criar_orcamento_rascunho", "veos_emails_recebidos", "veos_ler_conversa_email", "veos_agenda", "veos_criar_evento"],
@@ -35,7 +35,7 @@ const POR_SETOR: Record<string, string[]> = {
 const PROIBIDAS = /enviar|pagar|aceitar|responder_pergunta|perguntas_pendentes|manual_diretor|consultar_precedentes/;
 
 const DESCRICAO_IA: Record<string, string> = {
-  veos_preparar_email: "Prepara um E-MAIL na caixa de saída (rascunho). O VEOS mostra o e-mail com o botão Enviar para a pessoa confirmar: você NUNCA envia nem diz que enviou. Destino: para (e-mail de EMPRESA achado na web) OU cliente_id OU registro_id (o VEOS completa o endereço; escreva {{primeiro_nome}} no texto). Prospecção: tipo=prospeccao e alvo={nome, site, tipo_parceiro, telefone}: o VEOS cadastra a empresa como parceiro prospectado (o follow-up começa sozinho) e acrescenta a linha de 'sair'. Um e-mail por destinatário, 1:1, curto e personalizado. Para responder uma conversa do Gmail use responder_a (thread_id).",
+  veos_preparar_email: "Prepara um E-MAIL na caixa de saída (rascunho). O VEOS mostra o e-mail com o botão Enviar para a pessoa confirmar: você NUNCA envia nem diz que enviou. Destino: para (e-mail de EMPRESA achado na web) OU cliente_id OU registro_id (o VEOS completa o endereço; escreva {{primeiro_nome}} no texto). Prospecção: tipo=prospeccao e alvo={nome, site, tipo_parceiro, telefone}: o VEOS cadastra a empresa como parceiro prospectado (o follow-up começa sozinho) e acrescenta a linha de 'sair'. Um e-mail por destinatário, 1:1, curto e personalizado. O e-mail sai com o visual da VOICE (logotipo, botão do WhatsApp e assinatura com telefone e site): não escreva telefone, site nem assinatura longa no texto (termine com um fecho curto, ex.: 'Abraço,'). Produto do catálogo no e-mail: ache o código com veos_buscar_produtos e passe produtos=[{codigo, destaque}] (destaque = 1 frase com o benefício para o cliente): o VEOS põe um cartão com a foto e o nome. Não escreva o código no texto. Para responder uma conversa do Gmail use responder_a (thread_id).",
   veos_criar_evento: "Cria um compromisso na agenda do Google da VOICE (horário de Brasília, ex.: 2026-11-12T15:00). Por aqui só SEM convidados; para convidar alguém, prepare um e-mail com o convite (a pessoa confirma).",
 };
 
@@ -63,7 +63,7 @@ function normalizarArgs(schema: any, args: Record<string, unknown>) {
   for (const [k, v] of Object.entries(args ?? {})) {
     const p = schema?.properties?.[k];
     if (!p) continue;
-    if (p.type === "object" && typeof v === "string") {
+    if ((p.type === "object" || p.type === "array") && typeof v === "string") {
       try { out[k] = JSON.parse(v); } catch { out[k] = v; }
     } else if (p.type === "string" && (typeof v === "number" || typeof v === "boolean")) out[k] = String(v);
     else out[k] = v;
@@ -101,7 +101,7 @@ function minimizar(nome: string, d: any) {
   if (nome === "veos_caixa_de_saida") {
     return { mensagens: (d?.mensagens ?? []).slice(0, 30).map((m: any) => ({ id: m.id, canal: m.canal, tipo: m.tipo, estado: m.estado, para: m.destinatario ? String(m.destinatario).replace(/^[^@]+@/, "…@") : null, assunto: m.assunto, trecho: String(m.corpo ?? "").slice(0, 200), criado_em: m.criado_em, enviada_em: m.enviada_em, respondida_em: m.respondida_em, resposta_trecho: m.resposta_trecho ? String(m.resposta_trecho).slice(0, 200) : null })) };
   }
-  if (nome === "veos_preparar_email") return { id: d?.id, repetido: d?.repetido, para: d?.destinatario ?? null, assunto: d?.assunto, tipo: d?.tipo, registro_id: d?.registro_id, parceiro: d?.parceiro, envio: d?.envio, falta_destinatario: d?.falta_destinatario };
+  if (nome === "veos_preparar_email") return { id: d?.id, repetido: d?.repetido, para: d?.destinatario ?? null, assunto: d?.assunto, tipo: d?.tipo, registro_id: d?.registro_id, parceiro: d?.parceiro, produtos: d?.produtos, envio: d?.envio, falta_destinatario: d?.falta_destinatario };
   return d;
 }
 
